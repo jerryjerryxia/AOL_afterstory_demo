@@ -2,15 +2,15 @@
 ## 游戏基本配置 / Basic game configuration
 
 ## 游戏基本信息
-define config.name = _("AOL Afterstory")
-define config.version = "0.1.2"
-define build.name = "AOLAfterstory"
+define config.name = _("AOL Afterstory Demo")
+define config.version = "0.1.0-demo"
+define build.name = "AOLAfterstoryDemo"
 
 ## 是否显示游戏名称在主菜单
 define gui.show_name = True
 
 ## 游戏存档目录名称
-define config.save_directory = "AOLAfterstory-1234567890"
+define config.save_directory = "AOLAfterstoryDemo-1234567890"
 
 ## 分辨率配置 - 1920x1080 基准
 define config.screen_width = 1920
@@ -49,7 +49,7 @@ define config.after_load_transition = dissolve
 define config.end_game_transition = dissolve
 
 ## 窗口标题
-define config.window_title = "AOL Afterstory"
+define config.window_title = "AOL Afterstory Demo"
 
 ## 主菜单音乐（可选）
 define config.main_menu_music = "audio/bgm/Whispers_in_the_Twilight.mp3"

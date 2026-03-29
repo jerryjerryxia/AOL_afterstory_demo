@@ -823,44 +823,43 @@ def find_route_boundaries(lines):
 
 
 def main():
-    with open(r'X:\GameDev\AOL_afterstory\main_script_raw.txt', 'r', encoding='utf-8') as f:
+    with open(r'X:\GameDev\AOL_afterstory_demo\demo_script.txt', 'r', encoding='utf-8') as f:
         lines = [line.rstrip('\n') for line in f.readlines()]
 
     print(f"Total lines: {len(lines)}")
 
-    # Dynamically find route boundaries
-    boundaries = find_route_boundaries(lines)
-    print(f"Route boundaries detected:")
-    print(f"  Prologue: lines 1-{boundaries['prologue'][1]}")
-    print(f"  Route 1: lines {boundaries['route1'][0]+1}-{boundaries['route1'][1]+1}")
-    print(f"  Route 2: lines {boundaries['route2'][0]+1}-{boundaries['route2'][1]+1}")
-    print(f"  Route 3: lines {boundaries['route3'][0]+1}-{boundaries['route3'][1]}")
+    # Find prologue/route1 boundary (demo only has prologue + route 1)
+    prologue_end = None
+    route1_start = None
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if route1_start is None and re.match(r'^一周目', stripped):
+            route1_start = i
+            prologue_end = i
+            break
+
+    if prologue_end is None:
+        print("ERROR: Could not find route 1 start marker (一周目)")
+        return
+
+    print(f"Demo boundaries:")
+    print(f"  Prologue: lines 1-{prologue_end}")
+    print(f"  Route 1: lines {route1_start+1}-{len(lines)}")
 
     # Prologue
-    prologue = convert_prologue(lines, boundaries['prologue'][0], boundaries['prologue'][1])
-    with open(r'X:\GameDev\AOL_afterstory\game\scripts\prologue.rpy', 'w', encoding='utf-8') as f:
+    prologue = convert_prologue(lines, 0, prologue_end)
+    with open(r'X:\GameDev\AOL_afterstory_demo\game\scripts\prologue.rpy', 'w', encoding='utf-8') as f:
         f.write(prologue)
     print("Prologue converted!")
 
-    # Route 1
-    route1 = convert_route(lines, boundaries['route1'][0], boundaries['route1'][1], "route1_start", 1)
-    with open(r'X:\GameDev\AOL_afterstory\game\scripts\route1.rpy', 'w', encoding='utf-8') as f:
+    # Route 1 (runs to end of file - no end marker in demo)
+    route1 = convert_route(lines, route1_start, len(lines), "route1_start", 1)
+    with open(r'X:\GameDev\AOL_afterstory_demo\game\scripts\route1.rpy', 'w', encoding='utf-8') as f:
         f.write(route1)
     print("Route 1 converted!")
 
-    # Route 2
-    route2 = convert_route(lines, boundaries['route2'][0], boundaries['route2'][1], "route2_start", 2)
-    with open(r'X:\GameDev\AOL_afterstory\game\scripts\route2.rpy', 'w', encoding='utf-8') as f:
-        f.write(route2)
-    print("Route 2 converted!")
-
-    # Route 3
-    route3 = convert_route(lines, boundaries['route3'][0], boundaries['route3'][1], "route3_start", 3)
-    with open(r'X:\GameDev\AOL_afterstory\game\scripts\route3.rpy', 'w', encoding='utf-8') as f:
-        f.write(route3)
-    print("Route 3 converted!")
-
-    print("All routes converted successfully!")
+    print("Demo conversion complete!")
 
 
 if __name__ == "__main__":

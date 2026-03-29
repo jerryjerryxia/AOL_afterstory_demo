@@ -7,12 +7,13 @@
       "Bash(dir:*)",
       "Bash(del:*)",
       "Bash(copy:*)",
-      "Bash(cmd:*)",
       "Bash(test:*)",
       "Bash(taskkill:*)",
       "Bash(chcp:*)",
+      "Bash(cmd:*)",
+      "Bash(gh:*)",
       "Bash(ssh:*)",
-      "Bash(gh:*)"
+      "Bash(\"X:\\\\RenPy\\\\renpy-8.5.0-sdk\\\\renpy.exe\":*)"
     ],
     "deny": [],
     "ask": []

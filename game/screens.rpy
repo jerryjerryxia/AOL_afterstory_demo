@@ -711,6 +711,12 @@ screen preferences():
             hbox:
                 box_wrap True
 
+                vbox:
+                    style_prefix "radio"
+                    label _("语言 / Language")
+                    textbutton "中文" action Language(None)
+                    textbutton "English" action Language("english")
+
                 if renpy.variant("pc") or renpy.variant("web"):
                     vbox:
                         style_prefix "radio"

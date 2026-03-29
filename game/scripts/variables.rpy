@@ -19,18 +19,7 @@ init python:
 ## 持久化数据（跨存档保存）
 ################################################################################
 
-## 结局解锁状态
-default persistent.bad_end_1_unlocked = False  # 举棋不定
-default persistent.bad_end_2_unlocked = False  # 好奇害死猫
-default persistent.bad_end_3_unlocked = False  # 平等杀戮
-default persistent.normal_end_unlocked = False  # 日常
-default persistent.happy_end_unlocked = False  # Happy End?
-default persistent.true_end_unlocked = False  # True End
-
-## 周目进度追踪
-default persistent.route1_complete = False  # 一周目完成
-default persistent.route2_complete = False  # 二周目完成
-default persistent.route3_complete = False  # 三周目完成
+## Demo版：无结局解锁和周目追踪
 
 ## 音乐解锁状态（用于音乐鉴赏）
 default persistent.music_unlocked = set()
@@ -79,54 +68,16 @@ init python:
         return track_name in persistent.music_unlocked
 
     def unlock_ending(ending_id):
-        """解锁结局"""
-        if ending_id == "bad_end_1":
-            persistent.bad_end_1_unlocked = True
-        elif ending_id == "bad_end_2":
-            persistent.bad_end_2_unlocked = True
-        elif ending_id == "bad_end_3":
-            persistent.bad_end_3_unlocked = True
-        elif ending_id == "normal_end":
-            persistent.normal_end_unlocked = True
-        elif ending_id == "happy_end":
-            persistent.happy_end_unlocked = True
-        elif ending_id == "true_end":
-            persistent.true_end_unlocked = True
+        """Demo版：无操作"""
+        pass
 
     def unlock_route(route_num):
-        """标记周目完成"""
-        if route_num == 1:
-            persistent.route1_complete = True
-        elif route_num == 2:
-            persistent.route2_complete = True
-        elif route_num == 3:
-            persistent.route3_complete = True
+        """Demo版：无操作"""
+        pass
 
     def get_current_route():
-        """获取当前应进入的周目"""
-        if not persistent.route1_complete:
-            return 1
-        elif not persistent.route2_complete:
-            return 2
-        else:
-            return 3
-
-    def get_ending_count():
-        """获取已解锁的结局数量"""
-        count = 0
-        if persistent.bad_end_1_unlocked:
-            count += 1
-        if persistent.bad_end_2_unlocked:
-            count += 1
-        if persistent.bad_end_3_unlocked:
-            count += 1
-        if persistent.normal_end_unlocked:
-            count += 1
-        if persistent.happy_end_unlocked:
-            count += 1
-        if persistent.true_end_unlocked:
-            count += 1
-        return count
+        """Demo版：始终返回1"""
+        return 1
 
     ##########################################################################
     ## 开发者音乐选择器函数

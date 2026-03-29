@@ -57,18 +57,23 @@ B: Choice B text（madness+1）
 
 ## Testing Workflow
 
-**Before letting the user test, always run:**
+**Before letting the user test, run `/preflight`.** This runs all QA checks in sequence:
+orphaned .rpyc scan → kill zombies → lint → test suite → cleanup → traceback check.
+
+Only hand off for playtesting when preflight reports **READY**.
+
+**Manual steps (if needed):**
 
 1. **Ren'Py Lint:**
    ```
-   X:\RenPy\renpy-8.5.0-sdk\renpy.exe "X:\GameDev\AOL_afterstory" lint
+   X:\RenPy\renpy-8.5.0-sdk\renpy.exe "X:\GameDev\AOL_afterstory_demo" lint
    ```
    - Fix any "Unreachable Statements" (usually missing `【选项分线到此结束】` markers)
    - Fix any undefined labels or variables
 
 2. **Check traceback.txt:**
    ```
-   X:\GameDev\AOL_afterstory\traceback.txt
+   X:\GameDev\AOL_afterstory_demo\traceback.txt
    ```
    - If exists, read and fix the error
    - Delete after confirming fix
