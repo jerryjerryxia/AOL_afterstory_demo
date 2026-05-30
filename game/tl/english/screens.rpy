@@ -222,3 +222,7 @@ translate english strings:
     old "快进中"
     new "Skipping"
 
+    # game/translations.rpy:12 (autosave_callback notification)
+    old "自动存档完成"
+    new "Auto-save complete"
+

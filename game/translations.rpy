@@ -9,7 +9,7 @@ init python:
     config.quit_action = Confirm("确定要退出游戏吗？", Quit(confirm=False), Return())
 
     ## 通知消息
-    config.autosave_callback = lambda: renpy.notify("自动存档完成")
+    config.autosave_callback = lambda: renpy.notify(_("自动存档完成"))
 
 ## 使用 translate None strings 来翻译内置字符串
 ## 这会在默认语言(None)下替换英文字符串

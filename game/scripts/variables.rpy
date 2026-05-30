@@ -14,14 +14,24 @@ default persistent.dev_mode = False  # 设置里的"开发者模式"开关，控
 ## 用 persistent 是因为 MainMenu() action 会清掉普通的游戏变量但保留 persistent。
 default persistent.polyhedron_started_game = False
 
-## "当前周目里有没有存档" 标志。决定主菜单显示 "开始游戏" 还是 "继续游戏"。
-## - start label / after_load 进游戏 → True
-## - 通关一周目时 → False (unlock_route 重置)，主菜单回到"开始游戏"
-## - 删存档时 → False (delete_all_saves 重置)
-## screen 那边除了 flag 还另外查 renpy.list_slots()，没存档就不显示 Continue。
-## 这也顺带绕开了 Movie/channel lifecycle 在 prologue 首场景重新 mount 时
-## 容易出 checker board 的坑 —— Continue 直接 load 跳到存档点，不走那一段。
+## "当前周目里有没有存档" —— 旧设计，保留 default 以兼容老 persistent；screen 不再读。
 default persistent.has_save_in_run = False
+
+## 最近一次通关时间戳。主菜单按钮按 max(slot_mtime) > 该值 决定 Continue 还是 Start，
+## 不是简单"有没有存档"。这样通关后旧存档还在但 Continue 不显示，
+## 新周目玩家再存档时 mtime 比通关时间晚，Continue 又自动出现。
+default persistent.last_route_completion_time = 0.0
+
+init python:
+    import time
+
+    def has_continuable_save():
+        """是否有"通关之后"做的存档（决定主菜单显示 Continue 还是 Start）。"""
+        slots = renpy.list_slots()
+        if not slots:
+            return False
+        latest = max((renpy.slot_mtime(s) or 0) for s in slots)
+        return latest > (persistent.last_route_completion_time or 0)
 
 init python:
     # 测试模式：允许跳过未读文本
@@ -68,8 +78,13 @@ label after_load:
     ## 同 `label start`：进游戏(任何方式，包括 load save)都要标记 polyhedron
     ## 在下次回到主菜单时强制重启 channel。否则 load → 玩 → 回菜单又会破。
     $ persistent.polyhedron_started_game = True
-    ## load 进游戏说明肯定有存档可继续，主菜单按钮保持"继续游戏"
+    ## load 进游戏说明肯定有存档可继续（兼容老 flag，新逻辑用 last_route_completion_time）
     $ persistent.has_save_in_run = True
+    ## 强制重新应用当前语言的 translate python 块。
+    ## 否则：玩家在主菜单切到英文 → 点 Continue → load 后 wangshuang.name 等
+    ## Character mutation 没有重新跑，名字框还是中文。
+    ## force=True 即使语言没变也重跑一遍 translate python，把 .name 全部刷成英文。
+    $ renpy.change_language(_preferences.language, force=True)
     return
 
 ################################################################################
@@ -91,8 +106,10 @@ init python:
         pass
 
     def unlock_route(route_num):
-        """Demo版：通关时把 has_save_in_run 清掉，主菜单回到"开始游戏"。"""
-        persistent.has_save_in_run = False
+        """Demo版：通关时记下 last_route_completion_time，主菜单按钮回到 Start —— 旧存档
+        虽然还在，但 mtime 早于 completion_time，has_continuable_save() 会返回 False。"""
+        persistent.has_save_in_run = False  # 兼容老 persistent
+        persistent.last_route_completion_time = time.time()
 
     def get_current_route():
         """Demo版：始终返回1"""
@@ -107,11 +124,10 @@ init python:
         renpy.load(latest)
 
     def exit_main_menu_to_game():
-        """主菜单退场动画跑完后调用：有存档就 Continue，没存档就新开。
+        """主菜单退场动画跑完后调用：通关后做的存档 → Continue；否则新开。
         Continue 不武装 _intro_fade_pending（玩家不在序章首句），新开才武装。
-        和 screen 用同一个判断（renpy.list_slots()），避免 button 显示和实际
-        动作不一致。"""
-        if renpy.list_slots():
+        和 screen 用同一个判断 (has_continuable_save)，避免按钮和动作不一致。"""
+        if has_continuable_save():
             load_most_recent_save()
             return
         renpy.store._intro_fade_pending = True
