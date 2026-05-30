@@ -8,10 +8,49 @@
 init offset = -1
 
 ################################################################################
+## SFX Lock Screen - blocks player input until sound channel finishes playing
+################################################################################
+
+screen sfx_lock():
+    modal True
+    timer 0.1 repeat True action Function(sfx_lock_check)
+
+init python:
+    def sfx_lock_check():
+        if not renpy.music.get_playing(channel='sound'):
+            renpy.hide_screen('sfx_lock')
+
+################################################################################
 ## 存档删除功能
 ################################################################################
 
 init python:
+    def _force_refresh_text():
+        """Force the currently-shown say to re-evaluate its translation.
+
+        Ren'Py's Language() action redraws screens but the say's `what` was
+        already translated when the character was called. Rolling back one
+        statement then auto-rolling forward re-runs the say with the new
+        language. defer=True lets us call this safely from a screen action.
+        """
+        try:
+            renpy.rollback(force=True, checkpoints=1, defer=True, greedy=False)
+        except Exception:
+            pass
+
+    def dialog_size():
+        """Per-language dialogue font size.
+
+        English needs more horizontal room than the same Chinese — sentences
+        stretch where 4–5 hanzi convey a clause. Shrinking the dialogue font
+        a bit in English mode prevents big monologue blocks from overflowing
+        the large_say textbox. Tweak the English value if the contrast feels
+        too aggressive.
+        """
+        if _preferences.language == "english":
+            return 27
+        return gui.text_size
+
     def delete_all_saves():
         """Delete all save files using Ren'Py's built-in functions."""
         deleted_count = 0
@@ -167,17 +206,43 @@ style say_dialogue:
 
 style window:
     xalign 0.5
-    xfill True
+    xsize 1400
     yalign gui.textbox_yalign
     ysize gui.textbox_height
-    background Solid("#000000aa")
+    background Frame("gui/box_dark.png", 20, 20)
 
 style namebox:
     xpos gui.name_xpos
     xanchor gui.name_xalign
     ypos gui.name_ypos
-    background Solid("#333333dd")
+    background Frame("gui/box_dark.png", 20, 20)
     padding (10, 5, 10, 5)
+
+################################################################################
+## 一次性"序章首文本框淡入"机制
+## ----------------------------------------------------------------
+## 只在主菜单退场后的第一条 large_say 对话上播放一次淡入；其它所有对话都瞬出。
+##
+## 用法：主菜单 timer 在 Start() 之前 SetVariable("_intro_fade_pending", True)。
+## 下一条 large_say mount 时：
+##   - flag=True  → 重置 flag，alpha 从 0 ease-in 到 1（淡入）
+##   - flag=False → alpha 立刻设为 1 并把 ATL 永久"挂起"（无任何动画/影响）
+## 由于 flag 在 first call 就被消费掉，后续所有 large_say 都走 False 分支。
+default _intro_fade_pending = False
+
+init python:
+    def _say_intro_fade_or_halt(trans, st, at):
+        if renpy.store._intro_fade_pending:
+            renpy.store._intro_fade_pending = False
+            return None  # 推进到下一行的 easein
+        # 不淡入：直接显示，挂起 ATL（return 一个超大值，效果上=永不再唤醒）
+        trans.alpha = 1.0
+        return 999999.0
+
+transform say_intro_fade:
+    alpha 0.0
+    function _say_intro_fade_or_halt
+    easein 0.6 alpha 1.0
 
 ################################################################################
 ## 大文本框界面 - Large Textbox Screen (Full-height narrative text)
@@ -186,12 +251,13 @@ style namebox:
 
 screen large_say(who, what):
     frame:
+        at say_intro_fade
         xpos 200
         ypos 140
         xsize 1520
         ysize 800
         padding (80, 80, 80, 80)
-        background Solid("#000000ee")
+        background Frame("gui/box_dark.png", 20, 20)
 
         text what id "what":
             ## Fixed top-left position for consistent reading experience
@@ -200,7 +266,7 @@ screen large_say(who, what):
             text_align 0.0
             xsize 1360
             font gui.text_font
-            size gui.text_size
+            size dialog_size()  # smaller in English; see init python at top
             color "#ffffff"
             line_spacing 10
 
@@ -224,7 +290,7 @@ screen centered_say(who, what):
         xsize 1520
         ysize 800
         padding (80, 80, 80, 80)
-        background Solid("#000000ee")
+        background Frame("gui/box_dark.png", 20, 20)
 
         text what id "what":
             ## Centered for dramatic effect
@@ -233,7 +299,7 @@ screen centered_say(who, what):
             text_align 0.5
             xsize 1360
             font gui.text_font
-            size gui.text_size
+            size dialog_size()  # smaller in English; see init python at top
             color "#ffffff"
             line_spacing 10
 
@@ -257,7 +323,7 @@ screen centered_large_say(who, what):
         xsize 1520
         ysize 800
         padding (80, 80, 80, 80)
-        background Solid("#000000ee")
+        background Frame("gui/box_dark.png", 20, 20)
 
         text what id "what":
             ## Centered with larger font for dramatic effect
@@ -266,7 +332,7 @@ screen centered_large_say(who, what):
             text_align 0.5
             xsize 1360
             font gui.text_font
-            size gui.text_size + 6
+            size dialog_size() + 6  # smaller in English; see init python at top
             color "#ffffff"
             line_spacing 10
 
@@ -341,8 +407,8 @@ style choice_vbox:
 
 style choice_button is default:
     xsize gui.choice_button_width
-    idle_background Solid("#333333cc")
-    hover_background Solid("#555555cc")
+    idle_background Frame("gui/choice_idle.png", 20, 20)
+    hover_background Frame("gui/choice_hover.png", 20, 20)
     padding (150, 8, 150, 8)
 
 style choice_button_text is default:
@@ -354,31 +420,95 @@ style choice_button_text is default:
 ## 主菜单 - Main Menu
 ################################################################################
 
+## 主菜单"开始游戏"被点击时的退场动画状态。
+## 动画驱动方式：用 ATL 的 `function` 轮询状态变量 _main_menu_starting。
+## showif + on_hide 在 Ren'Py 里不能驱动退场动画（条件翻假 displayable 被
+## 立刻从树里抽走）；transform_event 在 screen 重新求值时也不可靠。轮询稳。
+default _main_menu_starting = False
+
+init python:
+    def _wait_for_main_menu_exit(trans, st, at):
+        return None if _main_menu_starting else 0
+
+## 标题：上滑淡出。先停在 alpha=1 yoffset=0，等变量翻 True，再易出动画。
+transform menu_title_anim:
+    alpha 1.0
+    yoffset 0
+    function _wait_for_main_menu_exit
+    easeout 0.5 alpha 0.0 yoffset -50
+
+## 菜单按钮：阶梯式左滑淡出。delay 让每个按钮错开开始时间，
+## 从最底下的按钮 (delay 0) 阶梯上去到"开始游戏" (delay 0.42s)。
+transform menu_btn_anim(delay=0.0):
+    alpha 1.0
+    xoffset 0
+    function _wait_for_main_menu_exit
+    pause delay
+    easeout 0.35 alpha 0.0 xoffset -180
+
 screen main_menu():
     ## 主菜单 - 这是游戏启动时显示的第一个界面
     tag menu
 
     style_prefix "main_menu"
 
-    ## 占位符背景 - 全屏覆盖
-    add Solid("#1a1a2a")
+    ## 玩家从游戏回到主菜单后强制重启 polyhedron channel —— 走过游戏一遭
+    ## Movie/channel lifecycle 会乱，channel 显示 playing 但 Movie() 渲染成
+    ## checker board。stop+play 一遍才能让显示恢复正常。flag 用 persistent
+    ## 因为 MainMenu() action 清普通变量但保留 persistent。
+    python:
+        if persistent.polyhedron_started_game:
+            try:
+                renpy.music.stop(channel="polyhedron_video")
+            except Exception:
+                pass
+            renpy.music.play(
+                "images/bg/polyhedron.webm",
+                channel="polyhedron_video", loop=True)
+            persistent.polyhedron_started_game = False
 
-    ## 暗化效果
-    frame:
+    ## 背景：polyhedron Movie 从共享 channel 取帧，主菜单 → 序章首场景无缝。
+    add "bg_polyhedron_video"
+
+    ## 暗化效果（也跟标题一起淡出）
+    frame at menu_title_anim:
         style "main_menu_frame"
 
-    ## 游戏标题
-    vbox:
+    ## 游戏标题：上滑淡出
+    vbox at menu_title_anim:
         xalign 0.5
         yalign 0.3
 
-        text _("AOL Afterstory"):
+        text _("无休夏日综合症"):
             size 80
             xalign 0.5
             color "#ffffff"
 
-    ## 使用 navigation 屏幕显示菜单按钮
-    use navigation
+    ## 主菜单按钮：直接 inline，不走 `use navigation`，因为每个要带自己的 delay。
+    ## stagger = 0.06s。点击"开始游戏" → _main_menu_starting=True → 所有 transform
+    ## 同时翻动；sensitive 在退场期间关掉所有按钮，避免误触发。
+    vbox:
+        style_prefix "navigation"
+        xpos gui.navigation_xpos
+        yalign 0.5
+        spacing gui.navigation_spacing
+
+        textbutton _("开始游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting at menu_btn_anim(0.42)
+        textbutton _("读取存档") action ShowMenu("load") sensitive not _main_menu_starting at menu_btn_anim(0.36)
+        textbutton _("删除存档") action Confirm("确定要删除所有存档吗？此操作无法撤销。", yes=Function(delete_all_saves), no=None) sensitive not _main_menu_starting at menu_btn_anim(0.30)
+        textbutton _("清除进度") action Confirm("确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）", yes=Function(delete_persistent_data), no=None) sensitive not _main_menu_starting at menu_btn_anim(0.24)
+        textbutton _("音乐鉴赏") action ShowMenu("music_room") sensitive not _main_menu_starting at menu_btn_anim(0.18)
+        textbutton _("设置") action ShowMenu("preferences") sensitive not _main_menu_starting at menu_btn_anim(0.12)
+        textbutton _("关于") action ShowMenu("about") sensitive not _main_menu_starting at menu_btn_anim(0.06)
+
+        if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
+            textbutton _("退出") action Quit(confirm=not main_menu) sensitive not _main_menu_starting at menu_btn_anim(0.0)
+
+    ## 时序：按钮 stagger 最顶 0.42 + 0.35 = 0.77s 完成；标题 0.5s。
+    ## 再加 ~0.5s 让玩家看到纯背景视频"喘口气"，文本框再进。
+    ## timer 跑完 → 重置状态 → 武装 intro_fade_pending（序章首文本框淡入）→ Start()。
+    if _main_menu_starting:
+        timer 1.25 action [SetVariable("_main_menu_starting", False), SetVariable("_intro_fade_pending", True), Start()]
 
 style main_menu_frame is empty
 style main_menu_vbox is vbox
@@ -714,8 +844,14 @@ screen preferences():
                 vbox:
                     style_prefix "radio"
                     label _("语言 / Language")
-                    textbutton "中文" action Language(None)
-                    textbutton "English" action Language("english")
+                    ## Language() 会重渲屏幕，但 say 已经捕获了上一句的 `what`
+                    ## 字符串（在那一句被调用时翻译完成），重渲后还是显示旧语言。
+                    ## 用 renpy.rollback(checkpoints=1) 让 Ren'Py 退回上一条
+                    ## 语句再自动滚到当前位置——这次的 say 调用会用新语言重新
+                    ## 查翻译，文本盒里的文字才真的换语言。defer=True 让 rollback
+                    ## 安全地从 screen action 里发起。
+                    textbutton "中文" action [Language(None), Function(_force_refresh_text)]
+                    textbutton "English" action [Language("english"), Function(_force_refresh_text)]
 
                 if renpy.variant("pc") or renpy.variant("web"):
                     vbox:
@@ -730,6 +866,11 @@ screen preferences():
                     textbutton _("未读文本") action Preference("skip", "toggle")
                     textbutton _("选项后继续") action Preference("after choices", "toggle")
                     textbutton _("过场后继续") action Preference("skip", "toggle")
+
+                vbox:
+                    style_prefix "check"
+                    label _("开发者模式")
+                    textbutton _("显示场景与音乐参考") action ToggleField(persistent, "dev_mode")
 
             null height 30
 
@@ -1199,7 +1340,7 @@ default scene_desc_visible = False
 
 screen dev_scene_info():
     ## Only show if we have a scene name and in developer mode
-    if current_scene_name and config.developer:
+    if current_scene_name and persistent.dev_mode:
         # Top-left corner panel
         frame:
             style "dev_scene_frame"
@@ -1260,7 +1401,7 @@ default dev_music_expanded = False
 
 screen dev_music_selector():
     ## Only show if we have a valid scene and in developer mode
-    if current_music_scene and current_music_scene in scene_music and config.developer:
+    if current_music_scene and current_music_scene in scene_music and persistent.dev_mode:
         $ scene_data = scene_music[current_music_scene]
         $ tracks = scene_data["tracks"]
         $ scene_label = scene_data["label"]

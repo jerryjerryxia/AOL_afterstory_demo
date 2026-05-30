@@ -8,6 +8,11 @@
 
 define config.developer = True  # 启用开发者模式
 default persistent.test_mode = True  # 测试模式开关
+default persistent.dev_mode = False  # 设置里的"开发者模式"开关，控制场景/音乐参考叠层
+
+## 玩家是否进入过游戏（用于判断 game→menu 回流时要不要强制重启 polyhedron channel）。
+## 用 persistent 是因为 MainMenu() action 会清掉普通的游戏变量但保留 persistent。
+default persistent.polyhedron_started_game = False
 
 init python:
     # 测试模式：允许跳过未读文本

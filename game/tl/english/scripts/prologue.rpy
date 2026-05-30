@@ -76,67 +76,67 @@ translate english route1_prologue_2c87c887:
 translate english route1_prologue_c05a2834:
 
     # large_narrator "——可‘一切’是个懒散的字眼。"
-    large_narrator "---But 'Everything' is a lazy term."
+    large_narrator "——But 'Everything' is a lazy term."
 
 # game/scripts/prologue.rpy:47
 translate english route1_prologue_46cfe1c9:
 
     # extend "\n——一句在词穷时用来欲盖弥彰的空话。"
-    extend "\n---You only say this when you have nothing else better to say."
+    extend "\n——You only say this when you have nothing else better to say."
 
 # game/scripts/prologue.rpy:48
 translate english route1_prologue_96cf2dfb:
 
     # extend "\n——但在此刻，‘一切’是精确的。"
-    extend "\n---But at this moment, 'Everything' is quite precise."
+    extend "\n——But at this moment, 'Everything' is quite precise."
 
 # game/scripts/prologue.rpy:49
 translate english route1_prologue_ebfd385d:
 
     # extend "\n——无需争论。"
-    extend "\n---No need to argue."
+    extend "\n——No need to argue."
 
 # game/scripts/prologue.rpy:50
 translate english route1_prologue_480b26e3:
 
     # extend "\n——自然无需争论！"
-    extend "\n---Of course there's no need to argue!"
+    extend "\n——Of course there's no need to argue!"
 
 # game/scripts/prologue.rpy:51
 translate english route1_prologue_076dc717:
 
     # extend "\n——在这里，“一切”都无需争论。"
-    extend "\n---Here, 'Everything' is set in stone."
+    extend "\n——Here, 'Everything' is set in stone."
 
 # game/scripts/prologue.rpy:52
 translate english route1_prologue_9dd4596f:
 
     # extend "\n——完整是无需争论的。"
-    extend "\n---Complete beings have no need for argument."
+    extend "\n——Complete beings have no need for argument."
 
 # game/scripts/prologue.rpy:53
 translate english route1_prologue_4b0afd53:
 
     # extend "\n——无言以对。"
-    extend "\n---I'm wordless."
+    extend "\n——Don't know what to say to that."
 
 # game/scripts/prologue.rpy:54
 translate english route1_prologue_6183a470:
 
     # extend "\n——不如顺便移开目光，看看别处。"
-    extend "\n---Maybe you should turn your gaze away and look elsewhere."
+    extend "\n——Maybe you should turn your gaze away and look elsewhere."
 
 # game/scripts/prologue.rpy:55
 translate english route1_prologue_0b7e5202:
 
     # extend "\n——无可奉告。"
-    extend "\n---I don't know about that."
+    extend "\n——I don't know about that."
 
 # game/scripts/prologue.rpy:56
 translate english route1_prologue_9addcd1d:
 
     # extend "\n——真是无聊啊。"
-    extend "\n---You're boring."
+    extend "\n——You're boring."
 
 # game/scripts/prologue.rpy:59
 translate english route1_prologue_526eac06:
@@ -160,73 +160,73 @@ translate english route1_prologue_4bfaa876:
 translate english route1_prologue_a691e6a6:
 
     # large_narrator "——没想到，这么快就找到你了。"
-    large_narrator "---Didn't think I'd find you so soon."
+    large_narrator "——Didn't think I'd find you so soon."
 
 # game/scripts/prologue.rpy:65
 translate english route1_prologue_a1985929:
 
     # extend "\n——我以为这种事对于现在的你来说易如反掌。"
-    extend "\n---I thought this kinda stuff is easy for you now, no?"
+    extend "\n——I thought this kinda stuff is easy for you now, no?"
 
 # game/scripts/prologue.rpy:66
 translate english route1_prologue_923b9435:
 
     # extend "\n——当然。只是一想到又要见到你那臭脸，我就下意识地多做了点心理准备。"
-    extend "\n---Of course, of course. It's just that I came extra mentally prepared, so that I can bear to look at your stinky face again."
+    extend "\n——Of course, of course. It's just that I came extra mentally prepared, so that I can bear to look at your shit-face again."
 
 # game/scripts/prologue.rpy:67
 translate english route1_prologue_d527c1e5:
 
     # extend "\n——心理准备？你？"
-    extend "\n---You? Mentally prepared? For what?"
+    extend "\n——You? Mentally prepared? For what?"
 
 # game/scripts/prologue.rpy:68
 translate english route1_prologue_cbda4b8b:
 
     # extend "\n——毕竟做了“伤天害理”的事情。"
-    extend '\n---Well, you see, I\'m aware that I did something "outrageous".'
+    extend '\n——Well, you see, I\'m aware that I did something "outrageous".'
 
 # game/scripts/prologue.rpy:69
 translate english route1_prologue_b6b9563e:
 
     # extend "\n——哦。歉意，你能感受到那种东西？"
-    extend "\n---Oh, so you are saying you feel guilty? That's a thing for you now?"
+    extend "\n——Oh, so you are saying you feel guilty? That's a thing for you now?"
 
 # game/scripts/prologue.rpy:70
 translate english route1_prologue_bf4233f7:
 
     # extend "\n——不能。但能演给你看，要看吗？"
-    extend "\n---Not really, but I can act it out for you. Wanna see it?"
+    extend "\n——Not really, but I can act it out for you. Wanna see it?"
 
 # game/scripts/prologue.rpy:71
 translate english route1_prologue_cf1f310d:
 
     # extend "\n——看来你也挺无聊。"
-    extend "\n---Seems like you are bored, too."
+    extend "\n——Seems like you are bored, too."
 
 # game/scripts/prologue.rpy:72
 translate english route1_prologue_768b66e8:
 
     # extend "\n——是咯。所以想不想出去溜达溜达？"
-    extend "\n---Yea, maybe. So wanna head out?"
+    extend "\n——Yea, maybe. So, wanna head out?"
 
 # game/scripts/prologue.rpy:73
 translate english route1_prologue_e561b331:
 
     # extend "\n——向一个不具备意志的人征求认可又是何苦？彰显你那虚伪的开明？"
-    extend "\n---What's the point of asking the opinion of someone that has no will for anything? Just to showcase your fake-ass generosity?"
+    extend "\n——What's the point of asking the opinion of someone that has no will for anything? Just to showcase your fake-ass generosity?"
 
 # game/scripts/prologue.rpy:74
 translate english route1_prologue_51a9894c:
 
     # extend "\n——那就当你同意了。"
-    extend "\n---I'll take that as a yes."
+    extend "\n——I'll take that as a yes."
 
 # game/scripts/prologue.rpy:75
 translate english route1_prologue_bc2f2ccc:
 
     # extend "\n——请自便吧。"
-    extend "\n---Suit yourself."
+    extend "\n——Suit yourself."
 
 # game/scripts/prologue.rpy:78
 translate english route1_prologue_526eac06_1:
@@ -359,4 +359,30 @@ translate english route1_prologue_db0d72ae:
 
     # extend "\n假装一切都没有发生。"
     extend "\nAs if nothing ever happened."
+
+# TODO: Translation updated at 2026-05-29 15:22
+
+# game/scripts/prologue.rpy:27
+translate english route1_prologue_6c95f221:
+
+    # large_narrator "一颗无色透明的多面体在无垠黑暗中幽幽地闪着冷光。"
+    large_narrator "A translucent polygon emitted a chilly hue within the vast darkness."
+
+# game/scripts/prologue.rpy:33
+translate english route1_prologue_17096783:
+
+    # large_narrator "周身黑暗暖得让人毛骨悚然——不知多久以前，你一定来过这里。"
+    large_narrator "The darkness around you felt frightening - you must have been here before, though god knows how long ago."
+
+# game/scripts/prologue.rpy:89
+translate english route1_prologue_3871d71c:
+
+    # large_narrator "仿佛完成了一场亘古的潜行，你轻轻浮出水面。"
+    large_narrator "As if surfacing from a deep dive that lasted centuries, you stuck your head out of the water."
+
+# game/scripts/prologue.rpy:105
+translate english route1_prologue_7792221f:
+
+    # extend "\n每一寸肌肉都从黑夜中啜饮势能，苦苦等待爆发的那一刻——终究不会到来的那一刻。"
+    extend "\nEvery thread of muscle was drinking in energy from the darkness, awaiting the moment to burst - the moment that would never arrive."
 

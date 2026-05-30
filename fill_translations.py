@@ -84,15 +84,20 @@ def _strip_eng_char_prefix(text):
 
 
 def _is_english_line(text):
-    """Check if a line looks like an English translation."""
+    """Check if a line looks like an English translation.
+
+    Note: do NOT require text[0].isascii() — many English lines in this script
+    start with `——` (em dash, U+2014) before the first Latin word, e.g.
+    "——But 'Everything' is a lazy term." Use a Latin-letter search instead.
+    """
     return (text and
             not is_stage_direction(text) and
             not is_choice_line(text) and
             not is_section_header(text) and
             not re.match(rf'^({char_pattern})', text) and
             not text.startswith('【') and
-            text[0].isascii() and
-            not is_chinese(text.split()[0] if text.split() else ''))
+            not is_chinese(text.split()[0] if text.split() else '') and
+            bool(re.search(r'[A-Za-z]', text)))
 
 
 def parse_bilingual_script(filepath):
@@ -230,7 +235,42 @@ def _format_tl_line(indent, prefix, eng_text):
         return f'{indent}{prefix}"{eng_escaped}"'
 
 
-def fill_dialogue_translation(filepath, translations, standalone_lines=None):
+def _build_speaker_map(script_path):
+    """Return {line_number: speaker_prefix} for a generated .rpy script file.
+
+    For each line number, the value is the most recent non-extend speaker
+    above that line in script-execution order. Used by
+    fill_dialogue_translation to resolve the correct speaker when converting
+    an `extend` to a standalone textbox: file-order tracking in the tl file
+    fails when choice branches interleave (e.g. an `ahe "..."` from a B-branch
+    appears in the tl file right before a large_narrator's extend, even
+    though in the script the ahe line is on a different code path).
+    """
+    if not os.path.exists(script_path):
+        return {}
+    with open(script_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    result = {}
+    current = ''
+    # Speakers we care about. extend / narrator are NOT here — extend doesn't
+    # count, and narrator has no name so it can't be the "standalone" target.
+    valid_speakers = set(CHAR_VARS.values()) | {
+        'large_narrator', 'centered_narrator', 'centered_large_narrator',
+        'protag_thought',
+    }
+    for i, raw in enumerate(lines, start=1):
+        stripped = raw.strip()
+        # Match speaker at line start (Ren'Py say statement)
+        m = re.match(r'^([a-z_][a-z0-9_]*)\s+["\']', stripped)
+        if m:
+            speaker = m.group(1)
+            if speaker in valid_speakers:
+                current = speaker + ' '
+        result[i] = current
+    return result
+
+
+def fill_dialogue_translation(filepath, translations, standalone_lines=None, source_script_path=None):
     """
     Fill in a Ren'Py dialogue translation file.
 
@@ -251,17 +291,28 @@ def fill_dialogue_translation(filepath, translations, standalone_lines=None):
     if standalone_lines is None:
         standalone_lines = set()
 
+    # Build {line_number: speaker} map from the source script for
+    # script-execution-order speaker resolution (see _build_speaker_map docs).
+    speaker_map = _build_speaker_map(source_script_path) if source_script_path else {}
+
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
     lines = content.split('\n')
     output = []
     changes = 0
-    last_speaker = ''  # Track last non-extend speaker for standalone replacement
+    last_speaker = ''  # File-order fallback if speaker_map lookup misses.
+    last_source_line = None  # Line number from the latest "# game/scripts/...:N" comment.
 
     i = 0
     while i < len(lines):
         line = lines[i]
+
+        # Track the most recent file:line comment so we can look up the
+        # correct script-context speaker for the next translate block.
+        src_match = re.match(r'^#\s*game/scripts/\S+:(\d+)\s*$', line.strip())
+        if src_match:
+            last_source_line = int(src_match.group(1))
 
         # Look for the pattern: comment line followed by translation line
         # Comment: "    # speaker "Chinese text""
@@ -279,7 +330,9 @@ def fill_dialogue_translation(filepath, translations, standalone_lines=None):
 
             if tl_match:
                 tl_indent = tl_match.group(1)
-                speaker_prefix = tl_match.group(2)  # e.g. "wangshuang " or "extend " or ""
+                # Use the COMMENT-line speaker (the script's truth), not the
+                # translation-line speaker — same reason as is_extend above.
+                speaker_prefix = ''  # placeholder; set right after we parse the comment
 
                 # Extract Chinese text from the COMMENT line (always has original Chinese)
                 comment_tl = re.match(r'^(?:\w+ )?["\'](.+)["\']', comment_text)
@@ -289,8 +342,17 @@ def fill_dialogue_translation(filepath, translations, standalone_lines=None):
                     continue
                 chinese_text = comment_tl.group(1)
 
-                # For extend lines, strip the \n prefix for lookup
+                # is_extend (and the actual speaker_prefix used for output) must
+                # come from the ORIGINAL-script COMMENT, not from the
+                # translation line — otherwise a previous bad fill (e.g. an
+                # `ahe ...` line that should have been a standalone
+                # large_narrator extend) makes is_extend False and the
+                # standalone-substitution branch never runs.
+                comment_speaker_match = re.match(r'^((?:\w+ )?)["\']', comment_text)
+                speaker_prefix = (comment_speaker_match.group(1)
+                                  if comment_speaker_match else '')
                 is_extend = speaker_prefix.strip() == 'extend'
+
                 lookup_text = chinese_text
                 if is_extend and lookup_text.startswith('\\n'):
                     lookup_text = lookup_text[2:]  # Remove \n prefix
@@ -304,9 +366,14 @@ def fill_dialogue_translation(filepath, translations, standalone_lines=None):
                     eng_parts = translations[lookup_text]
 
                     # Determine the speaker prefix to use
-                    if is_extend and lookup_text in standalone_lines and last_speaker:
-                        # Extend -> standalone: use last speaker
-                        use_prefix = last_speaker
+                    if is_extend and lookup_text in standalone_lines:
+                        # Extend -> standalone: prefer the script-context
+                        # speaker (correct under choice branches) and fall
+                        # back to file-order last_speaker if missing.
+                        script_speaker = (speaker_map.get(last_source_line, '')
+                                          if last_source_line else '')
+                        use_prefix = (script_speaker or last_speaker
+                                      or speaker_prefix)
                     elif is_extend:
                         use_prefix = speaker_prefix
                     else:
@@ -401,10 +468,17 @@ def main():
         print(f"    '{cn[:30]}...' -> '{en_parts[0][:30]}...'")
 
     # Step 2: Fill dialogue translation files
+    # Pass the source script path (game/scripts/) so fill_dialogue_translation
+    # can resolve the script-context speaker — needed for correct
+    # standalone-extend conversion under choice branches.
+    source_scripts_dir = os.path.join(base_dir, 'game', 'scripts')
     for script_file in ['prologue.rpy', 'route1.rpy']:
         filepath = os.path.join(tl_dir, 'scripts', script_file)
+        source_path = os.path.join(source_scripts_dir, script_file)
         if os.path.exists(filepath):
-            changes = fill_dialogue_translation(filepath, translations, standalone_lines)
+            changes = fill_dialogue_translation(
+                filepath, translations, standalone_lines,
+                source_script_path=source_path)
             print(f"  {script_file}: {changes} lines translated")
 
     # Step 3: Fill UI string translations

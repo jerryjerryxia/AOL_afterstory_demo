@@ -18,18 +18,19 @@ label prologue:
 
 label route1_prologue:
     $ set_scene_music("prologue_1")
-    ## 场景音乐参考：Electric Sea (Buckethead), Padmasana (Buckethead)，Doutokutosetsu，Shinsou no reijou，Gaidankousetsu - 物语ost是好文化
+    ## 场景音乐参考：Electric Sea (Buckethead), Padmasana (Buckethead)，Doutokutosetsu，Shinsou no reijou，Gaidankousetsu
     ## 转场：无色透明多面体
+    scene bg_polyhedron_video with None
     $ current_scene_name = "无色透明多面体"
     $ current_scene_desc = "一颗无色透明的多面体在无垠的黑暗中幽幽地闪着冷光。"
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "一颗无色透明的多面体在无垠的黑暗中幽幽地闪着冷光。"
+    large_narrator "一颗无色透明的多面体在无垠黑暗中幽幽地闪着冷光。"
     extend "\n你感到心平气和，脑海里没有任何多余的问题，只是冷静地观察着你眼前唯一的光源。"
     extend "\n里面装着另一个世界么？"
     extend "\n亦或是另一个人？"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "周身的黑暗暖得让人毛骨悚然——不知多久以前，你一定来过这里。"
+    large_narrator "周身黑暗暖得让人毛骨悚然——不知多久以前，你一定来过这里。"
     extend "\n究竟是多久以前呢？"
     extend "\n很久很久以前。"
     extend "\n是当太阳还只是一团翩翩起舞的灰烬与气体时？"
@@ -80,11 +81,12 @@ label route1_prologue:
     extend "\n………"
     ## Extended大文本框结束
     ## 转场：黑屏
+    scene black with scene_soft
     $ current_scene_name = "黑屏"
     $ current_scene_desc = "就是黑屏。"
     ## 头出水面后大吸一口气音效
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "仿佛完成了一场亘古的潜行，你终于浮出水面。"
+    large_narrator "仿佛完成了一场亘古的潜行，你轻轻浮出水面。"
     extend "\n可眼前只有一片黑暗，比你所熟知的海底更加幽深。"
     extend "\n世界本就是海，海平面以上自然一无所有。"
     extend "\n你模糊地记得这一点。"
@@ -100,7 +102,7 @@ label route1_prologue:
     large_narrator "都说远道而来的友人要以热情相迎。"
     extend "\n本该是这样的。"
     extend "\n但你累了，实在是太累了。长时间保持不动竟是一件如此令人疲惫的事。"
-    extend "\n每一寸肌肉都从黑夜中啜饮势能，苦苦等待爆发的那一刻——遥遥无期的那一刻。"
+    extend "\n每一寸肌肉都从黑夜中啜饮势能，苦苦等待爆发的那一刻——终究不会到来的那一刻。"
     extend "\n你在永恒的凝滞中被倦意填满。"
     extend "\n然而来者终归要到来——应你之邀而来。"
     extend "\n自己种下了树，就必要咽下它结的果。"

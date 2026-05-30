@@ -4,7 +4,80 @@ Script converter: Converts raw script to Ren'Py format
 Handles branching with A:/B: options and 【选项分线到此结束】 convergence markers
 """
 
+import argparse
 import re
+import sys
+
+# Force UTF-8 stdout so 中文 prints correctly on Windows consoles (the default
+# cp936/cp1252 codepage mangles it). Safe no-op on POSIX. Python 3.7+.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except AttributeError:
+    pass
+
+# Scene names (the part before the first period in 【转场：场景名。描述】) that
+# have a real background image. Maps the scene name to its Ren'Py image name,
+# defined in game/images/bg/placeholder.rpy. When a transition uses one of
+# these names, the converter emits a `scene ... with scene_soft` line.
+SCENE_BG_MAP = {
+    '夏日对视': 'bg_summergaze',
+    '张目对日pt1': 'bg_sungaze',
+    '银白色沙漠': 'bg_desert',
+    # 无色透明多面体：循环视频。剧本里所有引用此名的场景都用同一个 channel，
+    # 主菜单和序章首场景共享帧位置。
+    '无色透明多面体': 'bg_polyhedron_video',
+    # 甜品店对视 1-8 + 6.51：场景渐进，详见 placeholder.rpy 里的注释。
+    '甜品店对视1': 'bg_dessertgaze1',
+    '甜品店对视2': 'bg_dessertgaze2',
+    '甜品店对视3': 'bg_dessertgaze3',
+    '甜品店对视4': 'bg_dessertgaze4',
+    '甜品店对视5': 'bg_dessertgaze5',
+    '甜品店对视6': 'bg_dessertgaze6',
+    '甜品店对视6.51': 'bg_dessertgaze6_51',
+    '甜品店对视7': 'bg_dessertgaze7',
+    '甜品店对视8': 'bg_dessertgaze8',
+}
+
+# Scenes that should NOT emit the default fade-through-black transition.
+# Used when the same background is already visible (e.g., main menu's video
+# bg carries into the prologue's first scene), so a black-fade would break
+# the continuity. These scenes emit `scene X with None` instead of
+# `scene X with scene_soft`.
+NO_TRANSITION_SCENES = set()
+
+# Scenes that should cross-dissolve into view rather than fade through black.
+# Use for visual evolution within the same location/moment — e.g., the dessert
+# shop sequence (1 → 2 → 3 → ... → 7) where each scene is the same dining
+# table at successive beats. A black-fade between them feels like "cut away
+# and come back"; a dissolve reads as "time slipping forward in place."
+# Note: 甜品店对视1 is NOT in here — that's the *entry* into the sequence,
+# so it should use the standard fade-through-black from whatever preceded it.
+CROSS_DISSOLVE_SCENES = {
+    '甜品店对视2',
+    '甜品店对视3',
+    '甜品店对视4',
+    '甜品店对视5',
+    '甜品店对视6',
+    '甜品店对视6.51',
+    '甜品店对视7',
+    '甜品店对视8',
+}
+
+# Tracks whether the prologue's first 【转场：...】 still needs to be emitted
+# without a transition (with None). The main menu's polyhedron video bg
+# already shows what the prologue is about to scene to, so a fade-through-black
+# would break the seamless handoff. convert_prologue() sets this to True at
+# its start; convert_content_line()'s transition branch consumes it once.
+_PROLOGUE_FIRST_TRANSITION_PENDING = False
+
+# Standalone stage-direction keyword -> FX transition emitted right after
+# the comment, for genuine *visual* dramatic beats only. Audio-only cues
+# (containing 音效) are skipped. Transitions are defined in
+# game/scripts/transitions.rpy.
+SPECIAL_FX = [
+    ('glitch', 'fx_glitch'),
+    ('黑影', 'fx_shock'),
+]
 
 def escape_quotes(text):
     """Escape straight double quotes for Ren'Py"""
@@ -53,7 +126,8 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         title_match = re2.search(r'分屏.(.+?).】$', line)
         if title_match:
             title = title_match.group(1)
-            return f'{indent}call screen route_title("{title}")'
+            # _() wraps the title for translation so it changes with language
+            return f'{indent}call screen route_title(_("{title}"))'
 
     # Music trigger markers 【音乐：scene_id】
     music_match = re.match(r'^【音乐[：:](.+?)】$', line)
@@ -65,13 +139,26 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     if '音乐停' in line:
         return f'{indent}$ current_music_scene = None\n{indent}stop music fadeout 1.0'
 
+    # Pause markers 【停顿：N】 -> `pause N` (N is seconds, float ok)
+    # Use sparingly — for breathing room before a scene's first line, etc.
+    pause_match = re.match(r'^【停顿[：:]([\d.]+)】$', line)
+    if pause_match:
+        return f'{indent}pause {pause_match.group(1)}'
+
+    # (Removed 【文本框淡入】 marker — `window show TRANSITION` does not affect
+    # custom say screens, which is what this project uses. Fade-in is now
+    # handled by transforms on large_say/centered_say/centered_large_say
+    # directly, so every time those screens first appear they ease in.)
+
     # Scene transition markers 【转场：场景名。场景描述】
     transition_match = re.match(r'^【转场[：:](.+?)】$', line)
     if transition_match:
         content = transition_match.group(1).strip()
-        # Split by first period (Chinese or English)
-        # The scene name is before the first period, description is after
-        period_match = re.search(r'[。.]', content)
+        # Split by first Chinese period only (。). Not ASCII period, because
+        # scene names may legitimately contain `.` (e.g., 甜品店对视6.51).
+        # Convention in the raw script is to always use 。 as the name/description
+        # separator, so this is safe.
+        period_match = re.search(r'。', content)
         if period_match:
             scene_name = content[:period_match.start()].strip()
             scene_desc = content[period_match.end():].strip()
@@ -84,8 +171,22 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         scene_name_escaped = scene_name.replace('"', '\\"')
         scene_desc_escaped = scene_desc.replace('"', '\\"')
 
-        # Generate both the comment and the variable assignment
+        # Generate the comment, the background scene, and the variables.
+        # Scenes without dedicated art fall back to a plain black background.
         output_lines = [f'{indent}## 转场：{scene_name}']
+        bg_image = SCENE_BG_MAP.get(scene_name, 'black')
+        global _PROLOGUE_FIRST_TRANSITION_PENDING
+        if _PROLOGUE_FIRST_TRANSITION_PENDING:
+            # Main menu's bg is already what we're scening to; skip the fade.
+            transition = 'None'
+            _PROLOGUE_FIRST_TRANSITION_PENDING = False
+        elif scene_name in NO_TRANSITION_SCENES:
+            transition = 'None'
+        elif scene_name in CROSS_DISSOLVE_SCENES:
+            transition = 'scene_dissolve'
+        else:
+            transition = 'scene_soft'
+        output_lines.append(f'{indent}scene {bg_image} with {transition}')
         output_lines.append(f'{indent}$ current_scene_name = "{scene_name_escaped}"')
         if scene_desc:
             output_lines.append(f'{indent}$ current_scene_desc = "{scene_desc_escaped}"')
@@ -114,10 +215,17 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     if re.match(r'^【True End[：:：]?(.*)】$', line) or line.strip() == '【True End】':
         return f"{indent}## True End\n{indent}$ unlock_ending(\"true_end\")\n{indent}return"
 
-    # Stage direction (standalone) -> comment
+    # Stage direction (standalone) -> comment, plus an FX transition when
+    # the cue is a genuine visual dramatic beat. Audio cues (音效) are
+    # comment-only - a sound effect should not shake the screen.
     stage_match = re.match(r'^【(.+?)】$', line)
     if stage_match:
-        return f"{indent}## {stage_match.group(1)}"
+        text = stage_match.group(1)
+        if '音效' not in text:
+            for keyword, fx in SPECIAL_FX:
+                if keyword in text:
+                    return f"{indent}## {text}\n{indent}with {fx}"
+        return f"{indent}## {text}"
 
     # Character name to variable mapping
     char_var_map = {
@@ -250,8 +358,8 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
         transition_match = re.match(r'^【转场[：:](.+?)】$', line)
         if transition_match:
             content = transition_match.group(1).strip()
-            # Split by first period (Chinese or English)
-            period_match = re.search(r'[。.]', content)
+            # Split on Chinese period only (same convention as convert_content_line)
+            period_match = re.search(r'。', content)
             if period_match:
                 scene_name = content[:period_match.start()].strip()
                 scene_desc = content[period_match.end():].strip()
@@ -292,6 +400,18 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
             scene_name_escaped = scene_name.replace('"', '\\"')
             scene_desc_escaped = scene_desc.replace('"', '\\"')
             output.append(f'{indent}## 转场：{scene_name}')
+            bg_image = SCENE_BG_MAP.get(scene_name, 'black')
+            # Same transition-choice logic as convert_content_line.
+            # (We don't touch _PROLOGUE_FIRST_TRANSITION_PENDING here because
+            # the prologue's first 转场 is at the top of the file, never inside
+            # an accumulating textbox block.)
+            if scene_name in NO_TRANSITION_SCENES:
+                transition = 'None'
+            elif scene_name in CROSS_DISSOLVE_SCENES:
+                transition = 'scene_dissolve'
+            else:
+                transition = 'scene_soft'
+            output.append(f'{indent}scene {bg_image} with {transition}')
             output.append(f'{indent}$ current_scene_name = "{scene_name_escaped}"')
             if scene_desc:
                 output.append(f'{indent}$ current_scene_desc = "{scene_desc_escaped}"')
@@ -683,6 +803,12 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
 
 def convert_prologue(lines, start_line, end_line):
     """Convert the prologue section (before route 1)"""
+    # Arm the seamless-handoff flag; the first 【转场：...】 we see in this
+    # section will emit `with None` to avoid a fade-through-black on the
+    # main-menu→prologue boundary (where the bg is already the same video).
+    global _PROLOGUE_FIRST_TRANSITION_PENDING
+    _PROLOGUE_FIRST_TRANSITION_PENDING = True
+
     output = []
     output.append("## prologue.rpy")
     output.append("## 序章 / Prologue - AUTO-GENERATED")
@@ -714,10 +840,19 @@ def convert_prologue(lines, start_line, end_line):
         if not line:
             continue
 
-        # Skip title line and music reference comments at the very beginning
-        if i <= 5 and ('疯子的青春期' in line or '场景音乐参考' in line):
-            if '场景音乐参考' in line:
-                output.append(f"    ## {line.strip('【】')}")
+        # Skip the very first non-empty content line — that's the script title
+        # (e.g. "无休夏日综合征" or "疯子的青春期 完美夏日后日谈"). Was hardcoded
+        # to one specific phrase before; this catches whatever title the script
+        # currently uses. Markers (【...】) are handled later so they aren't
+        # captured here.
+        if i <= 5 and not line.startswith('【'):
+            # Music reference comments live in 【...】 and won't reach here.
+            # Anything else this early is the title — skip it silently.
+            continue
+
+        # Pass scene-music reference comments through as Ren'Py comments
+        if i <= 5 and '场景音乐参考' in line:
+            output.append(f"    ## {line.strip('【】')}")
             continue
 
         # Check for accumulating block markers
@@ -822,19 +957,65 @@ def find_route_boundaries(lines):
     }
 
 
+def find_unmapped_scenes(lines):
+    """Return sorted list of 转场 scene names not in SCENE_BG_MAP.
+    These currently fall back to a black background — usually a signal that
+    a new marker was added to the raw script but the image registration in
+    placeholder.rpy / SCENE_BG_MAP is missing.
+
+    Scenes that intentionally use a solid-color fallback (e.g. 黑屏, 白屏,
+    红屏...) will also appear; filter those out manually if they're false
+    positives for your workflow.
+    """
+    seen = set()
+    for line in lines:
+        m = re.match(r'^【转场[：:](.+?)】$', line.strip())
+        if not m:
+            continue
+        content = m.group(1).strip()
+        period_match = re.search(r'。', content)
+        scene_name = content[:period_match.start()].strip() if period_match else content
+        if scene_name:
+            seen.add(scene_name)
+    return sorted(seen - set(SCENE_BG_MAP))
+
+
+def report_unmapped(lines, prefix=""):
+    """Print a warning block listing unmapped 转场 scene names."""
+    unmapped = find_unmapped_scenes(lines)
+    if not unmapped:
+        print(f"{prefix}All 转场 scenes are mapped.")
+        return 0
+    print(f"{prefix}WARNING: {len(unmapped)} unmapped 转场 scene(s) (will fall back to black):")
+    for name in unmapped:
+        print(f"{prefix}  - {name}")
+    return len(unmapped)
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check-unmapped", action="store_true",
+        help="Only scan demo_script.txt for 转场 scene names that aren't "
+             "in SCENE_BG_MAP. No conversion. Useful after editing the raw "
+             "script to catch new scenes you forgot to register.",
+    )
+    args = parser.parse_args()
+
     with open(r'X:\GameDev\AOL_afterstory_demo\demo_script.txt', 'r', encoding='utf-8') as f:
         lines = [line.rstrip('\n') for line in f.readlines()]
 
+    if args.check_unmapped:
+        report_unmapped(lines)
+        return
+
     print(f"Total lines: {len(lines)}")
 
-    # Find prologue/route1 boundary (demo only has prologue + route 1)
+    # Demo only has prologue + route 1; route 1 runs to end of file.
     prologue_end = None
     route1_start = None
-
     for i, line in enumerate(lines):
-        stripped = line.strip()
-        if route1_start is None and re.match(r'^一周目', stripped):
+        if re.match(r'^一周目', line.strip()):
             route1_start = i
             prologue_end = i
             break
@@ -855,11 +1036,27 @@ def main():
 
     # Route 1 (runs to end of file - no end marker in demo)
     route1 = convert_route(lines, route1_start, len(lines), "route1_start", 1)
+    # Demo-only: replace the route's trailing `return` with utter_restart().
+    # Why: the demo is the only repo where the player returns from a finished
+    # route back to the same polyhedron main menu. That round-trip puts the
+    # Movie/channel into a state where the second `scene bg_polyhedron_video`
+    # renders as checkerboard. utter_restart fully reloads the game (init runs
+    # again, channel cleanly re-registers, Movie state resets), so the menu
+    # they see after finishing is from a fresh boot — polyhedron works.
+    # persistent (settings, unlocked endings) is preserved across utter_restart.
+    if route1.rstrip().endswith("return"):
+        route1 = route1.rstrip()[:-len("return")] + (
+            "## demo 通关后整个游戏 reboot 一次，让 polyhedron channel 状态干净，\n"
+            "    ## 第二次 Start 不会渲染成 checker board。persistent 不会被清。\n"
+            "    $ renpy.utter_restart()\n"
+        )
     with open(r'X:\GameDev\AOL_afterstory_demo\game\scripts\route1.rpy', 'w', encoding='utf-8') as f:
         f.write(route1)
     print("Route 1 converted!")
 
     print("Demo conversion complete!")
+    print()
+    report_unmapped(lines)
 
 
 if __name__ == "__main__":

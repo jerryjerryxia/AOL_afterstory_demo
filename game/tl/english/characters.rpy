@@ -1,4 +1,25 @@
-# English character name translations
+# English character name translations.
+#
+# Ren'Py 的 `translate LANG python:` 块只在切到那个语言时执行一次。
+# 切到 English 之后再切回中文 (Language(None))，Ren'Py 不会"复位"
+# Character.name —— mutation 留在 .name 里，名字框还是英文。
+# 解决：给原语言 (None) 也写一个对称块，每次切回中文都重新赋值。
+translate None python:
+
+    ## 主要角色（中文复位 —— 见上方注释）
+    wangshuang.name = "王霜"
+    wangshuang_unknown.name = "王霜（？）"
+    ahe.name = "阿鹤"
+    shishou.name = "尸首"
+
+    ## 配角
+    lurenjia.name = "路人甲"
+    lurenyi.name = "路人乙"
+    lurenbing.name = "路人丙"
+    lurending.name = "路人丁"
+    jieluowa.name = "杰罗瓦"
+    mijie.name = "米姐"
+    youliya.name = "尤里娅"
 
 translate english python:
 

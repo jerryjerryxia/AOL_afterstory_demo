@@ -31,11 +31,14 @@ define gui.hover_muted_color = '#999999'
 ## 字体配置
 ################################################################################
 
-## 中文字体 - 使用 Ren'Py SDK 内置的思源黑体
-## SourceHanSansLite.ttf 支持简体中文
-define gui.text_font = "SourceHanSansLite.ttf"
-define gui.name_text_font = "SourceHanSansLite.ttf"
-define gui.interface_text_font = "SourceHanSansLite.ttf"
+## 正文/界面/标题字体 - 思源宋体 Medium（简体中文衬线体）
+## body.ttf 由 generate_font_subset.py 生成
+define gui.text_font = "body.ttf"
+define gui.name_text_font = "body.ttf"
+define gui.interface_text_font = "body.ttf"
+
+## 周目标题卡片沿用正文字体
+define gui.title_card_font = gui.text_font
 
 ################################################################################
 ## 字体大小
@@ -58,16 +61,16 @@ define gui.title_text_size = 75
 ################################################################################
 
 ## 对话框位置和大小
-define gui.textbox_height = 278
-define gui.textbox_yalign = 0.97
+define gui.textbox_height = 340
+define gui.textbox_yalign = 1.0
 
-## 角色名字位置
-define gui.name_xpos = 360
-define gui.name_ypos = 0
+## 角色名字位置（相对于对话框窗口，窗口宽 1400 居中）
+define gui.name_xpos = 100
+define gui.name_ypos = 15
 define gui.name_xalign = 0.0
 
-## 对话文字位置
-define gui.dialogue_xpos = 402
+## 对话文字位置（相对于对话框窗口）
+define gui.dialogue_xpos = 142
 define gui.dialogue_ypos = 75
 define gui.dialogue_width = 1116
 define gui.dialogue_text_xalign = 0.0

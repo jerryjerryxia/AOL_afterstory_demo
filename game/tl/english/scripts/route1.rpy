@@ -1680,3 +1680,353 @@ translate english strings:
     old "就这样睡去。"
     new "Just fall asleep."
 
+# TODO: Translation updated at 2026-05-29 15:22
+
+# game/scripts/route1.rpy:27
+translate english route1_start_3e8c778e:
+
+    # wangshuang "嗯，从之前的病史来看，你总在这两个状态之间来回反复，但现在具体是什么感觉呢？"
+    wangshuang "Hmmm, from what I know about your history, you've been going back and forth between those two states constantly, but how do you feel right this moment? I want to hear your own words."
+
+# game/scripts/route1.rpy:30
+translate english route1_start_1ef75bce:
+
+    # wangshuang "难说的话，或许聊聊你看到的，或者听到的，都是可以的，我在听呢。"
+    wangshuang "If that is the case, then feel free to talk about what you are seeing, or what you are hearing. All is welcomed, and I'm listening."
+
+# game/scripts/route1.rpy:76
+translate english route1_start_4059e94f:
+
+    # wangshuang "不用紧张，阿鹤，你可以畅所欲言。"
+    wangshuang "No need to panic, Kaku. This is absolutely a safe space here. You can talk about whatever you want."
+
+# game/scripts/route1.rpy:79
+translate english route1_start_75980b32:
+
+    # wangshuang "但即使什么也想不起来也不必懊恼，那是意料之中的过程。"
+    wangshuang "But even if you can't think of anything, don't feel worried. That is all part of the process."
+
+# game/scripts/route1.rpy:82
+translate english route1_start_e2a0603a:
+
+    # wangshuang "你的病虽然看起来已经根治了，但以你的身心状态而言，任何时候复发我都不意外。"
+    wangshuang "Your sickness was cured, somewhat. But with the headspace you are in right now, relapse can happen at any minute."
+
+# game/scripts/route1.rpy:86
+translate english route1_start_16ae1c8e:
+
+    # ahe "你...毁掉了整个逝乐园。"
+    ahe "You...I...we...destroyed the entire PL District."
+
+# game/scripts/route1.rpy:88
+translate english route1_start_376f153f:
+
+    # wangshuang "所以我愿意把领衔主演的名头让给你，我去当制片人就可以了。"
+    wangshuang "So you will be leading the credit list for sure, as the main star. I'll be the producer."
+
+# game/scripts/route1.rpy:89
+translate english route1_start_22cd11c1:
+
+    # wangshuang "你也不用觉得我抬举你，过度谦虚只会让人习惯性地逃避责任，是一种需要调整的心态。"
+    wangshuang "And please don't feel like I'm putting you on the spot. Being overly humble is a problematic mentality. It makes you underestimate yourself and keep wanting to run away."
+
+# game/scripts/route1.rpy:95
+translate english route1_start_ce2e2673:
+
+    # wangshuang "【小字】这就是为什么我——"
+    wangshuang "That's why I'm fond of you."
+
+# game/scripts/route1.rpy:96
+translate english route1_start_6d8a84a4:
+
+    # ahe "什么？"
+    ahe "What?"
+
+# game/scripts/route1.rpy:97
+translate english route1_start_1c5cd70e:
+
+    # wangshuang "没事。没事。阿鹤，你知道太阳为什么会死吗？"
+    wangshuang "Anyway, Kaku, do you know why the sun dies?"
+
+# game/scripts/route1.rpy:98
+translate english route1_start_92acd152:
+
+    # ahe "因为它想死。"
+    ahe "Because it wants to die?"
+
+# game/scripts/route1.rpy:99
+translate english route1_start_5bfdeaf1:
+
+    # wangshuang "错——太阳自出生的那一刻起便像氢弹般持续自毁，早就动了死的念头，但它还是在天上烧了四十多亿年。"
+    wangshuang "Womp womp - you see, the sun has been burning itself like a giant hydrogen bomb ever since its birth. It wanted to die from the get-go, yet it stayed up there, burning for over four billion years."
+
+# game/scripts/route1.rpy:113
+translate english route1_start_e5e5cbcd:
+
+    # ahe "我从来没有想过要出现在这里..."
+    ahe "I never wanted to be here."
+
+# game/scripts/route1.rpy:116
+translate english route1_start_b97d9e1a:
+
+    # wangshuang "你会明白的。"
+    wangshuang "You'll understand."
+
+# game/scripts/route1.rpy:117
+translate english route1_start_3d5ecb61:
+
+    # ahe "好吧...如果一切都无需解释，那我就只能在这里和你开瞪眼大赛了。"
+    ahe "Ok fine...so if everything needs no explanation, I guess all we can do is a staring contest."
+
+# game/scripts/route1.rpy:120
+translate english route1_start_2b577b21:
+
+    # wangshuang "嗯，就是那样，过多的言语会污染概念。你还是不要再多探究了为好。"
+    wangshuang "That's all. Too much language tarnishes the concept. It would serve you well to stop asking questions."
+
+# game/scripts/route1.rpy:134
+translate english route1_start_5a38345c:
+
+    # wangshuang "你还有脸得意！能盯着你那张臭脸看这么久还不笑的就只有死人了。"
+    wangshuang "Look who's talking! The only people that can stare at your shit-face without laughing are fucking dead people."
+
+# game/scripts/route1.rpy:158
+translate english route1_start_11d91612:
+
+    # extend "\n你立刻合上双眼，整张脸上的肌肉拧成一团，死死地挤压你抽搐的眼帘，但为时已晚，那令人绝望的强光已经在你脑海的更深处生了根。"
+    extend "\nYou sealed your eyes shut as if your life depended on it, twisting the muscle near your eyelids just to ease the pain. But it's already too late. The despairing glare has already found home in the deeper parts of your brain."
+
+# game/scripts/route1.rpy:159
+translate english route1_start_20c73137:
+
+    # extend "\n随着炫目的光而来的是蚀骨的火。这由内而外的火顺着你的双眼、你的视神经蔓延。后脑勺烧了起来，随后是整个大脑皮层，最终你的全身都在这挥之不去的炫光中熊熊灼烧。"
+    extend "\nArriving with the blinding glare was a bone-gnawing flame. It dug all the way to the back of your head through your optic nerves, and soon set the entire cerebral cortex aflame. Your entire body caught on fire in no time."
+
+# game/scripts/route1.rpy:209
+translate english route1_start_c406b70a:
+
+    # ahe "再无所事事都胜过和你呆在这里。"
+    ahe "Much better than being stuck here with you."
+
+# game/scripts/route1.rpy:214
+translate english route1_start_ccd3fc05:
+
+    # wangshuang "彼此彼此咯，我们都只是遵循着强烈的愿望，尝试了一直以来想要尝试的事情。"
+    wangshuang "You know very well that we did very similar things, following our very strong wants."
+
+# game/scripts/route1.rpy:215
+translate english route1_start_234a409e:
+
+    # ahe "区别在于我不需要人陪葬。"
+    ahe "The difference is, I don't drag people down with me."
+
+# game/scripts/route1.rpy:222
+translate english route1_start_5ba9680b:
+
+    # wangshuang "我闭嘴了又有什么用？难道你那苍白的“理想”就不需要人来陪葬了？"
+    wangshuang 'So what if I did? Do you dare say that pale "dream" of yours needed no sacrifice?'
+
+# game/scripts/route1.rpy:243
+translate english route1_start_14e857c9:
+
+    # wangshuang "只是不想看着你和我坠入同样的深渊嘛，毕竟我还挺在乎你的。"
+    wangshuang "My my, I just don't want to see people I appreciate going down the same degenerate path I did, you know."
+
+# game/scripts/route1.rpy:246
+translate english route1_start_015e5f41:
+
+    # ahe "你？真心话？笑话可以再冷点么？"
+    ahe "You? Be honest? Didn't know those two things can go together."
+
+# game/scripts/route1.rpy:247
+translate english route1_start_d9137b8d:
+
+    # wangshuang "连这都分不清，以后可是要吃大亏哦。"
+    wangshuang "If you can't tell the two apart, you'll be in for some serious trouble down the road."
+
+# game/scripts/route1.rpy:255
+translate english route1_start_40a15d27:
+
+    # wangshuang "KAS生理上确实不怎么成瘾啊。"
+    wangshuang "I mean it's barely physiologically addictive. That's a scientific fact."
+
+# game/scripts/route1.rpy:256
+translate english route1_start_a8e04158:
+
+    # wangshuang "但太多人会陷进它能让人看到的那些东西，最后心里离不开了，所以你才能在安息地见到那么多活死人。"
+    wangshuang "But too many got hooked to the shit they see, in those visions. That's why you see so many KAS zombies out in the streets in Grave Town."
+
+# game/scripts/route1.rpy:257
+translate english route1_start_c9ff421d:
+
+    # wangshuang "那么你会怎样呢，阿鹤？我很期待哦。"
+    wangshuang "I'm honestly quite curious what you'd see."
+
+# game/scripts/route1.rpy:263
+translate english route1_start_7c6c819f:
+
+    # wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
+    wangshuang 'And I was like "Holy fucking shit this crap is absolutely going out of control I\'m getting squeezed to death by the pressure of this thing that I don\'t comprehend I must get the fuck out ASAP", and...'
+    wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
+    wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
+    wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
+    wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
+    wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
+    wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
+
+# game/scripts/route1.rpy:265
+translate english route1_start_7b9febe7:
+
+    # wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢乱用KAS的，那次是真的差点死了..."
+    wangshuang "Anyway if it wasn't for my glasses later, I could never ever touch KAS ever again. Shit actually almost killed me that time."
+
+# game/scripts/route1.rpy:266
+translate english route1_start_994e07fc:
+
+    # ahe "哦，原来你那“磕完药差点死掉的小故事”还在更新啊。"
+    ahe 'Huh, I guess your "Tales of almost dying after slamming drugs" is still getting new chapters.'
+
+# game/scripts/route1.rpy:269
+translate english route1_start_b7ad25e5:
+
+    # wangshuang "不过一般人应该不会那么夸张。你会喜欢的，我觉得。"
+    wangshuang "But you know, I'm more like an outlier with the condition I have. You would probably like it, is my guess."
+
+# game/scripts/route1.rpy:270
+translate english route1_start_61e7517d:
+
+    # ahe "所以我们要在这里待到什么时候？"
+    ahe "I'll be looking forward to it, I guess. So how long will we be staying here?"
+
+# game/scripts/route1.rpy:272
+translate english route1_start_ea62222f:
+
+    # ahe "也是一种较为朴素的过程？"
+    ahe "Also a simple process?"
+
+# game/scripts/route1.rpy:277
+translate english route1_start_163ac4ae:
+
+    # ahe "像您这样有成就的大人物，只被骂傻逼还请偷着乐吧。"
+    ahe "For a distinguished individual such as yourself, you should feel fortunate when you are merely called a fucking dumbass."
+
+# game/scripts/route1.rpy:283
+translate english route1_start_b464a6e3:
+
+    # wangshuang "哎阿鹤，虽然有些事情我确实做得...不太好...从世俗意义上来说，但也没必要这样质疑我演戏的质量嘛。"
+    wangshuang "Kaku my man, I know that I was slightly fucked up in my way of doing things, by the normal standards. But please don't question my acting ability like that, if that's ok with you."
+
+# game/scripts/route1.rpy:287
+translate english route1_start_2115e737:
+
+    # ahe "用来消磨时间正合适，反正用不完。"
+    ahe "Isn't it perfect to kill time with? Since we have unlimited servings."
+
+# game/scripts/route1.rpy:290
+translate english route1_start_0b3bcaf1:
+
+    # ahe "话说师傅，你手里拿的是什么？"
+    ahe "By the way, what's that thing you're holding?"
+
+# game/scripts/route1.rpy:291
+translate english route1_start_cc8659bd:
+
+    # wangshuang "哦，这个？不是什么重要的东西，但你可以尝尝看。"
+    wangshuang "This? Nothing too important, but if you want, you can taste it."
+
+# game/scripts/route1.rpy:298
+translate english route1_start_fdfdf3e7:
+
+    # "阿霜手里把玩的那物件，你之前肯定见过，却想不起任何细节。"
+    "You had definitely seen that thing Shuang was toying with before, but couldn't recall a single detail about it."
+
+# game/scripts/route1.rpy:299
+translate english route1_start_ee0b3205:
+
+    # "总之没想到竟是一件吃食。"
+    "Hard to believe it was actually food, of all things."
+
+# game/scripts/route1.rpy:300
+translate english route1_start_e1ab3c43:
+
+    # "从它那轻若无物又变幻莫测的形态来看，可能真是什么珍馐也说不定，抑或是另一剂猛药。"
+    "Judging by its weightless, ever-shifting form, it might really be some kind of delicacy — or perhaps another potent drug."
+
+# game/scripts/route1.rpy:301
+translate english route1_start_4c757a6e:
+
+    # "但无论如何，在KAS即将穿过血脑屏障的前一刻，再往身体里追加不明物质想必不是什么明智决定。"
+    "As KAS was about to go through your blood brain barrier, adding more substances into your blood stream was likely not a wise idea."
+
+# game/scripts/route1.rpy:303
+translate english route1_start_ca8362c9:
+
+    # wangshuang "随你便咯——说起来，阿鹤，你喜欢红色还是蓝色？"
+    wangshuang "Suit yourself——by the way, Kaku, do you prefer red or blue?"
+
+# game/scripts/route1.rpy:308
+translate english route1_start_85233ed2:
+
+    # "那东西轻若无物又变幻莫测，看似是固体，摸起来却又有介于凝胶和麻薯之间的质感，躺在你手心里，冰冰凉的。"
+    "The object was light. Despite having a rigid look, it had a texture between gel and mochi. Your palm felt chilly holding it."
+
+# game/scripts/route1.rpy:309
+translate english route1_start_3dfb7552:
+
+    # "你毫无戒心地将那不明物件送进嘴里，简单地咀嚼了一阵，没有尝出任何味道。"
+    "You shoved the object into your mouth without giving it much thought. After an intense chewing session, not much taste came out of it."
+
+# game/scripts/route1.rpy:334
+translate english route1_start_4954c606:
+
+    # extend "\n反复咀嚼伤痛直至淡而无味，直到甜味凭空冒出来。"
+    extend "\nKept chewing on painful memories until it tasted bland, until sweetness came out of nowhere."
+
+# game/scripts/route1.rpy:355
+translate english route1_start_3a36f7cd:
+
+    # ahe "这大概是一件无可厚非的事情。"
+    ahe "I guess that's not that big of a deal."
+
+# game/scripts/route1.rpy:384
+translate english route1_start_c3e6e848:
+
+    # extend "\n人类的智识自然无力探寻其中奥秘，但在王霜无处不在的笑容辉耀之下，你的一部分认知已踏入了更深层的水域。"
+    large_narrator "Those were insights clearly not meant for average human intellect to consume. But with Shuang's omnipresent grin shining on your cerebral cortex, your mental capacity has tapped into deeper waters."
+
+# game/scripts/route1.rpy:392
+translate english route1_start_4d196163:
+
+    # large_narrator "你的知能越是提升，它的样貌就越发模糊，模糊的面容中只显露出一抹依稀可见的残酷笑容，仿佛在嘲讽你的徒劳。"
+    large_narrator "The stronger your mental, the blurrier its shape. All you could see was a cruel grin shining through, as though scolding your timeless endeavor that would ultimately result in vain."
+
+# game/scripts/route1.rpy:393
+translate english route1_start_6f995df5:
+
+    # extend "\n但你已经满足了，由内而外地满足了，在饱满的感官刺激中感到一阵——疲劳？"
+    extend "\nBut you were already satisfied, thoroughly satisfied. You felt a bit——tired?——from the endless cognitive stimuli."
+
+# game/scripts/route1.rpy:396
+translate english route1_start_fd37b955:
+
+    # extend "\n糖分继续满溢出来，沿着你存在的边缘缓缓淌下，坠入周身蔚蓝的虚空之中，粘稠而香甜。"
+    extend "\nThe sugar continued to surge, dripped down from the fringe of your existence, falling into the azure abyss around you, sticky and delicious."
+
+# game/scripts/route1.rpy:403
+translate english route1_start_9254ee90:
+
+    # large_narrator "然而当你行将合眼时，一阵强烈的恶心自胃里上涌，就像有人抓住你的肠胃，自下而上地用力挤压。"
+    large_narrator "But it wasn't so easy. As you were closing your eyes for good, a crippling nausea took over your entire body, as if someone was squeezing your innards from bottom up."
+
+# game/scripts/route1.rpy:412
+translate english route1_start_cc1e4040:
+
+    # large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了木材的颜色，这令人沮丧的还原随着你吐出更多的色彩而提速，很快覆盖了大半个视野。"
+    large_narrator "As the content of your puke made contact with the table in front of you, the azure-tainted tabletop immediately returned to the color of natural wood. This upsetting regression accelerated as your vomit continued, soon covering the bulk of your vision."
+
+# game/scripts/route1.rpy:417
+translate english route1_start_b77c2590:
+
+    # extend "\n眼前桌子的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种细节。"
+    extend "\nThe form and the content of the table in front of you seemed to have experienced some sort of fundamental detachment, but you could no longer pay attention to such subtle details."
+

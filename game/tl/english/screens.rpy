@@ -34,9 +34,14 @@ translate english strings:
     old "设置"
     new "Settings"
 
-    # game/screens.rpy:375
-    old "AOL Afterstory"
-    new "AOL Afterstory"
+    # Title "无休夏日综合症" translates to "Endless Summer Syndrome";
+    # see game/tl/english/options.rpy (translated strings are global per language,
+    # so registering it once covers both config.name and the main_menu title text).
+
+    # Route title shown between prologue and route 1
+    # (call site: game/scripts/route1.rpy via converter).
+    old "浮潜"
+    new "Snorkeling"
 
     # game/screens.rpy:456
     old "返回"
