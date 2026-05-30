@@ -656,7 +656,14 @@ screen navigation():
         spacing gui.navigation_spacing
 
         if main_menu:
-            textbutton _("开始游戏") action Start()
+            ## 跟主菜单按钮一致：通关之后有玩家"主动"做的存档就显示"继续游戏"，
+            ## 否则"开始游戏"。FileLoad 用 _continuable_slots 最近的 slot —
+            ## 玩家从这里进游戏的语义和主菜单 Continue 按钮相同。
+            if has_continuable_save():
+                $ _latest_continuable_slot = max(_continuable_slots(), key=lambda s: renpy.slot_mtime(s) or 0)
+                textbutton _("继续游戏") action FileLoad(_latest_continuable_slot, confirm=False)
+            else:
+                textbutton _("开始游戏") action Start()
             textbutton _("读取存档") action ShowMenu("load")
             textbutton _("删除存档") action Confirm("确定要删除所有存档吗？此操作无法撤销。", yes=Function(delete_all_saves), no=None)
             textbutton _("清除进度") action Confirm("确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）", yes=Function(delete_persistent_data), no=None)
