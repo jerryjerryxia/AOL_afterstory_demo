@@ -25,5 +25,10 @@ label start:
     ## bg_polyhedron_video 重新正常渲染（否则就是 checker board）。
     $ persistent.polyhedron_started_game = True
 
+    ## 同 after_load：进游戏后回主菜单时应该是"继续游戏"。flag 配合 screen
+    ## 里 renpy.list_slots() 一起判断 —— flag True 但还没存档时仍然回退到
+    ## "开始游戏"，玩家真正存档后下次回主菜单才变 Continue。
+    $ persistent.has_save_in_run = True
+
     ## 跳转到序章
     jump prologue
