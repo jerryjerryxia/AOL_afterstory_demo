@@ -24,10 +24,23 @@ default persistent.last_route_completion_time = 0.0
 
 init python:
     import time
+    import re
+
+    ## 主菜单 Continue 按钮和 load_most_recent_save 都用这个白名单。
+    ## 必须用白名单不能用 "exclude auto-" 黑名单 —— Ren'Py 还会留下
+    ## _reload-1（每次重启都更新 mtime，会盖掉真正的存档）、_quit-1 等
+    ## 内部用 slot，黑名单全漏掉。匹配 `N-N`（玩家手动存档）和 `quick-N`
+    ## （玩家按 Q 触发的快存），其它全不算。
+    _CONTINUABLE_RE = re.compile(r"^(\d+|quick)-\d+$")
+
+    def _continuable_slots():
+        """玩家"主动"做的存档 —— 排除 autosave、_reload-* 等内部 slot。
+        Continue 应该 = "玩家自己最后一次保存的位置"，不是 = "上次玩到哪"。"""
+        return [s for s in renpy.list_slots() if _CONTINUABLE_RE.match(s)]
 
     def has_continuable_save():
         """是否有"通关之后"做的存档（决定主菜单显示 Continue 还是 Start）。"""
-        slots = renpy.list_slots()
+        slots = _continuable_slots()
         if not slots:
             return False
         latest = max((renpy.slot_mtime(s) or 0) for s in slots)
@@ -116,8 +129,9 @@ init python:
         return 1
 
     def load_most_recent_save():
-        """Continue button 用：按 mtime 找最近一次存档并 load 进游戏。"""
-        slots = renpy.list_slots()
+        """Continue button 用：按 mtime 找最近一次玩家主动存档并 load 进游戏。
+        排除 autosave —— 详见 _continuable_slots 注释。"""
+        slots = _continuable_slots()
         if not slots:
             return
         latest = max(slots, key=lambda s: renpy.slot_mtime(s) or 0)

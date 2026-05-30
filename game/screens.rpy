@@ -25,19 +25,6 @@ init python:
 ################################################################################
 
 init python:
-    def _force_refresh_text():
-        """Force the currently-shown say to re-evaluate its translation.
-
-        Ren'Py's Language() action redraws screens but the say's `what` was
-        already translated when the character was called. Rolling back one
-        statement then auto-rolling forward re-runs the say with the new
-        language. defer=True lets us call this safely from a screen action.
-        """
-        try:
-            renpy.rollback(force=True, checkpoints=1, defer=True, greedy=False)
-        except Exception:
-            pass
-
     def dialog_size():
         """Per-language dialogue font size.
 
@@ -851,17 +838,17 @@ screen preferences():
             hbox:
                 box_wrap True
 
-                vbox:
-                    style_prefix "radio"
-                    label _("语言 / Language")
-                    ## Language() 会重渲屏幕，但 say 已经捕获了上一句的 `what`
-                    ## 字符串（在那一句被调用时翻译完成），重渲后还是显示旧语言。
-                    ## 用 renpy.rollback(checkpoints=1) 让 Ren'Py 退回上一条
-                    ## 语句再自动滚到当前位置——这次的 say 调用会用新语言重新
-                    ## 查翻译，文本盒里的文字才真的换语言。defer=True 让 rollback
-                    ## 安全地从 screen action 里发起。
-                    textbutton "中文" action [Language(None), Function(_force_refresh_text)]
-                    textbutton "English" action [Language("english"), Function(_force_refresh_text)]
+                ## 语言开关只在主菜单里显示。游戏内不让换 —— 之前用
+                ## renpy.rollback 想在游戏中实时换语言，但对 large_say + extend
+                ## 的组合不可靠（rollback 没法穿过 extend 重新执行 say）。
+                ## 限制在主菜单切换，下一次 Start/Continue 之后看到的所有文字
+                ## 都是新语言渲染的，避免 in-place refresh 的所有边角情况。
+                if main_menu:
+                    vbox:
+                        style_prefix "radio"
+                        label _("语言 / Language")
+                        textbutton "中文" action Language(None)
+                        textbutton "English" action Language("english")
 
                 if renpy.variant("pc") or renpy.variant("web"):
                     vbox:

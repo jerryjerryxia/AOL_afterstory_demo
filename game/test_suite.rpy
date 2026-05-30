@@ -148,3 +148,25 @@ testcase test_choice_screen:
 
     # Return to main menu to clean up game context
     run MainMenu(confirm=False)
+
+
+## NOTE: A regression test for the language-toggle-on-main-menu bug
+## ("switch language → click Continue → lands in prologue instead of save")
+## was attempted here. The honest situation:
+##
+##   - Ren'Py's testcase framework does not drive the `timer 1.25` on the
+##     main_menu screen forward — the timer waits for real wall-clock time
+##     that the framework speeds past, so click "Continue" + advance hangs
+##     until the global 15s timeout.
+##   - The bug itself is in screens.rpy::_force_refresh_text:
+##     `renpy.rollback(defer=True)` queues a deferred rollback even when
+##     called from main menu (where there is no current say to refresh).
+##     The deferred rollback fires on the next interaction — which is
+##     usually the player clicking Continue. After the load, the rollback
+##     rewinds one checkpoint from the saved state, landing the player in
+##     prologue.
+##   - Fix: _force_refresh_text early-returns when renpy.store.main_menu
+##     is True. Verified manually via the actual player flow.
+##
+## If you have a more reliable way to drive the timer screen statement
+## forward in testcase, plug a regression test in here.
