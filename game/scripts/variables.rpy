@@ -14,6 +14,15 @@ default persistent.dev_mode = False  # 设置里的"开发者模式"开关，控
 ## 用 persistent 是因为 MainMenu() action 会清掉普通的游戏变量但保留 persistent。
 default persistent.polyhedron_started_game = False
 
+## "当前周目里有没有存档" 标志。决定主菜单显示 "开始游戏" 还是 "继续游戏"。
+## - start label / after_load 进游戏 → True
+## - 通关一周目时 → False (unlock_route 重置)，主菜单回到"开始游戏"
+## - 删存档时 → False (delete_all_saves 重置)
+## screen 那边除了 flag 还另外查 renpy.list_slots()，没存档就不显示 Continue。
+## 这也顺带绕开了 Movie/channel lifecycle 在 prologue 首场景重新 mount 时
+## 容易出 checker board 的坑 —— Continue 直接 load 跳到存档点，不走那一段。
+default persistent.has_save_in_run = False
+
 init python:
     # 测试模式：允许跳过未读文本
     if persistent.test_mode:
@@ -59,6 +68,8 @@ label after_load:
     ## 同 `label start`：进游戏(任何方式，包括 load save)都要标记 polyhedron
     ## 在下次回到主菜单时强制重启 channel。否则 load → 玩 → 回菜单又会破。
     $ persistent.polyhedron_started_game = True
+    ## load 进游戏说明肯定有存档可继续，主菜单按钮保持"继续游戏"
+    $ persistent.has_save_in_run = True
     return
 
 ################################################################################
@@ -80,12 +91,29 @@ init python:
         pass
 
     def unlock_route(route_num):
-        """Demo版：无操作"""
-        pass
+        """Demo版：通关时把 has_save_in_run 清掉，主菜单回到"开始游戏"。"""
+        persistent.has_save_in_run = False
 
     def get_current_route():
         """Demo版：始终返回1"""
         return 1
+
+    def load_most_recent_save():
+        """Continue button 用：按 mtime 找最近一次存档并 load 进游戏。"""
+        slots = renpy.list_slots()
+        if not slots:
+            return
+        latest = max(slots, key=lambda s: renpy.slot_mtime(s) or 0)
+        renpy.load(latest)
+
+    def exit_main_menu_to_game():
+        """主菜单退场动画跑完后调用：有存档就 Continue，没存档就新开。
+        Continue 不武装 _intro_fade_pending（玩家不在序章首句），新开才武装。"""
+        if persistent.has_save_in_run:
+            load_most_recent_save()
+            return
+        renpy.store._intro_fade_pending = True
+        renpy.jump_out_of_context("start")
 
     ##########################################################################
     ## 开发者音乐选择器函数

@@ -51,6 +51,9 @@ translate english strings:
     old "开始游戏"
     new "Start"
 
+    old "继续游戏"
+    new "Continue"
+
     # game/screens.rpy:530
     old "读取存档"
     new "Load Game"
