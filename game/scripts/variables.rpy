@@ -56,6 +56,9 @@ default current_scene_desc = None  # 场景描述
 label after_load:
     if current_music_scene is not None:
         $ set_scene_music(current_music_scene)
+    ## 同 `label start`：进游戏(任何方式，包括 load save)都要标记 polyhedron
+    ## 在下次回到主菜单时强制重启 channel。否则 load → 玩 → 回菜单又会破。
+    $ persistent.polyhedron_started_game = True
     return
 
 ################################################################################
