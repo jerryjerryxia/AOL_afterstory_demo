@@ -441,20 +441,23 @@ screen main_menu():
 
     style_prefix "main_menu"
 
-    ## 玩家从游戏回到主菜单后强制重启 polyhedron channel —— 走过游戏一遭
+    ## 主菜单每次 mount 都强制重启 polyhedron channel —— 走过游戏一遭后
     ## Movie/channel lifecycle 会乱，channel 显示 playing 但 Movie() 渲染成
-    ## checker board。stop+play 一遍才能让显示恢复正常。flag 用 persistent
-    ## 因为 MainMenu() action 清普通变量但保留 persistent。
+    ## checker board。原来用 persistent flag 判断 "是否需要重启"，但有些边
+    ## 角情况 flag 没被设上（比如玩家不通过 start label 也不通过 after_load
+    ## 进游戏），checker board 又冒回来。直接无脑每次 main_menu mount 就
+    ## stop+play，最稳。fresh launch 时 splashscreen 刚 play 完会被立刻 stop
+    ## +play 一遍，肉眼基本看不出来，但能保证后续永远不出 checker board。
+    ## flag 留着只是为了清，对外语义已经废弃。
     python:
-        if persistent.polyhedron_started_game:
-            try:
-                renpy.music.stop(channel="polyhedron_video")
-            except Exception:
-                pass
-            renpy.music.play(
-                "images/bg/polyhedron.webm",
-                channel="polyhedron_video", loop=True)
-            persistent.polyhedron_started_game = False
+        try:
+            renpy.music.stop(channel="polyhedron_video")
+        except Exception:
+            pass
+        renpy.music.play(
+            "images/bg/polyhedron.webm",
+            channel="polyhedron_video", loop=True)
+        persistent.polyhedron_started_game = False
 
     ## 背景：polyhedron Movie 从共享 channel 取帧，主菜单 → 序章首场景无缝。
     add "bg_polyhedron_video"
