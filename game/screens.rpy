@@ -495,11 +495,13 @@ screen main_menu():
         yalign 0.5
         spacing gui.navigation_spacing
 
-        ## 当前周目有存档就显示"继续游戏"（点了 load 最近存档），否则显示
+        ## 有存档就显示"继续游戏"（点了 load 最近存档），没存档就显示
         ## "开始游戏"（点了走 start label）。两者共用退场动画，timer 跑完后
-        ## exit_main_menu_to_game() 根据 has_save_in_run 决定 Continue 还是 Start。
-        ## list_slots() 多查一道：flag 是 True 但没存档（边缘情况）也回退到 Start。
-        if persistent.has_save_in_run and renpy.list_slots():
+        ## exit_main_menu_to_game() 根据 list_slots() 决定 Continue 还是 Start。
+        ## 之前用 persistent.has_save_in_run 作为门，但对旧存档（flag 还没引入
+        ## 的时候做的）会卡死在 Start —— 玩家明明有存档却看不到 Continue。
+        ## 直接看磁盘上有没有存档最稳。
+        if renpy.list_slots():
             textbutton _("继续游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting at menu_btn_anim(0.42)
         else:
             textbutton _("开始游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting at menu_btn_anim(0.42)

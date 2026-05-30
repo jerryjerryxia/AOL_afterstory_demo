@@ -108,8 +108,10 @@ init python:
 
     def exit_main_menu_to_game():
         """主菜单退场动画跑完后调用：有存档就 Continue，没存档就新开。
-        Continue 不武装 _intro_fade_pending（玩家不在序章首句），新开才武装。"""
-        if persistent.has_save_in_run:
+        Continue 不武装 _intro_fade_pending（玩家不在序章首句），新开才武装。
+        和 screen 用同一个判断（renpy.list_slots()），避免 button 显示和实际
+        动作不一致。"""
+        if renpy.list_slots():
             load_most_recent_save()
             return
         renpy.store._intro_fade_pending = True
