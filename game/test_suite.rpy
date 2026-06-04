@@ -8,6 +8,28 @@
 init python:
     _test.timeout = 15.0
 
+    ## Tests need instant text, but `preferences.text_cps` is a PERSISTED
+    ## preference — naively setting it to 0 leaves the player's text speed
+    ## stuck on "instant" after a test run (worse if a test aborts mid-run).
+    ## So we snapshot the real value the first time a test speeds up text, and
+    ## restore it when Ren'Py exits. at_exit runs after autosaves settle
+    ## (renpy/main.py), so restoring the in-memory value there — plus an
+    ## explicit save_persistent() — guarantees the final on-disk value is the
+    ## player's, not 0.
+    def _test_fast_text():
+        if not hasattr(store, "_test_saved_text_cps"):
+            store._test_saved_text_cps = preferences.text_cps
+        preferences.text_cps = 0
+
+    def _test_restore_text():
+        if hasattr(store, "_test_saved_text_cps"):
+            preferences.text_cps = store._test_saved_text_cps
+            del store._test_saved_text_cps
+            renpy.save_persistent()
+
+    if _test_restore_text not in config.at_exit_callbacks:
+        config.at_exit_callbacks.append(_test_restore_text)
+
 ################################################################################
 ## DEMO PLAYTHROUGH TESTS
 ################################################################################
@@ -15,7 +37,7 @@ init python:
 testcase demo_playthrough_path_a:
     description "Demo - Path A: All first choices (no madness)"
 
-    $ preferences.text_cps = 0
+    $ _test_fast_text()
     run Start()
 
     advance until screen "route_title"
@@ -39,7 +61,7 @@ testcase demo_playthrough_path_a:
 testcase demo_playthrough_path_b:
     description "Demo - Path B: All madness choices"
 
-    $ preferences.text_cps = 0
+    $ _test_fast_text()
     run Start()
 
     advance until screen "route_title"
@@ -68,7 +90,7 @@ testcase demo_playthrough_path_b:
 testcase test_madness_increment:
     description "Test madness variable increments correctly with madness choices"
 
-    $ preferences.text_cps = 0
+    $ _test_fast_text()
     run Start()
 
     assert eval madness == 0
@@ -91,7 +113,7 @@ testcase test_madness_increment:
 testcase test_no_madness:
     description "Test madness stays 0 with safe choices"
 
-    $ preferences.text_cps = 0
+    $ _test_fast_text()
     run Start()
 
     assert eval madness == 0
@@ -124,7 +146,7 @@ testcase test_main_menu_buttons:
 testcase test_route_title_screen:
     description "Test route title screen displays after prologue"
 
-    $ preferences.text_cps = 0
+    $ _test_fast_text()
     run Start()
 
     advance until screen "route_title"
@@ -137,7 +159,7 @@ testcase test_route_title_screen:
 testcase test_choice_screen:
     description "Test choice menu screen appears at first decision"
 
-    $ preferences.text_cps = 0
+    $ _test_fast_text()
     run Start()
 
     advance until screen "route_title"

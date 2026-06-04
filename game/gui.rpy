@@ -27,12 +27,16 @@ define gui.interface_text_color = '#ffffff'
 define gui.muted_color = '#666666'
 define gui.hover_muted_color = '#999999'
 
+## 对话文字描边 + 投影：在没有底框的亮背景上保持可读。
+## 顺序：先描黑边（四周 2px 光晕），再加一层右下投影。
+define gui.text_outlines = [(2, "#000000", 0, 0), (0, "#000000", 3, 3)]
+
 ################################################################################
 ## 字体配置
 ################################################################################
 
-## 正文/界面/标题字体 - 思源宋体 Medium（简体中文衬线体）
-## body.ttf 由 generate_font_subset.py 生成
+## 正文/界面/标题字体 - Fusion Pixel 12px（像素/点阵风，含完整简体中文）
+## body.ttf 由 generate_font_subset.py 生成（OFL 授权）
 define gui.text_font = "body.ttf"
 define gui.name_text_font = "body.ttf"
 define gui.interface_text_font = "body.ttf"
@@ -65,7 +69,8 @@ define gui.textbox_height = 340
 define gui.textbox_yalign = 1.0
 
 ## 角色名字位置（相对于对话框窗口，窗口宽 1400 居中）
-define gui.name_xpos = 100
+## 132 = dialogue_xpos(142) − namebox 左内边距(10)，使名字左缘与正文左缘对齐
+define gui.name_xpos = 132
 define gui.name_ypos = 15
 define gui.name_xalign = 0.0
 
@@ -145,7 +150,7 @@ define gui.choice_button_height = None
 define gui.choice_button_tile = False
 define gui.choice_button_borders = Borders(150, 8, 150, 8)
 define gui.choice_button_text_font = gui.text_font
-define gui.choice_button_text_size = gui.text_size
+define gui.choice_button_text_size = gui.text_size + 7   ## 比正文(33)大一档 = 40，选项作为可点击焦点更醒目
 define gui.choice_button_text_xalign = 0.5
 define gui.choice_button_text_idle_color = '#cccccc'
 define gui.choice_button_text_hover_color = '#ffffff'

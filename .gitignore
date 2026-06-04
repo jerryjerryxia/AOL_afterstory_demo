@@ -48,3 +48,9 @@ token.json
 # Windows temp files
 ~$*
 nul
+
+# Font subsetting source (downloaded + cached by generate_font_subset.py)
+tools/
+
+# Claude Code temp working dirs
+tmpclaude-*

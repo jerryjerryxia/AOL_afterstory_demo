@@ -151,6 +151,10 @@ style prompt_text is gui_text
 screen say(who, what):
     style_prefix "say"
 
+    ## 底部渐变（替代原本的深灰底框）：让对话浮在画面上，
+    ## 同时压暗底部保证文字可读。
+    add "gui/say_scrim.png" xalign 0.5 yalign 1.0
+
     window:
         id "window"
 
@@ -185,6 +189,7 @@ style say_label:
     color gui.accent_color
     xalign gui.name_xalign
     yalign 0.5
+    outlines gui.text_outlines
 
 style say_dialogue:
     font gui.text_font
@@ -192,19 +197,20 @@ style say_dialogue:
     xpos gui.dialogue_xpos
     xsize gui.dialogue_width
     ypos gui.dialogue_ypos
+    outlines gui.text_outlines
 
 style window:
     xalign 0.5
     xsize 1400
     yalign gui.textbox_yalign
     ysize gui.textbox_height
-    background Frame("gui/box_dark.png", 20, 20)
+    background None
 
 style namebox:
     xpos gui.name_xpos
     xanchor gui.name_xalign
     ypos gui.name_ypos
-    background Frame("gui/box_dark.png", 20, 20)
+    background None
     padding (10, 5, 10, 5)
 
 ################################################################################
@@ -246,7 +252,7 @@ screen large_say(who, what):
         xsize 1520
         ysize 800
         padding (80, 80, 80, 80)
-        background Frame("gui/box_dark.png", 20, 20)
+        background None
 
         text what id "what":
             ## Fixed top-left position for consistent reading experience
@@ -258,6 +264,7 @@ screen large_say(who, what):
             size dialog_size()  # smaller in English; see init python at top
             color "#ffffff"
             line_spacing 10
+            outlines gui.text_outlines
 
     ## 快捷按钮
     use quick_menu
@@ -279,7 +286,7 @@ screen centered_say(who, what):
         xsize 1520
         ysize 800
         padding (80, 80, 80, 80)
-        background Frame("gui/box_dark.png", 20, 20)
+        background None
 
         text what id "what":
             ## Centered for dramatic effect
@@ -291,6 +298,7 @@ screen centered_say(who, what):
             size dialog_size()  # smaller in English; see init python at top
             color "#ffffff"
             line_spacing 10
+            outlines gui.text_outlines
 
     ## 快捷按钮
     use quick_menu
@@ -312,7 +320,7 @@ screen centered_large_say(who, what):
         xsize 1520
         ysize 800
         padding (80, 80, 80, 80)
-        background Frame("gui/box_dark.png", 20, 20)
+        background None
 
         text what id "what":
             ## Centered with larger font for dramatic effect
@@ -324,6 +332,7 @@ screen centered_large_say(who, what):
             size dialog_size() + 6  # smaller in English; see init python at top
             color "#ffffff"
             line_spacing 10
+            outlines gui.text_outlines
 
     ## 快捷按钮
     use quick_menu
@@ -395,13 +404,15 @@ style choice_vbox:
     spacing 33
 
 style choice_button is default:
-    xsize gui.choice_button_width
-    idle_background Frame("gui/choice_idle.png", 20, 20)
-    hover_background Frame("gui/choice_hover.png", 20, 20)
-    padding (150, 8, 150, 8)
+    ## 纯文字选项：去掉深灰按钮底框，只保留少量内边距作为点击区域
+    padding (40, 12, 40, 12)
 
 style choice_button_text is default:
     xalign 0.5
+    size gui.choice_button_text_size
+    ## 加粗 + 与正文一致的黑色描边/阴影（gui.text_outlines），不再依赖按钮底框
+    bold True
+    outlines gui.text_outlines
     idle_color "#cccccc"
     hover_color "#ffffff"
 
@@ -984,8 +995,22 @@ style check_button_text:
     hover_color gui.hover_color
     selected_color gui.selected_color
 
+## 偏好设置滑动条本体。关键点：可调的 bar（value=Preference(...)）实际套用的是
+## slider 样式（这里因 style_prefix "slider" 解析为 slider_slider），而不是下面那个
+## bar 样式。本项目没有 slider 图片素材，默认 slider 整条不可见、ysize≈0，于是
+## 文字速度 / 自动前进 / 音量 等滑块都无法点击或拖动。改用与 bar 一致的纯色绘制，
+## 并加一个可见的白色滑块（thumb）方便拖动。
 style slider_slider:
     xsize 525
+    ysize 12
+    left_bar Solid("#ffffff")
+    right_bar Solid("#555555")
+    hover_left_bar Solid("#ffffff")
+    hover_right_bar Solid("#777777")
+    left_gutter 0
+    right_gutter 0
+    thumb Solid("#ffffff", xsize=12, ysize=28)
+    thumb_offset 6
 
 style slider_button:
     background None
@@ -998,6 +1023,21 @@ style slider_button_text:
 
 style slider_vbox:
     xsize 675
+
+## 偏好设置滑动条（文字速度 / 自动前进 / 音量）。
+## 这套界面没有附带 bar 图片素材，默认 bar 样式没有 left_bar/right_bar，
+## 滑块整条不可见也就无法拖动。这里用纯色绘制：左段=已填充（白），
+## 右段=轨道（深灰），整条可点击/拖动，无需任何图片素材。
+style bar:
+    xsize 500
+    ysize 12
+    left_bar Solid("#ffffff")
+    right_bar Solid("#555555")
+    hover_left_bar Solid("#ffffff")
+    hover_right_bar Solid("#777777")
+    left_gutter 0
+    right_gutter 0
+    thumb None
 
 ################################################################################
 ## 历史记录界面 - History Screen
