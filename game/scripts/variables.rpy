@@ -118,6 +118,17 @@ init python:
         """Demo版：无操作"""
         pass
 
+    def demo_reboot_after_route():
+        """Demo 通关后整个游戏 reboot 一次，让 polyhedron channel 状态干净，
+        第二次 Start 不会渲染成 checker board。persistent 不会被清。
+
+        但自动化测试（renpy ... test）时绝不 reboot —— utter_restart 会重启整个
+        引擎，让测试进程在跑完全部用例、打印 PASSED 之后仍无法退出（表现为"测试
+        到最后卡死、要等很久"）。测试模式下直接跳过，正常游玩照常 reboot。"""
+        if getattr(renpy.game.args, "command", None) == "test":
+            return
+        renpy.utter_restart()
+
     def unlock_route(route_num):
         """Demo版：通关时记下 last_route_completion_time，主菜单按钮回到 Start —— 旧存档
         虽然还在，但 mtime 早于 completion_time，has_continuable_save() 会返回 False。"""

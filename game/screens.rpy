@@ -425,6 +425,126 @@ screen centered_large_say(who, what):
     use dev_music_selector
 
 ################################################################################
+## 左右分栏大文本框 - Split Large Textbox（甜品店幻视段）
+## ----------------------------------------------------------------
+## 把大文本框分成左右两栏：先逐行点击填满左栏，再填右栏。中间留空避开王霜的头
+## （她大致在画面正中）。两栏字数由转换器按行边界尽量切平均（见 convert_script.py
+## 的 emit_split_large_block）。
+##
+## 两阶段，各阶段的"活动栏"就是带 id "what" 的那个 text —— 所以逐字速度（文字
+## 速度设置）和"单击推进下一段"在两栏里都和普通文本框一样。
+##   split_say_left ：左栏 = 活动 say（id "what"，逐字显示）。
+##   split_say_right：左栏 = 静态 _split_left_text（上阶段冻结的内容）；
+##                    右栏 = 活动 say（id "what"，逐字显示）。
+## 左栏在两阶段坐标一致（xpos 90），切换时不跳动。两栏放在 fixed 里各自定位
+## （frame 只能放单个子项，多个会乱——这是之前"前两句消失/重复"的根源）。
+################################################################################
+
+## 上阶段填满的左栏内容（由转换器 `$ _split_left_text = ...` 设置）
+default _split_left_text = ""
+
+## 分栏几何：左栏 90..710、右栏 1210..1830，中间 710..1210（~500px，画面正中）
+## 留给王霜的头。想调就改下面 xpos / xsize。
+style split_column_text is default:
+    font gui.text_font
+    color "#ffffff"
+    xanchor 0.0
+    yalign 0.0
+    text_align 0.0
+    line_spacing 10
+    outlines gui.text_outlines
+
+## 关键：活动 say（id "what"）和静态左栏必须渲染得**一模一样**，否则左栏在切到
+## 右栏阶段时会"变高/行距变大"。两个差异都得内联写死（style 里的设不到 say 的 what）：
+##   1. line_spacing 10 —— say 的 what 拿不到 style 里的行距（受 what_style 影响）。
+##   2. adjust_spacing False —— 逐字显示默认 adjust_spacing=True，会为"打字时宽度稳定"
+##      微调字间距，导致最终折行/高度和静态文本不一致。中文是逐字折行，关掉它不会
+##      有"打字时回流"的副作用，却能让 say 和静态左栏折行、高度完全一致。
+screen split_say_left(who, what):
+    ## 左栏阶段：左栏就是活动 say（id "what" → 逐字显示、单击推进）。
+    fixed:
+        xpos 0
+        ypos 260
+        xsize 1920
+        ysize 760
+
+        text what id "what":
+            style "split_column_text"
+            xpos 90
+            ypos 0
+            yanchor 0.0
+            xsize 620
+            size dialog_size()
+            line_spacing 10
+            adjust_spacing False
+
+    use quick_menu
+    use dev_scene_info
+    use dev_music_selector
+
+screen split_say_right(who, what):
+    ## 右栏阶段：左栏静态（已填满），右栏是活动 say（id "what" → 逐字显示）。
+    fixed:
+        xpos 0
+        ypos 260
+        xsize 1920
+        ysize 760
+
+        ## 左栏：已填满，静态（和 split_say_left 同坐标 + 同行距 + 同字距 + 同纵向锚点，
+        ## 切换不跳动/不上移）
+        text _split_left_text:
+            style "split_column_text"
+            xpos 90
+            ypos 0
+            yanchor 0.0
+            xsize 620
+            size dialog_size()
+            line_spacing 10
+            adjust_spacing False
+
+        ## 右栏：活动 say，逐字显示
+        text what id "what":
+            style "split_column_text"
+            xpos 1210
+            ypos 0
+            yanchor 0.0
+            xsize 620
+            size dialog_size()
+            line_spacing 10
+            adjust_spacing False
+
+    use quick_menu
+    use dev_scene_info
+    use dev_music_selector
+
+################################################################################
+## 右侧Split 大文本框 - 只占右半屏的单栏、分页（每页满 8 行翻页）
+## 比左右分栏的"右栏"略往中间推一点（xpos 1120 vs 1210），左半屏留空。
+## 想再往中间/往右挪就改下面的 xpos（越小越靠中间）。
+## 翻页由转换器控制：每页第一行是新 say（清屏），其余 extend；满 8 行就开新页。
+################################################################################
+screen split_right_page(who, what):
+    fixed:
+        xpos 0
+        ypos 260
+        xsize 1920
+        ysize 760
+
+        text what id "what":
+            style "split_column_text"
+            xpos 1120
+            ypos 0
+            yanchor 0.0
+            xsize 620
+            size dialog_size()
+            line_spacing 10
+            adjust_spacing False
+
+    use quick_menu
+    use dev_scene_info
+    use dev_music_selector
+
+################################################################################
 ## 快捷菜单 - Quick Menu
 ################################################################################
 

@@ -161,16 +161,16 @@ label route1_start:
     extend "——啊啊啊啊啊啊啊啊啊啊啊！"
     ## Extended文本框结束
     ## 背景开始旋转，白屏逐渐溢满了整个屏幕
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "自你双眼完成聚焦的一瞬，一阵刺眼的光晕便抹去了视野里的一切，仿佛王霜把天上那轮烈日移植进了你的眼球。"
+    ## 右侧Split Extended大文本框开始 - 右半屏分页
+    split_right_page_narrator "自你双眼完成聚焦的一瞬，一阵刺眼的光晕便抹去了视野里的一切，仿佛王霜把天上那轮烈日移植进了你的眼球。"
     extend "\n你立刻合上双眼，整张脸上的肌肉拧成一团，死死地挤压你抽搐的眼帘，但为时已晚，那令人绝望的强光已经在你脑海的更深处生了根。"
-    extend "\n随着炫目的光而来的是蚀骨的火。这由内而外的火顺着你的双眼、你的视神经蔓延。后脑勺烧了起来，随后是整个大脑皮层，最终你的全身都在这挥之不去的炫光中熊熊灼烧。"
-    ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "你将身躯团成球状、死死绷住全身肌肉以抵御这钻心之痛，但在光与火的风暴面前也只是杯水车薪。"
+    split_right_page_narrator "随着炫目的光而来的是蚀骨的火。这由内而外的火顺着你的双眼、你的视神经蔓延。后脑勺烧了起来，随后是整个大脑皮层，最终你的全身都在这挥之不去的炫光中熊熊灼烧。"
+    ## 右侧Split Extended大文本框结束
+    ## 右侧Split Extended大文本框开始 - 右半屏分页
+    split_right_page_narrator "你将身躯团成球状、死死绷住全身肌肉以抵御这钻心之痛，但在光与火的风暴面前也只是杯水车薪。"
     extend "\n就像太阳一般稳定..."
     extend "\n你想立刻去死，那是缓解疼痛的唯一方法，但你非常清楚，此刻死亡就和使命一样遥不可及。"
-    ## Extended大文本框结束
+    ## 右侧Split Extended大文本框结束
     ## 转场：白屏
     scene black with scene_soft
     $ current_scene_name = "白屏"
@@ -269,8 +269,14 @@ label route1_start:
     ## 小激动
     wangshuang "无聊？可别太刺激了！你知道十二小时起步的感官过载是什么感觉吗？"
     wangshuang "五感全部推到极限，尤其是视觉，所有东西的颜色都比平时看到的要鲜艳无数倍，而且全都彼此交融，到最后视野里就是五彩斑斓的白。"
-    wangshuang "所有东西都是饱满到极致的，你懂我意思吗？就不是某种感官上的饱满，而是存在上的饱满，第四维度上的饱满，就是那种...不论我们怎么干涉都无法改变的状态。"
-    wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
+    ## Extended文本框开始 - accumulating textbox
+    wangshuang "所有东西都是饱满到极致的，你懂我意思吗？"
+    extend "就不是某种感官上的饱满，而是存在上的饱满，第四维度上的饱满，就是那种...不论我们怎么干涉都无法改变的状态。"
+    ## Extended文本框结束
+    ## Extended文本框开始 - accumulating textbox
+    wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？"
+    extend "应该不是，你应该拽不住我。"
+    ## Extended文本框结束
     ## 默认
     wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢乱用{i}KAS{/i}的，那次是真的差点死了..."
     ahe "哦，原来你那“磕完药差点死掉的小故事”还在更新啊。"
@@ -331,37 +337,40 @@ label route1_start:
     ## 蓝色波纹特效，并逐渐加入更多色彩
     ## 场景音乐参考：进入幻视，所以虽然场景没变音乐也要切换https://audionautix.com/Music/Beautiful%20Daughter.mp3 (Jason Shaw)，
     $ set_scene_music("route1_hallucination")
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "你正摸不着头脑，转眼间却发现了周遭惊人的变故——四周逐渐泛起蓝色、波浪状的纹理，很快侵蚀了整个视野。"
+    ## Split Extended大文本框开始 - 左右分栏
+    split_left_narrator "你正摸不着头脑，转眼间却发现了周遭惊人的变故——四周逐渐泛起蓝色、波浪状的纹理，很快侵蚀了整个视野。"
     extend "\n你反倒比先前要更加冷静，又低头吃了几口团子。甜腻腻的滋味在口腔中涟漪般散开，每颗味觉细胞都在欣喜若狂地发送着饱足的信号。"
-    extend "\n甜味的颜色？金黄的莓红的草绿的深棕的，味觉的色彩洪流汇入弥漫在整个视觉空间的海蓝色波浪中。"
+    $ _split_left_text = "你正摸不着头脑，转眼间却发现了周遭惊人的变故——四周逐渐泛起蓝色、波浪状的纹理，很快侵蚀了整个视野。\n你反倒比先前要更加冷静，又低头吃了几口团子。甜腻腻的滋味在口腔中涟漪般散开，每颗味觉细胞都在欣喜若狂地发送着饱足的信号。"
+    split_right_narrator "甜味的颜色？金黄的莓红的草绿的深棕的，味觉的色彩洪流汇入弥漫在整个视觉空间的海蓝色波浪中。"
     extend "\n你抬头望向王霜，她也望着你，脸上含蓄地挂了一抹邪魅而欣慰的笑，仿佛望着一个迷路的孩子。"
     extend "\n她略卷的水蓝色长发在空间的蓝色波浪中散着，勾勒出洋流的轮廓。"
-    ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "你心中对她海啸般的戒心早已荡然无存了——你几乎有些喜欢她现在的样子，宛如一个母亲，又像是神明，给视野不断抹上温柔的蓝色。"
+    ## Split Extended大文本框结束
+    ## Split Extended大文本框开始 - 左右分栏
+    split_left_narrator "你心中对她海啸般的戒心早已荡然无存了——你几乎有些喜欢她现在的样子，宛如一个母亲，又像是神明，给视野不断抹上温柔的蓝色。"
     extend "\n每一缕神经都在扩张。启示性的景象。时间和空间波浪。无孔不入的色彩和甜味。蓝色的。交响。"
-    extend "\n反复咀嚼伤痛直至淡而无味，直到甜味凭空冒出来。"
+    $ _split_left_text = "你心中对她海啸般的戒心早已荡然无存了——你几乎有些喜欢她现在的样子，宛如一个母亲，又像是神明，给视野不断抹上温柔的蓝色。\n每一缕神经都在扩张。启示性的景象。时间和空间波浪。无孔不入的色彩和甜味。蓝色的。交响。"
+    split_right_narrator "反复咀嚼伤痛直至淡而无味，直到甜味凭空冒出来。"
     extend "\n在一切都已结束的当下，连时间都已丧失价值，唯一还能让你睁开双眼的，就只有——"
-    ## Extended大文本框结束
+    ## Split Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "瘾。"
     ## 居中大字文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
+    ## Split Extended大文本框开始 - 左右分栏
     ## 转场：甜品店对视5
     scene bg_dessertgaze5 with scene_dissolve
     $ current_scene_name = "甜品店对视5"
     $ current_scene_desc = "背景蓝色调，桌上团子吃了几口，背景有更明显的波纹纹理，王霜变得半透明，表情是默认表情"
-    large_narrator "王霜的微笑越发邪魅——她逐渐成为了一个微笑。"
+    split_left_narrator "王霜的微笑越发邪魅——她逐渐成为了一个微笑。"
     extend "\n成瘾。糖分子的洪流只消一个浪头就使你深深染上了挥之不去的瘾。"
     extend "\n渴望的源头冲动的源头想往的源头发现了。"
-    extend "\n浪潮般的甜味反复沁进意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。"
-    ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "燥热意识模糊，痛苦消减。鼓的声音。恒久的鼓声从背景里逐渐浮现，强烈起来，震耳欲聋，每一击都与心跳同调。"
+    $ _split_left_text = "王霜的微笑越发邪魅——她逐渐成为了一个微笑。\n成瘾。糖分子的洪流只消一个浪头就使你深深染上了挥之不去的瘾。\n渴望的源头冲动的源头想往的源头发现了。"
+    split_right_narrator "浪潮般的甜味反复沁进意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。"
+    ## Split Extended大文本框结束
+    ## Split Extended大文本框开始 - 左右分栏
+    split_left_narrator "燥热意识模糊，痛苦消减。鼓的声音。恒久的鼓声从背景里逐渐浮现，强烈起来，震耳欲聋，每一击都与心跳同调。"
     extend "\n在这暧昧混沌里，你感到安逸。"
     extend "\n这样就够了。"
-    ## Extended大文本框结束
+    ## Split Extended大文本框结束
     ## 撇嘴
     wangshuang "说到底，我们所做的一切也只是为了满足癖好而已。"
     ahe "这大概是一件无可厚非的事情。"
@@ -462,4 +471,6 @@ label route1_start:
     $ unlock_route(1)
     ## demo 通关后整个游戏 reboot 一次，让 polyhedron channel 状态干净，
     ## 第二次 Start 不会渲染成 checker board。persistent 不会被清。
-    $ renpy.utter_restart()
+    ## 走 helper 而不是直接 utter_restart：自动化测试时跳过 reboot，
+    ## 否则测试跑完进程无法退出（卡死在最后）。见 variables.rpy。
+    $ demo_reboot_after_route()

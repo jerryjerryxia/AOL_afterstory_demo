@@ -28,6 +28,16 @@ define centered_narrator = Character(None, kind=adv, screen="centered_say")
 ## 居中大字文本框旁白（用于戏剧性的单行大字）—— 不挂 CTC（point 1）
 define centered_large_narrator = Character(None, kind=adv, screen="centered_large_say")
 
+## 左右分栏大文本框（甜品店幻视段）：先填左栏，再填右栏，中间留空避开王霜的头。
+## 两阶段：左栏阶段活动 say 在左栏（逐字显示），填满后冻结进 _split_left_text；
+## 右栏阶段左栏静态、活动 say 在右栏。两阶段各自的可见栏就是带 id "what" 的活动
+## 文本，所以逐字速度和单击推进在两栏都正常。CTC 用 ctc_large（和大文本框同基线）。
+define split_left_narrator = Character(None, kind=adv, screen="split_say_left", ctc=ctc_large)
+define split_right_narrator = Character(None, kind=adv, screen="split_say_right", ctc=ctc_large)
+
+## 右侧Split：只占右半屏的单栏文本框，每页满 8 行翻页（新 say 清屏）。屏幕 split_right_page。
+define split_right_page_narrator = Character(None, kind=adv, screen="split_right_page", ctc=ctc_large)
+
 ## 主角内心独白
 define protag_thought = Character(None, kind=adv, what_prefix='"', what_suffix='"', what_italic=True, ctc=ctc)
 

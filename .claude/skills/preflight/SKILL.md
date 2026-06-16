@@ -45,13 +45,33 @@ Parse the lint summary line (e.g., "The game contains N lint errors.") to determ
 
 ## Phase 4: Ren'Py Test Suite
 
-Only run if lint passed. Execute the full test suite with a 120-second timeout.
+Only run if lint passed.
+
+**Important — `renpy test` does NOT self-quit in this SDK (8.5.0).** Per
+`renpy/test/testexecution.py`, after the suite finishes the command *returns the
+game to the main menu and keeps it running*. It also does **not** accept
+`--timeout` (that flag only exists in newer Ren'Py). So you must bound the run
+yourself: launch it in the background to a log, wait for the `Status:` line, then
+kill the process. Otherwise Phase 4 hangs forever after the tests have actually
+passed (this is the "测试到最后卡死" symptom — the tests are fine, the runner
+just never exits).
 
 ```bash
-"X:\RenPy\renpy-8.5.0-sdk\renpy.exe" "X:\GameDev\AOL_afterstory_demo" test --timeout 120 2>&1
+cd "X:\GameDev\AOL_afterstory_demo"
+rm -f preflight_test.txt
+"X:\RenPy\renpy-8.5.0-sdk\renpy.exe" "X:\GameDev\AOL_afterstory_demo" test --report-detailed > preflight_test.txt 2>&1 &
+# Wait up to ~150s for the suite to print its final "Status:" line, then stop the runner.
+for i in $(seq 1 50); do grep -q "^\[rpytest\] Status:" preflight_test.txt && break; sleep 3; done
+taskkill //F //IM "renpy.exe" 2>/dev/null || true
+grep -E "Test cases|Status:|FAILED|PASSED" preflight_test.txt | tail -15
 ```
 
-All tests must pass. Report individual test results if available in output.
+- **Pass**: the summary shows `Test cases : N | N passed | ... | 0 failed` and
+  `Status: PASSED`.
+- **Fail**: any `failed` count > 0, or no `Status:` line appeared within the wait
+  window (genuine hang / crash — inspect `preflight_test.txt`).
+
+Report individual test results from the detailed output.
 
 ## Phase 5: Post-Test Cleanup
 

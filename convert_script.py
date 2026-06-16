@@ -204,6 +204,153 @@ def format_dialogue(text):
         escaped = text.replace('"', '\\"')
         return f'"{escaped}"'
 
+def _split_left_literal(left_lines):
+    """把左栏各行拼成一个 Ren'Py 双引号字符串字面量，其值与左栏阶段累积出来的
+    what 完全一致（逐行 transform_display_text + 字面 \\n 连接）。供右栏阶段
+    `$ _split_left_text = ...` 把已填满的左栏静态显示。"""
+    pieces = []
+    for ln in left_lines:
+        t = transform_display_text(ln)                   # 斜体/小字标签，和显示一致
+        t = t.replace('\\', '\\\\').replace('"', '\\"')  # 先反斜杠再双引号
+        t = t.replace('[', '[[')                         # 和 format_dialogue 一致
+        pieces.append(t)
+    return '"' + '\\n'.join(pieces) + '"'
+
+# 左栏（固定高度）的视觉行容量与每视觉行字数估算。左栏约 800px 高、620px 宽、
+# 字号 33 + 行距 10 ≈ 每视觉行 ~46px → ~16 行；620px / ~33px(一个汉字) ≈ 每视觉行
+# ~18 字。改这两个数 = 改"左栏装多少才溢到右栏"。
+_SPLIT_COL_CAPACITY_LINES = 8
+_SPLIT_COL_CHARS_PER_LINE = 18
+
+def _visual_lines(text):
+    """一行原文按左栏宽度折行后占多少视觉行（向上取整，至少 1）。"""
+    return max(1, -(-len(text) // _SPLIT_COL_CHARS_PER_LINE))
+
+def _split_capacity_index(narration):
+    """先把文本尽量塞进左栏：返回左栏能容纳的行数 k（累计视觉行数不超过容量）。
+    k == len 表示整块都放得下左栏（右栏不用，渲染成单栏、无阶段切换）。
+    至少保证左栏有一行（首行特别长也先放左栏）。"""
+    cum = 0
+    for idx, line in enumerate(narration):
+        v = _visual_lines(line)
+        if idx > 0 and cum + v > _SPLIT_COL_CAPACITY_LINES:
+            return idx
+        cum += v
+    return len(narration)
+
+def emit_split_large_block(lines, start_i, end_line, indent="    "):
+    """Split Extended大文本框：文本先尽量塞进固定高度的左栏；放得下就单栏显示
+    （文字尽量待在一侧），左栏装满才把溢出部分接到右栏。中间留白避开王霜的头。
+
+    放得下（多数块）：只走左栏，split_left_narrator（屏幕 split_say_left），
+      普通 say/extend、逐字显示、单击推进，没有阶段切换（也就没有"切换后行距变大"）。
+    放不下：左栏阶段填到容量上限 → `$ _split_left_text = ...` 冻结左栏 → 切
+      split_right_narrator（屏幕 split_say_right，左栏静态、右栏活动逐字）。
+    返回 (output_lines, new_index)。
+    """
+    out = []
+    i = start_i
+    narration = []
+    while i < end_line and i < len(lines):
+        line = lines[i].strip()
+        i += 1
+        if 'Split Extended大文本框结束' in line:
+            break
+        if not line:
+            continue
+        # 块内转场：立即输出（一般在块首，如甜品店对视5）
+        tm = re.match(r'^【转场[：:](.+?)】$', line)
+        if tm:
+            content = tm.group(1).strip()
+            pm = re.search(r'。', content)
+            if pm:
+                sn, sd = content[:pm.start()].strip(), content[pm.end():].strip()
+            else:
+                sn, sd = content, ""
+            emit_transition_lines(out, indent, sn, sd)
+            continue
+        # 其它舞台提示跳过
+        if line.startswith('【') and line.endswith('】'):
+            continue
+        narration.append(line)
+
+    if not narration:
+        return out, i
+
+    # 先尽量塞左栏；放得下就单栏（无右栏、无阶段切换），放不下才溢到右栏。
+    k = _split_capacity_index(narration)
+    left, right = narration[:k], narration[k:]
+
+    # 左栏阶段：split_left_narrator（屏幕 split_say_left，左栏即活动 say，逐字显示）
+    first = True
+    for ln in left:
+        if first:
+            out.append(f'{indent}split_left_narrator {format_dialogue(ln)}')
+            first = False
+        else:
+            out.append(f'{indent}extend {format_dialogue(chr(92) + "n" + ln)}')
+
+    if right:
+        # 左栏装不下，溢出部分进右栏：冻结左栏文本，再切右栏活动 say。
+        out.append(f'{indent}$ _split_left_text = {_split_left_literal(left)}')
+        first = True
+        for ln in right:
+            if first:
+                out.append(f'{indent}split_right_narrator {format_dialogue(ln)}')
+                first = False
+            else:
+                out.append(f'{indent}extend {format_dialogue(chr(92) + "n" + ln)}')
+
+    return out, i
+
+def emit_rightpage_block(lines, start_i, end_line, indent="    "):
+    """右侧Split Extended大文本框：只占右半屏的单栏文本框，逐行点击累积；
+    每页最多 _SPLIT_COL_CAPACITY_LINES 视觉行，装不下的从"下一页"继续——
+    下一页 = 新的一句 say（清掉上一页内容、从头开始），其余行 extend 累积。
+    返回 (output_lines, new_index)。"""
+    out = []
+    i = start_i
+    narration = []
+    while i < end_line and i < len(lines):
+        line = lines[i].strip()
+        i += 1
+        if '右侧Split Extended大文本框结束' in line:
+            break
+        if not line:
+            continue
+        tm = re.match(r'^【转场[：:](.+?)】$', line)
+        if tm:
+            content = tm.group(1).strip()
+            pm = re.search(r'。', content)
+            if pm:
+                sn, sd = content[:pm.start()].strip(), content[pm.end():].strip()
+            else:
+                sn, sd = content, ""
+            emit_transition_lines(out, indent, sn, sd)
+            continue
+        if line.startswith('【') and line.endswith('】'):
+            continue
+        narration.append(line)
+
+    if not narration:
+        return out, i
+
+    page_first = True   # 该行是否为某页第一行（第一行用 say 清屏，其余 extend）
+    used = 0
+    for ln in narration:
+        v = _visual_lines(ln)
+        if not page_first and used + v > _SPLIT_COL_CAPACITY_LINES:
+            page_first = True   # 这一页装不下了 → 翻页
+            used = 0
+        if page_first:
+            out.append(f'{indent}split_right_page_narrator {format_dialogue(ln)}')
+            page_first = False
+        else:
+            out.append(f'{indent}extend {format_dialogue(chr(92) + "n" + ln)}')
+        used += v
+
+    return out, i
+
 def emit_char_dialogue(char_var, dialogue, indent, comment=None):
     """生成一行角色对话，处理 【锁定操作Ns】（point 5）。
 
@@ -621,6 +768,23 @@ def process_choice_content(content_lines, indent="            "):
         if not line:
             continue
 
+        # 右侧Split（右半屏分页）必须在普通 Split 之前判断（子串包含关系）
+        if '右侧Split Extended大文本框开始' in line:
+            output.append(f"{indent}## 右侧Split Extended大文本框开始 - 右半屏分页")
+            rp_out, i = emit_rightpage_block(content_lines, i, len(content_lines), indent)
+            output.extend(rp_out)
+            output.append(f"{indent}## 右侧Split Extended大文本框结束")
+            continue
+
+        # Check for Split Extended大文本框 markers (左右分栏；必须在普通大文本框之前判断，
+        # 因为 'Split Extended大文本框开始' 包含 'Extended大文本框开始' 子串)
+        if 'Split Extended大文本框开始' in line:
+            output.append(f"{indent}## Split Extended大文本框开始 - 左右分栏")
+            split_out, i = emit_split_large_block(content_lines, i, len(content_lines), indent)
+            output.extend(split_out)
+            output.append(f"{indent}## Split Extended大文本框结束")
+            continue
+
         # Check for Extended大文本框 markers
         if 'Extended大文本框开始' in line:
             output.append(f"{indent}## Extended大文本框开始 - accumulating large textbox")
@@ -764,6 +928,24 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
 
         # Check for accumulating block markers (【Extended文本框开始】 or 【Extended大文本框开始】)
         # These use extend to accumulate text with each click
+        # 右侧Split（右半屏分页）必须在普通 Split 之前判断
+        # （'右侧Split...开始' 含 'Split...开始' 子串）。
+        if '右侧Split Extended大文本框开始' in line:
+            output.append("    ## 右侧Split Extended大文本框开始 - 右半屏分页")
+            rp_out, i = emit_rightpage_block(lines, i, end_line)
+            output.extend(rp_out)
+            output.append("    ## 右侧Split Extended大文本框结束")
+            continue
+
+        # Split Extended大文本框（左右分栏）必须在普通大文本框之前判断
+        # （'Split Extended大文本框开始' 含 'Extended大文本框开始' 子串）。
+        if 'Split Extended大文本框开始' in line:
+            output.append("    ## Split Extended大文本框开始 - 左右分栏")
+            split_out, i = emit_split_large_block(lines, i, end_line)
+            output.extend(split_out)
+            output.append("    ## Split Extended大文本框结束")
+            continue
+
         if 'Extended大文本框开始' in line:
             output.append("    ## Extended大文本框开始 - accumulating large textbox")
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True)
@@ -1012,6 +1194,24 @@ def convert_prologue(lines, start_line, end_line):
             continue
 
         # Check for accumulating block markers
+        # 右侧Split（右半屏分页）必须在普通 Split 之前判断
+        # （'右侧Split...开始' 含 'Split...开始' 子串）。
+        if '右侧Split Extended大文本框开始' in line:
+            output.append("    ## 右侧Split Extended大文本框开始 - 右半屏分页")
+            rp_out, i = emit_rightpage_block(lines, i, end_line)
+            output.extend(rp_out)
+            output.append("    ## 右侧Split Extended大文本框结束")
+            continue
+
+        # Split Extended大文本框（左右分栏）必须在普通大文本框之前判断
+        # （'Split Extended大文本框开始' 含 'Extended大文本框开始' 子串）。
+        if 'Split Extended大文本框开始' in line:
+            output.append("    ## Split Extended大文本框开始 - 左右分栏")
+            split_out, i = emit_split_large_block(lines, i, end_line)
+            output.extend(split_out)
+            output.append("    ## Split Extended大文本框结束")
+            continue
+
         if 'Extended大文本框开始' in line:
             output.append("    ## Extended大文本框开始 - accumulating large textbox")
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True)
@@ -1204,7 +1404,9 @@ def main():
         route1 = route1.rstrip()[:-len("return")] + (
             "## demo 通关后整个游戏 reboot 一次，让 polyhedron channel 状态干净，\n"
             "    ## 第二次 Start 不会渲染成 checker board。persistent 不会被清。\n"
-            "    $ renpy.utter_restart()\n"
+            "    ## 走 helper 而不是直接 utter_restart：自动化测试时跳过 reboot，\n"
+            "    ## 否则测试跑完进程无法退出（卡死在最后）。见 variables.rpy。\n"
+            "    $ demo_reboot_after_route()\n"
         )
     with open(r'X:\GameDev\AOL_afterstory_demo\game\scripts\route1.rpy', 'w', encoding='utf-8') as f:
         f.write(route1)
