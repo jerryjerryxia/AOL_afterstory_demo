@@ -272,13 +272,20 @@ style ctc_dots_text is default:
 ################################################################################
 ## 操作锁定屏幕 - op_lock（point 5）
 ## ----------------------------------------------------------------
-## modal + 高 zorder：盖在对话之上，吃掉所有点击，玩家无法前进；N 秒后自动隐藏。
-## 配合 convert_script.py 的 【锁定操作Ns】 使用。文本框保持正常显示。
+## 用一个全屏按钮把"点击/回车/空格"吃掉（NullAction），让玩家在 N 秒内无法靠点击
+## 跳过文字展示或前进；但**不 modal**，所以 ctrl 快进（skip 是 keysym，不落到按钮
+## 上）依然有效。N 秒后自动隐藏。配合 convert_script.py 的 【锁定操作Ns】。
+## （"盯——"：不允许点击快速结束文字展示，但允许 ctrl 快进。）
 ################################################################################
 
 screen op_lock(seconds):
     zorder 200
-    modal True
+    button:
+        xfill True
+        yfill True
+        background None
+        hover_background None
+        action NullAction()
     timer seconds action Hide("op_lock")
 
 ################################################################################
@@ -1099,7 +1106,10 @@ screen preferences():
 
                 vbox:
                     label _("文字速度")
-                    bar value Preference("text speed")
+                    ## 文字速度滑块上限砍半：默认 range=200cps，从中点往上（~100cps+）
+                    ## 肉眼已分不出快慢、纯属浪费行程。改成 range=100，最慢端（最小值）
+                    ## 不变，最大值取原来的一半，整条滑块的有效分辨率翻倍。
+                    bar value Preference("text speed", range=100)
 
                     label _("自动前进时间")
                     bar value Preference("auto-forward time")

@@ -126,9 +126,11 @@ label route1_start:
     ## 面无表情
     show screen op_lock(2)
     wangshuang "盯——"
+    hide screen op_lock
     ahe "..."
     show screen op_lock(2)
     wangshuang "盯——"
+    hide screen op_lock
     ahe "..."
     wangshuang "噗——"
     ahe "..."

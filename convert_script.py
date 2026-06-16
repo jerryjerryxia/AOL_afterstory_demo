@@ -364,7 +364,12 @@ def emit_char_dialogue(char_var, dialogue, indent, comment=None):
         out.append(f'{indent}## {comment}')
     if lock:
         out.append(f'{indent}show screen op_lock({lock})')
-    out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
+        out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
+        # 一旦推进过这句（等满 N 秒、或 ctrl 快进），立刻收掉锁，避免 op_lock
+        # 残留到后面几句继续吃点击。
+        out.append(f'{indent}hide screen op_lock')
+    else:
+        out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
     return '\n'.join(out)
 
 def emit_transition_lines(output, indent, scene_name, scene_desc):
