@@ -56,11 +56,15 @@ label route1_prologue:
     extend "\n——无可奉告。"
     extend "\n——真是无聊啊。"
     ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "…"
-    extend "\n……"
-    extend "\n………"
-    ## Extended大文本框结束
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "…"
+    ## 居中大字文本框结束
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "……"
+    ## 居中大字文本框结束
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "………"
+    ## 居中大字文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "——没想到，这么快就找到你了。"
     extend "\n——我以为这种事对于现在的你来说易如反掌。"
@@ -75,11 +79,15 @@ label route1_prologue:
     extend "\n——那就当你同意了。"
     extend "\n——请自便吧。"
     ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "…"
-    extend "\n……"
-    extend "\n………"
-    ## Extended大文本框结束
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "…"
+    ## 居中大字文本框结束
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "……"
+    ## 居中大字文本框结束
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "………"
+    ## 居中大字文本框结束
     ## 转场：黑屏
     scene black with scene_soft
     $ current_scene_name = "黑屏"

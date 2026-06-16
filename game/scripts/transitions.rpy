@@ -16,3 +16,11 @@ define scene_dissolve = Dissolve(0.8)
 ## 戏剧性瞬间的特效转场（由舞台提示关键词触发，见 convert_script.py 的 SPECIAL_FX）
 define fx_glitch = hpunch    ## 故障 / glitch —— 横向震动
 define fx_shock = vpunch     ## 惊吓 / 冲击 —— 纵向震动
+
+## 【屏幕震动】专用的"剧烈版"屏幕震动（阿鹤惨叫处，见 convert_script.py）。
+## 想调整剧烈程度就改这一行：
+##   - 前两个点 (±X, ±Y) 是位移幅度：X 横向、Y 纵向，越大抖得越凶（vpunch 是纯纵向 10）。
+##   - 第 3 个参数是单次位移时长，越小抖得越快越密。
+##   - delay 是总时长，越大抖得越久。
+## 现在是斜向对角抖动，同时含横向+纵向分量（想要更横就把 X 调大、Y 调小）。
+define fx_quake = Move((28, 36), (-28, -36), .04, bounce=True, repeat=True, delay=.55)

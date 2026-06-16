@@ -87,8 +87,112 @@ def has_curly_quotes(text):
     """Check if text contains curly double quotes"""
     return '"' in text or '"' in text
 
+# 专有名词列表（point 7）：这些字眼在正文中出现时用 {i}斜体{/i} 强调。
+# 在 demo_script.txt 里直接以普通文字书写，由转换器负责加斜体标签——
+# 这样剧本保持干净，新增名词只要往这个列表里加即可。
+PROPER_NOUNS = ['尤里娅', 'KAS']
+
+def italicize_proper_nouns(text):
+    """Wrap any proper noun (PROPER_NOUNS) in {i}...{/i} for italic emphasis."""
+    for noun in PROPER_NOUNS:
+        if noun in text:
+            text = text.replace(noun, '{i}' + noun + '{/i}')
+    return text
+
+def apply_small_text(text):
+    """【小字】 → 把标记之后的文字缩小，并去掉标记本身（point 2）。
+    标记是行内前缀，缩小一直作用到该行结尾。"""
+    marker = '【小字】'
+    if marker not in text:
+        return text
+    idx = text.index(marker)
+    before = text[:idx]
+    after = text[idx + len(marker):]
+    return before + '{size=-10}' + after + '{/size}'
+
+def transform_display_text(text):
+    """所有可见正文（对话/旁白/选项/extend）共用的行内文字变换。
+    顺序：先 小字 再 斜体（斜体可嵌套进小字里，互不干扰）。"""
+    text = apply_small_text(text)
+    text = italicize_proper_nouns(text)
+    return text
+
+# 【锁定操作Ns】：文本展示完成后锁定所有操作 N 秒（point 5）。
+LOCK_RE = re.compile(r'【锁定操作([\d.]+)s?】')
+
+def extract_lock(dialogue):
+    """从对话里抽出 【锁定操作Ns】，返回 (去掉标记的文本, 秒数 or None)。"""
+    m = LOCK_RE.search(dialogue)
+    if not m:
+        return dialogue, None
+    cleaned = LOCK_RE.sub('', dialogue).strip()
+    return cleaned, m.group(1)
+
+# 用于 Extended文本框 标点分句的占位符（【屏幕震动】被替换成它）。
+_SHAKE_TOKEN = ''
+# 句末标点（在其后断开）：句号、问号、感叹号、中文省略号。
+# 注意：ASCII 的 "..." 不算省略号（多为口吃/迟疑，不该断句），中文 … 才算。
+_ENDERS = set('。！？…')
+
+def split_click_chunks(text):
+    """把 Extended文本框 的一段文字按标点切成若干"点击块"（point 4）。
+
+    返回 [(chunk_text, effect_before), ...]，effect_before 为 None 或 'shake'。
+    规则：
+    - 句号/问号/感叹号/中文省略号 之后断开（标点跟在前一块末尾）。
+    - 破折号 —— 之前断开（破折号引出下一块）。
+    - 连续标点算一次断点，不产生空块。
+    - ASCII "..." 不断句。
+    - 【屏幕震动】(占位符) 强制断点，且其后那一块带 'shake' 特效。
+    """
+    text = text.replace('【屏幕震动】', _SHAKE_TOKEN)
+    result = []
+    cur = ''
+    pending_effect = None
+
+    def flush(next_effect=None):
+        nonlocal cur, pending_effect
+        if cur.strip():
+            result.append([cur, pending_effect])
+            cur = ''
+            pending_effect = next_effect
+        elif next_effect:
+            # 空块：不产出，但把特效带给下一块
+            pending_effect = next_effect
+
+    i = 0
+    n = len(text)
+    while i < n:
+        ch = text[i]
+        if ch == _SHAKE_TOKEN:
+            flush(next_effect='shake')
+            i += 1
+            continue
+        if ch == '—':
+            # 破折号：在其之前断开，破折号本身归入下一块
+            flush()
+            while i < n and text[i] == '—':
+                cur += '—'
+                i += 1
+            continue
+        if ch in _ENDERS:
+            # 句末标点：连续吃完后在其之后断开
+            while i < n and text[i] in _ENDERS:
+                cur += text[i]
+                i += 1
+            flush()
+            continue
+        cur += ch
+        i += 1
+
+    if cur.strip():
+        result.append([cur, pending_effect])
+    return result
+
 def format_dialogue(text):
     """Format dialogue string, using single quotes if curly quotes present"""
+    # 行内显示变换（小字 / 专有名词斜体），对所有正文统一生效
+    text = transform_display_text(text)
     # Escape square brackets for Ren'Py text interpolation: [ -> [[
     text = text.replace('[', '[[')
     if has_curly_quotes(text):
@@ -99,6 +203,88 @@ def format_dialogue(text):
         # Use double quotes as delimiter, escape any double quotes in text
         escaped = text.replace('"', '\\"')
         return f'"{escaped}"'
+
+def emit_char_dialogue(char_var, dialogue, indent, comment=None):
+    """生成一行角色对话，处理 【锁定操作Ns】（point 5）。
+
+    带锁定时：先 show 一个 modal 的 op_lock 屏幕（zorder 高、吃掉所有点击）N 秒，
+    再正常说这句话——文本框照常显示且保持可见，但玩家在 N 秒内无法点击前进。
+    op_lock 到点自动隐藏。（不用 {nw}+硬暂停：那会让文本框在暂停期间消失。）
+    """
+    cleaned, lock = extract_lock(dialogue)
+    out = []
+    if comment:
+        out.append(f'{indent}## {comment}')
+    if lock:
+        out.append(f'{indent}show screen op_lock({lock})')
+    out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
+    return '\n'.join(out)
+
+def emit_transition_lines(output, indent, scene_name, scene_desc):
+    """把一个场景转场写进 output（供 Extended 累积块内部复用）。"""
+    scene_name_escaped = scene_name.replace('"', '\\"')
+    scene_desc_escaped = scene_desc.replace('"', '\\"')
+    output.append(f'{indent}## 转场：{scene_name}')
+    bg_image = SCENE_BG_MAP.get(scene_name, 'black')
+    if scene_name in NO_TRANSITION_SCENES:
+        transition = 'None'
+    elif scene_name in CROSS_DISSOLVE_SCENES:
+        transition = 'scene_dissolve'
+    else:
+        transition = 'scene_soft'
+    output.append(f'{indent}scene {bg_image} with {transition}')
+    output.append(f'{indent}$ current_scene_name = "{scene_name_escaped}"')
+    if scene_desc:
+        output.append(f'{indent}$ current_scene_desc = "{scene_desc_escaped}"')
+    else:
+        output.append(f'{indent}$ current_scene_desc = None')
+
+def emit_extended_segments(collected, output, indent):
+    """普通 Extended文本框（非大文本框）：在同一段落里按标点逐次点击展示（point 4）。
+
+    collected 是 [(speaker_or_None or '__transition__', text/payload), ...]。
+    第一块作为 say，其余块用不带 \\n 的 extend 接在同一段后面；带 'shake'
+    特效的块前插入一次 `with vpunch` 屏幕震动（point 6）。
+    """
+    first_emitted = False
+    seg_speaker = None
+    seg_text = ''
+    have_seg = False
+
+    def flush_segment():
+        nonlocal first_emitted, seg_speaker, seg_text, have_seg
+        if not have_seg:
+            return
+        for chunk, effect in split_click_chunks(seg_text):
+            chunk = chunk.strip()
+            if not chunk:
+                continue
+            if not first_emitted:
+                if seg_speaker:
+                    output.append(f'{indent}{seg_speaker} {format_dialogue(chunk)}')
+                else:
+                    output.append(f'{indent}{format_dialogue(chunk)}')
+                first_emitted = True
+            else:
+                if effect == 'shake':
+                    output.append(f'{indent}with fx_quake')
+                output.append(f'{indent}extend {format_dialogue(chunk)}')
+        seg_speaker = None
+        seg_text = ''
+        have_seg = False
+
+    for speaker, text in collected:
+        if speaker == '__transition__':
+            flush_segment()
+            scene_name, scene_desc = text
+            emit_transition_lines(output, indent, scene_name, scene_desc)
+            first_emitted = False
+            continue
+        if not have_seg:
+            seg_speaker = speaker
+            have_seg = True
+        seg_text += text
+    flush_segment()
 
 def convert_content_line(line, indent="    ", use_large_textbox=False):
     """Convert a single content line to Ren'Py format"""
@@ -253,7 +439,7 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         action = char_action_match.group(2)
         dialogue = char_action_match.group(3).strip()
         char_var = char_var_map[char_name]
-        return f'{indent}## {action}\n{indent}{char_var} {format_dialogue(dialogue)}'
+        return emit_char_dialogue(char_var, dialogue, indent, comment=action)
 
     # Character dialogue (simple)
     char_match = re.match(rf'^({char_pattern})[：:](.*)$', line)
@@ -261,7 +447,7 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         char_name = char_match.group(1)
         dialogue = char_match.group(2).strip()
         char_var = char_var_map[char_name]
-        return f'{indent}{char_var} {format_dialogue(dialogue)}'
+        return emit_char_dialogue(char_var, dialogue, indent)
 
     # Section headers
     if re.match(r'^[一二三四五六七八九十]+周目', line):
@@ -390,33 +576,18 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
     output = []
     indent = "    "
 
-    # Track whether this is the first content line (after which we use extend)
-    first_line = True
+    # 普通 Extended文本框（point 4/6）：同一段落、按标点逐次点击，屏幕震动。
+    if not use_large:
+        emit_extended_segments(collected, output, indent)
+        return output, i
 
+    # Extended大文本框：保持原行为——每行用 \n 换行累积（point 4 明确不动大文本框）。
+    first_line = True
     for speaker, text in collected:
         # Handle scene transitions - they break the extend chain
         if speaker == '__transition__':
             scene_name, scene_desc = text
-            scene_name_escaped = scene_name.replace('"', '\\"')
-            scene_desc_escaped = scene_desc.replace('"', '\\"')
-            output.append(f'{indent}## 转场：{scene_name}')
-            bg_image = SCENE_BG_MAP.get(scene_name, 'black')
-            # Same transition-choice logic as convert_content_line.
-            # (We don't touch _PROLOGUE_FIRST_TRANSITION_PENDING here because
-            # the prologue's first 转场 is at the top of the file, never inside
-            # an accumulating textbox block.)
-            if scene_name in NO_TRANSITION_SCENES:
-                transition = 'None'
-            elif scene_name in CROSS_DISSOLVE_SCENES:
-                transition = 'scene_dissolve'
-            else:
-                transition = 'scene_soft'
-            output.append(f'{indent}scene {bg_image} with {transition}')
-            output.append(f'{indent}$ current_scene_name = "{scene_name_escaped}"')
-            if scene_desc:
-                output.append(f'{indent}$ current_scene_desc = "{scene_desc_escaped}"')
-            else:
-                output.append(f'{indent}$ current_scene_desc = None')
+            emit_transition_lines(output, indent, scene_name, scene_desc)
             # Next dialogue line should start fresh
             first_line = True
             continue
@@ -424,14 +595,9 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
         # First line outputs normally, all subsequent lines use extend
         if first_line:
             if speaker:
-                # Character dialogue
                 output.append(f'{indent}{speaker} {format_dialogue(text)}')
             else:
-                # Narration
-                if use_large:
-                    output.append(f'{indent}large_narrator {format_dialogue(text)}')
-                else:
-                    output.append(f'{indent}{format_dialogue(text)}')
+                output.append(f'{indent}large_narrator {format_dialogue(text)}')
             first_line = False
         else:
             # All subsequent lines use extend
@@ -499,35 +665,25 @@ def process_choice_content(content_lines, indent="            "):
             char_names = sorted(char_var_map.keys(), key=len, reverse=True)
             char_pattern = '|'.join(re.escape(name) for name in char_names)
 
-            first_line = True
+            # 收集块内所有行，再交给 emit_extended_segments 做"同段落标点分句"
+            # （point 4/6）；行内 【屏幕震动】保留在对话里由分句逻辑处理。
+            entries = []
             while i < len(content_lines):
                 next_line = content_lines[i].strip()
                 i += 1
                 if 'Extended文本框结束' in next_line:
-                    output.append(f"{indent}## Extended文本框结束")
                     break
                 if not next_line:
                     continue
                 if next_line.startswith('【') and next_line.endswith('】'):
                     continue
-                # Check for character dialogue
                 char_match = re.match(rf'^({char_pattern})[：:](.*)$', next_line)
                 if char_match:
-                    char_name = char_match.group(1)
-                    dialogue = char_match.group(2).strip()
-                    char_var = char_var_map[char_name]
-                    if first_line:
-                        output.append(f'{indent}{char_var} {format_dialogue(dialogue)}')
-                        first_line = False
-                    else:
-                        output.append(f'{indent}extend {format_dialogue(chr(92) + "n" + dialogue)}')
+                    entries.append((char_var_map[char_match.group(1)], char_match.group(2).strip()))
                 else:
-                    # Narration
-                    if first_line:
-                        output.append(f'{indent}{format_dialogue(next_line)}')
-                        first_line = False
-                    else:
-                        output.append(f'{indent}extend {format_dialogue(chr(92) + "n" + next_line)}')
+                    entries.append((None, next_line))
+            emit_extended_segments(entries, output, indent)
+            output.append(f"{indent}## Extended文本框结束")
             continue
 
         # Check for 居中文本框 markers

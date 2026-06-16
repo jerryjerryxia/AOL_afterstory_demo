@@ -240,6 +240,85 @@ transform say_intro_fade:
     easein 0.6 alpha 1.0
 
 ################################################################################
+## 点击继续指示器 - CTC (click-to-continue) 打字光标（point 2）
+## ----------------------------------------------------------------
+## 一行文字打完、等待玩家点击时，在文字末尾出现一个闪烁的打字光标（竖条 ▏），
+## 亮 0.5s / 灭 0.5s 循环，像文本框里在等你继续输入。挂在 Character 的 ctc 上
+## （nestled，自动紧跟正文末尾）。
+##
+## 为什么用"竖条"而不是省略号：文字里的内联显示物是从基线往下挂的，句点 "."
+## 落在基线最底端，看起来又低又"离得远"；而占满整行高度的竖条字形天然和正文
+## 对齐。位置还想微调就改 characters.rpy 里 `define ctc = Transform("ctc_dots", …)`
+## 的 xoffset / yoffset。
+################################################################################
+
+image ctc_dots:
+    ## 闪烁的打字光标：硬切亮/灭，像终端光标。
+    ## 用 ASCII 竖线 "|"（字体一定有，方块字形 ▏/│ 很多中文字体没有→显示不出来）。
+    Text("|", style="ctc_dots_text")
+    pause 0.5
+    alpha 0.0
+    pause 0.5
+    alpha 1.0
+    repeat
+
+style ctc_dots_text is default:
+    ## 和正文完全一致的字体/颜色/描边，避免光标和文字看着是两套样式。
+    font gui.text_font
+    size gui.text_size
+    color gui.text_color
+    outlines gui.text_outlines
+
+################################################################################
+## 操作锁定屏幕 - op_lock（point 5）
+## ----------------------------------------------------------------
+## modal + 高 zorder：盖在对话之上，吃掉所有点击，玩家无法前进；N 秒后自动隐藏。
+## 配合 convert_script.py 的 【锁定操作Ns】 使用。文本框保持正常显示。
+################################################################################
+
+screen op_lock(seconds):
+    zorder 200
+    modal True
+    timer seconds action Hide("op_lock")
+
+################################################################################
+## 颤动文字标签 - {shake}...{/shake}（point 8）
+## ----------------------------------------------------------------
+## 给一段文字加持续颤动。把内容逐字替换为带 tremble 变换的内联 displayable，
+## 这样只有被包裹的文字抖动，其余文字与名字框不受影响。
+## 用法（剧本/raw script 内）：{shake}好刻薄{/shake}
+################################################################################
+
+transform tremble:
+    subpixel True
+    block:
+        ease 0.06 yoffset -2 xoffset 1
+        ease 0.06 yoffset 2 xoffset -1
+        ease 0.06 yoffset -1 xoffset -2
+        ease 0.06 yoffset 1 xoffset 2
+        repeat
+
+style tremble_char is default:
+    font gui.text_font
+    size gui.text_size
+    color gui.text_color
+    outlines gui.text_outlines
+
+init python:
+    def _shake_text_tag(tag, argument, contents):
+        new_list = []
+        for kind, text in contents:
+            if kind == renpy.TEXT_TEXT:
+                for ch in text:
+                    new_list.append(
+                        (renpy.TEXT_DISPLAYABLE, At(Text(ch, style="tremble_char"), tremble)))
+            else:
+                new_list.append((kind, text))
+        return new_list
+
+    config.custom_text_tags["shake"] = _shake_text_tag
+
+################################################################################
 ## 大文本框界面 - Large Textbox Screen (Full-height narrative text)
 ## 居中在屏幕正中央 (1920-1520)/2=200, (1080-800)/2=140
 ################################################################################
@@ -323,13 +402,15 @@ screen centered_large_say(who, what):
         background None
 
         text what id "what":
-            ## Centered with larger font for dramatic effect
+            ## Centered with a much larger font — these are the prologue's
+            ## single-sentence gut-punches (疯子。/ 逃避吧！/ 瘾。). The size jump
+            ## is the whole point: make the impact land (point 1).
             xalign 0.5
             yalign 0.5
             text_align 0.5
             xsize 1360
             font gui.text_font
-            size dialog_size() + 6  # smaller in English; see init python at top
+            size dialog_size() + 39  # ≈72 in CN / ≈66 in EN; see init python at top
             color "#ffffff"
             line_spacing 10
             outlines gui.text_outlines
@@ -1312,7 +1393,8 @@ style skip_text:
 ################################################################################
 
 screen route_title(title, subtitle=None):
-    ## 全屏显示周目标题，点击后淡出
+    ## 全屏显示周目标题（"浮潜"）。出现和消失都放慢；不允许鼠标点击快进，
+    ## 只有按住 ctrl（快进/skip）才能跳过（point 3）。
 
     modal True
     zorder 100
@@ -1346,23 +1428,26 @@ screen route_title(title, subtitle=None):
                 text subtitle:
                     style "route_subtitle_text"
 
-    ## 点击任意处开始淡出
+    ## 自走时序：淡入(2.2s) + 停留 → 到点自动开始淡出。没有任何鼠标点击区域，
+    ## 因此点击不会快进；modal 也挡住了对下层的点击。
     if not closing:
-        button:
-            xfill True
-            yfill True
-            action SetScreenVariable("closing", True)
+        timer 4.0 action SetScreenVariable("closing", True)
 
-    ## 淡出完成后关闭
+    ## 淡出(2.2s)完成后关闭
     if closing:
-        timer 0.8 action Return()
+        timer 2.2 action Return()
 
+    ## 唯一的快进通道：按住 ctrl 进入 skip 时立即结束。轮询 is_skipping()，
+    ## 因为 skip 是全局键映射，不依赖本 screen 的可聚焦元件。
+    timer 0.05 repeat True action If(renpy.is_skipping(), true=Return(), false=NullAction())
+
+## 出现/消失都放慢（point 3）：原来 1.0 / 0.8，现在 2.2 / 2.2。
 transform route_title_fadein:
     alpha 0.0
-    ease 1.0 alpha 1.0
+    easein 2.2 alpha 1.0
 
 transform route_title_fadeout:
-    ease 0.8 alpha 0.0
+    easeout 2.2 alpha 0.0
 
 style route_title_text:
     font gui.text_font
