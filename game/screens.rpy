@@ -47,14 +47,14 @@ init python:
             deleted_count += 1
         # 没存档了，主菜单按钮回到"开始游戏"
         persistent.has_save_in_run = False
-        renpy.notify("已删除 {} 个存档".format(deleted_count))
+        renpy.notify(_("已删除 {} 个存档").format(deleted_count))
 
     def delete_persistent_data():
         """Delete all persistent data (route progress, endings, etc.)."""
         # Clear all persistent data by resetting to defaults
         persistent._clear(progress=True)
         # Notify the user
-        renpy.notify("已清除所有持久化数据，请重启游戏")
+        renpy.notify(_("已清除所有持久化数据，请重启游戏"))
         # Restart the game to apply changes
         renpy.utter_restart()
 
@@ -469,6 +469,9 @@ style split_column_text is default:
 ##      有"打字时回流"的副作用，却能让 say 和静态左栏折行、高度完全一致。
 screen split_say_left(who, what):
     ## 左栏阶段：左栏就是活动 say（id "what" → 逐字显示、单击推进）。
+    ## 顺手把（已翻译的）what 存进 _split_left_text，供右栏阶段静态显示——这样
+    ## 英文模式下右栏开始后，左栏仍是英文，不会变回中文。
+    $ store._split_left_text = what
     fixed:
         xpos 0
         ypos 260
@@ -712,8 +715,8 @@ screen main_menu():
         else:
             textbutton _("开始游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting at menu_btn_anim(0.42)
         textbutton _("读取存档") action ShowMenu("load") sensitive not _main_menu_starting at menu_btn_anim(0.36)
-        textbutton _("删除存档") action Confirm("确定要删除所有存档吗？此操作无法撤销。", yes=Function(delete_all_saves), no=None) sensitive not _main_menu_starting at menu_btn_anim(0.30)
-        textbutton _("清除进度") action Confirm("确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）", yes=Function(delete_persistent_data), no=None) sensitive not _main_menu_starting at menu_btn_anim(0.24)
+        textbutton _("删除存档") action Confirm(_("确定要删除所有存档吗？此操作无法撤销。"), yes=Function(delete_all_saves), no=None) sensitive not _main_menu_starting at menu_btn_anim(0.30)
+        textbutton _("清除进度") action Confirm(_("确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）"), yes=Function(delete_persistent_data), no=None) sensitive not _main_menu_starting at menu_btn_anim(0.24)
         textbutton _("音乐鉴赏") action ShowMenu("music_room") sensitive not _main_menu_starting at menu_btn_anim(0.18)
         textbutton _("设置") action ShowMenu("preferences") sensitive not _main_menu_starting at menu_btn_anim(0.12)
         textbutton _("关于") action ShowMenu("about") sensitive not _main_menu_starting at menu_btn_anim(0.06)
@@ -884,8 +887,8 @@ screen navigation():
             else:
                 textbutton _("开始游戏") action Start()
             textbutton _("读取存档") action ShowMenu("load")
-            textbutton _("删除存档") action Confirm("确定要删除所有存档吗？此操作无法撤销。", yes=Function(delete_all_saves), no=None)
-            textbutton _("清除进度") action Confirm("确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）", yes=Function(delete_persistent_data), no=None)
+            textbutton _("删除存档") action Confirm(_("确定要删除所有存档吗？此操作无法撤销。"), yes=Function(delete_all_saves), no=None)
+            textbutton _("清除进度") action Confirm(_("确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）"), yes=Function(delete_persistent_data), no=None)
             textbutton _("音乐鉴赏") action ShowMenu("music_room")
         else:
             textbutton _("历史记录") action ShowMenu("history")
@@ -1138,7 +1141,7 @@ screen preferences():
                     label _("存档管理")
                     textbutton _("删除所有存档"):
                         style "delete_saves_button"
-                        action Confirm("确定要删除所有存档吗？此操作无法撤销。",
+                        action Confirm(_("确定要删除所有存档吗？此操作无法撤销。"),
                             yes=Function(delete_all_saves),
                             no=None)
 
@@ -1343,7 +1346,7 @@ screen music_room():
 
             for track in music_tracks:
                 if is_music_unlocked(track["id"]):
-                    textbutton track["name"]:
+                    textbutton _(track["name"]):
                         action Play("music", track["file"])
                 else:
                     textbutton "???":

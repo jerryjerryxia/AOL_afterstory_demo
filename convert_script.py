@@ -130,18 +130,23 @@ def extract_lock(dialogue):
 
 # 用于 Extended文本框 标点分句的占位符（【屏幕震动】被替换成它）。
 _SHAKE_TOKEN = ''
-# 句末标点（在其后断开）：句号、问号、感叹号、中文省略号。
+# 断句标点（都"在其后断开"、归入前一块）：句号、问号、感叹号、中文省略号、破折号。
 # 注意：ASCII 的 "..." 不算省略号（多为口吃/迟疑，不该断句），中文 … 才算。
 _ENDERS = set('。！？…')
+_SPLIT_AFTER = _ENDERS | {'—'}   # 破折号 —— 和其他标点一样，留在前一句末尾
+
+def _has_content(s):
+    """是否含实质内容（不只是断句标点/破折号/空白）——用于避免标点/破折号单独成块。"""
+    return any((c not in _SPLIT_AFTER) and (not c.isspace()) for c in s)
 
 def split_click_chunks(text):
-    """把 Extended文本框 的一段文字按标点切成若干"点击块"（point 4）。
+    """把 Extended（大/小）文本框 的一段文字按标点切成若干"点击块"。
 
     返回 [(chunk_text, effect_before), ...]，effect_before 为 None 或 'shake'。
     规则：
-    - 句号/问号/感叹号/中文省略号 之后断开（标点跟在前一块末尾）。
-    - 破折号 —— 之前断开（破折号引出下一块）。
-    - 连续标点算一次断点，不产生空块。
+    - 句号/问号/感叹号/中文省略号/破折号 之后断开（标点本身留在前一块末尾）。
+    - 破折号 —— 也和其他标点一样归入前一块（不再引出下一块）。
+    - 连续标点算一次断点，不产生空块；前面没有实质内容时不断（让破折号引出惨叫等）。
     - ASCII "..." 不断句。
     - 【屏幕震动】(占位符) 强制断点，且其后那一块带 'shake' 特效。
     """
@@ -168,19 +173,15 @@ def split_click_chunks(text):
             flush(next_effect='shake')
             i += 1
             continue
-        if ch == '—':
-            # 破折号：在其之前断开，破折号本身归入下一块
-            flush()
-            while i < n and text[i] == '—':
-                cur += '—'
-                i += 1
-            continue
-        if ch in _ENDERS:
-            # 句末标点：连续吃完后在其之后断开
-            while i < n and text[i] in _ENDERS:
+        if ch in _SPLIT_AFTER:
+            # 句末标点 / 破折号：连续吃完（连续标点算一次），归入前一块，在其后断开。
+            # 但前面没有实质内容时（破折号紧跟在强制断点之后、要引出后面的文字，
+            # 如惨叫"——啊啊"）不断，让它和后面连在一起。
+            while i < n and text[i] in _SPLIT_AFTER:
                 cur += text[i]
                 i += 1
-            flush()
+            if _has_content(cur):
+                flush()
             continue
         cur += ch
         i += 1
@@ -291,8 +292,9 @@ def emit_split_large_block(lines, start_i, end_line, indent="    "):
             out.append(f'{indent}extend {format_dialogue(chr(92) + "n" + ln)}')
 
     if right:
-        # 左栏装不下，溢出部分进右栏：冻结左栏文本，再切右栏活动 say。
-        out.append(f'{indent}$ _split_left_text = {_split_left_literal(left)}')
+        # 左栏装不下，溢出部分进右栏。左栏内容由 split_say_left 屏幕在运行时把
+        # （已翻译的）what 存进 _split_left_text，再切右栏活动 say —— 不在这里写
+        # 中文字面量，否则英文模式下右栏阶段左栏会变回中文。
         first = True
         for ln in right:
             if first:
@@ -391,13 +393,15 @@ def emit_transition_lines(output, indent, scene_name, scene_desc):
     else:
         output.append(f'{indent}$ current_scene_desc = None')
 
-def emit_extended_segments(collected, output, indent):
-    """普通 Extended文本框（非大文本框）：在同一段落里按标点逐次点击展示（point 4）。
+def emit_extended_segments(collected, output, indent, large=False):
+    """Extended文本框（大/小）：在同一段落里按标点逐次点击展示（point 4）。
 
     collected 是 [(speaker_or_None or '__transition__', text/payload), ...]。
     第一块作为 say，其余块用不带 \\n 的 extend 接在同一段后面；带 'shake'
-    特效的块前插入一次 `with vpunch` 屏幕震动（point 6）。
+    特效的块前插入一次 `with fx_quake` 屏幕震动（point 6）。
+    large=True：旁白走 large_narrator（大文本框屏幕），否则普通 narrator。
     """
+    narr = 'large_narrator ' if large else ''
     first_emitted = False
     seg_speaker = None
     seg_text = ''
@@ -415,7 +419,7 @@ def emit_extended_segments(collected, output, indent):
                 if seg_speaker:
                     output.append(f'{indent}{seg_speaker} {format_dialogue(chunk)}')
                 else:
-                    output.append(f'{indent}{format_dialogue(chunk)}')
+                    output.append(f'{indent}{narr}{format_dialogue(chunk)}')
                 first_emitted = True
             else:
                 if effect == 'shake':
@@ -728,33 +732,9 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
     output = []
     indent = "    "
 
-    # 普通 Extended文本框（point 4/6）：同一段落、按标点逐次点击，屏幕震动。
-    if not use_large:
-        emit_extended_segments(collected, output, indent)
-        return output, i
-
-    # Extended大文本框：保持原行为——每行用 \n 换行累积（point 4 明确不动大文本框）。
-    first_line = True
-    for speaker, text in collected:
-        # Handle scene transitions - they break the extend chain
-        if speaker == '__transition__':
-            scene_name, scene_desc = text
-            emit_transition_lines(output, indent, scene_name, scene_desc)
-            # Next dialogue line should start fresh
-            first_line = True
-            continue
-
-        # First line outputs normally, all subsequent lines use extend
-        if first_line:
-            if speaker:
-                output.append(f'{indent}{speaker} {format_dialogue(text)}')
-            else:
-                output.append(f'{indent}large_narrator {format_dialogue(text)}')
-            first_line = False
-        else:
-            # All subsequent lines use extend
-            output.append(f'{indent}extend {format_dialogue(chr(92) + "n" + text)}')
-
+    # Extended 文本框（大/小）现在统一走同一段落、按标点逐次点击的分句逻辑。
+    # 大文本框只是旁白用 large_narrator、屏幕用 large_say，分句规则完全一致。
+    emit_extended_segments(collected, output, indent, large=use_large)
     return output, i
 
 
@@ -790,27 +770,22 @@ def process_choice_content(content_lines, indent="            "):
             output.append(f"{indent}## Split Extended大文本框结束")
             continue
 
-        # Check for Extended大文本框 markers
+        # Check for Extended大文本框 markers（也走同段落标点分句，large=True）
         if 'Extended大文本框开始' in line:
-            output.append(f"{indent}## Extended大文本框开始 - accumulating large textbox")
-            # Collect lines until end marker
-            first_line = True
+            output.append(f"{indent}## Extended大文本框开始 - 大文本框分句")
+            entries = []
             while i < len(content_lines):
                 next_line = content_lines[i].strip()
                 i += 1
                 if 'Extended大文本框结束' in next_line:
-                    output.append(f"{indent}## Extended大文本框结束")
                     break
                 if not next_line:
                     continue
-                # Skip stage directions
                 if next_line.startswith('【') and next_line.endswith('】'):
                     continue
-                if first_line:
-                    output.append(f'{indent}large_narrator {format_dialogue(next_line)}')
-                    first_line = False
-                else:
-                    output.append(f'{indent}extend {format_dialogue(chr(92) + "n" + next_line)}')
+                entries.append((None, next_line))
+            emit_extended_segments(entries, output, indent, large=True)
+            output.append(f"{indent}## Extended大文本框结束")
             continue
 
         # Check for Extended文本框 markers (non-large)

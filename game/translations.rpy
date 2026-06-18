@@ -6,7 +6,7 @@ init python:
     ## Replace Ren'Py built-in English strings with Chinese
 
     ## 确认对话框相关
-    config.quit_action = Confirm("确定要退出游戏吗？", Quit(confirm=False), Return())
+    config.quit_action = Confirm(_("确定要退出游戏吗？"), Quit(confirm=False), Return())
 
     ## 通知消息
     config.autosave_callback = lambda: renpy.notify(_("自动存档完成"))
@@ -27,7 +27,7 @@ translate None strings:
     new "确定要覆盖这个存档吗？"
 
     old "Are you sure you want to quit?"
-    new "确定要退出游戏吗？"
+    new _("确定要退出游戏吗？")
 
     old "Are you sure you want to return to the main menu?\nThis will lose unsaved progress."
     new "确定要返回主菜单吗？\n未保存的进度将会丢失。"

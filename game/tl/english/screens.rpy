@@ -196,19 +196,19 @@ translate english strings:
 
     # game/screens.rpy:977
     old "版本 [config.version!t]\n"
-    new "版本 [config.version!t]\n"
+    new "Version [config.version!t]\n"
 
     # game/screens.rpy:979
     old "在此处添加游戏介绍...\n"
-    new "在此处添加游戏介绍...\n"
+    new "Add game introduction here...\n"
 
     # game/screens.rpy:981
     old "制作人员：\n"
-    new "制作人员：\n"
+    new "Credits:\n"
 
     # game/screens.rpy:982
     old "- 策划：\n- 程序：\n- 美术：\n- 音乐：\n"
-    new "- 策划：\n- 程序：\n- 美术：\n- 音乐：\n"
+    new "- Design:\n- Programming:\n- Art:\n- Music:\n"
 
     # game/screens.rpy:1017
     old "确定"
@@ -225,4 +225,45 @@ translate english strings:
     # game/translations.rpy:12 (autosave_callback notification)
     old "自动存档完成"
     new "Auto-save complete"
+
+# TODO: Translation updated at 2026-06-18 14:35
+
+translate english strings:
+
+    # game/screens.rpy:1098
+    old "开发者模式"
+    new "Developer Mode"
+
+    # game/screens.rpy:1099
+    old "显示场景与音乐参考"
+    new "Show Scene/Music References"
+
+# TODO: Translation updated at 2026-06-18 15:42
+
+translate english strings:
+
+    # game/screens.rpy:50
+    old "已删除 {} 个存档"
+    new "Deleted {} save(s)"
+
+    # game/screens.rpy:57
+    old "已清除所有持久化数据，请重启游戏"
+    new "All persistent data cleared. Please restart the game."
+
+    # game/screens.rpy:719
+    old "确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）"
+    new "Clear all progress?\n(Playthroughs, ending unlocks, etc. The game will restart.)"
+
+    # game/screens.rpy:1332 (music_room track names)
+    old "主题曲"
+    new "Main Theme"
+
+    old "日常"
+    new "Daily Life"
+
+    old "感动"
+    new "Emotional"
+
+    old "结局"
+    new "Ending"
 
