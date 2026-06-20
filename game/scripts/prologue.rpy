@@ -107,10 +107,7 @@ label route1_prologue:
     extend "\n在长久的漂浮中，你渐渐忘记了消逝的体温，忘记了静脉里潺潺流动的暗红血液，忘记了你究竟为什么来到这里。"
     extend "\n你忘记了呼吸。"
     ## Extended大文本框结束
-    ## 水底泡泡上浮音效：Bubbles_10
-    $ play_sfx("audio/sfx/Bubbles_10.wav")
     ## Extended大文本框开始 - accumulating large textbox
-    $ wait_sfx()
     large_narrator "都说远道而来的友人要以热情相迎。"
     extend "\n本该是这样的。"
     extend "\n但你累了，实在是太累了。长时间保持不动竟是一件如此令人疲惫的事。"
