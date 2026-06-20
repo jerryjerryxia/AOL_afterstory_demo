@@ -129,6 +129,43 @@ init python:
             return
         renpy.utter_restart()
 
+    import wave as _wave
+    _sfx_dur_cache = {}
+    _sfx_end_time = [0.0]   # 最近一次音效的预计结束时刻（绝对游戏时钟，秒）
+
+    def _sfx_duration(path):
+        """读 wav 头算时长（秒），缓存。读不到就当 0（不阻塞）。"""
+        if path not in _sfx_dur_cache:
+            d = 0.0
+            try:
+                f = renpy.open_file(path)
+                w = _wave.open(f)
+                d = w.getnframes() / float(w.getframerate())
+                w.close()
+            except Exception:
+                d = 0.0
+            _sfx_dur_cache[path] = d
+        return _sfx_dur_cache[path]
+
+    def play_sfx(path):
+        """播放音效（sound 声道，受音效音量控制），并记下预计结束时刻供 wait_sfx 用。
+        转换器在音效标记处发 `$ play_sfx(...)`，在下一句正文前发 `$ wait_sfx()`。"""
+        renpy.sound.play(path)
+        _sfx_end_time[0] = time.time() + _sfx_duration(path)
+
+    def wait_sfx():
+        """阻塞到最近一次音效播完，再放行下一句正文（point 3）。用「剩余时长」做**单次
+        有界** hard 暂停：自动结束（绝不卡死），中间转场已耗掉的时间会自动扣除，所以
+        音效与碎裂等转场仍同步、转场之后的正文才补等剩余部分。hard=True → 等待期间
+        点击/快进都跳不过，「音效播完前不出现下段文字」。"""
+        ## 自动化测试（renpy ... test）里 hard 暂停无法被 advance 跳过，会吃满
+        ## `advance until` 的超时预算 → 直接跳过等待。正常游玩照常等。
+        if getattr(renpy.game.args, "command", None) == "test":
+            return
+        remaining = _sfx_end_time[0] - time.time()
+        if remaining > 0:
+            renpy.pause(remaining, hard=True)
+
     def unlock_route(route_num):
         """Demo版：通关时记下 last_route_completion_time，主菜单按钮回到 Start —— 旧存档
         虽然还在，但 mtime 早于 completion_time，has_continuable_save() 会返回 False。"""

@@ -148,6 +148,68 @@ style prompt_text is gui_text
 ## 对话界面 - Say Screen
 ################################################################################
 
+init python:
+    ## 运行时「逐句点击」：显示时在句末标点后插入 {w}（等待点击）标签，而不是把
+    ## 分句写进源文本。好处：翻译 ID 永远是干净整句、与英文源 1:1，以后改分句规则
+    ## 再也不会冲掉翻译（这是把转换期分句改成运行时分句的核心）。
+    ## 规则（中英通吃）：
+    ##   - 。！？… 和 ASCII . ! ? 之后断句（标点留在前），等待点击；—— 之后也断；
+    ##   - 省略号不断：ASCII 连续 ≥2 个点当省略号（…/...），单个 . 当英文句号要断；
+    ##   - 句尾（后面再无实质内容）不加 {w}——say 收尾本身就等点击；
+    ##   - extend 边界（标点紧跟 Ren'Py 的 {fast} 标签）也不加 {w}：那个 {w} 会被
+    ##     {fast} 瞬显跳过（冗余），更糟的是会吞掉紧随其后的 \n 换行（split/大文本框
+    ##     里"几乎没有跨行"的元凶）。statement 边界本身就是一次点击。
+    ##   - 用于旁白和所有有名字的角色对白（point：句号/问号/感叹号/破折号处处分句）；
+    ##     只有居中大字框不分句。
+    def add_click_pauses(what):
+        if not what:
+            return what
+        STRONG = u"。！？!?…"          # 单个即断的句末标点
+        def wants_pause(rest):
+            rest = rest.lstrip()
+            if not rest or rest.startswith('{fast}'):
+                return False
+            ## 去掉文本标签（{size}/{i}/{/…} 等）后还有实质文字才断句——避免在闭合标签
+            ## 前插看不见的空 {w}（如小字行 "…——{/size}"、斜体专有名词收尾）。
+            import re as _re
+            return bool(_re.sub(r'\{[^}]*\}', '', rest).strip())
+        out = []
+        n = len(what)
+        i = 0
+        while i < n:
+            ch = what[i]
+            if ch == '.':                # ASCII 点：≥2 个=省略号不断，单个=句号断
+                j = i
+                while j < n and what[j] == '.':
+                    j += 1
+                out.append(what[i:j])
+                if j - i == 1 and wants_pause(what[j:]):
+                    out.append('{w}')
+                i = j
+                continue
+            if ch in STRONG or ch == u'—':
+                j = i + 1
+                while j < n and (what[j] in STRONG or what[j] == u'—'):
+                    j += 1
+                out.append(what[i:j])
+                if wants_pause(what[j:]):
+                    out.append('{w}')
+                i = j
+                continue
+            out.append(ch)
+            i += 1
+        return ''.join(out)
+
+    class ClickPauseCharacter(renpy.character.ADVCharacter):
+        ## 旁白/对白角色：在 __call__ 最早处把整句 what 插入 {w}（逐句点击）。
+        ## 关键——必须在 __call__ 里改，不能在 do_display 里改：ADVCharacter.__call__
+        ## 会先 `dtt = DialogueTextTags(what)` 从原文解析出 {w} 停顿点，再带着这个 dtt
+        ## 调 do_display。在 do_display 里加的 {w} 进了屏幕文本却没进 dtt，会被当成无效
+        ## 标签静默吞掉 —— 整句一次显示、完全不分句（和文字速度无关，这是之前的真 bug）。
+        ## {w} 停顿是按 dtt 拆出的独立 saybehavior 交互，逐段等点击，瞬显也照样生效。
+        def __call__(self, what, *args, **kwargs):
+            return super(ClickPauseCharacter, self).__call__(add_click_pauses(what), *args, **kwargs)
+
 screen say(who, what):
     style_prefix "say"
 
@@ -471,7 +533,13 @@ screen split_say_left(who, what):
     ## 左栏阶段：左栏就是活动 say（id "what" → 逐字显示、单击推进）。
     ## 顺手把（已翻译的）what 存进 _split_left_text，供右栏阶段静态显示——这样
     ## 英文模式下右栏开始后，左栏仍是英文，不会变回中文。
-    $ store._split_left_text = what
+    ## 关键：必须用 renpy.predicting() 门控。Ren'Py 会预渲染（predict）后面的
+    ## split_say_left，预测时这个 $ 会带着「后面某个分栏块」的 what 执行，污染
+    ## _split_left_text，导致右栏阶段左栏显示成后文（例如"鼓的声音"那段反复顶替
+    ## 前文）。只在真正显示（非预测）时写入，预测不写，bug 即消。
+    ## 冻结左栏给右栏阶段静态显示：去掉 {w}（ClickPauseCharacter 给活动 what 插了
+    ## 逐句点击标签，但静态左栏已全部显示完，不需要也不能用 {w}）。
+    $ if not renpy.predicting(): store._split_left_text = what.replace("{w}", "")
     fixed:
         xpos 0
         ypos 260
@@ -1112,6 +1180,8 @@ screen preferences():
                     ## 文字速度滑块上限砍半：默认 range=200cps，从中点往上（~100cps+）
                     ## 肉眼已分不出快慢、纯属浪费行程。改成 range=100，最慢端（最小值）
                     ## 不变，最大值取原来的一半，整条滑块的有效分辨率翻倍。
+                    ## 注：逐句点击 {w} 是按 dtt 拆出的独立交互、逐段等点击，瞬显也照常
+                    ## 生效（见 ClickPauseCharacter），所以这里**不需要**限制最高速度。
                     bar value Preference("text speed", range=100)
 
                     label _("自动前进时间")

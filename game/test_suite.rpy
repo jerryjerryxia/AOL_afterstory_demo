@@ -6,7 +6,12 @@
 ################################################################################
 
 init python:
-    _test.timeout = 15.0
+    ## 旁白的「逐句点击」现在由运行时 {w} 实现，整个序章约 138 个点击点。测试框架
+    ## 默认把帧率压到 10fps（renpy/test/testexecution.py），每个点击点要等 1~2 帧，
+    ## 138 点 → ~30s 走不完到 route_title。关掉限帧让 advance 全速推进，15s 即够。
+    ## {w} 仍照常被测试驱动（当初就是它抓到了 id "what" 不一致的 bug）。
+    _test.maximum_framerate = False
+    _test.timeout = 20.0
 
     ## Tests need instant text, but `preferences.text_cps` is a PERSISTED
     ## preference — naively setting it to 0 leaves the player's text speed
@@ -16,15 +21,28 @@ init python:
     ## (renpy/main.py), so restoring the in-memory value there — plus an
     ## explicit save_persistent() — guarantees the final on-disk value is the
     ## player's, not 0.
+    ## 测试用 Chinese choice 文本匹配（"不对劲"/"疯了"…），但 _preferences.language
+    ## 是 PERSISTED 的——如果上次有人切到 english 并留在存档里，测试就会在英文界面
+    ## 里永远找不到中文选项、卡在第一个 menu。所以测试开始时把语言钉到中文（None），
+    ## 退出时和 text_cps 一样还原成玩家原本的语言，绝不把测试语言写回玩家存档。
     def _test_fast_text():
         if not hasattr(store, "_test_saved_text_cps"):
             store._test_saved_text_cps = preferences.text_cps
         preferences.text_cps = 0
+        if not hasattr(store, "_test_saved_language"):
+            store._test_saved_language = _preferences.language
+        if _preferences.language is not None:
+            renpy.change_language(None)
 
     def _test_restore_text():
         if hasattr(store, "_test_saved_text_cps"):
             preferences.text_cps = store._test_saved_text_cps
             del store._test_saved_text_cps
+            renpy.save_persistent()
+        if hasattr(store, "_test_saved_language"):
+            ## 直接写回 preference（不走 change_language —— 退出阶段无需再触发重翻译）。
+            _preferences.language = store._test_saved_language
+            del store._test_saved_language
             renpy.save_persistent()
 
     if _test_restore_text not in config.at_exit_callbacks:

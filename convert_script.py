@@ -205,6 +205,28 @@ def format_dialogue(text):
         escaped = text.replace('"', '\\"')
         return f'"{escaped}"'
 
+_SFX_TEXT_STMT_RE = re.compile(r'''^([a-z_]+ )?["']''')
+
+def insert_sfx_waits(script_text):
+    """在 `$ play_sfx(…)` 之后、下一句正文/对白之前插入 `$ wait_sfx()`（point 3）。
+
+    正文/对白 = say / extend / 旁白（行首是「小写标识符 + 引号」或直接引号）。
+    转场（## 注释、scene、$ 赋值、call screen 等）都不算正文会被跳过 —— 所以
+    音效与碎裂等转场仍然同步触发，转场之后的第一句正文才阻塞等音效播完。
+    """
+    lines = script_text.split('\n')
+    out = []
+    pending = False
+    for line in lines:
+        if pending and _SFX_TEXT_STMT_RE.match(line.strip()):
+            indent = line[:len(line) - len(line.lstrip())]
+            out.append(f'{indent}$ wait_sfx()')
+            pending = False
+        out.append(line)
+        if 'play_sfx(' in line:
+            pending = True
+    return '\n'.join(out)
+
 def _split_left_literal(left_lines):
     """把左栏各行拼成一个 Ren'Py 双引号字符串字面量，其值与左栏阶段累积出来的
     what 完全一致（逐行 transform_display_text + 字面 \\n 连接）。供右栏阶段
@@ -238,6 +260,22 @@ def _split_capacity_index(narration):
             return idx
         cum += v
     return len(narration)
+
+def _emit_split_column(out, indent, lines, opening_stmt):
+    """把分栏一栏的若干源行写成 say/extend：每个源行 = 一句**干净文本**，源行之间
+    用字面 \\n 换行（point 2）。第一行用 opening_stmt 起头（split_left_narrator /
+    split_right_narrator），其余 extend "\\n…"。标点逐句点击由运行时 {w} 处理
+    （screens.rpy add_click_pauses），所以翻译 ID 与源行 1:1 稳定。"""
+    first = True
+    for ln in lines:
+        ln = ln.strip()
+        if not ln:
+            continue
+        if first:
+            out.append(f'{indent}{opening_stmt} {format_dialogue(ln)}')
+            first = False
+        else:
+            out.append(f'{indent}extend {format_dialogue(chr(92) + "n" + ln)}')
 
 def emit_split_large_block(lines, start_i, end_line, indent="    "):
     """Split Extended大文本框：文本先尽量塞进固定高度的左栏；放得下就单栏显示
@@ -282,26 +320,15 @@ def emit_split_large_block(lines, start_i, end_line, indent="    "):
     k = _split_capacity_index(narration)
     left, right = narration[:k], narration[k:]
 
-    # 左栏阶段：split_left_narrator（屏幕 split_say_left，左栏即活动 say，逐字显示）
-    first = True
-    for ln in left:
-        if first:
-            out.append(f'{indent}split_left_narrator {format_dialogue(ln)}')
-            first = False
-        else:
-            out.append(f'{indent}extend {format_dialogue(chr(92) + "n" + ln)}')
+    # 左栏阶段：split_left_narrator（屏幕 split_say_left，左栏即活动 say，逐字显示）。
+    # 每个源行内部再按标点切块逐次点击（point 4），源行之间 \n 换行（point 2）。
+    _emit_split_column(out, indent, left, 'split_left_narrator')
 
     if right:
         # 左栏装不下，溢出部分进右栏。左栏内容由 split_say_left 屏幕在运行时把
         # （已翻译的）what 存进 _split_left_text，再切右栏活动 say —— 不在这里写
         # 中文字面量，否则英文模式下右栏阶段左栏会变回中文。
-        first = True
-        for ln in right:
-            if first:
-                out.append(f'{indent}split_right_narrator {format_dialogue(ln)}')
-                first = False
-            else:
-                out.append(f'{indent}extend {format_dialogue(chr(92) + "n" + ln)}')
+        _emit_split_column(out, indent, right, 'split_right_narrator')
 
     return out, i
 
@@ -337,13 +364,17 @@ def emit_rightpage_block(lines, start_i, end_line, indent="    "):
     if not narration:
         return out, i
 
-    page_first = True   # 该行是否为某页第一行（第一行用 say 清屏，其余 extend）
+    page_first = True   # 该源行是否为某页第一行（第一行用 say 清屏，其余 extend）
     used = 0
     for ln in narration:
+        ln = ln.strip()
+        if not ln:
+            continue
         v = _visual_lines(ln)
         if not page_first and used + v > _SPLIT_COL_CAPACITY_LINES:
             page_first = True   # 这一页装不下了 → 翻页
             used = 0
+        # 每个源行 = 一句干净文本；标点逐句点击由运行时 {w} 处理。翻页/换行以源行为单位。
         if page_first:
             out.append(f'{indent}split_right_page_narrator {format_dialogue(ln)}')
             page_first = False
@@ -394,53 +425,51 @@ def emit_transition_lines(output, indent, scene_name, scene_desc):
         output.append(f'{indent}$ current_scene_desc = None')
 
 def emit_extended_segments(collected, output, indent, large=False):
-    """Extended文本框（大/小）：在同一段落里按标点逐次点击展示（point 4）。
+    """Extended文本框（大/小）：保留源换行（point 2）。每个源行 = 一句 say/extend，
+    整句**干净文本**——标点的「逐句点击」改由运行时 {w} 处理（见 screens.rpy 的
+    add_click_pauses）。这样翻译 ID 与源行 1:1 稳定，以后改分句逻辑再也不会冲掉翻译。
 
     collected 是 [(speaker_or_None or '__transition__', text/payload), ...]。
-    第一块作为 say，其余块用不带 \\n 的 extend 接在同一段后面；带 'shake'
-    特效的块前插入一次 `with fx_quake` 屏幕震动（point 6）。
-    large=True：旁白走 large_narrator（大文本框屏幕），否则普通 narrator。
+    - 段落第一行 = say；其后每行 = extend "\\n…"（源换行保留为视觉换行，point 2）。
+    - 行内 【屏幕震动】(point 6)：在标记处把该行拆开，中间插 `with fx_quake`；
+      拆出的后半段不另起 \\n（仍属同一句、同一视觉行）。这是唯一仍在转换期拆分的
+      情况（震动是屏幕特效，没法靠 {w} 文本标签触发）。
+    - __transition__ 结束当前段落（其后另起新 say，不带前导 \\n）。large=True 旁白
+      走 large_narrator（大文本框屏幕），否则普通 narrator。
     """
     narr = 'large_narrator ' if large else ''
-    first_emitted = False
-    seg_speaker = None
-    seg_text = ''
-    have_seg = False
+    first_emitted = False   # 本段落是否已经发出开头 say
 
-    def flush_segment():
-        nonlocal first_emitted, seg_speaker, seg_text, have_seg
-        if not have_seg:
-            return
-        for chunk, effect in split_click_chunks(seg_text):
-            chunk = chunk.strip()
-            if not chunk:
-                continue
-            if not first_emitted:
-                if seg_speaker:
-                    output.append(f'{indent}{seg_speaker} {format_dialogue(chunk)}')
-                else:
-                    output.append(f'{indent}{narr}{format_dialogue(chunk)}')
-                first_emitted = True
+    def emit_piece(speaker, text, lead_newline):
+        nonlocal first_emitted
+        if lead_newline:
+            text = chr(92) + 'n' + text
+        if not first_emitted:
+            if speaker:
+                output.append(f'{indent}{speaker} {format_dialogue(text)}')
             else:
-                if effect == 'shake':
-                    output.append(f'{indent}with fx_quake')
-                output.append(f'{indent}extend {format_dialogue(chunk)}')
-        seg_speaker = None
-        seg_text = ''
-        have_seg = False
+                output.append(f'{indent}{narr}{format_dialogue(text)}')
+            first_emitted = True
+        else:
+            output.append(f'{indent}extend {format_dialogue(text)}')
 
     for speaker, text in collected:
         if speaker == '__transition__':
-            flush_segment()
             scene_name, scene_desc = text
             emit_transition_lines(output, indent, scene_name, scene_desc)
             first_emitted = False
             continue
-        if not have_seg:
-            seg_speaker = speaker
-            have_seg = True
-        seg_text += text
-    flush_segment()
+        # 行内屏幕震动：按标记拆段，段间插 with fx_quake（point 6）。
+        parts = text.split('【屏幕震动】')
+        for pidx, part in enumerate(parts):
+            if pidx > 0:
+                output.append(f'{indent}with fx_quake')
+            part = part.strip()
+            if not part:
+                continue
+            # 新源行的第一段（且非段落开头）才需要前导 \n；被震动拆出的后半段
+            # （pidx>0）不加 \n，仍在同一视觉行。
+            emit_piece(speaker, part, first_emitted and pidx == 0)
 
 def convert_content_line(line, indent="    ", use_large_textbox=False):
     """Convert a single content line to Ren'Py format"""
@@ -480,6 +509,18 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     # Music stop markers 【音乐停】 or 【音效和音乐停】
     if '音乐停' in line:
         return f'{indent}$ current_music_scene = None\n{indent}stop music fadeout 1.0'
+
+    # Sound-effect markers 【…音效：filename】 -> one-shot on the sound channel.
+    # Convention: the marker names the clip explicitly (base name, no extension)
+    # of a file in audio/sfx/ (all .wav). `play sound` is async and non-blocking,
+    # so an SFX can sync with the transition that immediately follows it, and the
+    # sound mixer ("音效音量") controls its volume. A 音效 marker without a named
+    # file falls through to a plain comment (no sound) by design.
+    sfx_match = re.match(r'^【(.*?音效)[：:]\s*(.+?)\s*】$', line)
+    if sfx_match:
+        sfx_label = sfx_match.group(1)
+        sfx_name = sfx_match.group(2).strip()
+        return f'{indent}## {sfx_label}：{sfx_name}\n{indent}$ play_sfx("audio/sfx/{sfx_name}.wav")'
 
     # Pause markers 【停顿：N】 -> `pause N` (N is seconds, float ok)
     # Use sparingly — for breathing room before a scene's first line, etc.
@@ -1365,13 +1406,13 @@ def main():
     print(f"  Route 1: lines {route1_start+1}-{len(lines)}")
 
     # Prologue
-    prologue = convert_prologue(lines, 0, prologue_end)
+    prologue = insert_sfx_waits(convert_prologue(lines, 0, prologue_end))
     with open(r'X:\GameDev\AOL_afterstory_demo\game\scripts\prologue.rpy', 'w', encoding='utf-8') as f:
         f.write(prologue)
     print("Prologue converted!")
 
     # Route 1 (runs to end of file - no end marker in demo)
-    route1 = convert_route(lines, route1_start, len(lines), "route1_start", 1)
+    route1 = insert_sfx_waits(convert_route(lines, route1_start, len(lines), "route1_start", 1))
     # Demo-only: replace the route's trailing `return` with utter_restart().
     # Why: the demo is the only repo where the player returns from a finished
     # route back to the same polyhedron main menu. That round-trip puts the

@@ -6,11 +6,13 @@ label route1_start:
 ## 一周目：浮潜
 
     call screen route_title(_("浮潜"))
-    ## 脸入水后冒泡泡的音效
+    ## 脸入水后冒泡泡的音效：face-down-bubble
+    $ play_sfx("audio/sfx/face-down-bubble.wav")
     ## 转场：虚空对视
     scene black with scene_soft
     $ current_scene_name = "虚空对视"
     $ current_scene_desc = "背景一片漆黑，场景里只有王霜和一张桌子，阿鹤第一视角看着盯着他的王霜，参考DDLC最后的莫妮卡"
+    $ wait_sfx()
     wangshuang "欢迎回来，阿鹤。"
     ahe "倒不如去死。"
     wangshuang "哦？有趣的提议，为什么呢？"
@@ -35,7 +37,8 @@ label route1_start:
     ahe "太阳？"
     ## 小吃惊
     wangshuang "哦，不好意思，太阳在那儿。"
-    ## 玻璃破碎音效
+    ## 玻璃破碎音效：glass-smash-normalized
+    $ play_sfx("audio/sfx/glass-smash-normalized.wav")
     ## 转场：夏日对视
     scene bg_summergaze with scene_soft
     $ current_scene_name = "夏日对视"
@@ -45,6 +48,7 @@ label route1_start:
     ## 场景音乐参考风格2：Jellyfish - https://audionautix.com/Music/Jellyfish.mp3  (Jason Shaw)
     $ set_scene_music("route1_scene1")
     ## 默认
+    $ wait_sfx()
     wangshuang "你看，太阳。"
     ahe "嗯，太阳。"
     wangshuang "金色的，温暖的，让人舒适而安心的太阳，它就在那里。"
@@ -101,14 +105,10 @@ label route1_start:
     wangshuang "你当然不明白，你肯定在想‘可这明明也是一种外因，毕竟整个太阳系都齐心协力地求它继续活下去’。"
     ahe "唔..."
     ## Extended文本框开始 - accumulating textbox
-    wangshuang "然而现实恰恰相反——"
-    extend "太阳不死仅仅是因为它的使命尚未完成而已。"
-    extend "而它的死与它或其他任何造物的想法没有半点关系。"
+    wangshuang "然而现实恰恰相反——太阳不死仅仅是因为它的使命尚未完成而已。而它的死与它或其他任何造物的想法没有半点关系。"
     ## Extended文本框结束
     ## Extended文本框开始 - accumulating textbox
-    wangshuang "想法是轻薄的、由外界塑造的，一坨烂泥一样谁都可以捏一把，但同时也是无足轻重的。"
-    extend "而使命则是彻头彻尾、由内而外的——"
-    extend "只有在‘使命’松手之后，‘想法’才配拥有虚假的自由。"
+    wangshuang "想法是轻薄的、由外界塑造的，一坨烂泥一样谁都可以捏一把，但同时也是无足轻重的。而使命则是彻头彻尾、由内而外的——只有在‘使命’松手之后，‘想法’才配拥有虚假的自由。"
     ## Extended文本框结束
     ahe "这和我们又有什么关系？"
     wangshuang "当然有关系了，不然你怎么会出现在这里？"
@@ -179,12 +179,12 @@ label route1_start:
     $ current_scene_desc = "就是白屏。"
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "去找啊，否则这疼痛就永远不会有尽头。"
-    extend "去别处，就是这样。"
-    extend "否则这疼痛就永远不会有尽头。"
-    extend "你的大脑不会适应，你也绝无希望自我了断。"
-    extend "只能迈开步子。"
-    extend "只有这一个选择。"
-    extend "去找吧。"
+    extend "\n去别处，就是这样。"
+    extend "\n否则这疼痛就永远不会有尽头。"
+    extend "\n你的大脑不会适应，你也绝无希望自我了断。"
+    extend "\n只能迈开步子。"
+    extend "\n只有这一个选择。"
+    extend "\n去找吧。"
     ## Extended大文本框结束
     ## 白屏逐渐褪去
     ## 转场：甜品店对视1
@@ -272,12 +272,10 @@ label route1_start:
     wangshuang "无聊？可别太刺激了！你知道十二小时起步的感官过载是什么感觉吗？"
     wangshuang "五感全部推到极限，尤其是视觉，所有东西的颜色都比平时看到的要鲜艳无数倍，而且全都彼此交融，到最后视野里就是五彩斑斓的白。"
     ## Extended文本框开始 - accumulating textbox
-    wangshuang "所有东西都是饱满到极致的，你懂我意思吗？"
-    extend "就不是某种感官上的饱满，而是存在上的饱满，第四维度上的饱满，就是那种...不论我们怎么干涉都无法改变的状态。"
+    wangshuang "所有东西都是饱满到极致的，你懂我意思吗？就不是某种感官上的饱满，而是存在上的饱满，第四维度上的饱满，就是那种...不论我们怎么干涉都无法改变的状态。"
     ## Extended文本框结束
     ## Extended文本框开始 - accumulating textbox
-    wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？"
-    extend "应该不是，你应该拽不住我。"
+    wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
     ## Extended文本框结束
     ## 默认
     wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢乱用{i}KAS{/i}的，那次是真的差点死了..."
@@ -397,14 +395,14 @@ label route1_start:
     $ current_scene_name = "甜品店对视6"
     $ current_scene_desc = "背景蓝色调，桌上团子吃了几口，背景有更加明显的波纹纹理。从这里开始王霜消失了，但是是和世界融为一体的感觉。"
     large_narrator "更多思绪已无意义，一如时间。"
-    extend "溶解在蓝色空间里的凉爽糖分让你浑身的燥热与恶意消减了大半，你置身一片透明的海域里，又像是漂浮在空洞的宇宙空间中。"
-    extend "一切都是许可的，这样的冲动从未如此强烈过。"
-    extend "你迫切地想要伸出手，但双臂已经先你一步向前伸了出去，贪婪地揉捏着冰凉而柔顺的空气，水蓝色的空气。"
+    extend "\n溶解在蓝色空间里的凉爽糖分让你浑身的燥热与恶意消减了大半，你置身一片透明的海域里，又像是漂浮在空洞的宇宙空间中。"
+    extend "\n一切都是许可的，这样的冲动从未如此强烈过。"
+    extend "\n你迫切地想要伸出手，但双臂已经先你一步向前伸了出去，贪婪地揉捏着冰凉而柔顺的空气，水蓝色的空气。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "更深的见解就隐藏其中，因为一切都是许可的，视野中的所有事物都是从始至终连贯而统一的，如此怡人，如此饱满。"
-    extend "人类的智识自然无力探寻其中奥秘，但在王霜无处不在的笑容辉耀之下，你的一部分认知已踏入了更深层的水域。"
-    extend "越向深处就越被不可知所掣肘，当眼前的色彩开始回旋，你意识到或许梦境的另一面并非现实，而是某种更加完整且怖人的造物。"
+    extend "\n人类的智识自然无力探寻其中奥秘，但在王霜无处不在的笑容辉耀之下，你的一部分认知已踏入了更深层的水域。"
+    extend "\n越向深处就越被不可知所掣肘，当眼前的色彩开始回旋，你意识到或许梦境的另一面并非现实，而是某种更加完整且怖人的造物。"
     ## Extended大文本框结束
     ## 转场：甜品店对视6.51
     scene bg_dessertgaze6_51 with scene_dissolve
@@ -412,38 +410,35 @@ label route1_start:
     $ current_scene_desc = None
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你的知能越是提升，它的样貌就越发模糊，模糊的面容中只显露出一抹依稀可见的残酷笑容，仿佛在嘲讽你的徒劳。"
-    extend "但你已经满足了，由内而外地满足了，在饱满的感官刺激中感到一阵——"
-    extend "疲劳？"
-    extend "幸福的疲劳、优质的疲劳、苦苦追寻的疲劳、允许你在辗转反侧后终于入睡的甜美疲劳。"
+    extend "\n但你已经满足了，由内而外地满足了，在饱满的感官刺激中感到一阵——疲劳？"
+    extend "\n幸福的疲劳、优质的疲劳、苦苦追寻的疲劳、允许你在辗转反侧后终于入睡的甜美疲劳。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "世界空无一人，因为任何个体都不具备足够的差异能够让它们自称“存在”，因此你将它们尽数吞下，如同团子。"
-    extend "糖分继续满溢出来，沿着你存在的边缘缓缓淌下，坠入周身蔚蓝的虚空之中，粘稠而香甜。"
-    extend "糖浆，万物的粘合剂。"
-    extend "就用它来替代血液。"
-    extend "完成之后就去睡吧。"
-    extend "你的愿望在那念头浮出水面的瞬间便成为了现实，而你只想在这静谧安详的世界里睡去。"
+    extend "\n糖分继续满溢出来，沿着你存在的边缘缓缓淌下，坠入周身蔚蓝的虚空之中，粘稠而香甜。"
+    extend "\n糖浆，万物的粘合剂。就用它来替代血液。"
+    extend "\n完成之后就去睡吧。"
+    extend "\n你的愿望在那念头浮出水面的瞬间便成为了现实，而你只想在这静谧安详的世界里睡去。"
     ## Extended大文本框结束
     ## 色彩开始还原
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "然而当你行将合眼时，一阵强烈的恶心自胃里上涌，就像有人抓住你的肠胃，自下而上地用力挤压。"
-    extend "警告：过热。"
-    extend "过热。"
-    extend "钟表嘀嗒作响。"
-    extend "随着肠胃痉挛越发剧烈，你终于“哇”地一声吐了出来。"
-    extend "和你所熟知的呕吐不同，你吐出的只有色彩。"
+    extend "\n警告：过热。过热。"
+    extend "\n钟表嘀嗒作响。"
+    extend "\n随着肠胃痉挛越发剧烈，你终于“哇”地一声吐了出来。"
+    extend "\n和你所熟知的呕吐不同，你吐出的只有色彩。"
     ## 转场：甜品店对视7
     scene bg_dessertgaze7 with scene_dissolve
     $ current_scene_name = "甜品店对视7"
     $ current_scene_desc = "背景蓝色调和暖色调掺半，是那种正常色彩顺着阿鹤呕吐为中心开始向四周扩散的感觉，桌上团子吃了几口，背景里的波纹纹理消失，王霜完全消失"
     large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了桌布的颜色，这令人沮丧的还原随着你吐出更多的色彩而提速，很快覆盖了大半个视野。"
-    extend "色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原逐渐消失了。"
+    extend "\n色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原逐渐消失了。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你感到疲惫不堪，只想回到一个更加清醒的地方。"
-    extend "眼前桌子的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种细节。"
-    extend "因为你注意到，在美妙的蓝色消逝殆尽后，王霜并没有回来。"
-    extend "空空如也的店里坐着空空如也的你。"
+    extend "\n眼前桌子的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种细节。"
+    extend "\n因为你注意到，在美妙的蓝色消逝殆尽后，王霜并没有回来。"
+    extend "\n空空如也的店里坐着空空如也的你。"
     ## Extended大文本框结束
     ## 画面出现裂痕
     ## Extended大文本框开始 - accumulating large textbox
@@ -452,9 +447,9 @@ label route1_start:
     $ current_scene_name = "甜品店对视8"
     $ current_scene_desc = "这里就是以7为基础，逐渐碎裂然后转入黑屏的过程，我想就在周围背景里加一些裂纹就行。"
     large_narrator "还原之后的世界仿佛脱了水般脆弱不堪，单是目光扫过就让其表面生出了细小的裂痕。"
-    extend "更多裂痕。"
-    extend "直到周身的一切如同一副缺乏保养的老旧油画那样一片片剥落。"
-    extend "即使如此，王霜依旧没有回来。"
+    extend "\n更多裂痕。"
+    extend "\n直到周身的一切如同一副缺乏保养的老旧油画那样一片片剥落。"
+    extend "\n即使如此，王霜依旧没有回来。"
     ## Extended大文本框结束
     ## 转场：黑屏
     scene black with scene_soft
@@ -462,6 +457,7 @@ label route1_start:
     $ current_scene_desc = "就是黑屏"
     ## 剥落完成后，黑屏
     ## 水底泡泡上浮音效：Bubbles_10
+    $ play_sfx("audio/sfx/Bubbles_10.wav")
     ## 转场：粉红屏
     scene black with scene_soft
     $ current_scene_name = "粉红屏"
