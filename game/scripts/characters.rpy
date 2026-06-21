@@ -13,8 +13,12 @@
 ##   ctc       —— 普通对话框（narrator + 所有角色）
 ##   ctc_large —— 大文本框（large_narrator）
 ## 各自单独调即可。居中文本框不挂 ctc（point 1）。
-define ctc = Transform("ctc_dots", xoffset=-5, yoffset=-2)
-define ctc_large = Transform("ctc_dots", xoffset=-5, yoffset=2)
+## 光标的字号（也就是高度/上下位置）在 screens.rpy 的 _CARET_CFG 表里按 (类型,语言) 调。
+## 这里的 xoffset 只管水平贴近文字。
+define ctc = Transform("ctc_dots", xoffset=-5)
+## 大文本框用 ctc_dots_large：光标字号跟随 dialog_size()（英文小字号大文本框里不再
+## 又长又低，见 screens.rpy）。yoffset 仍可单独微调高低。
+define ctc_large = Transform("ctc_dots_large", xoffset=-5)
 
 ## 旁白/内心独白（无名字显示）—— ClickPauseCharacter：逐句点击由运行时 {w} 实现
 ## （见 screens.rpy add_click_pauses），翻译 ID 是干净整句、与英文源 1:1，改分句

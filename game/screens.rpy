@@ -314,22 +314,42 @@ transform say_intro_fade:
 ## 的 xoffset / yoffset。
 ################################################################################
 
-image ctc_dots:
-    ## 闪烁的打字光标：硬切亮/灭，像终端光标。
-    ## 用 ASCII 竖线 "|"（字体一定有，方块字形 ▏/│ 很多中文字体没有→显示不出来）。
-    Text("|", style="ctc_dots_text")
-    pause 0.5
-    alpha 0.0
-    pause 0.5
-    alpha 1.0
-    repeat
+## 光标画成一根实心竖条（不是 Text "|"——那种会被字体上沿空白拖低，长度和位置分不开）。
+## 每个 (文本框类型, 语言) 三个**互相独立**的旋钮：
+##   length：竖条高度（长度）
+##   yoff  ：上下位置。0 = 条顶和这行文字顶部齐平；往大调（正数）= 整条往下。
+##           注意：往上只能到 0（内联元素超出行顶会被裁掉、变不可见），到 0 就和正文齐了。
+##   width ：竖条粗细
+##   xoff  ：左右位置。0 = 紧贴文字末尾；往大调（正数）= 往右留空。往左只能到 0
+##           （超出文字末尾左边会被裁掉，和 yoff 同理）。
+init python:
+    _CARET_CFG = {
+        # (类型,    语言)        (length, yoff, width, xoff)
+        ("normal", "chinese"): (31, 5, 3, 0),
+        ("normal", "english"): (30, 6, 3, 6),
+        ("large",  "chinese"): (33, 5, 3, 0),
+        ("large",  "english"): (24, 5, 3, 6),
+    }
+    def _caret_size(kind):
+        def f(st, at):
+            lang = "english" if _preferences.language == "english" else "chinese"
+            length, yoff, width, xoff = _CARET_CFG[(kind, lang)]
+            ow = 2  # 黑色描边宽度（浮在亮背景上也清晰）
+            bar = Composite((width + 2 * ow, length + 2 * ow),
+                            (0, 0), Solid("#000000", xsize=width + 2 * ow, ysize=length + 2 * ow),
+                            (ow, ow), Solid(gui.text_color, xsize=width, ysize=length))
+            # 内联元素裁掉文字行框以外的部分，所以横竖都靠在「框内」摆放竖条：
+            # yoff 往下、xoff 往右（负值会被裁，下限 0）。
+            bx = max(0, xoff)
+            box_h = length + 2 * ow
+            cur = Composite((width + 2 * ow + bx, box_h), (bx, yoff), bar)
+            on = (st % 1.0) < 0.5
+            return (Transform(cur, alpha=(1.0 if on else 0.0)),
+                    ((0.5 - (st % 1.0)) if on else (1.0 - (st % 1.0))))
+        return f
 
-style ctc_dots_text is default:
-    ## 和正文完全一致的字体/颜色/描边，避免光标和文字看着是两套样式。
-    font gui.text_font
-    size gui.text_size
-    color gui.text_color
-    outlines gui.text_outlines
+image ctc_dots = DynamicDisplayable(_caret_size("normal"))
+image ctc_dots_large = DynamicDisplayable(_caret_size("large"))
 
 ################################################################################
 ## 操作锁定屏幕 - op_lock（point 5）
@@ -630,13 +650,16 @@ screen quick_menu():
     zorder 100
 
     if quick_menu:
-        hbox:
+        vbox:
             style_prefix "quick"
 
-            xalign 0.5
+            ## 竖排放在屏幕右下角（原本是横排居中底部）。
+            ## 想调位置就改 xoffset（离右边界）/ yoffset（离下边界）/ spacing（行距）。
+            xalign 1.0
             yalign 1.0
-            yoffset -10
-            spacing 20
+            xoffset -30
+            yoffset -15
+            spacing 6
 
             textbutton _("历史") action ShowMenu('history')
             textbutton _("跳过") action Skip() alternate Skip(fast=True, confirm=True)
@@ -654,12 +677,14 @@ style quick_button_text is button_text
 
 style quick_button:
     background None
+    xalign 1.0  # 竖排时每个按钮靠右对齐（贴右下角）
 
 style quick_button_text:
     size 21
     idle_color gui.idle_small_color
     hover_color gui.hover_color
     selected_color gui.selected_color
+    outlines gui.text_outlines  # 和正文一致的黑色描边，浮在画面上也清晰
 
 ################################################################################
 ## 选择支界面 - Choice Screen
