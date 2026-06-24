@@ -25,6 +25,15 @@ init python:
 ################################################################################
 
 init python:
+    ## English boxes use the full-size font (33) and so sit a touch lower than
+    ## they did at the shrunk size; nudge the large/split boxes up in English
+    ## only. Bump EN_BOX_YSHIFT to move them further up; Chinese is untouched.
+    EN_BOX_YSHIFT = 40
+    def box_ypos(base):
+        if _preferences.language == "english":
+            return base - EN_BOX_YSHIFT
+        return base
+
     def dialog_size():
         """Per-language dialogue font size.
 
@@ -328,7 +337,7 @@ init python:
         ("normal", "chinese"): (31, 5, 3, 0),
         ("normal", "english"): (30, 6, 3, 6),
         ("large",  "chinese"): (33, 5, 3, 0),
-        ("large",  "english"): (24, 5, 3, 6),
+        ("large",  "english"): (33, 5, 3, 6),
     }
     def _caret_size(kind):
         def f(st, at):
@@ -416,7 +425,7 @@ screen large_say(who, what):
     frame:
         at say_intro_fade
         xpos 200
-        ypos 140
+        ypos box_ypos(140)
         xsize 1520
         ysize 800
         padding (80, 80, 80, 80)
@@ -429,7 +438,10 @@ screen large_say(who, what):
             text_align 0.0
             xsize 1360
             font gui.text_font
-            size dialog_size()  # smaller in English; see init python at top
+            ## Full-height box has room to spare, so keep English at the normal
+            ## gui.text_size (33) — same as the other text — instead of shrinking
+            ## it to dialog_size() (27) like the narrower boxes do.
+            size gui.text_size
             color "#ffffff"
             line_spacing 10
             outlines gui.text_outlines
@@ -562,7 +574,7 @@ screen split_say_left(who, what):
     $ if not renpy.predicting(): store._split_left_text = what.replace("{w}", "")
     fixed:
         xpos 0
-        ypos 260
+        ypos box_ypos(260)
         xsize 1920
         ysize 760
 
@@ -572,7 +584,7 @@ screen split_say_left(who, what):
             ypos 0
             yanchor 0.0
             xsize 620
-            size dialog_size()
+            size gui.text_size  # full size in English too; matches large_say
             line_spacing 10
             adjust_spacing False
 
@@ -584,7 +596,7 @@ screen split_say_right(who, what):
     ## 右栏阶段：左栏静态（已填满），右栏是活动 say（id "what" → 逐字显示）。
     fixed:
         xpos 0
-        ypos 260
+        ypos box_ypos(260)
         xsize 1920
         ysize 760
 
@@ -596,7 +608,7 @@ screen split_say_right(who, what):
             ypos 0
             yanchor 0.0
             xsize 620
-            size dialog_size()
+            size gui.text_size  # full size in English too; matches large_say
             line_spacing 10
             adjust_spacing False
 
@@ -607,7 +619,7 @@ screen split_say_right(who, what):
             ypos 0
             yanchor 0.0
             xsize 620
-            size dialog_size()
+            size gui.text_size  # full size in English too; matches large_say
             line_spacing 10
             adjust_spacing False
 
@@ -624,7 +636,7 @@ screen split_say_right(who, what):
 screen split_right_page(who, what):
     fixed:
         xpos 0
-        ypos 260
+        ypos box_ypos(260)
         xsize 1920
         ysize 760
 
@@ -634,7 +646,7 @@ screen split_right_page(who, what):
             ypos 0
             yanchor 0.0
             xsize 620
-            size dialog_size()
+            size gui.text_size  # full size in English too; matches large_say
             line_spacing 10
             adjust_spacing False
 
