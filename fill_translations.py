@@ -451,7 +451,7 @@ def fill_string_translations(filepath, string_translations):
 
 
 def main():
-    base_dir = r'X:\GameDev\AOL_afterstory_demo'
+    base_dir = os.path.dirname(os.path.abspath(__file__))
     eng_script = os.path.join(base_dir, 'demo_script_eng.txt')
     tl_dir = os.path.join(base_dir, 'game', 'tl', 'english')
 

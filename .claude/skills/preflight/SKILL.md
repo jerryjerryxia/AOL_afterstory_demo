@@ -35,7 +35,7 @@ Ignore errors (no process found is fine).
 Run static analysis on the project. This is the gate — if lint has errors, skip the test suite.
 
 ```bash
-"X:\RenPy\renpy-8.5.0-sdk\renpy.exe" "X:\GameDev\AOL_afterstory_demo" lint 2>&1
+"X:\RenPy\renpy-8.5.0-sdk\renpy.exe" "X:\GameDev\Endless Summer Syndrome Demo" lint 2>&1
 ```
 
 - **Pass**: output contains no lines with `Error` severity
@@ -57,9 +57,9 @@ passed (this is the "测试到最后卡死" symptom — the tests are fine, the 
 just never exits).
 
 ```bash
-cd "X:\GameDev\AOL_afterstory_demo"
+cd "X:\GameDev\Endless Summer Syndrome Demo"
 rm -f preflight_test.txt
-"X:\RenPy\renpy-8.5.0-sdk\renpy.exe" "X:\GameDev\AOL_afterstory_demo" test --report-detailed > preflight_test.txt 2>&1 &
+"X:\RenPy\renpy-8.5.0-sdk\renpy.exe" "X:\GameDev\Endless Summer Syndrome Demo" test --report-detailed > preflight_test.txt 2>&1 &
 # Wait up to ~150s for the suite to print its final "Status:" line, then stop the runner.
 for i in $(seq 1 50); do grep -q "^\[rpytest\] Status:" preflight_test.txt && break; sleep 3; done
 taskkill //F //IM "renpy.exe" 2>/dev/null || true
@@ -86,7 +86,7 @@ taskkill //F //IM "renpy.exe" 2>/dev/null || true
 Read `traceback.txt` in the project root. If it exists and has content, report its contents as a warning.
 
 ```
-Read: X:\GameDev\AOL_afterstory_demo\traceback.txt
+Read: X:\GameDev\Endless Summer Syndrome Demo\traceback.txt
 ```
 
 If the file doesn't exist or is empty, report as clean.

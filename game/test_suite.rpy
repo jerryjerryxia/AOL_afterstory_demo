@@ -1,5 +1,5 @@
 ## test_suite.rpy
-## Test Suite for AOL Afterstory Demo
+## Test Suite for Endless Summer Syndrome Demo
 
 ################################################################################
 ## Test Configuration

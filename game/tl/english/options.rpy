@@ -4,5 +4,5 @@ translate english strings:
 
     # game/options.rpy:5
     old "无休夏日综合症"
-    new "Endless Summer Syndrome"
+    new "Endless Summer Syndrome Demo"
 

@@ -5,8 +5,13 @@ Handles branching with A:/B: options and 【选项分线到此结束】 converge
 """
 
 import argparse
+import os
 import re
 import sys
+
+# Resolve paths relative to this script so renaming the project folder never
+# breaks the converter (root cause of past hardcoded-path coupling).
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Force UTF-8 stdout so 中文 prints correctly on Windows consoles (the default
 # cp936/cp1252 codepage mangles it). Safe no-op on POSIX. Python 3.7+.
@@ -1379,7 +1384,7 @@ def main():
     )
     args = parser.parse_args()
 
-    with open(r'X:\GameDev\AOL_afterstory_demo\demo_script.txt', 'r', encoding='utf-8') as f:
+    with open(os.path.join(BASE_DIR, 'demo_script.txt'), 'r', encoding='utf-8') as f:
         lines = [line.rstrip('\n') for line in f.readlines()]
 
     if args.check_unmapped:
@@ -1407,7 +1412,7 @@ def main():
 
     # Prologue
     prologue = insert_sfx_waits(convert_prologue(lines, 0, prologue_end))
-    with open(r'X:\GameDev\AOL_afterstory_demo\game\scripts\prologue.rpy', 'w', encoding='utf-8') as f:
+    with open(os.path.join(BASE_DIR, 'game', 'scripts', 'prologue.rpy'), 'w', encoding='utf-8') as f:
         f.write(prologue)
     print("Prologue converted!")
 
@@ -1429,7 +1434,7 @@ def main():
             "    ## 否则测试跑完进程无法退出（卡死在最后）。见 variables.rpy。\n"
             "    $ demo_reboot_after_route()\n"
         )
-    with open(r'X:\GameDev\AOL_afterstory_demo\game\scripts\route1.rpy', 'w', encoding='utf-8') as f:
+    with open(os.path.join(BASE_DIR, 'game', 'scripts', 'route1.rpy'), 'w', encoding='utf-8') as f:
         f.write(route1)
     print("Route 1 converted!")
 
