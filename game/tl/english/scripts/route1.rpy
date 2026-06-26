@@ -988,7 +988,7 @@ translate english route1_start_78794afa:
 translate english route1_start_a8e04158:
 
     # wangshuang "但太多人会陷进它能让人看到的那些东西，最后心里离不开了，所以你才能在安息地见到那么多活死人。"
-    wangshuang "But too many got hooked to the shit they see, in those visions. That's why you see so many {i}KAS{/i} zombies out in the streets in Grave Town."
+    wangshuang "But too many got hooked to the shit they see, in those visions. That's why you see so many KAS zombies out in the streets in Grave Town."
 
 # game/scripts/route1.rpy:269
 translate english route1_start_c9ff421d:
@@ -1025,6 +1025,7 @@ translate english route1_start_7c6c819f:
 
     # wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
     wangshuang 'And I was like "Holy fucking shit this crap is absolutely going out of control I\'m getting squeezed to death by the pressure of this thing that I don\'t comprehend I must get the fuck out ASAP", and...'
+    wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
 
 # game/scripts/route1.rpy:281
 translate english route1_start_37cbb447:
@@ -1492,7 +1493,7 @@ translate english route1_start_90bf544c:
 translate english route1_start_c3e6e848:
 
     # extend "\n人类的智识自然无力探寻其中奥秘，但在王霜无处不在的笑容辉耀之下，你的一部分认知已踏入了更深层的水域。"
-    extend "\nThose were insights clearly not meant for average human intellect to consume. But with Shuang\'s omnipresent grin shining on your cerebral cortex, your mental capacity has tapped into deeper waters."
+    large_narrator "Those were insights clearly not meant for average human intellect to consume. But with Shuang's omnipresent grin shining on your cerebral cortex, your mental capacity has tapped into deeper waters."
 
 # game/scripts/route1.rpy:405
 translate english route1_start_ae8d16d4:
@@ -1504,13 +1505,13 @@ translate english route1_start_ae8d16d4:
 translate english route1_start_4d196163:
 
     # large_narrator "你的知能越是提升，它的样貌就越发模糊，模糊的面容中只显露出一抹依稀可见的残酷笑容，仿佛在嘲讽你的徒劳。"
-    large_narrator "The stronger your mental, the blurrier its shape. All you could see was a cruel grin shining through, as though scolding your timeless endeavor that would ultimately result in vain."
+    large_narrator "The stronger your mental, the blurrier its shape. All you could see was a cruel grin shining through, as though scolding your futile attempts to comprehend its fullness."
 
 # game/scripts/route1.rpy:413
 translate english route1_start_6f995df5:
 
     # extend "\n但你已经满足了，由内而外地满足了，在饱满的感官刺激中感到一阵——疲劳？"
-    extend "\nBut you were already satisfied, thoroughly satisfied. You felt a bit——tired?——from the endless cognitive stimuli."
+    extend "\nBut you were already satisfied, thoroughly satisfied. You felt a bit——tired?——from the endless cognitive stimulation."
 
 # game/scripts/route1.rpy:414
 translate english route1_start_4deb13a1:
@@ -1522,13 +1523,13 @@ translate english route1_start_4deb13a1:
 translate english route1_start_ee2dc45a:
 
     # large_narrator "世界空无一人，因为任何个体都不具备足够的差异能够让它们自称“存在”，因此你将它们尽数吞下，如同团子。"
-    large_narrator 'The world was uninhabited. Because there weren\'t any individual that had enough distinction from another to call themselves "existing". So you swallowed all of them, like mochi.'
+    large_narrator 'The world was empty. Because there weren\'t a single soul that had enough distinction from another to call themselves "existing". So you swallowed all of them, like mochi.'
 
 # game/scripts/route1.rpy:418
 translate english route1_start_fd37b955:
 
     # extend "\n糖分继续满溢出来，沿着你存在的边缘缓缓淌下，坠入周身蔚蓝的虚空之中，粘稠而香甜。"
-    extend "\nThe sugar continued to surge, dripped down from the fringe of your existence, falling into the azure abyss around you, sticky and delicious."
+    extend "\nThe sugar continued to surge, dripping down from the fringe of your existence, falling into the azure abyss around you, sticky and delicious."
 
 # game/scripts/route1.rpy:419
 translate english route1_start_9042c8e5:
@@ -1546,7 +1547,7 @@ translate english route1_start_f16a30f2:
 translate english route1_start_647c55b3:
 
     # extend "\n你的愿望在那念头浮出水面的瞬间便成为了现实，而你只想在这静谧安详的世界里睡去。"
-    extend "\nYour wish came true the moment it emerged from water. All you wanted was slumber."
+    extend "\nYour wish came true the moment it emerged, as you headed towards a deep, endless slumber."
 
 # game/scripts/route1.rpy:425
 translate english route1_start_9254ee90:
