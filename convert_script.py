@@ -31,6 +31,12 @@ SCENE_BG_MAP = {
     # 无色透明多面体：循环视频。剧本里所有引用此名的场景都用同一个 channel，
     # 主菜单和序章首场景共享帧位置。
     '无色透明多面体': 'bg_polyhedron_video',
+    # 白屏 / 黑屏：循环视频背景（bg/white_screen.webm、black_screen.webm）。
+    '白屏': 'bg_white_video',
+    '黑屏': 'bg_black_video',
+    # 虚空对视：黑屏视频背景 + 透明立绘叠层（overlay 模型，见 SCENE_EXPRESSIONS）。
+    # 用视频而非纯色 Solid，这样立绘透明处能透出"背景里的黑屏"动画。
+    '虚空对视': 'bg_black_video',
     # 甜品店对视 1-8 + 6.51：场景渐进，详见 placeholder.rpy 里的注释。
     '甜品店对视1': 'bg_dessertgaze1',
     '甜品店对视2': 'bg_dessertgaze2',
@@ -83,6 +89,64 @@ SPECIAL_FX = [
     ('glitch', 'fx_glitch'),
     ('黑影', 'fx_shock'),
 ]
+
+# 表情切换过渡（短溶解；改这里改全局表情切换速度）。
+EXPR_TRANSITION = "Dissolve(0.2)"
+
+# 指定场景转场的特殊过渡（覆盖默认 scene_soft）。场景名 -> transitions.rpy 里的过渡名。
+SCENE_TRANSITIONS = {
+}
+
+# 长黑场过渡 + 禁止点击快进。用黑色叠层 ATL 动画 + hard pause 实现：屏幕缓缓黑
+# 下来 → 黑场停留 → 新场景缓缓浮现，全程 hard=True 不可点击跳过。
+# 值 = (淡出到黑秒, 黑场停留秒, 新场景淡入秒)。白屏褪去后进甜品店用这个。
+SCENE_HARD_FADE = {
+    '甜品店对视1': (3.0, 0.5, 2.0),
+}
+
+# 表情差分配置：场景名 -> {model, ...}。场景名 = 脚本 【转场：X。…】 里的 X。
+#   "full"    —— 整图差分：scene <img> 直接换整张背景（默认图==bg 目录原图）。
+#   "overlay" —— 透明立绘：转场时 scene <bg> + show <default>，表情用 show 互换
+#                （共用 image tag）。用于没有实景、只在黑屏上放人物的场景。
+# 图片名与 placeholder.rpy 里的 image 定义一致。详见 expression_variations/。
+SCENE_EXPRESSIONS = {
+    '虚空对视': {
+        'model': 'overlay',
+        'default': 'void default',
+        'map': {'默认': 'void default', '小吃惊': 'void surprised'},
+    },
+    '夏日对视': {
+        'model': 'full',
+        'map': {
+            '默认': 'summergaze_default',
+            '小声嘀咕': 'summergaze_mutter',
+            '面无表情': 'summergaze_blank',
+            '大笑': 'summergaze_laugh',
+        },
+    },
+    '甜品店对视1': {
+        'model': 'full',
+        'map': {
+            '默认': 'dessert1_default', '坏笑': 'dessert1_smirk',
+            '撇嘴': 'dessert1_pout', '疑惑': 'dessert1_puzzled',
+        },
+    },
+    '甜品店对视2': {
+        'model': 'full',
+        'map': {'默认': 'dessert2_default'},
+    },
+    '甜品店对视3': {
+        'model': 'full',
+        'map': {
+            '默认': 'dessert3_default', '小激动': 'dessert3_excited',
+            '撇嘴': 'dessert3_pout',
+        },
+    },
+}
+
+# 当前所处的表情场景（转场时更新）。决定 角色【表情】 切到哪张差分；
+# 非表情场景（如甜品店对视4-8）置为该场景名、map 取不到 → 表情退化成注释。
+_CURRENT_EXPR_SCENE = None
 
 def escape_quotes(text):
     """Escape straight double quotes for Ren'Py"""
@@ -410,18 +474,73 @@ def emit_char_dialogue(char_var, dialogue, indent, comment=None):
         out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
     return '\n'.join(out)
 
+def _emit_scene(out, indent, scene_name, bg_image, transition):
+    """发出 scene 行，并更新当前表情场景。overlay 表情场景额外把透明立绘默认
+    表情叠上去（scene <bg> + show <default> + with，三者同一个过渡一起淡入）。"""
+    global _CURRENT_EXPR_SCENE
+    # 长黑场 + 禁止点击快进：黑色叠层渐入 → 停留 → 换场后渐出，全程 hard pause。
+    if scene_name in SCENE_HARD_FADE:
+        fo, hold, fi = SCENE_HARD_FADE[scene_name]
+        out.append(f'{indent}## 长黑场过渡（不可点击快进）')
+        # 屏幕开始变暗时同步淡出当前音乐，避免到甜品店时音乐"硬切"。
+        # 新场景音乐随后由 set_scene_music(...) 淡入。
+        out.append(f'{indent}stop music fadeout {fo}')
+        out.append(f'{indent}show black zorder 100:')
+        out.append(f'{indent}    alpha 0.0')
+        out.append(f'{indent}    linear {fo} alpha 1.0')
+        out.append(f'{indent}$ hard_pause({fo})')
+        if hold:
+            out.append(f'{indent}$ hard_pause({hold})')
+        out.append(f'{indent}scene {bg_image}')
+        out.append(f'{indent}show black zorder 100:')
+        out.append(f'{indent}    alpha 1.0')
+        out.append(f'{indent}    linear {fi} alpha 0.0')
+        out.append(f'{indent}$ hard_pause({fi})')
+        out.append(f'{indent}hide black')
+        _CURRENT_EXPR_SCENE = scene_name
+        return
+    cfg = SCENE_EXPRESSIONS.get(scene_name)
+    if cfg and cfg['model'] == 'overlay':
+        out.append(f'{indent}scene {bg_image}')
+        out.append(f'{indent}show {cfg["default"]}')
+        out.append(f'{indent}with {transition}')
+    else:
+        out.append(f'{indent}scene {bg_image} with {transition}')
+    _CURRENT_EXPR_SCENE = scene_name
+
+def emit_expression_change(action, indent):
+    """角色【表情】 → 切换差分。当前场景没有该表情（或非表情场景）返回 None，
+    交还给调用方按普通"舞台提示注释"处理（道具/第一人称提示等）。
+    full 场景用 scene 换整图；overlay 场景用 show 换透明立绘（共用 tag）。
+
+    过渡只作用于 master 层（renpy.transition(..., layer="master")），不碰 screens 层
+    的对话框/文字 —— 这样换表情时背景平滑溶解，但对话框和当前那句文字全程不消失、
+    不闪烁（不能用 `with`，那是全屏过渡，会把对话框和文字一起淡掉）。"""
+    cfg = SCENE_EXPRESSIONS.get(_CURRENT_EXPR_SCENE)
+    if not cfg:
+        return None
+    img = cfg['map'].get(action)
+    if not img:
+        return None
+    verb = 'show' if cfg['model'] == 'overlay' else 'scene'
+    return (f'{indent}## 表情：{action}\n'
+            f'{indent}{verb} {img}\n'
+            f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+
 def emit_transition_lines(output, indent, scene_name, scene_desc):
     """把一个场景转场写进 output（供 Extended 累积块内部复用）。
     scene_desc 仅用于剧本可读性，不再写进 .rpy（开发者场景叠层已移除）。"""
     output.append(f'{indent}## 转场：{scene_name}')
     bg_image = SCENE_BG_MAP.get(scene_name, 'black')
-    if scene_name in NO_TRANSITION_SCENES:
+    if scene_name in SCENE_TRANSITIONS:
+        transition = SCENE_TRANSITIONS[scene_name]
+    elif scene_name in NO_TRANSITION_SCENES:
         transition = 'None'
     elif scene_name in CROSS_DISSOLVE_SCENES:
         transition = 'scene_dissolve'
     else:
         transition = 'scene_soft'
-    output.append(f'{indent}scene {bg_image} with {transition}')
+    _emit_scene(output, indent, scene_name, bg_image, transition)
 
 def emit_extended_segments(collected, output, indent, large=False):
     """Extended文本框（大/小）：保留源换行（point 2）。每个源行 = 一句 say/extend，
@@ -453,6 +572,12 @@ def emit_extended_segments(collected, output, indent, large=False):
             output.append(f'{indent}extend {format_dialogue(text)}')
 
     for speaker, text in collected:
+        if speaker == '__expr__':
+            # 块内表情切换：master 层溶解，对话框/文字不动（见 emit_expression_change）。
+            expr_line = emit_expression_change(text, indent)
+            output.append(expr_line if expr_line else f'{indent}## {text}')
+            first_emitted = False
+            continue
         if speaker == '__transition__':
             scene_name, scene_desc = text
             emit_transition_lines(output, indent, scene_name, scene_desc)
@@ -558,13 +683,15 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
             # Main menu's bg is already what we're scening to; skip the fade.
             transition = 'None'
             _PROLOGUE_FIRST_TRANSITION_PENDING = False
+        elif scene_name in SCENE_TRANSITIONS:
+            transition = SCENE_TRANSITIONS[scene_name]
         elif scene_name in NO_TRANSITION_SCENES:
             transition = 'None'
         elif scene_name in CROSS_DISSOLVE_SCENES:
             transition = 'scene_dissolve'
         else:
             transition = 'scene_soft'
-        output_lines.append(f'{indent}scene {bg_image} with {transition}')
+        _emit_scene(output_lines, indent, scene_name, bg_image, transition)
         return '\n'.join(output_lines)
 
     # Bad End markers - unlock ending and return to main menu (MUST be before general stage direction check)
@@ -626,6 +753,11 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         action = char_action_match.group(2)
         dialogue = char_action_match.group(3).strip()
         char_var = char_var_map[char_name]
+        # 已知表情 → 切差分图（master 层溶解，对话框和文字不动），再说台词；
+        # 否则当普通舞台提示注释。
+        expr = emit_expression_change(action, indent)
+        if expr:
+            return expr + '\n' + emit_char_dialogue(char_var, dialogue, indent)
         return emit_char_dialogue(char_var, dialogue, indent, comment=action)
 
     # Character dialogue (simple)
@@ -741,6 +873,15 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
                 scene_desc = ""
             # Mark as scene transition (special marker)
             collected.append(('__transition__', (scene_name, scene_desc)))
+            continue
+
+        # Character dialogue with inline 【表情/提示】（块内也可能出现，如夏日对视那段
+        # Extended 里的 王霜【面无表情】）。先于普通 char_match 判断。
+        char_action = re.match(rf'^({char_pattern})【(.+?)】[：:](.*)$', line)
+        if char_action:
+            char_var = char_var_map[char_action.group(1)]
+            collected.append(('__expr__', char_action.group(2)))
+            collected.append((char_var, char_action.group(3).strip()))
             continue
 
         # Character dialogue
@@ -1155,8 +1296,9 @@ def convert_prologue(lines, start_line, end_line):
     # Arm the seamless-handoff flag; the first 【转场：...】 we see in this
     # section will emit `with None` to avoid a fade-through-black on the
     # main-menu→prologue boundary (where the bg is already the same video).
-    global _PROLOGUE_FIRST_TRANSITION_PENDING
+    global _PROLOGUE_FIRST_TRANSITION_PENDING, _CURRENT_EXPR_SCENE
     _PROLOGUE_FIRST_TRANSITION_PENDING = True
+    _CURRENT_EXPR_SCENE = None
 
     output = []
     output.append("## prologue.rpy")

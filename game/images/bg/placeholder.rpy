@@ -44,25 +44,58 @@ image bg_polyhedron_video = Movie(
 ## 1-3 暖色（团子吃法递进），4-6 转入蓝色调幻视（波纹由弱到强、王霜由实体到融入背景），
 ## 6.51 过渡，7 阿鹤呕吐导致色彩复原，8 碎裂进入黑屏。
 ## 源图均已 resize 到 3840x2160 以避开 GPU 4096 像素纹理限制。
-image bg_dessertgaze1 = Transform("images/bg/甜品店对视1.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze2 = Transform("images/bg/甜品店对视2.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze3 = Transform("images/bg/甜品店对视3.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze4 = Transform("images/bg/甜品店对视4.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze5 = Transform("images/bg/甜品店对视5.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze6 = Transform("images/bg/甜品店对视6.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze6_51 = Transform("images/bg/甜品店对视6.51.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze7 = Transform("images/bg/甜品店对视7.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze8 = Transform("images/bg/甜品店对视8.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze1 = Transform("images/bg/dessertgaze1.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze2 = Transform("images/bg/dessertgaze2.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze3 = Transform("images/bg/dessertgaze3.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze4 = Transform("images/bg/dessertgaze4.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze5 = Transform("images/bg/dessertgaze5.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze6 = Transform("images/bg/dessertgaze6.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze6_51 = Transform("images/bg/dessertgaze6_51.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze7 = Transform("images/bg/dessertgaze7.png", xysize=(1920, 1080), fit="cover")
+image bg_dessertgaze8 = Transform("images/bg/dessertgaze8.png", xysize=(1920, 1080), fit="cover")
 
 ## 旧实验：甜品店 + 水面波纹 shader。当前没有场景引用，留作以后复用。
 ## shader 注册和 _ripple_tick callback 见 game/scripts/shaders.rpy。
 image bg_dessertshop:
-    Transform("images/bg/甜品店对视6.50.png", xysize=(1920, 1080), fit="cover")
+    Transform("images/bg/dessertgaze6_50.png", xysize=(1920, 1080), fit="cover")
     shader "game.water_ripple"
     u_ripple_strength 1.5
     u_ripple_speed 1.0
     u_ripple_scale 12.0
     function _ripple_tick
+
+################################################################################
+## 白屏 / 黑屏 视频背景（循环）。master 在 bg/_video_masters/，游戏用 webm。
+## Movie(play=...) 在 show 时自动在 movie channel 播放、scene 走时停止；二者
+## 不会同时出现，共用默认 channel。转场 白屏/黑屏 由 SCENE_BG_MAP 指到这里。
+################################################################################
+image bg_white_video = Movie(play="images/bg/white_screen.webm", size=(1920, 1080))
+image bg_black_video = Movie(play="images/bg/black_screen.webm", size=(1920, 1080))
+
+################################################################################
+## 表情差分（全图 / 透明叠层）。转换器在 王霜【表情】 处切换：
+##   full 场景（夏日对视 / 甜品店1-3）：scene <差分> —— 整图已含人物，默认图==bg。
+##   overlay 场景（虚空对视）：scene black + show <差分> —— 差分是透明人物立绘。
+## 文件在 images/bg/expression_variations/<场景>/。
+################################################################################
+## 夏日对视（full）
+image summergaze_default   = Transform("images/bg/expression_variations/summergaze/summergaze_default.png",   xysize=(1920, 1080), fit="cover")
+image summergaze_mutter    = Transform("images/bg/expression_variations/summergaze/summergaze_mutter.png",    xysize=(1920, 1080), fit="cover")
+image summergaze_blank     = Transform("images/bg/expression_variations/summergaze/summergaze_blank.png",     xysize=(1920, 1080), fit="cover")
+image summergaze_laugh     = Transform("images/bg/expression_variations/summergaze/summergaze_laugh.png",     xysize=(1920, 1080), fit="cover")
+image summergaze_surprised = Transform("images/bg/expression_variations/summergaze/summergaze_surprised.png", xysize=(1920, 1080), fit="cover")
+## 甜品店（full）
+image dessert1_default = Transform("images/bg/expression_variations/dessert/dessert1_default.png", xysize=(1920, 1080), fit="cover")
+image dessert1_smirk   = Transform("images/bg/expression_variations/dessert/dessert1_smirk.png",   xysize=(1920, 1080), fit="cover")
+image dessert1_pout    = Transform("images/bg/expression_variations/dessert/dessert1_pout.png",    xysize=(1920, 1080), fit="cover")
+image dessert1_puzzled = Transform("images/bg/expression_variations/dessert/dessert1_puzzled.png", xysize=(1920, 1080), fit="cover")
+image dessert2_default = Transform("images/bg/expression_variations/dessert/dessert2_default.png", xysize=(1920, 1080), fit="cover")
+image dessert3_default = Transform("images/bg/expression_variations/dessert/dessert3_default.png", xysize=(1920, 1080), fit="cover")
+image dessert3_excited = Transform("images/bg/expression_variations/dessert/dessert3_excited.png", xysize=(1920, 1080), fit="cover")
+image dessert3_pout    = Transform("images/bg/expression_variations/dessert/dessert3_pout.png",    xysize=(1920, 1080), fit="cover")
+## 虚空对视（overlay，透明立绘叠在 black 上）。共用 tag "void" → 表情用 show 互换。
+image void default   = Transform("images/bg/expression_variations/void/void_default.png",   xysize=(1920, 1080), fit="cover")
+image void surprised = Transform("images/bg/expression_variations/void/void_surprised.png", xysize=(1920, 1080), fit="cover")
 
 ################################################################################
 ## 资源替换说明

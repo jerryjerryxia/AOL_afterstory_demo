@@ -87,7 +87,7 @@ label route1_prologue:
     centered_large_narrator "………"
     ## 居中大字文本框结束
     ## 转场：黑屏
-    scene black with scene_soft
+    scene bg_black_video with scene_soft
     ## 头出水面后大吸一口气音效：out-of-water-deep-breath
     $ play_sfx("audio/sfx/out-of-water-deep-breath.wav")
     ## Extended大文本框开始 - accumulating large textbox

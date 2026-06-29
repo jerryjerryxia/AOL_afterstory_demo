@@ -9,7 +9,9 @@ label route1_start:
     ## 脸入水后冒泡泡的音效：face-down-bubble
     $ play_sfx("audio/sfx/face-down-bubble.wav")
     ## 转场：虚空对视
-    scene black with scene_soft
+    scene bg_black_video
+    show void default
+    with scene_soft
     $ wait_sfx()
     wangshuang "欢迎回来，阿鹤。"
     ahe "倒不如去死。"
@@ -33,7 +35,9 @@ label route1_start:
     ahe "我...又病了吗？"
     wangshuang "不，恰恰相反，阿鹤。要我说，你现在就像太阳一样稳定。"
     ahe "太阳？"
-    ## 小吃惊
+    ## 表情：小吃惊
+    show void surprised
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦，不好意思，太阳在那儿。"
     ## 玻璃破碎音效：glass-smash-normalized
     $ play_sfx("audio/sfx/glass-smash-normalized.wav")
@@ -43,7 +47,9 @@ label route1_start:
     ## 场景音乐参考风格1：樹氷の輝き (Shine of Silver Thaw)，夜の向日葵（The sunflower of the night），Running Waters - https://audionautix.com/Music/RunningWaters.mp3 (Jason Shaw)，Shianchu
     ## 场景音乐参考风格2：Jellyfish - https://audionautix.com/Music/Jellyfish.mp3  (Jason Shaw)
     $ set_scene_music("route1_scene1")
-    ## 默认
+    ## 表情：默认
+    scene summergaze_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     $ wait_sfx()
     wangshuang "你看，太阳。"
     ahe "嗯，太阳。"
@@ -84,16 +90,31 @@ label route1_start:
     ahe "没用...完全没用...一切都结束了..."
     wangshuang "哦？所以还是想起来了一些。"
     ahe "你...毁掉了整个逝乐园。"
+    ## 表情：大笑
+    scene summergaze_laugh
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不必谦虚啊，阿鹤，这件事少了你是绝对不可能成功的。"
     wangshuang "所以我愿意把领衔主演的名头让给你，我去当制片人就可以了。"
+    ## 表情：默认
+    scene summergaze_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你也不用觉得我抬举你，过度谦虚只会让人习惯性地逃避责任，是一种需要调整的心态。"
     ahe "我..."
+    ## 表情：面无表情
+    scene summergaze_blank
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，我懂的，在完成一件惊人的壮举后，出现冒充者综合征是非常常见的事情。"
     wangshuang "但不论你怎么想，事已至此，还是放平心态最重要。"
     ahe "...随便了..."
     wangshuang "哎你看你这人，三天两头向外归因，遇事不决就开始摆烂——"
-    wangshuang "{size=-10}这就是为什么我——{/size}"
+    ## 表情：小声嘀咕
+    scene summergaze_mutter
+    $ renpy.transition(Dissolve(0.2), layer="master")
+    wangshuang "这就是为什么我——"
     ahe "什么？"
+    ## 表情：默认
+    scene summergaze_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "没事。没事。阿鹤，你知道太阳为什么会死吗？"
     ahe "因为它想死。"
     wangshuang "错——太阳自出生的那一刻起便像氢弹般持续自毁，早就动了死的念头，但它还是在天上烧了四十多亿年。"
@@ -101,12 +122,18 @@ label route1_start:
     wangshuang "你当然不明白，你肯定在想‘可这明明也是一种外因，毕竟整个太阳系都齐心协力地求它继续活下去’。"
     ahe "唔..."
     ## Extended文本框开始 - accumulating textbox
+    ## 表情：面无表情
+    scene summergaze_blank
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "然而现实恰恰相反——太阳不死仅仅是因为它的使命尚未完成而已。而它的死与它或其他任何造物的想法没有半点关系。"
     ## Extended文本框结束
     ## Extended文本框开始 - accumulating textbox
     wangshuang "想法是轻薄的、由外界塑造的，一坨烂泥一样谁都可以捏一把，但同时也是无足轻重的。而使命则是彻头彻尾、由内而外的——只有在‘使命’松手之后，‘想法’才配拥有虚假的自由。"
     ## Extended文本框结束
     ahe "这和我们又有什么关系？"
+    ## 表情：默认
+    scene summergaze_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "当然有关系了，不然你怎么会出现在这里？"
     ahe "我从来没有想过要出现在这里..."
     wangshuang "嗯，‘你’当然不想。"
@@ -117,9 +144,14 @@ label route1_start:
     ahe "...？"
     wangshuang "嗯，就是那样，过多的言语会污染概念。你还是不要再多探究了为好。"
     ahe "哦...对对对...懂了..."
+    ## 表情：大笑
+    scene summergaze_laugh
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "但话说回来，瞪眼大赛啊，我接受挑战！"
     ahe "没说真要来啊..."
-    ## 面无表情
+    ## 表情：面无表情
+    scene summergaze_blank
+    $ renpy.transition(Dissolve(0.2), layer="master")
     show screen op_lock(2)
     wangshuang "盯——"
     hide screen op_lock
@@ -130,14 +162,21 @@ label route1_start:
     ahe "..."
     wangshuang "噗——"
     ahe "..."
-    ## 大笑
+    ## 表情：大笑
+    scene summergaze_laugh
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "——噗噗呃啊——我败了..."
     ahe "自取其辱啊，阿霜。"
+    ## 表情：小声嘀咕
+    scene summergaze_mutter
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你还有脸得意！能盯着你那张臭脸看这么久还不笑的就只有死人了。"
     ahe "嗯...所以我每天刷牙的时候都要死一次..."
     wangshuang "你能活到今天确实不容易。"
     ahe "还不是拜你所赐..."
-    ## 默认
+    ## 表情：默认
+    scene summergaze_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不用谢不用谢。那你来吧，拿走你的战利品。"
     ahe "哈？"
     wangshuang "别哈，让你来你就来。"
@@ -168,7 +207,7 @@ label route1_start:
     extend "\n你想立刻去死，那是缓解疼痛的唯一方法，但你非常清楚，此刻死亡就和使命一样遥不可及。"
     ## 右侧Split Extended大文本框结束
     ## 转场：白屏
-    scene black with scene_soft
+    scene bg_white_video with scene_soft
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "去找啊，否则这疼痛就永远不会有尽头。"
     extend "\n去别处，就是这样。"
@@ -180,53 +219,90 @@ label route1_start:
     ## Extended大文本框结束
     ## 白屏逐渐褪去
     ## 转场：甜品店对视1
-    scene bg_dessertgaze1 with scene_soft
+    ## 长黑场过渡（不可点击快进）
+    stop music fadeout 3.0
+    show black zorder 100:
+        alpha 0.0
+        linear 3.0 alpha 1.0
+    $ hard_pause(3.0)
+    $ hard_pause(0.5)
+    scene bg_dessertgaze1
+    show black zorder 100:
+        alpha 1.0
+        linear 2.0 alpha 0.0
+    $ hard_pause(2.0)
+    hide black
     ## 一家疑似餐厅的背景，又是王霜和阿鹤面对面坐着
     ## 场景音乐风格参考：怎么说呢...虽然台词可能对抗感比较强，但这种场景还是得要一些 lo-fi 小调啊...Moonlit Reverie - 好lofi，Hoyoku, Sutekimeppou - 这几首物语的 ost 也很有内味儿嗷
     $ set_scene_music("route1_scene2")
     ahe "呃啊——！"
-    ## 疑惑
+    ## 表情：疑惑
+    scene dessert1_puzzled
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "怎么了？"
     ahe "你刚刚...是不是对我做了非常不得了的事情。"
+    ## 表情：撇嘴
+    scene dessert1_pout
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你盯着我发呆，我盯着你发呆，确实挺不得了的。"
     ahe "呃...所以我们为什么在这里？"
     wangshuang "这可是你说要来的。"
     ahe "那我要走了。"
+    ## 表情：疑惑
+    scene dessert1_puzzled
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我们刚坐下诶，你要去哪儿？"
     ahe "不知道，要离开这里就是了。"
     ahe "...能麻烦开一下门吗？"
-    ## 默认
+    ## 表情：默认
+    scene dessert1_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不如问问店家。"
     ahe "好吧...你好，能帮我把门开一下吗？"
     wangshuang "不好意思啊先生，老板刚才说了，今天店里的客人都必须留到天黑之后才能走。"
     ahe "可是天已经黑了。"
     wangshuang "老板说，还不够黑。"
     ahe "好吧...所以我能走了吗？"
+    ## 表情：坏笑
+    scene dessert1_smirk
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不能。"
     ahe "你好烦。"
-    ## 撇嘴
+    ## 表情：撇嘴
+    scene dessert1_pout
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "就算出去了，你准备做什么？"
     ahe "把大石头推上山，把琴弦拧成电缆，什么都可以。"
     wangshuang "意思是你准备换个地方无所事事。"
     ahe "再无所事事都胜过和你呆在这里。"
-    ## 疑惑
+    ## 表情：疑惑
+    scene dessert1_puzzled
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "啊，已经这么遭人嫌了么..."
     ahe "...多少有点自知之明吧你..."
-    ## 撇嘴
+    ## 表情：撇嘴
+    scene dessert1_pout
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "彼此彼此咯，我们都只是遵循着强烈的愿望，尝试了一直以来想要尝试的事情。"
     ahe "区别在于我不需要人陪葬。"
     wangshuang "不，区别在于我做到了，而你没有。"
     ahe "..."
-    ## 默认
+    ## 表情：默认
+    scene dessert1_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "而你拒绝与我共处一室的真正原因只是嫉妒，仅此而已。"
     ahe "闭嘴吧..."
-    ## 坏笑
+    ## 表情：坏笑
+    scene dessert1_smirk
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我闭嘴了又有什么用？难道你那苍白的“理想”就不需要人来陪葬了？"
     wangshuang "你为了{i}尤里娅{/i}那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
     ahe "..."
     ## 转场：甜品店对视2
     scene bg_dessertgaze2 with scene_dissolve
-    ## 默认
+    ## 表情：默认
+    scene dessert2_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "所以不如放下成见，吃点团子，如何？"
     ## 默默吃一口
     ahe "..."
@@ -242,6 +318,7 @@ label route1_start:
     ahe "你自己不也在做同样的事情。"
     wangshuang "只是不想看着你和我坠入同样的深渊嘛，毕竟我还挺在乎你的。"
     ahe "别恶心我了，求你了。"
+    ## 撇嘴
     wangshuang "你这人，连真心话都不让人说。"
     ahe "你？真心话？笑话可以再冷点么？"
     wangshuang "连这都分不清，以后可是要吃大亏哦。"
@@ -254,7 +331,9 @@ label route1_start:
     wangshuang "但太多人会陷进它能让人看到的那些东西，最后心里离不开了，所以你才能在安息地见到那么多活死人。"
     wangshuang "那么你会怎样呢，阿鹤？我很期待哦。"
     ahe "只致幻的话岂不是很无聊，尤其对你来讲。"
-    ## 小激动
+    ## 表情：小激动
+    scene dessert3_excited
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "无聊？可别太刺激了！你知道十二小时起步的感官过载是什么感觉吗？"
     wangshuang "五感全部推到极限，尤其是视觉，所有东西的颜色都比平时看到的要鲜艳无数倍，而且全都彼此交融，到最后视野里就是五彩斑斓的白。"
     ## Extended文本框开始 - accumulating textbox
@@ -263,33 +342,52 @@ label route1_start:
     ## Extended文本框开始 - accumulating textbox
     wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
     ## Extended文本框结束
-    ## 默认
+    ## 表情：默认
+    scene dessert3_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢乱用{i}KAS{/i}的，那次是真的差点死了..."
     ahe "哦，原来你那“磕完药差点死掉的小故事”还在更新啊。"
-    ## 小激动
+    ## 表情：小激动
+    scene dessert3_excited
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那可是正儿八经的人命啊喂！"
     wangshuang "不过一般人应该不会那么夸张。你会喜欢的，我觉得。"
     ahe "所以我们要在这里待到什么时候？"
+    ## 表情：默认
+    scene dessert3_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "等时机到了，自然就能离开。"
     ahe "也是一种较为朴素的过程？"
     wangshuang "哦？如此简明且精确的定义，谁教你的？"
     ahe "一个傻逼。"
-    ## 小激动
+    ## 表情：小激动
+    scene dessert3_excited
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "{shake}好刻薄！{/shake}"
     ahe "像您这样有成就的大人物，只被骂傻逼还请偷着乐吧。"
+    ## 表情：撇嘴
+    scene dessert3_pout
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "所以确实没法放过我了吗？"
     ahe "你还需要人放过？"
-    ## 默认
+    ## 表情：默认
+    scene dessert3_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "当然，我又不是没有罪恶感的人。"
     ahe "存疑。"
     wangshuang "哎阿鹤，虽然有些事情我确实做得...不太好...从世俗意义上来说，但也没必要这样质疑我演戏的质量嘛。"
     ahe "你看，你都自首了。还不逮捕你自己。"
-    ## 撇嘴
+    ## 表情：撇嘴
+    scene dessert3_pout
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那我还得兼任检察官辩护律师和法官，太麻烦了。"
     ahe "用来消磨时间正合适，反正用不完。"
     wangshuang "不不不那就不对了，如果你还想“消磨时间”，那就说明你修为尚浅，还没悟透其中道理。"
     ahe "...好的，师傅。"
     ahe "话说师傅，你手里拿的是什么？"
+    ## 表情：默认
+    scene dessert3_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦，这个？不是什么重要的东西，但你可以尝尝看。"
     ahe "尝尝看？"
     wangshuang "对啊，吃的。要不要试试？"
@@ -426,7 +524,7 @@ label route1_start:
     extend "\n即使如此，王霜依旧没有回来。"
     ## Extended大文本框结束
     ## 转场：黑屏
-    scene black with scene_soft
+    scene bg_black_video with scene_soft
     ## 剥落完成后，黑屏
     ## 水底泡泡上浮音效：Bubbles_10
     $ play_sfx("audio/sfx/Bubbles_10.wav")

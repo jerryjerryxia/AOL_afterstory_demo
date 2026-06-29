@@ -766,7 +766,7 @@ screen main_menu():
     ## 游戏标题：上滑淡出。按语言切换中/英标题图。
     vbox at menu_title_anim:
         xalign 0.5
-        yalign 0.24
+        yalign 0.18
 
         if _preferences.language == "english":
             add "images/ui/titles/en_title.png" zoom 0.24 xalign 0.5

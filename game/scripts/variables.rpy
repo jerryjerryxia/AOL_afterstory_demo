@@ -161,6 +161,13 @@ init python:
         renpy.sound.play(path)
         _sfx_end_time[0] = time.time() + _sfx_duration(path)
 
+    def hard_pause(t):
+        """不可点击快进的暂停（长黑场过渡用）。和 wait_sfx 一样，自动化测试里跳过 ——
+        否则 5s+ 的 hard 暂停会吃满 `advance until` 的超时预算。正常游玩照常等。"""
+        if getattr(renpy.game.args, "command", None) == "test":
+            return
+        renpy.pause(t, hard=True)
+
     def wait_sfx():
         """阻塞到最近一次音效播完，再放行下一句正文（point 3）。用「剩余时长」做**单次
         有界** hard 暂停：自动结束（绝不卡死），中间转场已耗掉的时间会自动扣除，所以
