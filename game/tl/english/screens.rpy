@@ -58,14 +58,6 @@ translate english strings:
     old "读取存档"
     new "Load Game"
 
-    # game/screens.rpy:531
-    old "删除存档"
-    new "Delete Saves"
-
-    # game/screens.rpy:532
-    old "清除进度"
-    new "Clear Progress"
-
     # game/screens.rpy:533
     old "音乐鉴赏"
     new "Music Room"
@@ -227,16 +219,6 @@ translate english strings:
     new "Auto-save complete"
 
 # TODO: Translation updated at 2026-06-18 14:35
-
-translate english strings:
-
-    # game/screens.rpy:1098
-    old "开发者模式"
-    new "Developer Mode"
-
-    # game/screens.rpy:1099
-    old "显示场景与音乐参考"
-    new "Show Scene/Music References"
 
 # TODO: Translation updated at 2026-06-18 15:42
 

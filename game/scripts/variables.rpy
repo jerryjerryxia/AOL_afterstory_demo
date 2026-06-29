@@ -6,9 +6,8 @@
 ## 设为 True 可以快进未读文本，用于测试多周目流程
 ################################################################################
 
-define config.developer = True  # 启用开发者模式
+define config.developer = False  # 正式发布：关闭开发者模式
 default persistent.test_mode = True  # 测试模式开关
-default persistent.dev_mode = False  # 设置里的"开发者模式"开关，控制场景/音乐参考叠层
 
 ## 玩家是否进入过游戏（用于判断 game→menu 回流时要不要强制重启 polyhedron channel）。
 ## 用 persistent 是因为 MainMenu() action 会清掉普通的游戏变量但保留 persistent。
@@ -61,9 +60,6 @@ init python:
 ## 音乐解锁状态（用于音乐鉴赏）
 default persistent.music_unlocked = set()
 
-## 开发者音乐选择（场景ID -> 曲目ID）
-default persistent.scene_music_selections = {}
-
 ################################################################################
 ## 游戏内变量（每次游戏重置）
 ################################################################################
@@ -77,9 +73,8 @@ default madness = 0
 ## 关键选择记录
 default choice_flags = {}
 
-## 当前场景转场信息（开发者用）
-default current_scene_name = None  # 场景名称，如 "两座冰雕2"
-default current_scene_desc = None  # 场景描述
+## 当前场景音乐 ID（由 set_scene_music 设置；after_load 用它恢复音乐）
+default current_music_scene = None
 
 ################################################################################
 ## 存档加载后恢复音乐
@@ -113,6 +108,19 @@ init python:
     def is_music_unlocked(track_name):
         """检查曲目是否已解锁"""
         return track_name in persistent.music_unlocked
+
+    def get_music_room_tracks():
+        """音乐鉴赏的曲目列表，从 scene_music 推导（单一数据源）。
+        按场景定义顺序去重 —— 每个场景固定一首，正好是玩家在剧情里听到曲子的先后
+        顺序。在 screen 显示时（运行时）才调用，所以不受 init offset 顺序影响。"""
+        seen = set()
+        result = []
+        for scene_id in scene_music:
+            for track in scene_music[scene_id]["tracks"]:
+                if track["id"] not in seen:
+                    seen.add(track["id"])
+                    result.append(track)
+        return result
 
     def unlock_ending(ending_id):
         """Demo版：无操作"""
@@ -196,25 +204,15 @@ init python:
         renpy.jump_out_of_context("start")
 
     ##########################################################################
-    ## 开发者音乐选择器函数
+    ## 场景音乐
     ##########################################################################
 
-    def select_and_play_music(scene_id, track_id):
-        """选择并播放场景音乐"""
-        if scene_id not in scene_music:
-            return
-
-        # Save selection
-        persistent.scene_music_selections[scene_id] = track_id
-
-        # Find track and play
-        for track in scene_music[scene_id]["tracks"]:
-            if track["id"] == track_id:
-                renpy.music.play("audio/bgm/" + track["file"], fadeout=1.0, fadein=1.0)
-                break
-
     def set_scene_music(scene_id):
-        """设置当前场景音乐并自动播放"""
+        """设置当前场景音乐并播放（每个场景固定一首）。
+
+        if_changed=True：若该曲已在播放则不重启 —— 这样主菜单的 kevin_openning
+        能无缝续进序章（序章首曲也是 kevin_openning），玩家点"开始游戏"前后不断。
+        """
         global current_music_scene
         store.current_music_scene = scene_id
 
@@ -225,15 +223,8 @@ init python:
         if not tracks:
             return
 
-        # Check if we have a saved selection for this scene
-        saved_track_id = persistent.scene_music_selections.get(scene_id)
-
-        if saved_track_id:
-            # Play the saved selection
-            for track in tracks:
-                if track["id"] == saved_track_id:
-                    renpy.music.play("audio/bgm/" + track["file"], fadeout=1.0, fadein=1.0)
-                    return
-
-        # No saved selection - play first track
-        renpy.music.play("audio/bgm/" + tracks[0]["file"], fadeout=1.0, fadein=1.0)
+        track = tracks[0]
+        ## 玩家第一次听到这首曲子 → 在音乐鉴赏里解锁它。
+        unlock_music(track["id"])
+        renpy.music.play("audio/bgm/" + track["file"],
+                         fadeout=1.0, fadein=1.0, if_changed=True)

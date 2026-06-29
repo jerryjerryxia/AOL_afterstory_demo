@@ -240,12 +240,6 @@ screen say(who, what):
     ## 快捷按钮（跳过、自动、菜单等）
     use quick_menu
 
-    ## 开发者场景信息
-    use dev_scene_info
-
-    ## 开发者音乐选择器
-    use dev_music_selector
-
 style window is default
 style say_label is default
 style say_dialogue is default
@@ -449,12 +443,6 @@ screen large_say(who, what):
     ## 快捷按钮
     use quick_menu
 
-    ## 开发者场景信息
-    use dev_scene_info
-
-    ## 开发者音乐选择器
-    use dev_music_selector
-
 ################################################################################
 ## 居中文本框界面 - Centered Textbox Screen (for striking single lines)
 ################################################################################
@@ -482,12 +470,6 @@ screen centered_say(who, what):
 
     ## 快捷按钮
     use quick_menu
-
-    ## 开发者场景信息
-    use dev_scene_info
-
-    ## 开发者音乐选择器
-    use dev_music_selector
 
 ################################################################################
 ## 居中大字文本框界面 - Centered Large Font Textbox Screen
@@ -518,12 +500,6 @@ screen centered_large_say(who, what):
 
     ## 快捷按钮
     use quick_menu
-
-    ## 开发者场景信息
-    use dev_scene_info
-
-    ## 开发者音乐选择器
-    use dev_music_selector
 
 ################################################################################
 ## 左右分栏大文本框 - Split Large Textbox（甜品店幻视段）
@@ -589,8 +565,6 @@ screen split_say_left(who, what):
             adjust_spacing False
 
     use quick_menu
-    use dev_scene_info
-    use dev_music_selector
 
 screen split_say_right(who, what):
     ## 右栏阶段：左栏静态（已填满），右栏是活动 say（id "what" → 逐字显示）。
@@ -624,8 +598,6 @@ screen split_say_right(who, what):
             adjust_spacing False
 
     use quick_menu
-    use dev_scene_info
-    use dev_music_selector
 
 ################################################################################
 ## 右侧Split 大文本框 - 只占右半屏的单栏、分页（每页满 8 行翻页）
@@ -651,8 +623,6 @@ screen split_right_page(who, what):
             adjust_spacing False
 
     use quick_menu
-    use dev_scene_info
-    use dev_music_selector
 
 ################################################################################
 ## 快捷菜单 - Quick Menu
@@ -793,15 +763,15 @@ screen main_menu():
     frame at menu_title_anim:
         style "main_menu_frame"
 
-    ## 游戏标题：上滑淡出
+    ## 游戏标题：上滑淡出。按语言切换中/英标题图。
     vbox at menu_title_anim:
         xalign 0.5
-        yalign 0.3
+        yalign 0.24
 
-        text _("无休夏日综合症"):
-            size 80
-            xalign 0.5
-            color "#ffffff"
+        if _preferences.language == "english":
+            add "images/ui/titles/en_title.png" zoom 0.24 xalign 0.5
+        else:
+            add "images/ui/titles/zh_title.png" zoom 0.30 xalign 0.5
 
     ## 主菜单按钮：直接 inline，不走 `use navigation`，因为每个要带自己的 delay。
     ## stagger = 0.06s。点击"开始游戏" → _main_menu_starting=True → 所有 transform
@@ -820,14 +790,12 @@ screen main_menu():
         else:
             textbutton _("开始游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting at menu_btn_anim(0.42)
         textbutton _("读取存档") action ShowMenu("load") sensitive not _main_menu_starting at menu_btn_anim(0.36)
-        textbutton _("删除存档") action Confirm(_("确定要删除所有存档吗？此操作无法撤销。"), yes=Function(delete_all_saves), no=None) sensitive not _main_menu_starting at menu_btn_anim(0.30)
-        textbutton _("清除进度") action Confirm(_("确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）"), yes=Function(delete_persistent_data), no=None) sensitive not _main_menu_starting at menu_btn_anim(0.24)
-        textbutton _("音乐鉴赏") action ShowMenu("music_room") sensitive not _main_menu_starting at menu_btn_anim(0.18)
-        textbutton _("设置") action ShowMenu("preferences") sensitive not _main_menu_starting at menu_btn_anim(0.12)
-        textbutton _("关于") action ShowMenu("about") sensitive not _main_menu_starting at menu_btn_anim(0.06)
+        textbutton _("音乐鉴赏") action ShowMenu("music_room") sensitive not _main_menu_starting at menu_btn_anim(0.30)
+        textbutton _("设置") action ShowMenu("preferences") sensitive not _main_menu_starting at menu_btn_anim(0.24)
+        textbutton _("关于") action ShowMenu("about") sensitive not _main_menu_starting at menu_btn_anim(0.18)
 
         if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
-            textbutton _("退出") action Quit(confirm=not main_menu) sensitive not _main_menu_starting at menu_btn_anim(0.0)
+            textbutton _("退出") action Quit(confirm=not main_menu) sensitive not _main_menu_starting at menu_btn_anim(0.12)
 
     ## 时序：按钮 stagger 最顶 0.42 + 0.35 = 0.77s 完成；标题 0.5s。
     ## 再加 ~0.5s 让玩家看到纯背景视频"喘口气"，文本框再进。
@@ -992,8 +960,6 @@ screen navigation():
             else:
                 textbutton _("开始游戏") action Start()
             textbutton _("读取存档") action ShowMenu("load")
-            textbutton _("删除存档") action Confirm(_("确定要删除所有存档吗？此操作无法撤销。"), yes=Function(delete_all_saves), no=None)
-            textbutton _("清除进度") action Confirm(_("确定要清除所有进度吗？\n（周目、结局解锁等，游戏将重启）"), yes=Function(delete_persistent_data), no=None)
             textbutton _("音乐鉴赏") action ShowMenu("music_room")
         else:
             textbutton _("历史记录") action ShowMenu("history")
@@ -1086,6 +1052,14 @@ screen file_slots(title):
                                 action FileDelete(slot)
 
                         key "save_delete" action FileDelete(slot)
+
+            ## 删除所有存档：存档界面右上角，二次确认后删除所有存档槽。
+            ## （从主菜单移来；不碰持久进度，只删存档文件。复用设置里同名按钮的翻译。）
+            textbutton _("删除所有存档"):
+                style "delete_saves_button"
+                xalign 1.0
+                yalign 0.0
+                action Confirm(_("确定要删除所有存档吗？此操作无法撤销。"), yes=Function(delete_all_saves), no=None)
 
             hbox:
                 style_prefix "page"
@@ -1200,11 +1174,6 @@ screen preferences():
                     textbutton _("未读文本") action Preference("skip", "toggle")
                     textbutton _("选项后继续") action Preference("after choices", "toggle")
                     textbutton _("过场后继续") action Preference("skip", "toggle")
-
-                vbox:
-                    style_prefix "check"
-                    label _("开发者模式")
-                    textbutton _("显示场景与音乐参考") action ToggleField(persistent, "dev_mode")
 
             null height 30
 
@@ -1433,28 +1402,21 @@ style history_label_text:
 ## 音乐鉴赏界面 - Music Room
 ################################################################################
 
-init python:
-    ## 定义音乐列表
-    music_tracks = [
-        {"id": "main_theme", "name": "主题曲", "file": "audio/bgm/main_theme.ogg"},
-        {"id": "peaceful", "name": "日常", "file": "audio/bgm/peaceful.ogg"},
-        {"id": "emotional", "name": "感动", "file": "audio/bgm/emotional.ogg"},
-        {"id": "ending", "name": "结局", "file": "audio/bgm/ending.ogg"},
-    ]
-
 screen music_room():
     tag menu
 
+    ## 曲目列表从 scene_music 推导（见 get_music_room_tracks）；未解锁显示 ???。
+    ## 曲子在玩家第一次听到时（set_scene_music → unlock_music）解锁。
     use game_menu(_("音乐鉴赏"), scroll="viewport"):
         style_prefix "music_room"
 
         vbox:
             spacing 15
 
-            for track in music_tracks:
+            for track in get_music_room_tracks():
                 if is_music_unlocked(track["id"]):
                     textbutton _(track["name"]):
-                        action Play("music", track["file"])
+                        action Play("music", "audio/bgm/" + track["file"])
                 else:
                     textbutton "???":
                         sensitive False
@@ -1702,164 +1664,3 @@ style route_subtitle_text:
     color "#cccccc"
     xalign 0.5
     outlines [(2, "#000000", 0, 0)]
-
-################################################################################
-## 开发者场景信息显示 - Developer Scene Info Display
-################################################################################
-
-## Whether the scene description popup is visible
-default scene_desc_visible = False
-
-screen dev_scene_info():
-    ## Only show if we have a scene name and in developer mode
-    if current_scene_name and persistent.dev_mode:
-        # Top-left corner panel
-        frame:
-            style "dev_scene_frame"
-            xalign 0.0
-            yalign 0.0
-            xoffset 10
-            yoffset 10
-
-            vbox:
-                spacing 5
-
-                # Scene name button - click to toggle description
-                textbutton current_scene_name:
-                    style "dev_scene_name"
-                    action ToggleVariable("scene_desc_visible")
-
-                # Scene description - shown when clicked
-                if scene_desc_visible and current_scene_desc:
-                    null height 5
-                    frame:
-                        style "dev_scene_desc_frame"
-                        text "[current_scene_desc]":
-                            style "dev_scene_desc_text"
-
-style dev_scene_frame:
-    background Solid("#1a1a2acc")
-    padding (15, 10, 15, 10)
-    xmaximum 500
-
-style dev_scene_name is button:
-    background None
-    hover_background None
-
-style dev_scene_name_text is button_text:
-    size 20
-    color "#00ccff"
-    hover_color "#66ddff"
-
-style dev_scene_desc_frame:
-    background Solid("#222233cc")
-    padding (10, 8, 10, 8)
-    xmaximum 470
-
-style dev_scene_desc_text:
-    size 16
-    color "#cccccc"
-    line_spacing 4
-
-################################################################################
-## 开发者音乐选择器 - Developer Music Selector
-################################################################################
-
-## Current scene music ID (set by script)
-default current_music_scene = None
-
-## Whether the music selector panel is expanded
-default dev_music_expanded = False
-
-screen dev_music_selector():
-    ## Only show if we have a valid scene and in developer mode
-    if current_music_scene and current_music_scene in scene_music and persistent.dev_mode:
-        $ scene_data = scene_music[current_music_scene]
-        $ tracks = scene_data["tracks"]
-        $ scene_label = scene_data["label"]
-
-        # Top-right corner panel
-        frame:
-            style "dev_music_frame"
-            xalign 1.0
-            yalign 0.0
-            xoffset -10
-            yoffset 10
-
-            vbox:
-                spacing 5
-
-                # Header with toggle button
-                hbox:
-                    spacing 10
-                    if dev_music_expanded:
-                        textbutton "BGM参考菜单":
-                            style "dev_music_header"
-                            action SetVariable("dev_music_expanded", False)
-                    else:
-                        textbutton "BGM参考菜单 v":
-                            style "dev_music_header"
-                            action SetVariable("dev_music_expanded", True)
-
-                # Expanded track list
-                if dev_music_expanded:
-                    null height 5
-                    for track in tracks:
-                        $ is_selected = (persistent.scene_music_selections.get(current_music_scene) == track["id"])
-                        if is_selected:
-                            textbutton track["name"]:
-                                style "dev_music_track_selected"
-                                action Function(select_and_play_music, current_music_scene, track["id"])
-                        else:
-                            textbutton track["name"]:
-                                style "dev_music_track"
-                                action Function(select_and_play_music, current_music_scene, track["id"])
-
-                    null height 5
-                    hbox:
-                        spacing 15
-                        textbutton "■ 停止":
-                            style "dev_music_control"
-                            action Stop("music", fadeout=1.0)
-
-style dev_music_frame:
-    background Solid("#1a1a2acc")
-    padding (15, 10, 15, 10)
-    xmaximum 450
-
-style dev_music_header is button_text:
-    size 18
-    color "#ffcc00"
-    hover_color "#ffffff"
-
-style dev_music_track is button:
-    background Solid("#333333aa")
-    hover_background Solid("#555555aa")
-    padding (10, 5, 10, 5)
-    xfill True
-
-style dev_music_track_text is button_text:
-    size 16
-    color "#cccccc"
-    hover_color "#ffffff"
-
-style dev_music_track_selected is button:
-    background Solid("#4a5a3aaa")
-    hover_background Solid("#5a6a4aaa")
-    padding (10, 5, 10, 5)
-    xfill True
-
-style dev_music_track_selected_text is button_text:
-    size 16
-    color "#aaffaa"
-    hover_color "#ffffff"
-
-style dev_music_control is button:
-    background Solid("#552222aa")
-    hover_background Solid("#773333aa")
-    padding (8, 4, 8, 4)
-
-style dev_music_control_text is button_text:
-    size 14
-    color "#ffaaaa"
-    hover_color "#ffffff"

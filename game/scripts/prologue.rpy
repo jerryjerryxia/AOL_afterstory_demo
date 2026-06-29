@@ -21,8 +21,6 @@ label route1_prologue:
     ## 场景音乐参考：Electric Sea (Buckethead), Padmasana (Buckethead)，Doutokutosetsu，Shinsou no reijou，Gaidankousetsu
     ## 转场：无色透明多面体
     scene bg_polyhedron_video with None
-    $ current_scene_name = "无色透明多面体"
-    $ current_scene_desc = "一颗无色透明的多面体在无垠的黑暗中幽幽地闪着冷光。"
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "一颗无色透明的多面体在无垠黑暗中幽幽地闪着冷光。"
     extend "\n你感到心平气和，脑海里没有任何多余的问题，只是冷静地观察着你眼前唯一的光源。"
@@ -90,8 +88,6 @@ label route1_prologue:
     ## 居中大字文本框结束
     ## 转场：黑屏
     scene black with scene_soft
-    $ current_scene_name = "黑屏"
-    $ current_scene_desc = "就是黑屏。"
     ## 头出水面后大吸一口气音效：out-of-water-deep-breath
     $ play_sfx("audio/sfx/out-of-water-deep-breath.wav")
     ## Extended大文本框开始 - accumulating large textbox

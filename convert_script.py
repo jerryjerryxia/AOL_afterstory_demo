@@ -411,9 +411,8 @@ def emit_char_dialogue(char_var, dialogue, indent, comment=None):
     return '\n'.join(out)
 
 def emit_transition_lines(output, indent, scene_name, scene_desc):
-    """把一个场景转场写进 output（供 Extended 累积块内部复用）。"""
-    scene_name_escaped = scene_name.replace('"', '\\"')
-    scene_desc_escaped = scene_desc.replace('"', '\\"')
+    """把一个场景转场写进 output（供 Extended 累积块内部复用）。
+    scene_desc 仅用于剧本可读性，不再写进 .rpy（开发者场景叠层已移除）。"""
     output.append(f'{indent}## 转场：{scene_name}')
     bg_image = SCENE_BG_MAP.get(scene_name, 'black')
     if scene_name in NO_TRANSITION_SCENES:
@@ -423,11 +422,6 @@ def emit_transition_lines(output, indent, scene_name, scene_desc):
     else:
         transition = 'scene_soft'
     output.append(f'{indent}scene {bg_image} with {transition}')
-    output.append(f'{indent}$ current_scene_name = "{scene_name_escaped}"')
-    if scene_desc:
-        output.append(f'{indent}$ current_scene_desc = "{scene_desc_escaped}"')
-    else:
-        output.append(f'{indent}$ current_scene_desc = None')
 
 def emit_extended_segments(collected, output, indent, large=False):
     """Extended文本框（大/小）：保留源换行（point 2）。每个源行 = 一句 say/extend，
@@ -555,12 +549,8 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
             scene_name = content
             scene_desc = ""
 
-        # Escape quotes in scene name and description
-        scene_name_escaped = scene_name.replace('"', '\\"')
-        scene_desc_escaped = scene_desc.replace('"', '\\"')
-
-        # Generate the comment, the background scene, and the variables.
-        # Scenes without dedicated art fall back to a plain black background.
+        # Generate the comment and the background scene. Scenes without
+        # dedicated art fall back to a plain black background.
         output_lines = [f'{indent}## 转场：{scene_name}']
         bg_image = SCENE_BG_MAP.get(scene_name, 'black')
         global _PROLOGUE_FIRST_TRANSITION_PENDING
@@ -575,11 +565,6 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         else:
             transition = 'scene_soft'
         output_lines.append(f'{indent}scene {bg_image} with {transition}')
-        output_lines.append(f'{indent}$ current_scene_name = "{scene_name_escaped}"')
-        if scene_desc:
-            output_lines.append(f'{indent}$ current_scene_desc = "{scene_desc_escaped}"')
-        else:
-            output_lines.append(f'{indent}$ current_scene_desc = None')
         return '\n'.join(output_lines)
 
     # Bad End markers - unlock ending and return to main menu (MUST be before general stage direction check)

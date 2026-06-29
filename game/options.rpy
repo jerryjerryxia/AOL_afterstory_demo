@@ -3,7 +3,7 @@
 
 ## 游戏基本信息
 define config.name = _("无休夏日综合症")
-define config.version = "0.2.2-demo"
+define config.version = "0.9.1-demo"
 define build.name = "EndlessSummerSyndromeDemo"
 
 ## 是否显示游戏名称在主菜单
@@ -52,8 +52,9 @@ define config.end_game_transition = dissolve
 ## 窗口标题（系统级别的窗口栏文字。无法通过翻译动态切换，保持中文原名。）
 define config.window_title = "无休夏日综合症"
 
-## 主菜单音乐（可选）
-define config.main_menu_music = "audio/bgm/Whispers_in_the_Twilight.mp3"
+## 主菜单音乐：kevin_openning。序章首曲也是它，且 set_scene_music 用 if_changed，
+## 所以从主菜单到点"开始游戏"进序章，这首曲子无缝连续播放、不重启。
+define config.main_menu_music = "audio/bgm/kevin_openning.wav"
 
 ## 游戏菜单 - ESC/右键打开存档界面
 define config.game_menu_action = ShowMenu("save")
