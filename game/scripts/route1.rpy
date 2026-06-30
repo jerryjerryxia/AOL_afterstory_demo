@@ -318,7 +318,9 @@ label route1_start:
     ahe "你自己不也在做同样的事情。"
     wangshuang "只是不想看着你和我坠入同样的深渊嘛，毕竟我还挺在乎你的。"
     ahe "别恶心我了，求你了。"
-    ## 撇嘴
+    ## 表情：撇嘴
+    scene dessert2_pout
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你这人，连真心话都不让人说。"
     ahe "你？真心话？笑话可以再冷点么？"
     wangshuang "连这都分不清，以后可是要吃大亏哦。"

@@ -133,7 +133,7 @@ SCENE_EXPRESSIONS = {
     },
     '甜品店对视2': {
         'model': 'full',
-        'map': {'默认': 'dessert2_default'},
+        'map': {'默认': 'dessert2_default', '撇嘴': 'dessert2_pout'},
     },
     '甜品店对视3': {
         'model': 'full',
