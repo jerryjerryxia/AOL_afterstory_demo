@@ -47,11 +47,44 @@ image bg_polyhedron_video = Movie(
 image bg_dessertgaze1 = Transform("images/bg/dessertgaze1.png", xysize=(1920, 1080), fit="cover")
 image bg_dessertgaze2 = Transform("images/bg/dessertgaze2.png", xysize=(1920, 1080), fit="cover")
 image bg_dessertgaze3 = Transform("images/bg/dessertgaze3.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze4 = Transform("images/bg/dessertgaze4.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze5 = Transform("images/bg/dessertgaze5.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze6 = Transform("images/bg/dessertgaze6.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze6_51 = Transform("images/bg/dessertgaze6_51.png", xysize=(1920, 1080), fit="cover")
-image bg_dessertgaze7 = Transform("images/bg/dessertgaze7.png", xysize=(1920, 1080), fit="cover")
+## 4→5→6→6.51→7：水面波纹（水面波纹 shader，见 shaders.rpy）。4 起幻视、微弱入场，
+## 5→6 渐强，6.51 顶峰，7 呕吐复原后留极微弱残留。振幅 u_ripple_strength 是主要"动态
+## 强度"旋钮，speed 顺带略升加剧。想调强弱就改各自的 strength / speed。
+image bg_dessertgaze4:
+    Transform("images/bg/dessertgaze4.png", xysize=(1920, 1080), fit="cover")
+    shader "game.water_ripple"
+    u_ripple_strength 0.1   # 微弱入场
+    u_ripple_speed 0.5
+    u_ripple_scale 12.0
+    function _ripple_tick
+image bg_dessertgaze5:
+    Transform("images/bg/dessertgaze5.png", xysize=(1920, 1080), fit="cover")
+    shader "game.water_ripple"
+    u_ripple_strength 0.2   # 非常微弱
+    u_ripple_speed 0.9
+    u_ripple_scale 12.0
+    function _ripple_tick
+image bg_dessertgaze6:
+    Transform("images/bg/dessertgaze6.png", xysize=(1920, 1080), fit="cover")
+    shader "game.water_ripple"
+    u_ripple_strength 0.5   # 加强
+    u_ripple_speed 1.0
+    u_ripple_scale 12.0
+    function _ripple_tick
+image bg_dessertgaze6_51:
+    Transform("images/bg/dessertgaze6_51.png", xysize=(1920, 1080), fit="cover")
+    shader "game.water_ripple"
+    u_ripple_strength 0.9   # 顶峰
+    u_ripple_speed 1.0
+    u_ripple_scale 12.0
+    function _ripple_tick
+image bg_dessertgaze7:
+    Transform("images/bg/dessertgaze7.png", xysize=(1920, 1080), fit="cover")
+    shader "game.water_ripple"
+    u_ripple_strength 0.1   # 极微弱残留
+    u_ripple_speed 0.5
+    u_ripple_scale 12.0
+    function _ripple_tick
 image bg_dessertgaze8 = Transform("images/bg/dessertgaze8.png", xysize=(1920, 1080), fit="cover")
 
 ## 旧实验：甜品店 + 水面波纹 shader。当前没有场景引用，留作以后复用。

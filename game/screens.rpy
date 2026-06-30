@@ -1453,10 +1453,10 @@ screen about():
             label "[config.name!t]"
             text _("版本 [config.version!t]\n")
 
-            text _("在此处添加游戏介绍...\n")
+            text _("感谢游玩本Demo！\n请务必在正作继续下潜~\n")
 
             text _("制作人员：\n")
-            text _("- 策划：\n- 程序：\n- 美术：\n- 音乐：\n")
+            text _("- 制作人：Jerrix\n- 剧本：Jerrix\n- 美术：Gara、Mermo\n- 音乐：Kevin\n- 编辑：倪佼佼\n- 程序：Jerrix\n")
 
 style about_label is gui_label
 style about_label_text is gui_label_text
@@ -1594,14 +1594,17 @@ style skip_text:
 ## 周目标题界面 - Route Title Screen
 ################################################################################
 
-screen route_title(title, subtitle=None):
+screen route_title(title, subtitle=None, sfx=None):
     ## 全屏显示周目标题（"浮潜"）。出现和消失都放慢；不允许鼠标点击快进，
     ## 只有按住 ctrl（快进/skip）才能跳过（point 3）。
+    ## sfx：可选一次性音效，在标题"完整展示"（淡入 2.2s 结束）时播放一次。
+    ## 用于落水泡泡这类需要在标题出现后、下个场景登场前播完的声音。
 
     modal True
     zorder 100
 
     default closing = False
+    default sfx_played = False
 
     ## 整个画面容器
     frame:
@@ -1629,6 +1632,12 @@ screen route_title(title, subtitle=None):
             if subtitle:
                 text subtitle:
                     style "route_subtitle_text"
+
+    ## 标题完整展示（淡入 2.2s 结束）时播放一次性音效。play_sfx 同时记下结束时刻，
+    ## 供调用处的 wait_sfx 等它播完再让下个场景登场。sfx_played 防止 closing 重渲染
+    ## 时重复触发。
+    if sfx and not sfx_played:
+        timer 2.2 action [SetScreenVariable("sfx_played", True), Function(play_sfx, sfx)]
 
     ## 自走时序：淡入(2.2s) + 停留 → 到点自动开始淡出。没有任何鼠标点击区域，
     ## 因此点击不会快进；modal 也挡住了对下层的点击。

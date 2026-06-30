@@ -5,14 +5,10 @@ label route1_start:
 
 ## 一周目：浮潜
 
-    call screen route_title(_("浮潜"))
-    ## 脸入水后冒泡泡的音效：face-down-bubble
-    $ play_sfx("audio/sfx/face-down-bubble.wav")
-    ## 转场：虚空对视
-    scene bg_black_video
-    show void default
-    with scene_soft
+    call screen route_title(_("浮潜"), sfx="audio/sfx/face-down-bubble.wav")
     $ wait_sfx()
+    ## 转场：虚空对视
+    show void default with scene_dissolve
     wangshuang "欢迎回来，阿鹤。"
     ahe "倒不如去死。"
     wangshuang "哦？有趣的提议，为什么呢？"
@@ -47,8 +43,8 @@ label route1_start:
     ## 场景音乐参考风格1：樹氷の輝き (Shine of Silver Thaw)，夜の向日葵（The sunflower of the night），Running Waters - https://audionautix.com/Music/RunningWaters.mp3 (Jason Shaw)，Shianchu
     ## 场景音乐参考风格2：Jellyfish - https://audionautix.com/Music/Jellyfish.mp3  (Jason Shaw)
     $ set_scene_music("route1_scene1")
-    ## 表情：默认
-    scene summergaze_default
+    ## 表情：大笑
+    scene summergaze_laugh
     $ renpy.transition(Dissolve(0.2), layer="master")
     $ wait_sfx()
     wangshuang "你看，太阳。"
@@ -56,6 +52,9 @@ label route1_start:
     wangshuang "金色的，温暖的，让人舒适而安心的太阳，它就在那里。"
     wangshuang "对于沐浴日光中的人来说，明白这一点就够了。"
     ahe "可它分明是我视野里最暴烈而盛气凌人的造物。"
+    ## 表情：面无表情
+    scene summergaze_blank
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那就闭上眼睛，你的问题便迎刃而解了。"
     ahe "可我还是我觉得我快要..."
 
@@ -67,27 +66,48 @@ label route1_start:
             $ madness += 1
             pass
 
+    ## 表情：默认
+    scene summergaze_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那也是无可厚非的事情。"
     ahe "那怎么可能是——"
     wangshuang "当然就是这样的，阿鹤。"
+    ## 表情：小吃惊
+    scene summergaze_surprised
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "这是你的心理咨询，你是来访者，而我是咨询师。"
     ahe "所以...我该怎样才能好起来？"
     wangshuang "修补本就完整的东西，那自然是做不到的。"
     ahe "..."
+    ## 表情：面无表情
+    scene summergaze_blank
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你不同意。"
     ahe "...你...求求你不要再浪费我的时间了..."
+    ## 表情：小声嘀咕
+    scene summergaze_mutter
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "时间，你要那东西有什么用？"
     ahe "我还要——我还得..."
+    ## 表情：默认
+    scene summergaze_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我在听。"
     wangshuang "不用紧张，阿鹤，你可以畅所欲言。"
     ahe "想不起来...什么都想不起来..."
     wangshuang "想想你为什么来到这里，或者想想你用你先前的时间做了什么事，都能帮助你回忆过去。"
     wangshuang "但即使什么也想不起来也不必懊恼，那是意料之中的过程。"
     ahe "这...这肯定又是你的把戏！"
+    ## 表情：小声嘀咕
+    scene summergaze_mutter
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "总是向外归因可解决不了问题啊，我的朋友。"
     wangshuang "你的病虽然看起来已经根治了，但以你的身心状态而言，任何时候复发我都不意外。"
     wangshuang "但你还是没回答我的问题——时间对现在的你而言，有什么用？"
     ahe "没用...完全没用...一切都结束了..."
+    ## 表情：小吃惊
+    scene summergaze_surprised
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦？所以还是想起来了一些。"
     ahe "你...毁掉了整个逝乐园。"
     ## 表情：大笑
@@ -110,15 +130,21 @@ label route1_start:
     ## 表情：小声嘀咕
     scene summergaze_mutter
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "这就是为什么我——"
+    wangshuang "{size=-10}这就是为什么我——{/size}"
     ahe "什么？"
     ## 表情：默认
     scene summergaze_default
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "没事。没事。阿鹤，你知道太阳为什么会死吗？"
     ahe "因为它想死。"
+    ## 表情：面无表情
+    scene summergaze_blank
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "错——太阳自出生的那一刻起便像氢弹般持续自毁，早就动了死的念头，但它还是在天上烧了四十多亿年。"
     ahe "我不明白..."
+    ## 表情：默认
+    scene summergaze_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你当然不明白，你肯定在想‘可这明明也是一种外因，毕竟整个太阳系都齐心协力地求它继续活下去’。"
     ahe "唔..."
     ## Extended文本框开始 - accumulating textbox
@@ -128,6 +154,9 @@ label route1_start:
     wangshuang "然而现实恰恰相反——太阳不死仅仅是因为它的使命尚未完成而已。而它的死与它或其他任何造物的想法没有半点关系。"
     ## Extended文本框结束
     ## Extended文本框开始 - accumulating textbox
+    ## 表情：小声嘀咕
+    scene summergaze_mutter
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "想法是轻薄的、由外界塑造的，一坨烂泥一样谁都可以捏一把，但同时也是无足轻重的。而使命则是彻头彻尾、由内而外的——只有在‘使命’松手之后，‘想法’才配拥有虚假的自由。"
     ## Extended文本框结束
     ahe "这和我们又有什么关系？"
@@ -182,6 +211,9 @@ label route1_start:
     wangshuang "别哈，让你来你就来。"
     ## 屏幕缩放，显得王霜近了很多
     ahe "是什么东西？"
+    ## 表情：面无表情
+    scene summergaze_blank
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你看就是了。"
     ## 转场：张目对日pt1
     scene bg_sungaze with scene_soft
@@ -414,6 +446,9 @@ label route1_start:
             ahe "那你还让我吃？"
             wangshuang "毕竟这也是实验的一部分——阿鹤，你喜欢红色还是蓝色？"
 
+    ## 音乐开始 fade out
+    $ current_music_scene = None
+    stop music fadeout 4.0
     ahe "蓝色啊，怎么了？"
     wangshuang "你看——"
     ## 转场：甜品店对视4

@@ -112,6 +112,7 @@ SCENE_HARD_FADE = {
 SCENE_EXPRESSIONS = {
     '虚空对视': {
         'model': 'overlay',
+        'continue_bg': True,   # 黑屏视频从浮潜连续过来，不重新 scene，只淡入立绘
         'default': 'void default',
         'map': {'默认': 'void default', '小吃惊': 'void surprised'},
     },
@@ -122,6 +123,7 @@ SCENE_EXPRESSIONS = {
             '小声嘀咕': 'summergaze_mutter',
             '面无表情': 'summergaze_blank',
             '大笑': 'summergaze_laugh',
+            '小吃惊': 'summergaze_surprised',
         },
     },
     '甜品店对视1': {
@@ -501,9 +503,14 @@ def _emit_scene(out, indent, scene_name, bg_image, transition):
         return
     cfg = SCENE_EXPRESSIONS.get(scene_name)
     if cfg and cfg['model'] == 'overlay':
-        out.append(f'{indent}scene {bg_image}')
-        out.append(f'{indent}show {cfg["default"]}')
-        out.append(f'{indent}with {transition}')
+        if cfg.get('continue_bg'):
+            # bg（黑屏视频）从上一场景连续过来：不重新 scene —— 重新 scene 会重启视频
+            # 并经 scene_soft 的黑场"暗一下"。只把立绘 dissolve 淡入，黑屏全程连续。
+            out.append(f'{indent}show {cfg["default"]} with scene_dissolve')
+        else:
+            out.append(f'{indent}scene {bg_image}')
+            out.append(f'{indent}show {cfg["default"]}')
+            out.append(f'{indent}with {transition}')
     else:
         out.append(f'{indent}scene {bg_image} with {transition}')
     _CURRENT_EXPR_SCENE = scene_name
@@ -634,6 +641,14 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     if '音乐停' in line:
         return f'{indent}$ current_music_scene = None\n{indent}stop music fadeout 1.0'
 
+    # Music fade-out marker 【音乐开始fade out】：当前音乐缓缓淡出（进入幻视前的留白）。
+    # current_music_scene 置 None，淡出后存档/读档不会把这段音乐恢复回来。
+    # 时长 4s：调这里改淡出快慢（后面 set_scene_music 切幻视曲时会接管交叉淡入）。
+    if '音乐开始fade out' in line:
+        return (f'{indent}## 音乐开始 fade out\n'
+                f'{indent}$ current_music_scene = None\n'
+                f'{indent}stop music fadeout 4.0')
+
     # Sound-effect markers 【…音效：filename】 -> one-shot on the sound channel.
     # Convention: the marker names the clip explicitly (base name, no extension)
     # of a file in audio/sfx/ (all .wav). `play sound` is async and non-blocking,
@@ -746,19 +761,22 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     char_names = sorted(char_var_map.keys(), key=len, reverse=True)
     char_pattern = '|'.join(re.escape(name) for name in char_names)
 
-    # Character dialogue with inline stage direction
-    char_action_match = re.match(rf'^({char_pattern})【(.+?)】[：:](.*)$', line)
+    # Character dialogue with one or more leading 【…】 markers（表情 / 小字 / 道具提示）。
+    # 一句可带多个 marker，如 王霜【小声嘀咕】【小字】：…（既切表情又缩小字体）。
+    char_action_match = re.match(rf'^({char_pattern})((?:【.+?】)+)[：:](.*)$', line)
     if char_action_match:
         char_name = char_action_match.group(1)
-        action = char_action_match.group(2)
         dialogue = char_action_match.group(3).strip()
         char_var = char_var_map[char_name]
-        # 已知表情 → 切差分图（master 层溶解，对话框和文字不动），再说台词；
-        # 否则当普通舞台提示注释。
-        expr = emit_expression_change(action, indent)
-        if expr:
-            return expr + '\n' + emit_char_dialogue(char_var, dialogue, indent)
-        return emit_char_dialogue(char_var, dialogue, indent, comment=action)
+        pre = []   # 表情切换 / 注释，放在台词前
+        for m in re.findall(r'【(.+?)】', char_action_match.group(2)):
+            if m == '小字':
+                # 把 【小字】 放回台词开头，交给 apply_small_text 缩小到行尾。
+                dialogue = '【小字】' + dialogue
+                continue
+            swap = emit_expression_change(m, indent)   # 已知表情 → master 层溶解切差分
+            pre.append(swap if swap else f'{indent}## {m}')  # 否则当舞台提示注释
+        return '\n'.join(pre + [emit_char_dialogue(char_var, dialogue, indent)])
 
     # Character dialogue (simple)
     char_match = re.match(rf'^({char_pattern})[：:](.*)$', line)
@@ -875,13 +893,19 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
             collected.append(('__transition__', (scene_name, scene_desc)))
             continue
 
-        # Character dialogue with inline 【表情/提示】（块内也可能出现，如夏日对视那段
-        # Extended 里的 王霜【面无表情】）。先于普通 char_match 判断。
-        char_action = re.match(rf'^({char_pattern})【(.+?)】[：:](.*)$', line)
+        # Character dialogue with one or more leading 【…】（块内也可能出现，如夏日对视
+        # 那段 Extended 里的 王霜【面无表情】）。先于普通 char_match 判断。支持多 marker
+        # （表情 + 小字）。
+        char_action = re.match(rf'^({char_pattern})((?:【.+?】)+)[：:](.*)$', line)
         if char_action:
             char_var = char_var_map[char_action.group(1)]
-            collected.append(('__expr__', char_action.group(2)))
-            collected.append((char_var, char_action.group(3).strip()))
+            dialogue = char_action.group(3).strip()
+            for m in re.findall(r'【(.+?)】', char_action.group(2)):
+                if m == '小字':
+                    dialogue = '【小字】' + dialogue
+                else:
+                    collected.append(('__expr__', m))
+            collected.append((char_var, dialogue))
             continue
 
         # Character dialogue
@@ -1076,6 +1100,26 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
         i += 1
 
         if not line:
+            continue
+
+        # 周目分屏标题，且紧跟一个音效标记 → 把音效折进 route_title：标题完整展示时
+        # 播放，再 wait_sfx 等它播完，之后的转场（王霜登场）才发生。用于"浮潜→落水
+        # 泡泡→虚空对视"：泡泡声在标题出现后完整播放，王霜才登场。
+        if '展示' in line and '周目分屏' in line:
+            tm = re.search(r'分屏.(.+?).】$', line)
+            title = tm.group(1) if tm else ''
+            j = i
+            while j < end_line and j < len(lines) and not lines[j].strip():
+                j += 1
+            sm = (re.match(r'^【(?:.*?音效)[：:]\s*(.+?)\s*】$', lines[j].strip())
+                  if j < end_line and j < len(lines) else None)
+            if sm:
+                sfx_name = sm.group(1).strip()
+                output.append(f'    call screen route_title(_("{title}"), sfx="audio/sfx/{sfx_name}.wav")')
+                output.append('    $ wait_sfx()')
+                i = j + 1   # 吃掉音效标记
+            else:
+                output.append(f'    call screen route_title(_("{title}"))')
             continue
 
         # Check for accumulating block markers (【Extended文本框开始】 or 【Extended大文本框开始】)
