@@ -1456,7 +1456,7 @@ screen about():
             text _("感谢游玩本Demo！\n请务必在正作继续下潜~\n")
 
             text _("制作人员：\n")
-            text _("- 制作人：Jerrix\n- 剧本：Jerrix\n- 美术：Gara、Mermo\n- 音乐：Kevin\n- 编辑：倪佼佼\n- 程序：Jerrix\n")
+            text _("- 制作人：Jerrix\n- 剧本：Jerrix\n- 美术：Gara、Mermo\n- 音乐：Kevin, audionautix.com, FabienC@RustedMusicStudio\n- 音效：Sirderf，soundscalpel.com，rrehl, chewiesmissus, gravitysound.studio\n- 编辑：倪佼佼\n- 程序：Jerrix\n")
 
 style about_label is gui_label
 style about_label_text is gui_label_text

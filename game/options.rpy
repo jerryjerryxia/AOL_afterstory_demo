@@ -3,7 +3,7 @@
 
 ## 游戏基本信息
 define config.name = _("无休夏日综合症")
-define config.version = "0.9.1-demo"
+define config.version = "1.0.0-demo"
 define build.name = "EndlessSummerSyndromeDemo"
 
 ## 是否显示游戏名称在主菜单
