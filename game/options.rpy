@@ -16,8 +16,8 @@ define config.save_directory = "EndlessSummerSyndromeDemo-1234567890"
 define config.screen_width = 1920
 define config.screen_height = 1080
 
-## 游戏图标（需要替换为实际图标）
-# define config.window_icon = "gui/window_icon.png"
+## 游戏图标
+define config.window_icon = "images/ui/icon/game_icon.png"
 
 ## 默认语言为中文（None 表示使用 script 中的原始文本）
 define config.language = None
