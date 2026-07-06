@@ -17,7 +17,9 @@ init python:
         "route1_scene1": {
             "label": "一周目 场景1 - 沙滩（夏日对视）",
             "tracks": [
-                {"id": "beach_v3", "name": "Beach v3", "file": "2_beach_v3_trimmed_final.wav"},
+                ## loop 115→230s：230s 处波形与 115s 逐样本一致（ncc=1.0），无缝。
+                ## end=230 让每遍在 230s 收尾，不播到 232s 的静音尾巴（否则回跳会爆 pop）。
+                {"id": "beach_v3", "name": "Beach v3", "file": "2_beach_loop@01.55_q8.ogg", "loop": 115.0, "end": 230.0},
             ]
         },
         "route1_scene2": {

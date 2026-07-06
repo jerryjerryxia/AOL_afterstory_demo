@@ -233,5 +233,14 @@ init python:
         track = tracks[0]
         ## 玩家第一次听到这首曲子 → 在音乐鉴赏里解锁它。
         unlock_music(track["id"])
-        renpy.music.play("audio/bgm/" + track["file"],
+        ## 可选无缝循环（秒）：loop=回跳点，end=每遍结束点（切掉尾部静音，避免回跳爆 pop）。
+        filename = "audio/bgm/" + track["file"]
+        clauses = []
+        if "end" in track:
+            clauses.append("to %s" % track["end"])
+        if "loop" in track:
+            clauses.append("loop %s" % track["loop"])
+        if clauses:
+            filename = "<%s>%s" % (" ".join(clauses), filename)
+        renpy.music.play(filename,
                          fadeout=1.0, fadein=1.0, if_changed=True)
