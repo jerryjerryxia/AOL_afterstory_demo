@@ -220,7 +220,7 @@ init python:
     def set_scene_music(scene_id):
         """设置当前场景音乐并播放（每个场景固定一首）。
 
-        if_changed=True：若该曲已在播放则不重启 —— 这样主菜单的 1_polyhedron_loop
+        if_changed=True：若该曲已在播放则不重启 —— 这样主菜单的 glitter_in_the_dark
         能无缝续进序章（序章首曲也是它），玩家点"开始游戏"前后不断。
         """
         global current_music_scene

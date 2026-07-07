@@ -11,7 +11,8 @@ init python:
         "prologue_1": {
             "label": "序章 - 深海场景",
             "tracks": [
-                {"id": "polyhedron", "name": "Polyhedron", "file": "1_polyhedron_loop.ogg"},
+                ## id 保持 "polyhedron" 稳定 —— 它是 persistent.music_unlocked 的解锁键。
+                {"id": "polyhedron", "name": "Glitter in the Dark", "file": "glitter_in_the_dark.ogg"},
             ]
         },
         "route1_scene1": {
@@ -19,7 +20,7 @@ init python:
             "tracks": [
                 ## loop 115→230s：230s 处波形与 115s 逐样本一致（ncc=1.0），无缝。
                 ## end=230 让每遍在 230s 收尾，不播到 232s 的静音尾巴（否则回跳会爆 pop）。
-                {"id": "beach_v3", "name": "Beach v3", "file": "2_beach_loop@01.55_q8.ogg", "loop": 115.0, "end": 230.0},
+                {"id": "beach_v3", "name": "Endless Summer Time", "file": "endless_summer_time.ogg", "loop": 115.0, "end": 230.0},
             ]
         },
         "route1_scene2": {
