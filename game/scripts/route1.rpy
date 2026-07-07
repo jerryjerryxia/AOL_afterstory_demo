@@ -565,10 +565,16 @@ label route1_start:
     ## 剥落完成后，黑屏
     ## 水底泡泡上浮音效：Bubbles_10
     $ play_sfx("audio/sfx/Bubbles_10.wav")
-    ## 转场：粉红屏
-    scene black with scene_soft
+    ## 居中Extended文本框开始 - centered accumulating textbox
+    $ wait_sfx()
+    centered_narrator "Demo到此结束，感谢游玩！"
+    extend "\n欲知后事如何，还请在本作正式发售时继续支持！"
+    ## 居中Extended文本框结束
+    ## fade out 屏幕（图像+音乐）之后，reboot 回主菜单
     $ current_music_scene = None
-    stop music fadeout 1.0
+    stop music fadeout 2.0
+    scene black with fade_to_black_long
+    $ hard_pause(1.0)
 
     ## Route 1 结束
     $ unlock_route(1)

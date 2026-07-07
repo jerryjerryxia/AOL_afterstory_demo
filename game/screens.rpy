@@ -291,6 +291,11 @@ style namebox:
 default _intro_fade_pending = False
 
 init python:
+    def _clear_demo_return_fade():
+        # 清掉主菜单入场淡入标志。必须返回 None —— 若返回非 None（如 session.pop
+        # 返回的 True），screen action 会以该值结束主菜单交互，被当成"开始游戏"。
+        renpy.session.pop("_demo_return_fade", None)
+
     def _say_intro_fade_or_halt(trans, st, at):
         if renpy.store._intro_fade_pending:
             renpy.store._intro_fade_pending = False
@@ -303,6 +308,13 @@ transform say_intro_fade:
     alpha 0.0
     function _say_intro_fade_or_halt
     easein 0.6 alpha 1.0
+
+## demo 通关 reboot 回主菜单后，整屏（背景+标题+按钮）从纯黑淡入一次。
+## 出屏是 fade_to_black_long，落到黑；reboot 后主菜单本会瞬间弹出（很生硬），
+## 这里盖一层黑幕 easeout 淡出，视觉上就是主菜单从黑里缓缓浮现。
+transform _demo_return_fadein:
+    alpha 1.0
+    easeout 1.2 alpha 0.0
 
 ################################################################################
 ## 点击继续指示器 - CTC (click-to-continue) 打字光标（point 2）
@@ -804,6 +816,12 @@ screen main_menu():
     ## 或者武装 intro_fade_pending + jump_out_of_context("start")。)
     if _main_menu_starting:
         timer 1.25 action [SetVariable("_main_menu_starting", False), Function(exit_main_menu_to_game)]
+
+    ## demo 通关 reboot 回主菜单：整屏从黑淡入一次，然后清标志（只淡入这一次）。
+    ## 放在 screen 最后 = 盖在背景/标题/按钮之上；淡完由 timer 清 session 标志。
+    if renpy.session.get("_demo_return_fade"):
+        add Solid("#000000") at _demo_return_fadein
+        timer 1.25 action Function(_clear_demo_return_fade)
 
 style main_menu_frame is empty
 style main_menu_vbox is vbox

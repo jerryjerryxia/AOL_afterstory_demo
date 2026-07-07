@@ -135,6 +135,9 @@ init python:
         到最后卡死、要等很久"）。测试模式下直接跳过，正常游玩照常 reboot。"""
         if getattr(renpy.game.args, "command", None) == "test":
             return
+        # reboot 后主菜单整屏从黑淡入一次（否则 utter_restart 落地很生硬）。
+        # renpy.session 跨 utter_restart 存活、真正退出才清 —— 见 screens.rpy main_menu。
+        renpy.session["_demo_return_fade"] = True
         renpy.utter_restart()
 
     import wave as _wave
@@ -217,8 +220,8 @@ init python:
     def set_scene_music(scene_id):
         """设置当前场景音乐并播放（每个场景固定一首）。
 
-        if_changed=True：若该曲已在播放则不重启 —— 这样主菜单的 kevin_openning
-        能无缝续进序章（序章首曲也是 kevin_openning），玩家点"开始游戏"前后不断。
+        if_changed=True：若该曲已在播放则不重启 —— 这样主菜单的 1_polyhedron_loop
+        能无缝续进序章（序章首曲也是它），玩家点"开始游戏"前后不断。
         """
         global current_music_scene
         store.current_music_scene = scene_id

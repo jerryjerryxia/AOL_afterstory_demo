@@ -1673,3 +1673,15 @@ translate english strings:
     old "就这样睡去。"
     new "Just fall asleep."
 
+# game/scripts/route1.rpy:570
+translate english route1_start_3b5ac910:
+
+    # centered_narrator "Demo到此结束，感谢游玩！"
+    centered_narrator "This marks the end of the demo. Thanks for playing!"
+
+# game/scripts/route1.rpy:571
+translate english route1_start_183d81b4:
+
+    # extend "\n欲知后事如何，还请在本作正式发售时继续支持！"
+    extend "\nIf you wish to find out how Kaku and Shuang's struggle plays out, please continue to support us at the official launch!"
+

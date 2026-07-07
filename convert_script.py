@@ -549,7 +549,7 @@ def emit_transition_lines(output, indent, scene_name, scene_desc):
         transition = 'scene_soft'
     _emit_scene(output, indent, scene_name, bg_image, transition)
 
-def emit_extended_segments(collected, output, indent, large=False):
+def emit_extended_segments(collected, output, indent, large=False, centered=False):
     """Extended文本框（大/小）：保留源换行（point 2）。每个源行 = 一句 say/extend，
     整句**干净文本**——标点的「逐句点击」改由运行时 {w} 处理（见 screens.rpy 的
     add_click_pauses）。这样翻译 ID 与源行 1:1 稳定，以后改分句逻辑再也不会冲掉翻译。
@@ -562,7 +562,8 @@ def emit_extended_segments(collected, output, indent, large=False):
     - __transition__ 结束当前段落（其后另起新 say，不带前导 \\n）。large=True 旁白
       走 large_narrator（大文本框屏幕），否则普通 narrator。
     """
-    narr = 'large_narrator ' if large else ''
+    # centered：居中Extended 文本框 —— 累积句子走 centered_say 屏幕、屏幕正中显示。
+    narr = 'centered_narrator ' if centered else ('large_narrator ' if large else '')
     first_emitted = False   # 本段落是否已经发出开头 say
 
     def emit_piece(speaker, text, lead_newline):
@@ -660,6 +661,16 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         sfx_label = sfx_match.group(1)
         sfx_name = sfx_match.group(2).strip()
         return f'{indent}## {sfx_label}：{sfx_name}\n{indent}$ play_sfx("audio/sfx/{sfx_name}.wav")'
+
+    # Demo 结尾 【fade out屏幕之后，回主菜单】：图像与音乐一起淡出、黑屏留白，
+    # 随后 main() 追加的 demo_reboot_after_route() reboot 回主菜单。音乐一起淡出
+    # （而非硬切），是为了衔接主菜单曲；current_music_scene 置 None 以免读档恢复。
+    if 'fade out' in line and '回主菜单' in line:
+        return (f'{indent}## fade out 屏幕（图像+音乐）之后，reboot 回主菜单\n'
+                f'{indent}$ current_music_scene = None\n'
+                f'{indent}stop music fadeout 2.0\n'
+                f'{indent}scene black with fade_to_black_long\n'
+                f'{indent}$ hard_pause(1.0)')
 
     # Pause markers 【停顿：N】 -> `pause N` (N is seconds, float ok)
     # Use sparingly — for breathing room before a scene's first line, etc.
@@ -840,10 +851,11 @@ def parse_choice(line):
     return None, 0, None
 
 
-def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=False):
+def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=False, centered=False):
     """
     Collect lines between markers and output them with extend for accumulating display.
     First line is normal dialogue, subsequent lines use extend to append.
+    centered=True：居中累积框（centered_say），用于 demo 结尾谢幕卡等。
     Returns (output_lines, new_index)
     """
     # Character name to variable mapping (must match convert_content_line)
@@ -930,7 +942,7 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
 
     # Extended 文本框（大/小）现在统一走同一段落、按标点逐次点击的分句逻辑。
     # 大文本框只是旁白用 large_narrator、屏幕用 large_say，分句规则完全一致。
-    emit_extended_segments(collected, output, indent, large=use_large)
+    emit_extended_segments(collected, output, indent, large=use_large, centered=centered)
     return output, i
 
 
@@ -985,9 +997,12 @@ def process_choice_content(content_lines, indent="            "):
             continue
 
         # Check for Extended文本框 markers (non-large)
-        # All lines accumulate with extend after the first
+        # All lines accumulate with extend after the first.
+        # 【居中Extended文本框…】= 居中累积框（centered_say），如 demo 结尾谢幕卡。
         if 'Extended文本框开始' in line and 'Extended大文本框' not in line:
-            output.append(f"{indent}## Extended文本框开始 - accumulating textbox")
+            centered_box = '居中' in line
+            label = '居中Extended文本框' if centered_box else 'Extended文本框'
+            output.append(f"{indent}## {label}开始 - {'centered ' if centered_box else ''}accumulating textbox")
             # Character name to variable mapping
             char_var_map = {
                 '王霜': 'wangshuang',
@@ -1022,8 +1037,8 @@ def process_choice_content(content_lines, indent="            "):
                     entries.append((char_var_map[char_match.group(1)], char_match.group(2).strip()))
                 else:
                     entries.append((None, next_line))
-            emit_extended_segments(entries, output, indent)
-            output.append(f"{indent}## Extended文本框结束")
+            emit_extended_segments(entries, output, indent, centered=centered_box)
+            output.append(f"{indent}## {label}结束")
             continue
 
         # Check for 居中文本框 markers
@@ -1150,10 +1165,12 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
             continue
 
         if 'Extended文本框开始' in line and 'Extended大文本框' not in line:
-            output.append("    ## Extended文本框开始 - accumulating textbox")
-            accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended文本框结束', use_large=False)
+            centered_box = '居中' in line
+            label = '居中Extended文本框' if centered_box else 'Extended文本框'
+            output.append(f"    ## {label}开始 - {'centered ' if centered_box else ''}accumulating textbox")
+            accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended文本框结束', use_large=False, centered=centered_box)
             output.extend(accumulated)
-            output.append("    ## Extended文本框结束")
+            output.append(f"    ## {label}结束")
             continue
 
         # Check for large textbox markers (non-combined, single line mode)
@@ -1417,10 +1434,12 @@ def convert_prologue(lines, start_line, end_line):
             continue
 
         if 'Extended文本框开始' in line and 'Extended大文本框' not in line:
-            output.append("    ## Extended文本框开始 - accumulating textbox")
-            accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended文本框结束', use_large=False)
+            centered_box = '居中' in line
+            label = '居中Extended文本框' if centered_box else 'Extended文本框'
+            output.append(f"    ## {label}开始 - {'centered ' if centered_box else ''}accumulating textbox")
+            accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended文本框结束', use_large=False, centered=centered_box)
             output.extend(accumulated)
-            output.append("    ## Extended文本框结束")
+            output.append(f"    ## {label}结束")
             continue
 
         # Check for large textbox markers

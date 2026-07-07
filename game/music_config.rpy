@@ -11,7 +11,7 @@ init python:
         "prologue_1": {
             "label": "序章 - 深海场景",
             "tracks": [
-                {"id": "kevin_openning", "name": "Kevin Opening", "file": "kevin_openning.wav"},
+                {"id": "polyhedron", "name": "Polyhedron", "file": "1_polyhedron_loop.ogg"},
             ]
         },
         "route1_scene1": {
