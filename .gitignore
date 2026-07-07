@@ -3,6 +3,7 @@
 *.rpymc
 *.rpyb
 *.rpa
+progressive_download.txt
 
 # Cache and saves
 game/cache/
