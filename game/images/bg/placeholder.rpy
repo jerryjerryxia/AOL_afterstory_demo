@@ -102,8 +102,10 @@ image bg_dessertshop:
 ## Movie(play=...) 在 show 时自动在 movie channel 播放、scene 走时停止；二者
 ## 不会同时出现，共用默认 channel。转场 白屏/黑屏 由 SCENE_BG_MAP 指到这里。
 ################################################################################
-image bg_white_video = Movie(play="images/bg/white_screen.webm", size=(1920, 1080))
-image bg_black_video = Movie(play="images/bg/black_screen.webm", size=(1920, 1080))
+## start_image/image：视频首帧解码前显示纯色，避免 ctrl 快进时 Movie 冷启动
+## 闪出棋盘格占位纹理（资源多、解码有压力时尤其明显）。
+image bg_white_video = Movie(play="images/bg/white_screen.webm", size=(1920, 1080), start_image="white", image="white")
+image bg_black_video = Movie(play="images/bg/black_screen.webm", size=(1920, 1080), start_image="black", image="black")
 
 ################################################################################
 ## 表情差分（全图 / 透明叠层）。转换器在 王霜【表情】 处切换：
