@@ -3,7 +3,7 @@
 
 ## 游戏基本信息
 define config.name = _("无休夏日综合症")
-define config.version = "1.0.0-demo"
+define config.version = "1.0.1"
 define build.name = "EndlessSummerSyndromeDemo"
 
 ## 是否显示游戏名称在主菜单
@@ -54,7 +54,9 @@ define config.window_title = "无休夏日综合症"
 
 ## 主菜单音乐：glitter_in_the_dark。序章首曲也是它，且 set_scene_music 用 if_changed，
 ## 所以从主菜单到点"开始游戏"进序章，这首曲子无缝连续播放、不重启。整曲从头循环到尾。
-define config.main_menu_music = "audio/bgm/glitter_in_the_dark.ogg"
+## <volume 0.737>：响度配平到 -16.5 LUFS —— 必须与 music_config.rpy 里 polyhedron
+## 轨的 volume 逐字一致，set_scene_music 会拼出同样的前缀，if_changed 才认作同一首。
+define config.main_menu_music = "<volume 0.737>audio/bgm/glitter_in_the_dark.ogg"
 
 ## 游戏菜单 - ESC/右键打开存档界面
 define config.game_menu_action = ShowMenu("save")

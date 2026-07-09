@@ -243,6 +243,10 @@ init python:
             clauses.append("to %s" % track["end"])
         if "loop" in track:
             clauses.append("loop %s" % track["loop"])
+        ## 响度匹配增益（线性）。见 music_config.rpy 的 volume 注释。glitter 的前缀
+        ## 必须与 config.main_menu_music 逐字一致，否则 if_changed 会重启主菜单曲。
+        if "volume" in track:
+            clauses.append("volume %s" % track["volume"])
         if clauses:
             filename = "<%s>%s" % (" ".join(clauses), filename)
         renpy.music.play(filename,
