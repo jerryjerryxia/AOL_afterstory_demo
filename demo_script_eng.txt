@@ -74,13 +74,24 @@ About everything.
 
 【Extended大文本框结束】
 
-【Extended大文本框开始】
+【居中大字文本框开始】
 
 …
+
+
+【居中大字文本框结束】
+
+【居中大字文本框开始】
+
 ……
+
+【居中大字文本框结束】
+
+【居中大字文本框开始】
+
 ………
 
-【Extended大文本框结束】
+【居中大字文本框结束】
 
 【Extended大文本框开始】
 
@@ -111,17 +122,28 @@ About everything.
 
 【Extended大文本框结束】
 
-【Extended大文本框开始】
+【居中大字文本框开始】
 
 …
+
+
+【居中大字文本框结束】
+
+【居中大字文本框开始】
+
 ……
+
+【居中大字文本框结束】
+
+【居中大字文本框开始】
+
 ………
 
-【Extended大文本框结束】
+【居中大字文本框结束】
 
 【转场：黑屏。就是黑屏。】
 
-【头出水面后大吸一口气音效】
+【头出水面音效：Bubbles_10】
 
 【Extended大文本框开始】
 
@@ -138,7 +160,7 @@ You vaguely remembered that.
 
 【Extended大文本框开始】
 
-失望之余，你肆意俯身漂浮，不再试图活动任何肌肉，只是慵懒地咪着双眼。你想，也许能从水下那幽暗世界里看出些什么。
+失望之余，你索性俯身漂浮，不再试图活动任何肌肉，只是慵懒地眯着双眼。你想，也许能从水下那幽暗世界里看出些什么。
 In dismay, you let yourself afloat, no longer moving even a single muscle. All you did was stare down the ocean with a lazy gaze, hoping to spot something from it.
 但终究是什么都没有。
 But there was nothing after all.
@@ -176,6 +198,8 @@ Then run!
 
 【居中大字文本框结束】
 
+【音乐停】
+
 【Extended大文本框开始】
 
 虽然早就无路可逃，但移开目光就能解燃眉之急，如此便利之事又有什么推脱的借口？
@@ -190,7 +214,7 @@ As if nothing ever happened.
 一周目：浮潜
 【展示一周目分屏“浮潜”】
 
-【脸入水后冒泡泡的音效】
+【脸入水后冒泡泡的音效：face-down-bubble】
 
 【转场：虚空对视。背景一片漆黑，场景里只有王霜和一张桌子，阿鹤第一视角看着盯着他的王霜，参考DDLC最后的莫妮卡】
 
@@ -229,7 +253,7 @@ Kaku: The sun?
 王霜【小吃惊】：哦，不好意思，太阳在那儿。
 Wang Shuang: Ooops, my bad. Yes, the sun, over there.
 
-【玻璃破碎音效】
+【玻璃破碎音效：glass-smash-normalized】
 【转场：夏日对视。金色的沙滩和蔚蓝的海，只是一个人都没有，场景里依然只有王霜。】
 【场景背景里的黑暗碎裂，变为完美夏日，金色的沙滩和蔚蓝的海，只是一个人都没有】
 
@@ -237,7 +261,7 @@ Wang Shuang: Ooops, my bad. Yes, the sun, over there.
 【场景音乐参考风格2：Jellyfish - https://audionautix.com/Music/Jellyfish.mp3  (Jason Shaw)】
 【音乐：route1_scene1】
 
-王霜【默认】：你看，太阳。
+王霜【大笑】：你看，太阳。
 Wang Shuang: The sun, you see it now?
 阿鹤：嗯，太阳。
 Kaku: Yes.
@@ -245,24 +269,24 @@ Kaku: Yes.
 Wang Shuang: Golden, warm, and comforting. It's just there.
 王霜：对于沐浴日光中的人来说，明白这一点就够了。
 Wang Shuang: For ones bathing in the sunlight, that's all they need to know.
-阿鹤：可它分明是我视野里最暴烈而盛气凌人的造物。
+阿鹤：可它分明是我视野里最暴烈、最盛气凌人的造物。
 Kaku: But it's clearly the most violent and arrogant thing I can see.
-王霜：那就闭上眼睛，你的问题便迎刃而解了。
+王霜【面无表情】：那就闭上眼睛，你的问题便迎刃而解了。
 Wang Shuang: Then close your eyes. Solves all your problems.
-阿鹤：可我还是我觉得我快要...
+阿鹤：可我还是觉得我快要...
 Kaku: But I still feel like I'm...
 A: 疯了...
 A: Going insane...
 B: 睡着了。（madness+1）
 B: Falling asleep.
 【选项分线到此结束】
-王霜：那也是无可厚非的事情。
+王霜【默认】：那也是无可厚非的事情。
 Wang Shuang: Well, sounds like you are fine then.
 阿鹤：那怎么可能是—— 
 Kaku: How come that——
 王霜：当然就是这样的，阿鹤。
 Wang Shuang: Of course that is the case, Kaku.
-王霜：这是你的心理咨询，你是来访者，而我是咨询师。
+王霜【小吃惊】：这是你的心理咨询，你是来访者，而我是咨询师。
 Wang Shuang: This is your psych consulting. You are my patient, and I am your consultant.
 阿鹤：所以...我该怎样才能好起来？
 Kaku: So...what do I do to get better?
@@ -270,15 +294,15 @@ Kaku: So...what do I do to get better?
 Wang Shuang: I don't think it's possible to fix something that's not broken.
 阿鹤：...
 Kaku: ...
-王霜：你不同意。
+王霜【面无表情】：你不同意。
 Wang Shuang: You seem to disagree.
 阿鹤：...你...求求你不要再浪费我的时间了...
 Kaku: ...please...stop wasting my time...
-王霜：时间，你要那东西有什么用？
+王霜【小声嘀咕】：时间，你要那东西有什么用？
 Wang Shuang: Time? What do you do with that?
 阿鹤：我还要——我还得...
 Kaku: I still have to...still need to...
-王霜：我在听。
+王霜【默认】：我在听。
 Wang Shuang: I'm listening.
 王霜：不用紧张，阿鹤，你可以畅所欲言。
 Wang Shuang: No need to panic, Kaku. This is absolutely a safe space here. You can talk about whatever you want.
@@ -290,7 +314,7 @@ Wang Shuang: Try to recall why you are here, or think about what you did with yo
 Wang Shuang: But even if you can't think of anything, don't feel worried. That is all part of the process.
 阿鹤：这...这肯定又是你的把戏！
 Kaku: This...this must be one of your tricks!
-王霜：总是向外归因可解决不了问题啊，我的朋友。
+王霜【小声嘀咕】：总是向外归因可解决不了问题啊，我的朋友。
 Wang Shuang: Keep attributing your problems to external causes will not solve anything, my dear friend.
 王霜：你的病虽然看起来已经根治了，但以你的身心状态而言，任何时候复发我都不意外。
 Wang Shuang: Your sickness was cured, somewhat. But with the headspace you are in right now, relapse can happen at any minute.
@@ -298,62 +322,57 @@ Wang Shuang: Your sickness was cured, somewhat. But with the headspace you are i
 Wang Shuang: But let's get back on track——what does time mean to you right now?
 阿鹤：没用...完全没用...一切都结束了...
 Kaku: Nothing...it means nothing...it's all...over...
-王霜：哦？所以还是想起来了一些。
+王霜【小吃惊】：哦？所以还是想起来了一些。
 Wang Shuang: I see, so you remember something after all.
 阿鹤：你...毁掉了整个逝乐园。
 Kaku: You...I...we...destroyed the entire PL District.
-王霜：不必谦虚啊，阿鹤，这件事少了你是绝对不可能成功的。
+王霜【大笑】：不必谦虚啊，阿鹤，这件事少了你是绝对不可能成功的。
 Wang Shuang: No need to be that humble, Kaku. This feat will not be possible without you.
 王霜：所以我愿意把领衔主演的名头让给你，我去当制片人就可以了。
 Wang Shuang: So you will be leading the credit list for sure, as the main star. I'll be the producer.
-王霜：你也不用觉得我抬举你，过度谦虚只会让人习惯性地逃避责任，是一种需要调整的心态。
+王霜【默认】：你也不用觉得我抬举你，过度谦虚只会让人习惯性地逃避责任，是一种需要调整的心态。
 Wang Shuang: And please don't feel like I'm putting you on the spot. Being overly humble is a problematic mentality. It makes you underestimate yourself and keep wanting to run away.
 阿鹤：我...
 Kaku: I...
-王霜：嗯，我懂的，在完成一件惊人的壮举后，出现冒充者综合征是非常常见的事情。
+王霜【面无表情】：嗯，我懂的，在完成一件惊人的壮举后，出现冒充者综合征是非常常见的事情。
 Wang Shuang: Yes, I completely get it. After doing something as great as this, it's totally normal to feel like an imposter.
 王霜：但不论你怎么想，事已至此，还是放平心态最重要。
 Wang Shuang: But you know, what's done is done. Gotta look ahead.
 阿鹤：...随便了...
 Kaku: ...Whatever you say...
-王霜：哎你看你这人，三天两头向外归因，遇事不决就开始摆烂——
+王霜：哎你看你这人，三天两头向外归因，遇事不决就无视问题——
 Wang Shuang: Ah this guy! Imagine saying whatever to everything——
-王霜：【小字】这就是为什么我——
+王霜【小声嘀咕】【小字】：这就是为什么我——
 Wang Shuang: That's why I'm fond of you.
 阿鹤：什么？
 Kaku: What?
-王霜：没事。没事。阿鹤，你知道太阳为什么会死吗？
+王霜【默认】：没事。没事。阿鹤，你知道太阳为什么会死吗？
 Wang Shuang: Anyway, Kaku, do you know why the sun dies?
 阿鹤：因为它想死。
 Kaku: Because it wants to die?
-王霜：错——太阳自出生的那一刻起便像氢弹般持续自毁，早就动了死的念头，但它还是在天上烧了四十多亿年。
+王霜【面无表情】：错——太阳自出生的那一刻起便像氢弹般持续自毁，早就动了死的念头，但它还是在天上烧了四十多亿年。
 Wang Shuang: Womp womp - you see, the sun has been burning itself like a giant hydrogen bomb ever since its birth. It wanted to die from the get-go, yet it stayed up there, burning for over four billion years.
 阿鹤：我不明白...
 Kaku: I don't understand...
-王霜：你当然不明白，你肯定在想‘可这明明也是一种外因，毕竟整个太阳系都齐心协力地求它继续活下去’。
+王霜【默认】：你当然不明白，你肯定在想‘可这明明也是一种外因，毕竟整个太阳系都齐心协力地求它继续活下去’。
 Wang Shuang: Of course you don't. You were probably thinking 'That's clearly due to external reasons, since the entire solar system is begging the sun to soldier on'.
 阿鹤：唔...
 Kaku: Hmm...
 
 【Extended文本框开始】
-王霜：然而现实恰恰相反——太阳不死仅仅是因为它的使命尚未完成而已。
+王霜【面无表情】：然而现实恰恰相反——太阳不死仅仅是因为它的使命尚未完成而已。而它的死与它或其他任何造物的想法没有半点关系。
 Wang Shuang: But it's the exact opposite - the sun stays alive simply because it has not done what it's meant to do. Its mission is incomplete.
-王霜：而它的死与它或其他任何造物的想法没有半点关系。
-【EN独立】
-Wang Shuang: And its death or livelihood has nothing to do with the thoughts of anything else, even itself.
 【Extended文本框结束】
 
 【Extended文本框开始】
-王霜：想法是轻薄的、由外界塑造的，一坨烂泥一样谁都可以捏一把，但同时也是无足轻重的。
-Wang Shuang: Thoughts are trivial and volatile, like a pile of mud. Everyone can give it a squish and make it into whatever shape they want.
-王霜：而使命则是彻头彻尾、由内而外的——只有在‘使命’松手之后，‘想法’才配拥有虚假的自由。
+王霜【小声嘀咕】：想法是轻薄的、由外界塑造的，一坨烂泥一样谁都可以捏一把，但同时也是无足轻重的。而使命则是彻头彻尾、由内而外的——只有在‘使命’松手之后，‘想法’才配拥有虚假的自由。
 【EN独立】
 Wang Shuang: The mission, however, is homogeneous to one's being - only when mission loosens its grip can thoughts have a moment of freedom, albeit a fake one.
 【Extended文本框结束】
 
 阿鹤：这和我们又有什么关系？
 Kaku: What does that have to do with us?
-王霜：当然有关系了，不然你怎么会出现在这里？
+王霜【默认】：当然有关系了，不然你怎么会出现在这里？
 Wang Shuang: Of course, it has everything to do with us. Or else you would not be here.
 阿鹤：我从来没有想过要出现在这里...
 Kaku: I never wanted to be here.
@@ -373,7 +392,7 @@ Kaku: Huh?
 Wang Shuang: That's all. Too much language tarnishes the concept. It would serve you well to stop asking questions.
 阿鹤：哦...对对对...懂了...
 Kaku: Ahhh I see...right, right, of course...I get it now...
-王霜：但话说回来，瞪眼大赛啊，我接受挑战！
+王霜【大笑】：但话说回来，瞪眼大赛啊，我接受挑战！
 Wang Shuang: But did you say you wanted to have a staring contest? I'm in!
 阿鹤：没说真要来啊...
 Kaku: I wasn't serious...
@@ -393,7 +412,7 @@ Kaku: ...
 Wang Shuang: ——Hahauhhhaaha——I lost...
 阿鹤：自取其辱啊，阿霜。
 Kaku: You asked for this, Shuang.
-王霜：你还有脸得意！能盯着你那张臭脸看这么久还不笑的就只有死人了。
+王霜【小声嘀咕】：你还有脸得意！能盯着你那张臭脸看这么久还不笑的就只有死人了。
 Wang Shuang: Look who's talking! The only people that can stare at your shit-face without laughing are fucking dead people.
 阿鹤：嗯...所以我每天刷牙的时候都要死一次...
 Kaku: Hmmm...I guess I'd die once every morning when I brush my teeth...
@@ -412,7 +431,7 @@ Wang Shuang: Don't ask questions. Just get over here.
 
 阿鹤：是什么东西？
 Kaku: What is it?
-王霜：你看就是了。
+王霜【面无表情】：你看就是了。
 Wang Shuang: Just take a look.
 
 【转场：张目对日pt1。王霜右手对着太阳比出OK的姿势，阳光透过拇指和食指构成的细小的孔洞透了过来】
@@ -426,12 +445,17 @@ Wang Shuang: Get closer, for fuck's sake! Pay attention.
 Kaku: Ahh stop dragging me!
 王霜：对准，仔细看好了。
 Wang Shuang: Now, make sure to pay close attention.
-阿鹤：呃...嗯？——啊啊啊啊啊啊啊啊啊啊啊！
+
+【Extended文本框开始】
+
+阿鹤：呃...嗯？【屏幕震动】——啊啊啊啊啊啊啊啊啊啊啊！
 Kaku: Huh?——Ahhhhhhhhhhhhhhhhhhhhhhhhhhhh!!!
+
+【Extended文本框结束】
 
 【背景开始旋转，白屏逐渐溢满了整个屏幕】
 
-【Extended大文本框开始】
+【右侧Split Extended大文本框开始】
 
 自你双眼完成聚焦的一瞬，一阵刺眼的光晕便抹去了视野里的一切，仿佛王霜把天上那轮烈日移植进了你的眼球。
 As your vision came into focus, a stabbing glare wiped everything from your field of view, as if Shuang transplanted the sun into your eye sockets.
@@ -439,6 +463,11 @@ As your vision came into focus, a stabbing glare wiped everything from your fiel
 You sealed your eyes shut as if your life depended on it, twisting the muscle near your eyelids just to ease the pain. But it's already too late. The despairing glare has already found home in the deeper parts of your brain.
 随着炫目的光而来的是蚀骨的火。这由内而外的火顺着你的双眼、你的视神经蔓延。后脑勺烧了起来，随后是整个大脑皮层，最终你的全身都在这挥之不去的炫光中熊熊灼烧。
 Arriving with the blinding glare was a bone-gnawing flame. It dug all the way to the back of your head through your optic nerves, and soon set the entire cerebral cortex aflame. Your entire body caught on fire in no time.
+
+【右侧Split Extended大文本框结束】
+
+【右侧Split Extended大文本框开始】
+
 你将身躯团成球状、死死绷住全身肌肉以抵御这钻心之痛，但在光与火的风暴面前也只是杯水车薪。
 You curled up into a ball, flexing every thread of muscle in your body to fight the agony, but it was simply not enough.
 就像太阳一般稳定...
@@ -446,7 +475,7 @@ As stable as the sun...huh...
 你想立刻去死，那是缓解疼痛的唯一方法，但你非常清楚，此刻死亡就和使命一样遥不可及。
 You wanted death. That would ease the pain. But you were awfully aware that death at the very moment was as unreachable as your god-forsaken mission.
 
-【Extended大文本框结束】
+【右侧Split Extended大文本框结束】
 
 【转场：白屏。就是白屏。】
 
@@ -469,6 +498,25 @@ Go.
 
 【Extended大文本框结束】
 
+【Extended大文本框开始】
+
+去无人的深海。
+To the deep sea where no one dwells.
+去银白的沙漠。
+To the silver-white desert.
+去漆黑的深渊。
+To the pitch-black abyss.
+去伸手。
+To reach out.
+去坠落。
+To fall.
+去沉默。
+To fall silent.
+直到你再次回到这里为止。
+Until you return here once again.
+
+【Extended大文本框结束】
+
 【白屏逐渐褪去】
 
 【转场：甜品店对视1。基础款，暖色，桌上没有团子，背景完全正常 】
@@ -483,7 +531,7 @@ Kaku: Ahhh—!
 Wang Shuang: What's up?
 阿鹤：你刚刚...是不是对我做了非常不得了的事情。
 Kaku: Did you...did you just do something atrocious?
-王霜：你盯着我发呆，我盯着你发呆，确实挺不得了的。
+王霜【撇嘴】：你盯着我发呆，我盯着你发呆，确实挺不得了的。
 Wang Shuang: Yea, you staring into my eyes and me staring into yours. Truly some atrocious stuff.
 阿鹤：呃...所以我们为什么在这里？
 Kaku: Uhhh...so why are we here?
@@ -491,7 +539,7 @@ Kaku: Uhhh...so why are we here?
 Wang Shuang: Hey, it was you who wanted to come.
 阿鹤：那我要走了。
 Kaku: Then I'm leaving.
-王霜：我们刚坐下诶，你要去哪儿？
+王霜【疑惑】：我们刚坐下诶，你要去哪儿？
 Wang Shuang: Huh? We literally just sat down. Where are you going?
 阿鹤：不知道，要离开这里就是了。
 Kaku: Don't know. But I need to get out of here.
@@ -509,7 +557,7 @@ Kaku: But it's already dark outside.
 Wang Shuang: The boss said it's not dark enough.
 阿鹤：好吧...所以我能走了吗？
 Kaku: Fine...so can I go now?
-王霜：不能。
+王霜【坏笑】：不能。
 Wang Shuang: Nope.
 阿鹤：你好烦。
 Kaku: You are so damn annoying.
@@ -570,7 +618,7 @@ Kaku: As if you are not doing the same thing.
 Wang Shuang: My my, I just don't want to see people I appreciate going down the same degenerate path I did, you know.
 阿鹤：别恶心我了，求你了。
 Kaku: Stop this shit, I beg you.
-王霜：你这人，连真心话都不让人说。
+王霜【撇嘴】：你这人，连真心话都不让人说。
 Wang Shuang: This guy! Won't even let me be honest.
 阿鹤：你？真心话？笑话可以再冷点么？
 Kaku: You? Be honest? Didn't know those two things can go together.
@@ -595,12 +643,17 @@ Kaku: But isn't it boring for you if it's just some psychedelics?
 Wang Shuang: Boring? You're kidding me! Can you comprehend what twelve hours of cognitive overload feels like?
 王霜：五感全部推到极限，尤其是视觉，所有东西的颜色都比平时看到的要鲜艳无数倍，而且全都彼此交融，到最后视野里就是五彩斑斓的白。
 Wang Shuang: When all your senses are pushed to their limits, especially your vision. Everything has mad vibrant colors, and they are seeping into each other, and in the end all you see is a white that expresses all colors.
-王霜：所有东西都是饱满到极致的，你懂我意思吗？就不是某种感官上的饱满，而是存在上的饱满，第四维度上的饱满，就是那种...不论我们怎么干涉都无法改变的状态。
+【Extended文本框开始】
+王霜：所有东西都是饱满到极致的，你懂我意思吗？那已经不单是感官上的饱满，而是存在上的饱满，第四维度上的饱满——是那种...不论我们怎么干涉都无法改变的状态。
 Wang Shuang: Everything is full to the fullest, you know what I mean? Like it's not 'full' in the sense of any perception, but in the sense of existence, on the forth dimension. It's like...the state that we will never be able to intervene or interpret.
-王霜：然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。
+【Extended文本框结束】
+
+【Extended文本框开始】
+王霜：然后脑子里就一个念头：“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说，我就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。
 Wang Shuang: And I was like "Holy fucking shit this crap is absolutely going out of control I'm getting squeezed to death by the pressure of this thing that I don't comprehend I must get the fuck out ASAP", and...
 【EN独立】
 Wang Shuang: I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time.
+【Extended文本框结束】
 王霜【默认】：总之要不是后来配了眼镜，不然我是绝对不敢乱用KAS的，那次是真的差点死了...
 Wang Shuang: Anyway if it wasn't for my glasses later, I could never ever touch KAS ever again. Shit actually almost killed me that time.
 阿鹤：哦，原来你那“磕完药差点死掉的小故事”还在更新啊。
@@ -611,7 +664,7 @@ Wang Shuang: My man, we are talking about life or death situation here!
 Wang Shuang: But you know, I'm more like an outlier with the condition I have. You would probably like it, is my guess.
 阿鹤：所以我们要在这里待到什么时候？
 Kaku: I'll be looking forward to it, I guess. So how long will we be staying here?
-王霜：等时机到了，自然就能离开。
+王霜【默认】：等时机到了，自然就能离开。
 Wang Shuang: When the time is ripe.
 阿鹤：也是一种较为朴素的过程？
 Kaku: Also a simple process?
@@ -623,7 +676,7 @@ Kaku: A fucking dumbass.
 Wang Shuang: So mean!
 阿鹤：像您这样有成就的大人物，只被骂傻逼还请偷着乐吧。
 Kaku: For a distinguished individual such as yourself, you should feel fortunate when you are merely called a fucking dumbass.
-王霜：所以确实没法放过我了吗？
+王霜【撇嘴】：所以确实没法放过我了吗？
 Wang Shuang: So is there really no way to let me off the hook?
 阿鹤：你还需要人放过？
 Kaku: Didn't know that you need this kind of vindication.
@@ -645,12 +698,14 @@ Wang Shuang: That's shallow. If you are still trying to kill time, that means th
 Kaku: Yes yes sensei.
 阿鹤：话说师傅，你手里拿的是什么？
 Kaku: By the way, what's that thing you're holding?
-王霜：哦，这个？不是什么重要的东西，但你可以尝尝看。
+王霜【默认】：哦，这个？不是什么重要的东西，但你可以尝尝看。
 Wang Shuang: This? Nothing too important, but if you want, you can taste it.
 阿鹤：尝尝看？
 Kaku: Taste it?
 王霜：对啊，吃的。要不要试试？
 Wang Shuang: Yea, wanna try?
+
+【音乐停】
 
 A: 算了
 A: Nah
@@ -690,6 +745,8 @@ Wang Shuang: You see, it's part of the experiment design——by the way, Kaku, 
 
 【选项分线到此结束】
 
+【音乐开始fade out】
+
 阿鹤：蓝色啊，怎么了？
 Kaku: Blue. What about it?
 王霜：你看——
@@ -702,7 +759,7 @@ Wang Shuang: Look around——
 【场景音乐参考：进入幻视，所以虽然场景没变音乐也要切换https://audionautix.com/Music/Beautiful%20Daughter.mp3 (Jason Shaw)，】
 【音乐：route1_hallucination】
 
-【Extended大文本框开始】
+【Split Extended大文本框开始】
 
 你正摸不着头脑，转眼间却发现了周遭惊人的变故——四周逐渐泛起蓝色、波浪状的纹理，很快侵蚀了整个视野。
 You were in a daze before noticing the baffling change of scenery around you——blue wavy textures started to dance around you, and they quickly eroded your entire field of view.
@@ -710,14 +767,14 @@ You were in a daze before noticing the baffling change of scenery around you—�
 You somehow felt a bit calmer than before, taking a few more bites from the mochi as if everything was meant to be. The sweet, sugary taste rippled in your palate. Every cell was frantically sending out signals to declare their fullness.
 甜味的颜色？金黄的莓红的草绿的深棕的，味觉的色彩洪流汇入弥漫在整个视觉空间的海蓝色波浪中。
 The color of the sweetness? Golden raspberry-red grassy green deep brown, the torrent of gastronomic pigments gathered and quickly filled up the oceanic waves around you.
-你抬头望向王霜，她也望着你，脸上含蓄地挂了一抹邪魅而欣慰的笑，仿佛望着一个迷路的孩子。
+你抬头望向王霜，她也望着你，脸上含蓄地挂了一抹邪魅的笑容，眼神里却又流露出一丝欣慰，仿佛望着一个迷路的孩子。
 You looked up to Shuang. She looked at you as well, with a subtle, seductive, yet reassuring smile on her face, as if looking caringly at a lost child.
-她略卷的水蓝色长发在空间的蓝色波浪中散着，勾勒出洋流的轮廓。
+她略卷的水蓝色长发在周身空间的波浪里散着，勾勒出洋流的轮廓。
 Her curly blue hair danced freely in the azure waving space, sketching out the shape of the currents.
 
-【Extended大文本框结束】
+【Split Extended大文本框结束】
 
-【Extended大文本框开始】
+【Split Extended大文本框开始】
 
 你心中对她海啸般的戒心早已荡然无存了——你几乎有些喜欢她现在的样子，宛如一个母亲，又像是神明，给视野不断抹上温柔的蓝色。
 Your raging alert towards her was no more——you almost liked how she looked, like a mother, and a goddess, continuously painting your vision blue.
@@ -728,7 +785,7 @@ Kept chewing on painful memories until it tasted bland, until sweetness came out
 在一切都已结束的当下，连时间都已丧失价值，唯一还能让你睁开双眼的，就只有——
 At the current moment when everything has ended, the only thing that could keep you awake was——
 
-【Extended大文本框结束】
+【Split Extended大文本框结束】
 
 【居中大字文本框开始】
 
@@ -737,7 +794,7 @@ Addiction.
 
 【居中大字文本框结束】
 
-【Extended大文本框开始】
+【Split Extended大文本框开始】
 
 【转场：甜品店对视5。背景蓝色调，桌上团子吃了几口，背景有更明显的波纹纹理，王霜变得半透明，表情是默认表情 】
 
@@ -745,18 +802,23 @@ Addiction.
 Shuang's smile was getting more devilishly charming——she started to turn into a smile.
 成瘾。糖分子的洪流只消一个浪头就使你深深染上了挥之不去的瘾。
 Addiction. The flood of sugar needed nothing more than a small wave to get you completely hooked.
-渴望的源头冲动的源头想往的源头发现了。
+渴望的源头冲动的源头向往的源头发现了。
 The source of all urges and wants has been excavated!
-浪潮般的甜味反复沁进意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。
+浪潮般的甜味反复沁入意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。
 Rippling sweetness kept eroding your thoughts and consciousness. She started smiling. Then she stopped. Everywhere you looked, you see her face. And her smile.
-燥热意识模糊，痛苦消减。鼓的声音。恒久的鼓声从背景里逐渐浮现，强烈起来，震耳欲聋，每一击都与心跳同调。
+
+【Split Extended大文本框结束】
+
+【Split Extended大文本框开始】
+
+燥热使得意识模糊，痛苦消减。鼓的声音。恒久的鼓声从背景里逐渐浮现，强烈起来，震耳欲聋，每一击都与心跳同调。
 The scorching consciousness became blurry by the second, as all your pain faded away. The sound of beating drums. The sound of perpetually beating drums emerged from the background, and kept getting louder, and louder, and deafeningly loud. Every beat matched that of your heart.
 在这暧昧混沌里，你感到安逸。
 In the middle of this subtly intimate chaos, you felt at home.
 这样就够了。
 That would be enough.
 
-【Extended大文本框结束】
+【Split Extended大文本框结束】
 
 王霜【撇嘴】：说到底，我们所做的一切也只是为了满足癖好而已。
 Wang Shuang: After all, all we did was just to satisfy our fetishes.
@@ -804,6 +866,11 @@ The chilly sugar dissolving in the azure space has cured the malice and heat tha
 Everything was permissible. This urge has never been so strong.
 你迫切地想要伸出手，但双臂已经先你一步向前伸了出去，贪婪地揉捏着冰凉而柔顺的空气，水蓝色的空气。
 You wanted to reach out your hands, but your hands reached out before your thoughts took shape, rapaciously feeling the chilly and silky air. Azure air.
+
+【Extended大文本框结束】
+
+【Extended大文本框开始】
+
 更深的见解就隐藏其中，因为一切都是许可的，视野中的所有事物都是从始至终连贯而统一的，如此怡人，如此饱满。
 Deeper insights must have been hidden within, because everything was permissible. Everything in your field of view was consistent and continuous. So very pleasant, so very full.
 人类的智识自然无力探寻其中奥秘，但在王霜无处不在的笑容辉耀之下，你的一部分认知已踏入了更深层的水域。
@@ -824,6 +891,11 @@ The stronger your mental, the blurrier its shape. All you could see was a cruel 
 But you were already satisfied, thoroughly satisfied. You felt a bit——tired?——from the endless cognitive stimulation.
 幸福的疲劳、优质的疲劳、苦苦追寻的疲劳、允许你在辗转反侧后终于入睡的甜美疲劳。
 Pleasant fatigue, high-quality fatigue, sought-after fatigue, the fatigue that would allow you to finally rest after staying up all night.
+
+【Extended大文本框结束】
+
+【Extended大文本框开始】
+
 世界空无一人，因为任何个体都不具备足够的差异能够让它们自称“存在”，因此你将它们尽数吞下，如同团子。
 The world was empty. Because there weren't a single soul that had enough distinction from another to call themselves "existing". So you swallowed all of them, like mochi.
 糖分继续满溢出来，沿着你存在的边缘缓缓淌下，坠入周身蔚蓝的虚空之中，粘稠而香甜。
@@ -854,7 +926,7 @@ But all you threw up was color.
 
 【转场：甜品店对视7。背景蓝色调和暖色调掺半，是那种正常色彩顺着阿鹤呕吐为中心开始向四周扩散的感觉，桌上团子吃了几口，背景里的波纹纹理消失，王霜完全消失  】
 
-呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了桌布的颜色，这令人沮丧的还原随着你吐出更多的色彩而提速，很快覆盖了大半个视野。
+呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了木材的颜色。你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。
 As the content of your puke made contact with the table in front of you, the azure-tainted tabletop immediately returned to the color of table cloth. This upsetting regression accelerated as your vomit continued, soon covering the bulk of your vision.
 色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原逐渐消失了。
 Where the colors reached, the waving spatial texture ceased to move. The omnipresent grin of Shuang's also faded as your vision returned to normal.
@@ -891,10 +963,9 @@ But Shuang still never returned.
 
 【Extended大文本框结束】
 
+【转场：黑屏。就是黑屏】
 
 【剥落完成后，黑屏】
-
-【转场：黑屏。就是黑屏】
 
 【水底泡泡上浮音效：Bubbles_10】
 

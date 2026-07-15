@@ -115,9 +115,9 @@ translate english route1_start_23f3cf89:
     wangshuang "For ones bathing in the sunlight, that's all they need to know."
 
 # game/scripts/route1.rpy:56
-translate english route1_start_f9132136:
+translate english route1_start_0b47f901:
 
-    # ahe "可它分明是我视野里最暴烈而盛气凌人的造物。"
+    # ahe "可它分明是我视野里最暴烈、最盛气凌人的造物。"
     ahe "But it's clearly the most violent and arrogant thing I can see."
 
 # game/scripts/route1.rpy:57
@@ -127,9 +127,9 @@ translate english route1_start_7c9baed9:
     wangshuang "Then close your eyes. Solves all your problems."
 
 # game/scripts/route1.rpy:58
-translate english route1_start_3f3380dd:
+translate english route1_start_4db69fb9:
 
-    # ahe "可我还是我觉得我快要..."
+    # ahe "可我还是觉得我快要..."
     ahe "But I still feel like I'm..."
 
 # game/scripts/route1.rpy:61
@@ -319,9 +319,9 @@ translate english route1_start_9f80eb8b:
     ahe "...Whatever you say..."
 
 # game/scripts/route1.rpy:98
-translate english route1_start_48092613:
+translate english route1_start_6ee46ea2:
 
-    # wangshuang "哎你看你这人，三天两头向外归因，遇事不决就开始摆烂——"
+    # wangshuang "哎你看你这人，三天两头向外归因，遇事不决就无视问题——"
     wangshuang "Ah this guy! Imagine saying whatever to everything——"
 
 # game/scripts/route1.rpy:99
@@ -678,6 +678,48 @@ translate english route1_start_4e4f3a9d:
     # extend "\n去找吧。"
     extend "\nGo."
 
+# game/scripts/route1.rpy:253
+translate english route1_start_e3b8a472:
+
+    # large_narrator "去无人的深海。"
+    large_narrator "To the deep sea where no one dwells."
+
+# game/scripts/route1.rpy:254
+translate english route1_start_82154c4a:
+
+    # extend "\n去银白的沙漠。"
+    extend "\nTo the silver-white desert."
+
+# game/scripts/route1.rpy:255
+translate english route1_start_790c2285:
+
+    # extend "\n去漆黑的深渊。"
+    extend "\nTo the pitch-black abyss."
+
+# game/scripts/route1.rpy:256
+translate english route1_start_a9d06990:
+
+    # extend "\n去伸手。"
+    extend "\nTo reach out."
+
+# game/scripts/route1.rpy:257
+translate english route1_start_f1198174:
+
+    # extend "\n去坠落。"
+    extend "\nTo fall."
+
+# game/scripts/route1.rpy:258
+translate english route1_start_03f2bd43:
+
+    # extend "\n去沉默。"
+    extend "\nTo fall silent."
+
+# game/scripts/route1.rpy:259
+translate english route1_start_710c2393:
+
+    # extend "\n直到你再次回到这里为止。"
+    extend "\nUntil you return here once again."
+
 # game/scripts/route1.rpy:197
 translate english route1_start_877f8700:
 
@@ -1015,15 +1057,15 @@ translate english route1_start_307a5713:
     wangshuang "When all your senses are pushed to their limits, especially your vision. Everything has mad vibrant colors, and they are seeping into each other, and in the end all you see is a white that expresses all colors."
 
 # game/scripts/route1.rpy:275
-translate english route1_start_606f4787:
+translate english route1_start_60ab49f5:
 
-    # wangshuang "所有东西都是饱满到极致的，你懂我意思吗？就不是某种感官上的饱满，而是存在上的饱满，第四维度上的饱满，就是那种...不论我们怎么干涉都无法改变的状态。"
+    # wangshuang "所有东西都是饱满到极致的，你懂我意思吗？那已经不单是感官上的饱满，而是存在上的饱满，第四维度上的饱满——是那种...不论我们怎么干涉都无法改变的状态。"
     wangshuang "Everything is full to the fullest, you know what I mean? Like it's not 'full' in the sense of any perception, but in the sense of existence, on the forth dimension. It's like...the state that we will never be able to intervene or interpret."
 
 # game/scripts/route1.rpy:278
-translate english route1_start_7c6c819f:
+translate english route1_start_a5ecfdf3:
 
-    # wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
+    # wangshuang "然后脑子里就一个念头：“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说，我就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
     wangshuang 'And I was like "Holy fucking shit this crap is absolutely going out of control I\'m getting squeezed to death by the pressure of this thing that I don\'t comprehend I must get the fuck out ASAP", and...'
     wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
 
@@ -1298,15 +1340,15 @@ translate english route1_start_c3b4af85:
     split_right_narrator "The color of the sweetness? Golden raspberry-red grassy green deep brown, the torrent of gastronomic pigments gathered and quickly filled up the oceanic waves around you."
 
 # game/scripts/route1.rpy:344
-translate english route1_start_6c63208e:
+translate english route1_start_c0349ea7:
 
-    # extend "\n你抬头望向王霜，她也望着你，脸上含蓄地挂了一抹邪魅而欣慰的笑，仿佛望着一个迷路的孩子。"
+    # extend "\n你抬头望向王霜，她也望着你，脸上含蓄地挂了一抹邪魅的笑容，眼神里却又流露出一丝欣慰，仿佛望着一个迷路的孩子。"
     extend "\nYou looked up to Shuang. She looked at you as well, with a subtle, seductive, yet reassuring smile on her face, as if looking caringly at a lost child."
 
 # game/scripts/route1.rpy:345
-translate english route1_start_29e013cb:
+translate english route1_start_fcb426e2:
 
-    # extend "\n她略卷的水蓝色长发在空间的蓝色波浪中散着，勾勒出洋流的轮廓。"
+    # extend "\n她略卷的水蓝色长发在周身空间的波浪里散着，勾勒出洋流的轮廓。"
     extend "\nHer curly blue hair danced freely in the azure waving space, sketching out the shape of the currents."
 
 # game/scripts/route1.rpy:348
@@ -1352,21 +1394,21 @@ translate english route1_start_09320351:
     extend "\nAddiction. The flood of sugar needed nothing more than a small wave to get you completely hooked."
 
 # game/scripts/route1.rpy:363
-translate english route1_start_f2211ace:
+translate english route1_start_3d70cb46:
 
-    # extend "\n渴望的源头冲动的源头想往的源头发现了。"
+    # extend "\n渴望的源头冲动的源头向往的源头发现了。"
     extend "\nThe source of all urges and wants has been excavated!"
 
 # game/scripts/route1.rpy:364
-translate english route1_start_05e8c47b:
+translate english route1_start_f68928e4:
 
-    # split_right_narrator "浪潮般的甜味反复沁进意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。"
+    # split_right_narrator "浪潮般的甜味反复沁入意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。"
     split_right_narrator "Rippling sweetness kept eroding your thoughts and consciousness. She started smiling. Then she stopped. Everywhere you looked, you see her face. And her smile."
 
 # game/scripts/route1.rpy:367
-translate english route1_start_2b81b7bb:
+translate english route1_start_b5db51a6:
 
-    # split_left_narrator "燥热意识模糊，痛苦消减。鼓的声音。恒久的鼓声从背景里逐渐浮现，强烈起来，震耳欲聋，每一击都与心跳同调。"
+    # split_left_narrator "燥热使得意识模糊，痛苦消减。鼓的声音。恒久的鼓声从背景里逐渐浮现，强烈起来，震耳欲聋，每一击都与心跳同调。"
     split_left_narrator "The scorching consciousness became blurry by the second, as all your pain faded away. The sound of beating drums. The sound of perpetually beating drums emerged from the background, and kept getting louder, and louder, and deafeningly loud. Every beat matched that of your heart."
 
 # game/scripts/route1.rpy:368
@@ -1580,9 +1622,9 @@ translate english route1_start_6aba3fbc:
     extend "\nBut all you threw up was color."
 
 # game/scripts/route1.rpy:434
-translate english route1_start_cb9d404f:
+translate english route1_start_1446172b:
 
-    # large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了桌布的颜色，这令人沮丧的还原随着你吐出更多的色彩而提速，很快覆盖了大半个视野。"
+    # large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了木材的颜色。你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。"
     large_narrator "As the content of your puke made contact with the table in front of you, the azure-tainted tabletop immediately returned to the color of table cloth. This upsetting regression accelerated as your vomit continued, soon covering the bulk of your vision."
 
 # game/scripts/route1.rpy:435

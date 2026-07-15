@@ -51,12 +51,12 @@ label route1_start:
     ahe "嗯，太阳。"
     wangshuang "金色的，温暖的，让人舒适而安心的太阳，它就在那里。"
     wangshuang "对于沐浴日光中的人来说，明白这一点就够了。"
-    ahe "可它分明是我视野里最暴烈而盛气凌人的造物。"
+    ahe "可它分明是我视野里最暴烈、最盛气凌人的造物。"
     ## 表情：面无表情
     scene summergaze_blank
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那就闭上眼睛，你的问题便迎刃而解了。"
-    ahe "可我还是我觉得我快要..."
+    ahe "可我还是觉得我快要..."
 
     menu:
         extend ""
@@ -126,7 +126,7 @@ label route1_start:
     wangshuang "嗯，我懂的，在完成一件惊人的壮举后，出现冒充者综合征是非常常见的事情。"
     wangshuang "但不论你怎么想，事已至此，还是放平心态最重要。"
     ahe "...随便了..."
-    wangshuang "哎你看你这人，三天两头向外归因，遇事不决就开始摆烂——"
+    wangshuang "哎你看你这人，三天两头向外归因，遇事不决就无视问题——"
     ## 表情：小声嘀咕
     scene summergaze_mutter
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -248,6 +248,15 @@ label route1_start:
     extend "\n只能迈开步子。"
     extend "\n只有这一个选择。"
     extend "\n去找吧。"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "去无人的深海。"
+    extend "\n去银白的沙漠。"
+    extend "\n去漆黑的深渊。"
+    extend "\n去伸手。"
+    extend "\n去坠落。"
+    extend "\n去沉默。"
+    extend "\n直到你再次回到这里为止。"
     ## Extended大文本框结束
     ## 白屏逐渐褪去
     ## 转场：甜品店对视1
@@ -371,10 +380,10 @@ label route1_start:
     wangshuang "无聊？可别太刺激了！你知道十二小时起步的感官过载是什么感觉吗？"
     wangshuang "五感全部推到极限，尤其是视觉，所有东西的颜色都比平时看到的要鲜艳无数倍，而且全都彼此交融，到最后视野里就是五彩斑斓的白。"
     ## Extended文本框开始 - accumulating textbox
-    wangshuang "所有东西都是饱满到极致的，你懂我意思吗？就不是某种感官上的饱满，而是存在上的饱满，第四维度上的饱满，就是那种...不论我们怎么干涉都无法改变的状态。"
+    wangshuang "所有东西都是饱满到极致的，你懂我意思吗？那已经不单是感官上的饱满，而是存在上的饱满，第四维度上的饱满——是那种...不论我们怎么干涉都无法改变的状态。"
     ## Extended文本框结束
     ## Extended文本框开始 - accumulating textbox
-    wangshuang "然后就觉得“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说是就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
+    wangshuang "然后脑子里就一个念头：“我操这下不得了了要被外部存在的压强挤碎了快他妈跑”，然后据说，我就开始往窗户外面跳...也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
     ## Extended文本框结束
     ## 表情：默认
     scene dessert3_default
@@ -425,6 +434,8 @@ label route1_start:
     wangshuang "哦，这个？不是什么重要的东西，但你可以尝尝看。"
     ahe "尝尝看？"
     wangshuang "对啊，吃的。要不要试试？"
+    $ current_music_scene = None
+    stop music fadeout 1.0
 
     menu:
         extend ""
@@ -460,8 +471,8 @@ label route1_start:
     split_left_narrator "你正摸不着头脑，转眼间却发现了周遭惊人的变故——四周逐渐泛起蓝色、波浪状的纹理，很快侵蚀了整个视野。"
     extend "\n你反倒比先前要更加冷静，又低头吃了几口团子。甜腻腻的滋味在口腔中涟漪般散开，每颗味觉细胞都在欣喜若狂地发送着饱足的信号。"
     split_right_narrator "甜味的颜色？金黄的莓红的草绿的深棕的，味觉的色彩洪流汇入弥漫在整个视觉空间的海蓝色波浪中。"
-    extend "\n你抬头望向王霜，她也望着你，脸上含蓄地挂了一抹邪魅而欣慰的笑，仿佛望着一个迷路的孩子。"
-    extend "\n她略卷的水蓝色长发在空间的蓝色波浪中散着，勾勒出洋流的轮廓。"
+    extend "\n你抬头望向王霜，她也望着你，脸上含蓄地挂了一抹邪魅的笑容，眼神里却又流露出一丝欣慰，仿佛望着一个迷路的孩子。"
+    extend "\n她略卷的水蓝色长发在周身空间的波浪里散着，勾勒出洋流的轮廓。"
     ## Split Extended大文本框结束
     ## Split Extended大文本框开始 - 左右分栏
     split_left_narrator "你心中对她海啸般的戒心早已荡然无存了——你几乎有些喜欢她现在的样子，宛如一个母亲，又像是神明，给视野不断抹上温柔的蓝色。"
@@ -477,11 +488,11 @@ label route1_start:
     scene bg_dessertgaze5 with scene_dissolve
     split_left_narrator "王霜的微笑越发邪魅——她逐渐成为了一个微笑。"
     extend "\n成瘾。糖分子的洪流只消一个浪头就使你深深染上了挥之不去的瘾。"
-    extend "\n渴望的源头冲动的源头想往的源头发现了。"
-    split_right_narrator "浪潮般的甜味反复沁进意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。"
+    extend "\n渴望的源头冲动的源头向往的源头发现了。"
+    split_right_narrator "浪潮般的甜味反复沁入意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。"
     ## Split Extended大文本框结束
     ## Split Extended大文本框开始 - 左右分栏
-    split_left_narrator "燥热意识模糊，痛苦消减。鼓的声音。恒久的鼓声从背景里逐渐浮现，强烈起来，震耳欲聋，每一击都与心跳同调。"
+    split_left_narrator "燥热使得意识模糊，痛苦消减。鼓的声音。恒久的鼓声从背景里逐渐浮现，强烈起来，震耳欲聋，每一击都与心跳同调。"
     extend "\n在这暧昧混沌里，你感到安逸。"
     extend "\n这样就够了。"
     ## Split Extended大文本框结束
@@ -542,7 +553,7 @@ label route1_start:
     extend "\n和你所熟知的呕吐不同，你吐出的只有色彩。"
     ## 转场：甜品店对视7
     scene bg_dessertgaze7 with scene_dissolve
-    large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了桌布的颜色，这令人沮丧的还原随着你吐出更多的色彩而提速，很快覆盖了大半个视野。"
+    large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了木材的颜色。你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。"
     extend "\n色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原逐渐消失了。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox

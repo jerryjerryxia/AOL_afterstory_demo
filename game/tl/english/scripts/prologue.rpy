@@ -271,9 +271,9 @@ translate english route1_prologue_f60cc89a:
     extend "\nYou vaguely remembered that."
 
 # game/scripts/prologue.rpy:105
-translate english route1_prologue_db1b473e:
+translate english route1_prologue_8e464739:
 
-    # large_narrator "失望之余，你肆意俯身漂浮，不再试图活动任何肌肉，只是慵懒地咪着双眼。你想，也许能从水下那幽暗世界里看出些什么。"
+    # large_narrator "失望之余，你索性俯身漂浮，不再试图活动任何肌肉，只是慵懒地眯着双眼。你想，也许能从水下那幽暗世界里看出些什么。"
     large_narrator "In dismay, you let yourself afloat, no longer moving even a single muscle. All you did was stare down the ocean with a lazy gaze, hoping to spot something from it."
 
 # game/scripts/prologue.rpy:106

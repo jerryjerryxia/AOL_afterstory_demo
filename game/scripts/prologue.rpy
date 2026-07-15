@@ -88,8 +88,8 @@ label route1_prologue:
     ## 居中大字文本框结束
     ## 转场：黑屏
     scene bg_black_video with scene_soft
-    ## 头出水面后大吸一口气音效：out-of-water-deep-breath
-    $ play_sfx("audio/sfx/out-of-water-deep-breath.wav")
+    ## 头出水面音效：Bubbles_10
+    $ play_sfx("audio/sfx/Bubbles_10.wav")
     ## Extended大文本框开始 - accumulating large textbox
     $ wait_sfx()
     large_narrator "仿佛完成了一场亘古的潜行，你轻轻浮出水面。"
@@ -98,7 +98,7 @@ label route1_prologue:
     extend "\n你模糊地记得这一点。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "失望之余，你肆意俯身漂浮，不再试图活动任何肌肉，只是慵懒地咪着双眼。你想，也许能从水下那幽暗世界里看出些什么。"
+    large_narrator "失望之余，你索性俯身漂浮，不再试图活动任何肌肉，只是慵懒地眯着双眼。你想，也许能从水下那幽暗世界里看出些什么。"
     extend "\n但终究是什么都没有。"
     extend "\n在长久的漂浮中，你渐渐忘记了消逝的体温，忘记了静脉里潺潺流动的暗红血液，忘记了你究竟为什么来到这里。"
     extend "\n你忘记了呼吸。"
@@ -115,6 +115,8 @@ label route1_prologue:
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "逃避吧！"
     ## 居中大字文本框结束
+    $ current_music_scene = None
+    stop music fadeout 1.0
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "虽然早就无路可逃，但移开目光就能解燃眉之急，如此便利之事又有什么推脱的借口？"
     extend "\n于是就这样，你纹丝不动地在闪着微光的海面上漂浮，宛如一段朽木。"
