@@ -41,7 +41,8 @@ label route1_prologue:
     extend "\n它既关于你，也关于别人，关于所有人。"
     extend "\n关于一切。"
     ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
+    ## Extended大文本框开始 - accumulating large textbox（不分句）
+    $ no_click_split = True
     large_narrator "——可‘一切’是个懒散的字眼。"
     extend "\n——一句在词穷时用来欲盖弥彰的空话。"
     extend "\n——但在此刻，‘一切’是精确的。"
@@ -53,6 +54,7 @@ label route1_prologue:
     extend "\n——不如顺便移开目光，看看别处。"
     extend "\n——无可奉告。"
     extend "\n——真是无聊啊。"
+    $ no_click_split = False
     ## Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "…"
@@ -63,7 +65,8 @@ label route1_prologue:
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "………"
     ## 居中大字文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
+    ## Extended大文本框开始 - accumulating large textbox（不分句）
+    $ no_click_split = True
     large_narrator "——没想到，这么快就找到你了。"
     extend "\n——我以为这种事对于现在的你来说易如反掌。"
     extend "\n——当然。只是一想到又要见到你那臭脸，我就下意识地多做了点心理准备。"
@@ -76,6 +79,7 @@ label route1_prologue:
     extend "\n——向一个不具备意志的人征求认可又是何苦？彰显你那虚伪的开明？"
     extend "\n——那就当你同意了。"
     extend "\n——请自便吧。"
+    $ no_click_split = False
     ## Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "…"
@@ -116,7 +120,7 @@ label route1_prologue:
     centered_large_narrator "逃避吧！"
     ## 居中大字文本框结束
     $ current_music_scene = None
-    stop music fadeout 1.0
+    stop music fadeout 3.0
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "虽然早就无路可逃，但移开目光就能解燃眉之急，如此便利之事又有什么推脱的借口？"
     extend "\n于是就这样，你纹丝不动地在闪着微光的海面上漂浮，宛如一段朽木。"

@@ -173,6 +173,11 @@ init python:
     def add_click_pauses(what):
         if not what:
             return what
+        ## 段落级「不分句」开关（转换器在 Extended 大文本框「不分句」块前后置 True/False）：
+        ## 整段每行按 statement 边界一次点击展示，句中不插 {w}。用于破折号单句成行、
+        ## 逐句点击太繁琐的段落。
+        if getattr(renpy.store, "no_click_split", False):
+            return what
         STRONG = u"。！？!?…"          # 单个即断的句末标点
         def wants_pause(rest):
             rest = rest.lstrip()

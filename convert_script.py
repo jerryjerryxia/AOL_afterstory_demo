@@ -639,8 +639,9 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         return f'{indent}$ set_scene_music("{scene_id}")'
 
     # Music stop markers 【音乐停】 or 【音效和音乐停】
+    # fadeout 3.0：让音乐柔和淡出而非戛然而止（1.0 太突兀）。
     if '音乐停' in line:
-        return f'{indent}$ current_music_scene = None\n{indent}stop music fadeout 1.0'
+        return f'{indent}$ current_music_scene = None\n{indent}stop music fadeout 3.0'
 
     # Music fade-out marker 【音乐开始fade out】：当前音乐缓缓淡出（进入幻视前的留白）。
     # current_music_scene 置 None，淡出后存档/读档不会把这段音乐恢复回来。
@@ -1158,9 +1159,18 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
             continue
 
         if 'Extended大文本框开始' in line:
-            output.append("    ## Extended大文本框开始 - accumulating large textbox")
+            # 「不分句」变体：整块每行整句一次点击展示（句中不插 {w}）。用 no_click_split
+            # 开关把这段 say 包起来，运行时 add_click_pauses 直接放行。say 文本/角色不变，
+            # 不影响翻译 ID。
+            no_split = '不分句' in line
+            output.append("    ## Extended大文本框开始 - accumulating large textbox"
+                          + ("（不分句）" if no_split else ""))
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True)
+            if no_split:
+                output.append("    $ no_click_split = True")
             output.extend(accumulated)
+            if no_split:
+                output.append("    $ no_click_split = False")
             output.append("    ## Extended大文本框结束")
             continue
 
@@ -1427,9 +1437,18 @@ def convert_prologue(lines, start_line, end_line):
             continue
 
         if 'Extended大文本框开始' in line:
-            output.append("    ## Extended大文本框开始 - accumulating large textbox")
+            # 「不分句」变体：整块每行整句一次点击展示（句中不插 {w}）。用 no_click_split
+            # 开关把这段 say 包起来，运行时 add_click_pauses 直接放行。say 文本/角色不变，
+            # 不影响翻译 ID。
+            no_split = '不分句' in line
+            output.append("    ## Extended大文本框开始 - accumulating large textbox"
+                          + ("（不分句）" if no_split else ""))
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True)
+            if no_split:
+                output.append("    $ no_click_split = True")
             output.extend(accumulated)
+            if no_split:
+                output.append("    $ no_click_split = False")
             output.append("    ## Extended大文本框结束")
             continue
 

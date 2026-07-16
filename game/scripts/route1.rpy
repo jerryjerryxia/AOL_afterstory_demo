@@ -435,7 +435,7 @@ label route1_start:
     ahe "尝尝看？"
     wangshuang "对啊，吃的。要不要试试？"
     $ current_music_scene = None
-    stop music fadeout 1.0
+    stop music fadeout 3.0
 
     menu:
         extend ""

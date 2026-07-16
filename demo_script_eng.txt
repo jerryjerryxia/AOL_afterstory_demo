@@ -503,7 +503,7 @@ Go.
 去无人的深海。
 To the deep sea where no one dwells.
 去银白的沙漠。
-To the silver-white desert.
+To the silver desert.
 去漆黑的深渊。
 To the pitch-black abyss.
 去伸手。
@@ -511,9 +511,9 @@ To reach out.
 去坠落。
 To fall.
 去沉默。
-To fall silent.
+To wander in silence.
 直到你再次回到这里为止。
-Until you return here once again.
+Until you return to this place once again.
 
 【Extended大文本框结束】
 

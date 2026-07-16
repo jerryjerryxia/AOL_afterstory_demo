@@ -76,6 +76,10 @@ default choice_flags = {}
 ## 当前场景音乐 ID（由 set_scene_music 设置；after_load 用它恢复音乐）
 default current_music_scene = None
 
+## 「不分句」开关：转换器在 Extended 大文本框「不分句」块前后置 True/False，
+## 期间 add_click_pauses 直接放行——该块每行整句一次点击展示，不在句中插 {w}。
+default no_click_split = False
+
 ################################################################################
 ## 存档加载后恢复音乐
 ################################################################################

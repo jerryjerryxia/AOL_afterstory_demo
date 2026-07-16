@@ -688,7 +688,7 @@ translate english route1_start_e3b8a472:
 translate english route1_start_82154c4a:
 
     # extend "\n去银白的沙漠。"
-    extend "\nTo the silver-white desert."
+    extend "\nTo the silver desert."
 
 # game/scripts/route1.rpy:255
 translate english route1_start_790c2285:
@@ -712,13 +712,13 @@ translate english route1_start_f1198174:
 translate english route1_start_03f2bd43:
 
     # extend "\n去沉默。"
-    extend "\nTo fall silent."
+    extend "\nTo wander in silence."
 
 # game/scripts/route1.rpy:259
 translate english route1_start_710c2393:
 
     # extend "\n直到你再次回到这里为止。"
-    extend "\nUntil you return here once again."
+    extend "\nUntil you return to this place once again."
 
 # game/scripts/route1.rpy:197
 translate english route1_start_877f8700:
