@@ -133,9 +133,9 @@ translate english route1_prologue_0b7e5202:
     extend "\n——I don't know about that."
 
 # game/scripts/prologue.rpy:57
-translate english route1_prologue_9addcd1d:
+translate english route1_prologue_313dbcbb:
 
-    # extend "\n——真是无聊啊。"
+    # extend "\n——真是无聊啊你。"
     extend "\n——You're boring."
 
 # game/scripts/prologue.rpy:60

@@ -162,10 +162,23 @@ init python:
             _sfx_dur_cache[path] = d
         return _sfx_dur_cache[path]
 
+    ## ★每个音效的相对音量★——想单独调某个音效响度就改这里的数字（1.0 = 文件原始
+    ## 响度，乘在"音效音量"滑条之上）。键 = audio/sfx/ 下的文件基名（不含 .wav）；
+    ## 未列出的音效默认 1.0。>1.0 会放大，但超过文件本身的余量会削波失真——括号内是
+    ## 各文件峰值到 0dBFS 的安全上限（用峰值算的粗略值）：
+    SFX_GAIN = {
+        "Bubbles_10":             1.8,  # 泡泡：头出水面 / 水底上浮（原 -9.5dBFS，偏轻）→调响；安全上限约 ×3.0
+        "face-down-bubble":       1.0,  # 脸入水冒泡（原 -3.0dBFS，已较响）；安全上限仅约 ×1.4
+        "glass-smash-normalized": 1.0,  # 玻璃破碎（原 -15.4dBFS）；安全上限约 ×5.9
+    }
+
     def play_sfx(path):
         """播放音效（sound 声道，受音效音量控制），并记下预计结束时刻供 wait_sfx 用。
-        转换器在音效标记处发 `$ play_sfx(...)`，在下一句正文前发 `$ wait_sfx()`。"""
-        renpy.sound.play(path)
+        转换器在音效标记处发 `$ play_sfx(...)`，在下一句正文前发 `$ wait_sfx()`。
+        每个音效的单独响度见上面的 SFX_GAIN（relative_volume）。"""
+        import os as _os
+        base = _os.path.splitext(_os.path.basename(path))[0]
+        renpy.sound.play(path, relative_volume=SFX_GAIN.get(base, 1.0))
         _sfx_end_time[0] = time.time() + _sfx_duration(path)
 
     def hard_pause(t):

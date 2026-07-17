@@ -53,7 +53,7 @@ label route1_prologue:
     extend "\n——无言以对。"
     extend "\n——不如顺便移开目光，看看别处。"
     extend "\n——无可奉告。"
-    extend "\n——真是无聊啊。"
+    extend "\n——真是无聊啊你。"
     $ no_click_split = False
     ## Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox

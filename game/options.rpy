@@ -3,7 +3,7 @@
 
 ## 游戏基本信息
 define config.name = _("无休夏日综合症")
-define config.version = "1.0.1"
+define config.version = "1.0.2"
 define build.name = "EndlessSummerSyndromeDemo"
 
 ## 是否显示游戏名称在主菜单
@@ -72,6 +72,26 @@ default preferences.afm_time = 15
 ## Steam / 发行配置
 init python:
     ## 构建配置
+    ## ★ 开发/隐私文件——绝不打包进发行版 ★
+    ## Ren'Py 分类「先匹配先生效」，且末尾自带 ('**','all') catch-all，所以这些排除
+    ## 规则必须排在下面所有 'all' 规则之前。以后调整打包范围时，保持它们在最前面。
+    build.classify('client_secret_*.json', None)        # Google OAuth 密钥（绝不外发）
+    build.classify('token.json', None)                  # Google API 令牌（绝不外发）
+    build.classify('**/client_secret_*.json', None)
+    build.classify('**/token.json', None)
+    build.classify('CLAUDE.md', None)                   # Claude 项目说明
+    build.classify('PLAN.md', None)                     # 策划稿
+    build.classify('chapters.txt', None)
+    build.classify('convergence.txt', None)
+    build.classify('demo_script*.txt', None)            # 源文稿（生成 game/scripts/*.rpy）
+    build.classify('**.before_merge', None)             # merge 备份
+    build.classify('tmpclaude-*', None)                 # Claude 临时工作文件
+    build.classify('tools/**', None)                    # 字体子集源缓存（generate_font_subset 下载）
+    build.classify('tests/**', None)
+    build.classify('**/__pycache__/**', None)
+    build.classify('game/SourceHanSansLite.ttf', None)  # 旧全字体，代码未引用（现用 body.ttf 子集）
+    build.classify('game/test_suite.rpyc', None)        # QA 测试，玩家用不到
+
     build.classify('**~', None)
     build.classify('**.bak', None)
     build.classify('**/.**', None)
