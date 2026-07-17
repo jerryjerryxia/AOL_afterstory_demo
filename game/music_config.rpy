@@ -19,9 +19,10 @@ init python:
             "label": "序章 - 深海场景",
             "tracks": [
                 ## id 保持 "polyhedron" 稳定 —— 它是 persistent.music_unlocked 的解锁键。
-                ## volume 0.737 必须与 options.rpy 的 config.main_menu_music 前缀一致，
+                ## volume 0.3 必须与 options.rpy 的 config.main_menu_music 前缀一致，
                 ## 否则 if_changed 认作两首曲子、主菜单→序章会重启这首（破坏无缝续播）。
-                {"id": "polyhedron", "name": "Glitter in the Dark", "file": "glitter_in_the_dark.ogg", "volume": 0.737},
+                ## （0.3：序章首曲刻意压得较轻；原 0.737≈-16.5 LUFS。）
+                {"id": "polyhedron", "name": "Glitter in the Dark", "file": "glitter_in_the_dark.ogg", "volume": 0.3},
             ]
         },
         "route1_scene1": {
