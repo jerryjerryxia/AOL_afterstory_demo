@@ -20,6 +20,41 @@ try:
 except AttributeError:
     pass
 
+
+# 音效标记只写文件基名（不含扩展名/子目录）；转换器在转换时扫描 game/audio/sfx/
+# 建立 基名 -> 相对路径（含真实子目录与扩展名）索引，自动解析到文件的真实位置。
+# 这样音效目录重组（把散放的文件归进 bubbles/ glass_smash/ 等子文件夹）后无需改
+# 任何标记或代码。outdated/ 下的弃用文件不参与索引。
+def _build_sfx_index():
+    index = {}
+    game_dir = os.path.join(BASE_DIR, 'game')
+    sfx_root = os.path.join(game_dir, 'audio', 'sfx')
+    for dirpath, dirnames, filenames in os.walk(sfx_root):
+        rel_parts = os.path.relpath(dirpath, sfx_root).split(os.sep)
+        if 'outdated' in rel_parts:
+            continue
+        for fn in filenames:
+            base, ext = os.path.splitext(fn)
+            if ext.lower() not in ('.wav', '.mp3', '.ogg'):
+                continue
+            rel = os.path.relpath(os.path.join(dirpath, fn), game_dir)
+            index[base] = rel.replace(os.sep, '/')
+    return index
+
+
+SFX_INDEX = _build_sfx_index()
+
+
+def resolve_sfx(sfx_name, label=""):
+    """把音效基名解析为 audio/sfx/... 相对路径。找不到时回退到旧的平铺路径并告警，
+    以免静默生成一个指向不存在文件的 play_sfx（游戏里会静默无声）。"""
+    path = SFX_INDEX.get(sfx_name)
+    if path is None:
+        print(f"WARNING: 音效 '{sfx_name}' 在 game/audio/sfx/ 下找不到"
+              f"{'（标记：' + label + '）' if label else ''}——回退到 audio/sfx/{sfx_name}.wav")
+        return f"audio/sfx/{sfx_name}.wav"
+    return path
+
 # Scene names (the part before the first period in 【转场：场景名。描述】) that
 # have a real background image. Maps the scene name to its Ren'Py image name,
 # defined in game/images/bg/placeholder.rpy. When a transition uses one of
@@ -661,7 +696,8 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     if sfx_match:
         sfx_label = sfx_match.group(1)
         sfx_name = sfx_match.group(2).strip()
-        return f'{indent}## {sfx_label}：{sfx_name}\n{indent}$ play_sfx("audio/sfx/{sfx_name}.wav")'
+        sfx_path = resolve_sfx(sfx_name, sfx_label)
+        return f'{indent}## {sfx_label}：{sfx_name}\n{indent}$ play_sfx("{sfx_path}")'
 
     # Demo 结尾 【fade out屏幕之后，回主菜单】：图像与音乐一起淡出、黑屏留白，
     # 随后 main() 追加的 demo_reboot_after_route() reboot 回主菜单。音乐一起淡出
@@ -1131,7 +1167,8 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
                   if j < end_line and j < len(lines) else None)
             if sm:
                 sfx_name = sm.group(1).strip()
-                output.append(f'    call screen route_title(_("{title}"), sfx="audio/sfx/{sfx_name}.wav")')
+                sfx_path = resolve_sfx(sfx_name)
+                output.append(f'    call screen route_title(_("{title}"), sfx="{sfx_path}")')
                 output.append('    $ wait_sfx()')
                 i = j + 1   # 吃掉音效标记
             else:

@@ -5,7 +5,7 @@ label route1_start:
 
 ## 一周目：浮潜
 
-    call screen route_title(_("浮潜"), sfx="audio/sfx/face-down-bubble.wav")
+    call screen route_title(_("浮潜"), sfx="audio/sfx/bubbles/face-down-bubble.wav")
     $ wait_sfx()
     ## 转场：虚空对视
     show void default with scene_dissolve
@@ -36,7 +36,7 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦，不好意思，太阳在那儿。"
     ## 玻璃破碎音效：glass-smash-normalized
-    $ play_sfx("audio/sfx/glass-smash-normalized.wav")
+    $ play_sfx("audio/sfx/glass_smash/glass-smash-normalized.wav")
     ## 转场：夏日对视
     scene bg_summergaze with scene_soft
     ## 场景背景里的黑暗碎裂，变为完美夏日，金色的沙滩和蔚蓝的海，只是一个人都没有
@@ -549,33 +549,56 @@ label route1_start:
     large_narrator "然而当你行将合眼时，一阵强烈的恶心自胃里上涌，就像有人抓住你的肠胃，自下而上地用力挤压。"
     extend "\n警告：过热。过热。"
     extend "\n钟表嘀嗒作响。"
-    extend "\n随着肠胃痉挛越发剧烈，你终于“哇”地一声吐了出来。"
+    extend "\n恶心加剧，肠胃彻底拧成一团，而其中汹涌的内容物已经呼之欲出。"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "你死命闭气抵抗，汗如雨下，浑身冷颤使你几乎维持不住坐姿，眼看就要从座椅上滚下来。"
+    extend "\n随着肠胃痉挛越发剧烈，你终究败在了本能反应面前，脖颈狠狠向前一抻，“哇”地一声吐了出来。"
     extend "\n和你所熟知的呕吐不同，你吐出的只有色彩。"
+    ## Extended大文本框结束
     ## 转场：甜品店对视7
     scene bg_dessertgaze7 with scene_dissolve
-    large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了木材的颜色。你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。"
-    extend "\n色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原逐渐消失了。"
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了原本的颜色。"
+    extend "\n你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。"
+    extend "\n色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原消散了。"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "桌布洁白，金属餐具冷峻，暖色的室内灯光随着呕吐物飘散，不断渗入空气中的每个角落。"
+    extend "\n面前盘子里躺着几个没吃完的团子，上面糖浆那金黄的色泽明艳地让你毛骨悚然。"
+    extend "\n胃里再次翻腾起来，于是你赶紧移开了目光。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你感到疲惫不堪，只想回到一个更加清醒的地方。"
-    extend "\n眼前桌子的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种细节。"
-    extend "\n因为你注意到，在美妙的蓝色消逝殆尽后，王霜并没有回来。"
+    extend "\n眼前桌面的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种恼人的细节。"
+    extend "\n因为你注意到，在美妙的水蓝色消逝殆尽后，王霜并没有回来。"
     extend "\n空空如也的店里坐着空空如也的你。"
     ## Extended大文本框结束
     ## 画面出现裂痕
     ## Extended大文本框开始 - accumulating large textbox
     ## 转场：甜品店对视8
     scene bg_dessertgaze8 with scene_dissolve
-    large_narrator "还原之后的世界仿佛脱了水般脆弱不堪，单是目光扫过就让其表面生出了细小的裂痕。"
+    large_narrator "还原之后的世界仿佛脱了水般脆弱不堪，单是目光扫过就让其表面生出了一连串细小的裂痕。"
     extend "\n更多裂痕。"
-    extend "\n直到周身的一切如同一副缺乏保养的老旧油画那样一片片剥落。"
+    extend "\n直到它们汇聚成令人不安的绵延裂隙。"
+    extend "\n直到周身一切如同一幅缺乏保养的老旧油画那样，一片片剥落，露出背景里黑黢黢的虚空。"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "你明知该离开了，却仍旧无动于衷。"
+    extend "\n周身空间在微颤中继续碎裂，而你则带着某种同样脆弱的信念静坐原地，任凭倦意侵蚀你脑海中所剩无几的清醒意识。"
+    extend "\n{size=-10}只需要她带你离开这里...这样就够了...{/size}"
+    extend "\n{size=-10}只需要她...这样...就够了...{/size}"
+    extend "\n..."
+    extend "\n......"
+    extend "\n........."
+    extend "\n就够了..."
     extend "\n即使如此，王霜依旧没有回来。"
     ## Extended大文本框结束
     ## 转场：黑屏
     scene bg_black_video with scene_soft
     ## 剥落完成后，黑屏
     ## 水底泡泡上浮音效：Bubbles_10
-    $ play_sfx("audio/sfx/Bubbles_10.wav")
+    $ play_sfx("audio/sfx/bubbles/Bubbles_10.wav")
     ## 居中Extended文本框开始 - centered accumulating textbox
     $ wait_sfx()
     centered_narrator "Demo到此结束，感谢游玩！"

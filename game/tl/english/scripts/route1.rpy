@@ -1,5 +1,4 @@
-﻿# TODO: Translation updated at 2026-06-20 00:04
-
+﻿
 # game/scripts/route1.rpy:16
 translate english route1_start_cc8a16cc:
 
@@ -58,7 +57,7 @@ translate english route1_start_1ef75bce:
 translate english route1_start_d8d2f624:
 
     # ahe "我感觉...有某种暴戾的东西在我耳边一直说个不停，它想我去做一些非常恶毒的事情..."
-    ahe "I feel like...there is something heinous keeps whispering into my ears. It's telling me to do vicious things..."
+    ahe "I feel like...there is something heinous...it keeps whispering into my ears. It's telling me to do vicious things..."
 
 # game/scripts/route1.rpy:34
 translate english route1_start_3fe2d6f7:
@@ -148,7 +147,7 @@ translate english route1_start_ad15a145:
 translate english route1_start_93961e4b:
 
     # ahe "那怎么可能是——"
-    ahe "How come that——"
+    ahe "How could that——"
 
 # game/scripts/route1.rpy:70
 translate english route1_start_94662fc4:
@@ -244,7 +243,7 @@ translate english route1_start_78a73c46:
 translate english route1_start_9768a694:
 
     # wangshuang "总是向外归因可解决不了问题啊，我的朋友。"
-    wangshuang "Keep attributing your problems to external causes will not solve anything, my dear friend."
+    wangshuang "Attributing your problems to external causes all the time won't solve anything, my dear friend."
 
 # game/scripts/route1.rpy:86
 translate english route1_start_e2a0603a:
@@ -610,7 +609,7 @@ translate english route1_start_a12951b7:
 translate english route1_start_11d91612:
 
     # extend "\n你立刻合上双眼，整张脸上的肌肉拧成一团，死死地挤压你抽搐的眼帘，但为时已晚，那令人绝望的强光已经在你脑海的更深处生了根。"
-    extend "\nYou sealed your eyes shut as if your life depended on it, twisting the muscle near your eyelids just to ease the pain. But it's already too late. The despairing glare has already found home in the deeper parts of your brain."
+    extend "\nYou sealed your eyes shut as if your life depended on it, twisting the muscle near your eyelids just to ease the pain. But it was already too late. The despair-inducing glare had already found home in the deeper parts of your brain."
 
 # game/scripts/route1.rpy:169
 translate english route1_start_215752b7:
@@ -1060,7 +1059,7 @@ translate english route1_start_307a5713:
 translate english route1_start_60ab49f5:
 
     # wangshuang "所有东西都是饱满到极致的，你懂我意思吗？那已经不单是感官上的饱满，而是存在上的饱满，第四维度上的饱满——是那种...不论我们怎么干涉都无法改变的状态。"
-    wangshuang "Everything is full to the fullest, you know what I mean? Like it's not 'full' in the sense of any perception, but in the sense of existence, on the forth dimension. It's like...the state that we will never be able to intervene or interpret."
+    wangshuang "Everything is full to the fullest, you know what I mean? Like it's not 'full' in the sense of any perception, but in the sense of existence, on the fourth dimension. It's like...the state that we will never be able to intervene or interpret."
 
 # game/scripts/route1.rpy:278
 translate english route1_start_a5ecfdf3:
@@ -1265,13 +1264,13 @@ translate english route1_start_ca8362c9:
 translate english route1_start_2c451261:
 
     # "虽然你清楚地意识到你跳动的血管里，{i}KAS{/i}即将穿越脑血屏障，随时可能把你的意识送上云端，你那该死的好奇心还是压过了残存的理性。"
-    "Even though you knew full well that {i}KAS{/i} was about to cross the blood brain barrier in your pulsing veins, and was about to send your conscious over to cloud nine at any second, your damn curiosity took over."
+    "Even though you knew full well that {i}KAS{/i} was about to cross the blood brain barrier in your pulsing veins, and was about to send your consciousness over to cloud nine at any second, your damn curiosity took over."
 
 # game/scripts/route1.rpy:323
 translate english route1_start_95f17193:
 
     # "你接过王霜手里那无色透明的多面体。"
-    "You took that translucent polygon from Shuang's hand."
+    "You took that translucent polyhedron from Shuang's hand."
 
 # game/scripts/route1.rpy:324
 translate english route1_start_85233ed2:
@@ -1361,7 +1360,7 @@ translate english route1_start_ab630ba9:
 translate english route1_start_c062b210:
 
     # extend "\n每一缕神经都在扩张。启示性的景象。时间和空间波浪。无孔不入的色彩和甜味。蓝色的。交响。"
-    extend "\nEvery thread of nerve was expanding. A luminating moment. Time and space waving. Colors and sweetness seeped into everything. Blue. Symphony."
+    extend "\nEvery thread of nerve was expanding. An illuminating moment. Time and space waving. Colors and sweetness seeped into everything. Blue. Symphony."
 
 # game/scripts/route1.rpy:350
 translate english route1_start_dc5bb5c4:
@@ -1403,7 +1402,7 @@ translate english route1_start_3d70cb46:
 translate english route1_start_f68928e4:
 
     # split_right_narrator "浪潮般的甜味反复沁入意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。"
-    split_right_narrator "Rippling sweetness kept eroding your thoughts and consciousness. She started smiling. Then she stopped. Everywhere you looked, you see her face. And her smile."
+    split_right_narrator "Rippling sweetness kept eroding your thoughts and consciousness. She started smiling. Then she stopped. Everywhere you looked, you saw her face. And her smile."
 
 # game/scripts/route1.rpy:367
 translate english route1_start_b5db51a6:
@@ -1457,7 +1456,7 @@ translate english route1_start_d6b82585:
 translate english route1_start_86e9194d:
 
     # wangshuang "如此唾手可得。"
-    wangshuang "So within arms reach."
+    wangshuang "So within arm's reach."
 
 # game/scripts/route1.rpy:379
 translate english route1_start_48d866a5:
@@ -1535,7 +1534,7 @@ translate english route1_start_90bf544c:
 translate english route1_start_c3e6e848:
 
     # extend "\n人类的智识自然无力探寻其中奥秘，但在王霜无处不在的笑容辉耀之下，你的一部分认知已踏入了更深层的水域。"
-    large_narrator "Those were insights clearly not meant for average human intellect to consume. But with Shuang's omnipresent grin shining on your cerebral cortex, your mental capacity has tapped into deeper waters."
+    large_narrator "Those were insights clearly not meant for average human intellect to consume. But with Shuang's omnipresent grin shining on your cerebral cortex, your mental capacity had tapped into deeper waters."
 
 # game/scripts/route1.rpy:405
 translate english route1_start_ae8d16d4:
@@ -1547,7 +1546,7 @@ translate english route1_start_ae8d16d4:
 translate english route1_start_4d196163:
 
     # large_narrator "你的知能越是提升，它的样貌就越发模糊，模糊的面容中只显露出一抹依稀可见的残酷笑容，仿佛在嘲讽你的徒劳。"
-    large_narrator "The stronger your mental, the blurrier its shape. All you could see was a cruel grin shining through, as though scolding your futile attempts to comprehend its fullness."
+    large_narrator "The stronger your mental acuity, the blurrier its shape. All you could see was a cruel grin shining through, as though mocking your futile attempts to comprehend its fullness."
 
 # game/scripts/route1.rpy:413
 translate english route1_start_6f995df5:
@@ -1565,7 +1564,7 @@ translate english route1_start_4deb13a1:
 translate english route1_start_ee2dc45a:
 
     # large_narrator "世界空无一人，因为任何个体都不具备足够的差异能够让它们自称“存在”，因此你将它们尽数吞下，如同团子。"
-    large_narrator 'The world was empty. Because there weren\'t a single soul that had enough distinction from another to call themselves "existing". So you swallowed all of them, like mochi.'
+    large_narrator 'The world was empty. Because there wasn\'t a single soul that had enough distinction from another to call themselves "existing". So you swallowed all of them, like mochi.'
 
 # game/scripts/route1.rpy:418
 translate english route1_start_fd37b955:
@@ -1577,7 +1576,7 @@ translate english route1_start_fd37b955:
 translate english route1_start_9042c8e5:
 
     # extend "\n糖浆，万物的粘合剂。就用它来替代血液。"
-    extend "\nSyrup, the omnipotent glue, let's replace our blood with it!"
+    extend "\nSyrup, the universal glue, let's replace our blood with it!"
 
 # game/scripts/route1.rpy:420
 translate english route1_start_f16a30f2:
@@ -1609,29 +1608,11 @@ translate english route1_start_5797dab3:
     # extend "\n钟表嘀嗒作响。"
     extend "\nClocks were ticking."
 
-# game/scripts/route1.rpy:428
-translate english route1_start_d66dfc58:
-
-    # extend "\n随着肠胃痉挛越发剧烈，你终于“哇”地一声吐了出来。"
-    extend "\nAs the nausea kept growing, you eventually could no longer contain it."
-
 # game/scripts/route1.rpy:429
 translate english route1_start_6aba3fbc:
 
     # extend "\n和你所熟知的呕吐不同，你吐出的只有色彩。"
     extend "\nBut all you threw up was color."
-
-# game/scripts/route1.rpy:434
-translate english route1_start_1446172b:
-
-    # large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了木材的颜色。你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。"
-    large_narrator "As the content of your puke made contact with the table in front of you, the azure-tainted tabletop immediately returned to the color of table cloth. This upsetting regression accelerated as your vomit continued, soon covering the bulk of your vision."
-
-# game/scripts/route1.rpy:435
-translate english route1_start_02b5e7f4:
-
-    # extend "\n色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原逐渐消失了。"
-    extend "\nWhere the colors reached, the waving spatial texture ceased to move. The omnipresent grin of Shuang's also faded as your vision returned to normal."
 
 # game/scripts/route1.rpy:438
 translate english route1_start_8bb2621e:
@@ -1639,29 +1620,11 @@ translate english route1_start_8bb2621e:
     # large_narrator "你感到疲惫不堪，只想回到一个更加清醒的地方。"
     large_narrator "You felt nothing but tired. All you wanted was to return to a more sober place."
 
-# game/scripts/route1.rpy:439
-translate english route1_start_b77c2590:
-
-    # extend "\n眼前桌子的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种细节。"
-    extend "\nThe form and the content of the table in front of you seemed to have experienced some sort of fundamental detachment, but you could no longer pay attention to such subtle details."
-
-# game/scripts/route1.rpy:440
-translate english route1_start_b566d0f9:
-
-    # extend "\n因为你注意到，在美妙的蓝色消逝殆尽后，王霜并没有回来。"
-    extend "\nBecause you noticed that after the tantalizing azure waves faded, Shuang did not return."
-
 # game/scripts/route1.rpy:441
 translate english route1_start_a2a7134d:
 
     # extend "\n空空如也的店里坐着空空如也的你。"
     extend "\nIn the empty shop sat an empty you."
-
-# game/scripts/route1.rpy:449
-translate english route1_start_975839e0:
-
-    # large_narrator "还原之后的世界仿佛脱了水般脆弱不堪，单是目光扫过就让其表面生出了细小的裂痕。"
-    large_narrator "The world after the regression was shriveled and brittle. Tiny cracks started to show simply with you laying eyes on its surface."
 
 # game/scripts/route1.rpy:450
 translate english route1_start_da521da6:
@@ -1669,17 +1632,11 @@ translate english route1_start_da521da6:
     # extend "\n更多裂痕。"
     extend "\nMore cracks."
 
-# game/scripts/route1.rpy:451
-translate english route1_start_93899437:
-
-    # extend "\n直到周身的一切如同一副缺乏保养的老旧油画那样一片片剥落。"
-    extend "\nAnd just like that, things around you started to fall in pieces like unmaintained oil paint."
-
 # game/scripts/route1.rpy:452
 translate english route1_start_e96ef828:
 
     # extend "\n即使如此，王霜依旧没有回来。"
-    extend "\nBut Shuang still never returned."
+    extend "\nBut despite your fragile conviction, Shuang never returned."
 
 translate english strings:
 
@@ -1726,4 +1683,137 @@ translate english route1_start_183d81b4:
 
     # extend "\n欲知后事如何，还请在本作正式发售时继续支持！"
     extend "\nIf you wish to find out how Kaku and Shuang's struggle plays out, please continue to support us at the official launch!"
+
+
+# game/scripts/route1.rpy:552
+translate english route1_start_9343db20:
+
+    # extend "\n恶心加剧，肠胃彻底拧成一团，而其中汹涌的内容物已经呼之欲出。"
+    extend "\nThe nausea surged; your innards wrung into one tight knot, their churning contents already straining to break free."
+
+# game/scripts/route1.rpy:555
+translate english route1_start_84da4c9a:
+
+    # large_narrator "你死命闭气抵抗，汗如雨下，浑身冷颤使你几乎维持不住坐姿，眼看就要从座椅上滚下来。"
+    large_narrator "You desperately held your breath trying to resist the urge to throw up, sweating all over. Chills ran through your entire being, almost making you unable to stay in your seat."
+
+# game/scripts/route1.rpy:556
+translate english route1_start_11a0dabd:
+
+    # extend "\n随着肠胃痉挛越发剧烈，你终究败在了本能反应面前，脖颈狠狠向前一抻，“哇”地一声吐了出来。"
+    extend "\nAs the nausea kept intensifying, you eventually could no longer fight your reflexes. As your neck violently jerked forward, you started to throw up."
+
+# game/scripts/route1.rpy:562
+translate english route1_start_24fdc7a4:
+
+    # large_narrator "呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了原本的颜色。"
+    large_narrator "As the content of your puke made contact with the table in front of you, the azure-tainted tabletop immediately returned to the color of table cloth."
+
+# game/scripts/route1.rpy:563
+translate english route1_start_63de7345:
+
+    # extend "\n你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。"
+    extend "\nThis upsetting regression accelerated as your vomit continued, soon covering the bulk of your vision."
+
+# game/scripts/route1.rpy:564
+translate english route1_start_fa434e8a:
+
+    # extend "\n色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原消散了。"
+    extend "\nWhere the colors reached, the waving spatial texture ceased to move. Shuang's omnipresent smile also faded as your vision returned to normal."
+
+# game/scripts/route1.rpy:567
+translate english route1_start_3549cf58:
+
+    # large_narrator "桌布洁白，金属餐具冷峻，暖色的室内灯光随着呕吐物飘散，不断渗入空气中的每个角落。"
+    large_narrator "Pale table cloths. Metallic silverwares. The warm indoor lighting dispersed along with the colors you threw up, seeping into every corner of the space."
+
+# game/scripts/route1.rpy:568
+translate english route1_start_ac745f7b:
+
+    # extend "\n面前盘子里躺着几个没吃完的团子，上面糖浆那金黄的色泽明艳地让你毛骨悚然。"
+    extend "\nA few unfinished mochi lay in the plate in front of you. The golden glaze on them frightened you to the core."
+
+# game/scripts/route1.rpy:569
+translate english route1_start_f2bd020e:
+
+    # extend "\n胃里再次翻腾起来，于是你赶紧移开了目光。"
+    extend "\nYou felt your stomach becoming restless again, so you swiftly turned your gaze away."
+
+# game/scripts/route1.rpy:573
+translate english route1_start_58b7ca8e:
+
+    # extend "\n眼前桌面的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种恼人的细节。"
+    extend "\nThe form and the content of the table in front of you seemed to have experienced some sort of fundamental detachment, but you could no longer pay attention to such annoying subtleties."
+
+# game/scripts/route1.rpy:574
+translate english route1_start_9add916b:
+
+    # extend "\n因为你注意到，在美妙的水蓝色消逝殆尽后，王霜并没有回来。"
+    extend "\nFor you have noticed that after the tantalizing azure waves faded, Shuang did not return."
+
+# game/scripts/route1.rpy:581
+translate english route1_start_7ccc0795:
+
+    # large_narrator "还原之后的世界仿佛脱了水般脆弱不堪，单是目光扫过就让其表面生出了一连串细小的裂痕。"
+    large_narrator "The world after the regression was shriveled and brittle. Tiny cracks started to show simply with you laying eyes on its surface."
+
+# game/scripts/route1.rpy:583
+translate english route1_start_217a580e:
+
+    # extend "\n直到它们汇聚成令人不安的绵延裂隙。"
+    extend "\nUntil they converged into an unsettling chasm."
+
+# game/scripts/route1.rpy:584
+translate english route1_start_7a40dd79:
+
+    # extend "\n直到周身一切如同一幅缺乏保养的老旧油画那样，一片片剥落，露出背景里黑黢黢的虚空。"
+    extend "\nUntil things around you started to fall in pieces like an unmaintained oil painting, exposing the pitch-black void behind it."
+
+# game/scripts/route1.rpy:587
+translate english route1_start_e2cb978c:
+
+    # large_narrator "你明知该离开了，却仍旧无动于衷。"
+    large_narrator "You knew that it was time to leave, and yet you remained unmoved."
+
+# game/scripts/route1.rpy:588
+translate english route1_start_c53d3f04:
+
+    # extend "\n周身空间在微颤中继续碎裂，而你则带着某种同样脆弱的信念静坐原地，任凭倦意侵蚀你脑海中所剩无几的清醒意识。"
+    extend "\nThe space around you continued to shatter as it trembled. And you stayed in your seat, holding onto a certain faith as brittle as the space around you, letting fatigue encroach away on your already shattered mind."
+
+# game/scripts/route1.rpy:589
+translate english route1_start_5308654d:
+
+    # extend "\n{size=-10}只需要她带你离开这里...这样就够了...{/size}"
+    extend "\n{size=-10}As long as she took me away from here...that will do it...{/size}"
+
+# game/scripts/route1.rpy:590
+translate english route1_start_4c9642e4:
+
+    # extend "\n{size=-10}只需要她...这样...就够了...{/size}"
+    extend "\n{size=-10}As long as she...that...will be enough{/size}"
+
+# game/scripts/route1.rpy:591
+translate english route1_start_6e6f6c85:
+
+    # extend "\n..."
+    extend "\n..."
+
+# game/scripts/route1.rpy:592
+translate english route1_start_da3c1f6f:
+
+    # extend "\n......"
+    extend "\n......"
+
+# game/scripts/route1.rpy:593
+translate english route1_start_7be8ae8d:
+
+    # extend "\n........."
+    extend "\n........."
+
+# game/scripts/route1.rpy:594
+translate english route1_start_9412c00c:
+
+    # extend "\n就够了..."
+    extend "\ni ask for nothing more..."
 

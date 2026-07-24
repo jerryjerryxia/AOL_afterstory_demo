@@ -93,7 +93,7 @@ label route1_prologue:
     ## 转场：黑屏
     scene bg_black_video with scene_soft
     ## 头出水面音效：Bubbles_10
-    $ play_sfx("audio/sfx/Bubbles_10.wav")
+    $ play_sfx("audio/sfx/bubbles/Bubbles_10.wav")
     ## Extended大文本框开始 - accumulating large textbox
     $ wait_sfx()
     large_narrator "仿佛完成了一场亘古的潜行，你轻轻浮出水面。"

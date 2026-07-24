@@ -6,20 +6,20 @@
 【Extended大文本框开始】
 
 一颗无色透明的多面体在无垠黑暗中幽幽地闪着冷光。
-A translucent polygon emitted a chilly hue within the vast darkness.
+A translucent polyhedron gave off a chilly hue in the vast darkness.
 你感到心平气和，脑海里没有任何多余的问题，只是冷静地观察着你眼前唯一的光源。
 You felt calm and collected, without a second thought in your head. You mindlessly stared at the only source of light in front of you with a nonchalant gaze.
 里面装着另一个世界么？
 Was there another world in there?
 亦或是另一个人？
-Or, maybe, another human?
+Or, maybe, another soul?
 
 【Extended大文本框结束】
 
 【Extended大文本框开始】
 
 周身黑暗暖得让人毛骨悚然——不知多久以前，你一定来过这里。
-The darkness around you felt frightening - you must have been here before, though god knows how long ago.
+The darkness around you was unnervingly warm - you must have been here before, though god knows how long ago.
 究竟是多久以前呢？
 Hmmm...how long ago could it be?
 很久很久以前。
@@ -52,7 +52,7 @@ About everything.
 ——可‘一切’是个懒散的字眼。
 ——But 'Everything' is a lazy term.
 ——一句在词穷时用来欲盖弥彰的空话。
-——You only say this when you have nothing else better to say.
+——You only say this when you have nothing better to say.
 ——但在此刻，‘一切’是精确的。
 ——But at this moment, 'Everything' is quite precise.
 ——无需争论。
@@ -66,7 +66,7 @@ About everything.
 ——无言以对。
 ——Don't know what to say to that.
 ——不如顺便移开目光，看看别处。
-——Maybe you should turn your gaze away and look elsewhere.
+——Maybe you should turn away and look elsewhere.
 ——无可奉告。
 ——I don't know about that.
 ——真是无聊啊你。
@@ -98,7 +98,7 @@ About everything.
 ——没想到，这么快就找到你了。
 ——Didn't think I'd find you so soon.
 ——我以为这种事对于现在的你来说易如反掌。
-——I thought this kinda stuff is easy for you now, no?
+——I thought this kinda stuff was easy for you now, no?
 ——当然。只是一想到又要见到你那臭脸，我就下意识地多做了点心理准备。
 ——Of course, of course. It's just that I came extra mentally prepared, so that I can bear to look at your shit-face again.
 ——心理准备？你？
@@ -106,7 +106,7 @@ About everything.
 ——毕竟做了“伤天害理”的事情。
 ——Well, you see, I'm aware that I did something "outrageous".
 ——哦。歉意，你能感受到那种东西？
-——Oh, so you are saying you feel guilty? That's a thing for you now?
+——Oh, so you are saying you can feel guilt? That's a thing for you now?
 ——不能。但能演给你看，要看吗？
 ——Not really, but I can act it out for you. Wanna see it?
 ——看来你也挺无聊。
@@ -114,7 +114,7 @@ About everything.
 ——是咯。所以想不想出去溜达溜达？
 ——Yea, maybe. So, wanna head out?
 ——向一个不具备意志的人征求认可又是何苦？彰显你那虚伪的开明？
-——What's the point of asking the opinion of someone that has no will for anything? Just to showcase your fake-ass generosity?
+——What's the point of asking the opinion of someone who has no will for anything? Just to showcase your fake-ass generosity?
 ——那就当你同意了。
 ——I'll take that as a yes.
 ——请自便吧。
@@ -143,7 +143,7 @@ About everything.
 
 【转场：黑屏。就是黑屏。】
 
-【头出水面音效：Bubbles_10】
+【水底泡泡上浮音效：Bubbles_10】
 
 【Extended大文本框开始】
 
@@ -161,7 +161,7 @@ You vaguely remembered that.
 【Extended大文本框开始】
 
 失望之余，你索性俯身漂浮，不再试图活动任何肌肉，只是慵懒地眯着双眼。你想，也许能从水下那幽暗世界里看出些什么。
-In dismay, you let yourself afloat, no longer moving even a single muscle. All you did was stare down the ocean with a lazy gaze, hoping to spot something from it.
+In dismay, you let yourself drift, no longer moving even a single muscle. All you did was stare down the ocean with a lazy gaze, hoping to spot something in it.
 但终究是什么都没有。
 But there was nothing after all.
 在长久的漂浮中，你渐渐忘记了消逝的体温，忘记了静脉里潺潺流动的暗红血液，忘记了你究竟为什么来到这里。
@@ -174,17 +174,17 @@ You started to lose track of your breathing.
 【Extended大文本框开始】
 
 都说远道而来的友人要以热情相迎。
-Confucius has once said, having friends visiting from afar brings one great joy.
+Confucius once said, having friends visiting from afar brings one great joy.
 本该是这样的。
 That should have been the case.
 但你累了，实在是太累了。长时间保持不动竟是一件如此令人疲惫的事。
-But you felt tired, way too fatigued. You had no idea that staying still for a long time can be this tiring.
+But you felt tired, way too fatigued. You had no idea that staying still for a long time could be this tiring.
 每一寸肌肉都从黑夜中啜饮势能，苦苦等待爆发的那一刻——终究不会到来的那一刻。
 Every thread of muscle was drinking in energy from the darkness, awaiting the moment to burst - the moment that would never arrive.
 你在永恒的凝滞中被倦意填满。
 You were filled by lethargy in this eternal stasis.
 然而来者终归要到来——应你之邀而来。
-But the arriving one will eventually arrive - as per your invitation.
+But the one who was coming would eventually arrive - as per your invitation.
 自己种下了树，就必要咽下它结的果。
 You will reap what you sow.
 
@@ -203,7 +203,7 @@ Then run!
 【Extended大文本框开始】
 
 虽然早就无路可逃，但移开目光就能解燃眉之急，如此便利之事又有什么推脱的借口？
-You knew that there was no where to run, but if looking away could help you avoid the immediate pain, there was no reason to turn down that offer.
+You knew that there was nowhere to run, but if looking away could help you avoid the immediate pain, there was no reason to turn down that offer.
 于是就这样，你纹丝不动地在闪着微光的海面上漂浮，宛如一段朽木。
 So you stayed still and afloat on the ocean surface, like a log of rotten wood.
 假装一切都没有发生。
@@ -222,7 +222,7 @@ As if nothing ever happened.
 Wang Shuang: Welcome back, Kaku.
 阿鹤：倒不如去死。
 Kaku: I'd rather die.
-王霜：哦？有趣的提议，为什么呢？
+王霜【小吃惊】：哦？有趣的提议，为什么呢？
 Wang Shuang: Oh? That's an interesting thought, tell me more.
 阿鹤：我...不好意思...我觉得我有点...
 Kaku: I...I'm sorry...I think I might be...
@@ -241,7 +241,7 @@ Wang Shuang: Not so easy, huh.
 王霜：难说的话，或许聊聊你看到的，或者听到的，都是可以的，我在听呢。
 Wang Shuang: If that is the case, then feel free to talk about what you are seeing, or what you are hearing. All is welcomed, and I'm listening.
 阿鹤：我感觉...有某种暴戾的东西在我耳边一直说个不停，它想我去做一些非常恶毒的事情...
-Kaku: I feel like...there is something heinous keeps whispering into my ears. It's telling me to do vicious things...
+Kaku: I feel like...there is something heinous...it keeps whispering into my ears. It's telling me to do vicious things...
 王霜：唔，这样。
 Wang Shuang: Oh, I see.
 阿鹤：我...又病了吗？
@@ -283,7 +283,7 @@ B: Falling asleep.
 王霜【默认】：那也是无可厚非的事情。
 Wang Shuang: Well, sounds like you are fine then.
 阿鹤：那怎么可能是—— 
-Kaku: How come that——
+Kaku: How could that——
 王霜：当然就是这样的，阿鹤。
 Wang Shuang: Of course that is the case, Kaku.
 王霜【小吃惊】：这是你的心理咨询，你是来访者，而我是咨询师。
@@ -315,7 +315,7 @@ Wang Shuang: But even if you can't think of anything, don't feel worried. That i
 阿鹤：这...这肯定又是你的把戏！
 Kaku: This...this must be one of your tricks!
 王霜【小声嘀咕】：总是向外归因可解决不了问题啊，我的朋友。
-Wang Shuang: Keep attributing your problems to external causes will not solve anything, my dear friend.
+Wang Shuang: Attributing your problems to external causes all the time won't solve anything, my dear friend.
 王霜：你的病虽然看起来已经根治了，但以你的身心状态而言，任何时候复发我都不意外。
 Wang Shuang: Your sickness was cured, somewhat. But with the headspace you are in right now, relapse can happen at any minute.
 王霜：但你还是没回答我的问题——时间对现在的你而言，有什么用？
@@ -361,13 +361,12 @@ Kaku: Hmm...
 
 【Extended文本框开始】
 王霜【面无表情】：然而现实恰恰相反——太阳不死仅仅是因为它的使命尚未完成而已。而它的死与它或其他任何造物的想法没有半点关系。
-Wang Shuang: But it's the exact opposite - the sun stays alive simply because it has not done what it's meant to do. Its mission is incomplete.
+Wang Shuang: But it's the exact opposite - the sun stays alive simply because it has not done what it's meant to do. Its mission is incomplete. And its death or livelihood has nothing to do with the thoughts of anything else, even itself.
 【Extended文本框结束】
 
 【Extended文本框开始】
 王霜【小声嘀咕】：想法是轻薄的、由外界塑造的，一坨烂泥一样谁都可以捏一把，但同时也是无足轻重的。而使命则是彻头彻尾、由内而外的——只有在‘使命’松手之后，‘想法’才配拥有虚假的自由。
-【EN独立】
-Wang Shuang: The mission, however, is homogeneous to one's being - only when mission loosens its grip can thoughts have a moment of freedom, albeit a fake one.
+Wang Shuang: Thoughts are trivial and volatile, like a pile of mud. Everyone can give it a squish and make it into whatever shape they want. The mission, however, is homogeneous to one's being - only when mission loosens its grip can thoughts have a moment of freedom, albeit a fake one.
 【Extended文本框结束】
 
 阿鹤：这和我们又有什么关系？
@@ -449,7 +448,9 @@ Wang Shuang: Now, make sure to pay close attention.
 【Extended文本框开始】
 
 阿鹤：呃...嗯？【屏幕震动】——啊啊啊啊啊啊啊啊啊啊啊！
-Kaku: Huh?——Ahhhhhhhhhhhhhhhhhhhhhhhhhhhh!!!
+Kaku: Huh?
+【EN独立】
+——Ahhhhhhhhhhhhhhhhhhhhhhhhhhhh!!!
 
 【Extended文本框结束】
 
@@ -460,7 +461,7 @@ Kaku: Huh?——Ahhhhhhhhhhhhhhhhhhhhhhhhhhhh!!!
 自你双眼完成聚焦的一瞬，一阵刺眼的光晕便抹去了视野里的一切，仿佛王霜把天上那轮烈日移植进了你的眼球。
 As your vision came into focus, a stabbing glare wiped everything from your field of view, as if Shuang transplanted the sun into your eye sockets.
 你立刻合上双眼，整张脸上的肌肉拧成一团，死死地挤压你抽搐的眼帘，但为时已晚，那令人绝望的强光已经在你脑海的更深处生了根。
-You sealed your eyes shut as if your life depended on it, twisting the muscle near your eyelids just to ease the pain. But it's already too late. The despairing glare has already found home in the deeper parts of your brain.
+You sealed your eyes shut as if your life depended on it, twisting the muscle near your eyelids just to ease the pain. But it was already too late. The despair-inducing glare had already found home in the deeper parts of your brain.
 随着炫目的光而来的是蚀骨的火。这由内而外的火顺着你的双眼、你的视神经蔓延。后脑勺烧了起来，随后是整个大脑皮层，最终你的全身都在这挥之不去的炫光中熊熊灼烧。
 Arriving with the blinding glare was a bone-gnawing flame. It dug all the way to the back of your head through your optic nerves, and soon set the entire cerebral cortex aflame. Your entire body caught on fire in no time.
 
@@ -645,7 +646,7 @@ Wang Shuang: Boring? You're kidding me! Can you comprehend what twelve hours of 
 Wang Shuang: When all your senses are pushed to their limits, especially your vision. Everything has mad vibrant colors, and they are seeping into each other, and in the end all you see is a white that expresses all colors.
 【Extended文本框开始】
 王霜：所有东西都是饱满到极致的，你懂我意思吗？那已经不单是感官上的饱满，而是存在上的饱满，第四维度上的饱满——是那种...不论我们怎么干涉都无法改变的状态。
-Wang Shuang: Everything is full to the fullest, you know what I mean? Like it's not 'full' in the sense of any perception, but in the sense of existence, on the forth dimension. It's like...the state that we will never be able to intervene or interpret.
+Wang Shuang: Everything is full to the fullest, you know what I mean? Like it's not 'full' in the sense of any perception, but in the sense of existence, on the fourth dimension. It's like...the state that we will never be able to intervene or interpret.
 【Extended文本框结束】
 
 【Extended文本框开始】
@@ -727,9 +728,9 @@ B: 接受。（madness+1）
 B: Accept
 
 虽然你清楚地意识到你跳动的血管里，KAS即将穿越脑血屏障，随时可能把你的意识送上云端，你那该死的好奇心还是压过了残存的理性。
-Even though you knew full well that KAS was about to cross the blood brain barrier in your pulsing veins, and was about to send your conscious over to cloud nine at any second, your damn curiosity took over.
+Even though you knew full well that KAS was about to cross the blood brain barrier in your pulsing veins, and was about to send your consciousness over to cloud nine at any second, your damn curiosity took over.
 你接过王霜手里那无色透明的多面体。
-You took that translucent polygon from Shuang's hand.
+You took that translucent polyhedron from Shuang's hand.
 那东西轻若无物又变幻莫测，看似是固体，摸起来却又有介于凝胶和麻薯之间的质感，躺在你手心里，冰冰凉的。
 The object was light. Despite having a rigid look, it had a texture between gel and mochi. Your palm felt chilly holding it.
 你毫无戒心地将那不明物件送进嘴里，简单地咀嚼了一阵，没有尝出任何味道。
@@ -779,7 +780,7 @@ Her curly blue hair danced freely in the azure waving space, sketching out the s
 你心中对她海啸般的戒心早已荡然无存了——你几乎有些喜欢她现在的样子，宛如一个母亲，又像是神明，给视野不断抹上温柔的蓝色。
 Your raging alert towards her was no more——you almost liked how she looked, like a mother, and a goddess, continuously painting your vision blue.
 每一缕神经都在扩张。启示性的景象。时间和空间波浪。无孔不入的色彩和甜味。蓝色的。交响。
-Every thread of nerve was expanding. A luminating moment. Time and space waving. Colors and sweetness seeped into everything. Blue. Symphony.
+Every thread of nerve was expanding. An illuminating moment. Time and space waving. Colors and sweetness seeped into everything. Blue. Symphony.
 反复咀嚼伤痛直至淡而无味，直到甜味凭空冒出来。
 Kept chewing on painful memories until it tasted bland, until sweetness came out of nowhere.
 在一切都已结束的当下，连时间都已丧失价值，唯一还能让你睁开双眼的，就只有——
@@ -805,7 +806,7 @@ Addiction. The flood of sugar needed nothing more than a small wave to get you c
 渴望的源头冲动的源头向往的源头发现了。
 The source of all urges and wants has been excavated!
 浪潮般的甜味反复沁入意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。
-Rippling sweetness kept eroding your thoughts and consciousness. She started smiling. Then she stopped. Everywhere you looked, you see her face. And her smile.
+Rippling sweetness kept eroding your thoughts and consciousness. She started smiling. Then she stopped. Everywhere you looked, you saw her face. And her smile.
 
 【Split Extended大文本框结束】
 
@@ -831,7 +832,7 @@ Wang Shuang: So very frivolous and profane, so very beautiful.
 阿鹤：如此轻而易举。
 Kaku: So simple and dumb.
 王霜：如此唾手可得。
-Wang Shuang: So within arms reach.
+Wang Shuang: So within arm's reach.
 阿鹤：如此美妙...
 Kaku: So beautiful...
 阿鹤：我想要...
@@ -875,7 +876,7 @@ You wanted to reach out your hands, but your hands reached out before your thoug
 Deeper insights must have been hidden within, because everything was permissible. Everything in your field of view was consistent and continuous. So very pleasant, so very full.
 人类的智识自然无力探寻其中奥秘，但在王霜无处不在的笑容辉耀之下，你的一部分认知已踏入了更深层的水域。
 【EN独立】
-Those were insights clearly not meant for average human intellect to consume. But with Shuang's omnipresent grin shining on your cerebral cortex, your mental capacity has tapped into deeper waters.
+Those were insights clearly not meant for average human intellect to consume. But with Shuang's omnipresent grin shining on your cerebral cortex, your mental capacity had tapped into deeper waters.
 越向深处就越被不可知所掣肘，当眼前的色彩开始回旋，你意识到或许梦境的另一面并非现实，而是某种更加完整且怖人的造物。
 The deeper, the more bounded by the unknowable. When the colors started to swirl before your eyes, you realized that maybe the counterpart to dreams was not the reality, but something more complete and horrifying.
 
@@ -886,7 +887,7 @@ The deeper, the more bounded by the unknowable. When the colors started to swirl
 【Extended大文本框开始】
 
 你的知能越是提升，它的样貌就越发模糊，模糊的面容中只显露出一抹依稀可见的残酷笑容，仿佛在嘲讽你的徒劳。
-The stronger your mental, the blurrier its shape. All you could see was a cruel grin shining through, as though scolding your futile attempts to comprehend its fullness.
+The stronger your mental acuity, the blurrier its shape. All you could see was a cruel grin shining through, as though mocking your futile attempts to comprehend its fullness.
 但你已经满足了，由内而外地满足了，在饱满的感官刺激中感到一阵——疲劳？
 But you were already satisfied, thoroughly satisfied. You felt a bit——tired?——from the endless cognitive stimulation.
 幸福的疲劳、优质的疲劳、苦苦追寻的疲劳、允许你在辗转反侧后终于入睡的甜美疲劳。
@@ -897,11 +898,11 @@ Pleasant fatigue, high-quality fatigue, sought-after fatigue, the fatigue that w
 【Extended大文本框开始】
 
 世界空无一人，因为任何个体都不具备足够的差异能够让它们自称“存在”，因此你将它们尽数吞下，如同团子。
-The world was empty. Because there weren't a single soul that had enough distinction from another to call themselves "existing". So you swallowed all of them, like mochi.
+The world was empty. Because there wasn't a single soul that had enough distinction from another to call themselves "existing". So you swallowed all of them, like mochi.
 糖分继续满溢出来，沿着你存在的边缘缓缓淌下，坠入周身蔚蓝的虚空之中，粘稠而香甜。
 The sugar continued to surge, dripping down from the fringe of your existence, falling into the azure abyss around you, sticky and delicious.
 糖浆，万物的粘合剂。就用它来替代血液。
-Syrup, the omnipotent glue, let's replace our blood with it!
+Syrup, the universal glue, let's replace our blood with it!
 完成之后就去睡吧。
 And go to sleep afterwards.
 你的愿望在那念头浮出水面的瞬间便成为了现实，而你只想在这静谧安详的世界里睡去。
@@ -919,17 +920,43 @@ But it wasn't so easy. As you were closing your eyes for good, a crippling nause
 WARNING: OVERHEAT. OVERHEAT.
 钟表嘀嗒作响。
 Clocks were ticking.
-随着肠胃痉挛越发剧烈，你终于“哇”地一声吐了出来。
-As the nausea kept growing, you eventually could no longer contain it.
+恶心加剧，肠胃彻底拧成一团，而其中汹涌的内容物已经呼之欲出。
+The nausea surged; your innards wrung into one tight knot, their churning contents already straining to break free.
+
+【Extended大文本框结束】
+
+【Extended大文本框开始】
+
+你死命闭气抵抗，汗如雨下，浑身冷颤使你几乎维持不住坐姿，眼看就要从座椅上滚下来。
+You desperately held your breath trying to resist the urge to throw up, sweating all over. Chills ran through your entire being, almost making you unable to stay in your seat. 
+随着肠胃痉挛越发剧烈，你终究败在了本能反应面前，脖颈狠狠向前一抻，“哇”地一声吐了出来。
+As the nausea kept intensifying, you eventually could no longer fight your reflexes. As your neck violently jerked forward, you started to throw up. 
 和你所熟知的呕吐不同，你吐出的只有色彩。
 But all you threw up was color.
 
+【Extended大文本框结束】
+
 【转场：甜品店对视7。背景蓝色调和暖色调掺半，是那种正常色彩顺着阿鹤呕吐为中心开始向四周扩散的感觉，桌上团子吃了几口，背景里的波纹纹理消失，王霜完全消失  】
 
-呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了木材的颜色。你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。
-As the content of your puke made contact with the table in front of you, the azure-tainted tabletop immediately returned to the color of table cloth. This upsetting regression accelerated as your vomit continued, soon covering the bulk of your vision.
-色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原逐渐消失了。
-Where the colors reached, the waving spatial texture ceased to move. The omnipresent grin of Shuang's also faded as your vision returned to normal.
+【Extended大文本框开始】
+
+呕吐物与面前桌子接触的瞬间，水蓝的桌面便恢复了原本的颜色。
+As the content of your puke made contact with the table in front of you, the azure-tainted tabletop immediately returned to the color of table cloth.
+你吐出的色彩越多，这令人沮丧的还原就越发提速，转眼便侵蚀了大半个视野。
+This upsetting regression accelerated as your vomit continued, soon covering the bulk of your vision.
+色彩还原的地方，水面般摇曳的空间停止了动态，原本随处可见的王霜的微笑也随着视野的复原消散了。
+Where the colors reached, the waving spatial texture ceased to move. Shuang's omnipresent smile also faded as your vision returned to normal.
+
+【Extended大文本框结束】
+
+【Extended大文本框开始】
+
+桌布洁白，金属餐具冷峻，暖色的室内灯光随着呕吐物飘散，不断渗入空气中的每个角落。
+Pale table cloths. Metallic silverwares. The warm indoor lighting dispersed along with the colors you threw up, seeping into every corner of the space. 
+面前盘子里躺着几个没吃完的团子，上面糖浆那金黄的色泽明艳地让你毛骨悚然。
+A few unfinished mochi lay in the plate in front of you. The golden glaze on them frightened you to the core.
+胃里再次翻腾起来，于是你赶紧移开了目光。
+You felt your stomach becoming restless again, so you swiftly turned your gaze away. 
 
 【Extended大文本框结束】
 
@@ -937,10 +964,10 @@ Where the colors reached, the waving spatial texture ceased to move. The omnipre
 
 你感到疲惫不堪，只想回到一个更加清醒的地方。
 You felt nothing but tired. All you wanted was to return to a more sober place.
-眼前桌子的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种细节。
-The form and the content of the table in front of you seemed to have experienced some sort of fundamental detachment, but you could no longer pay attention to such subtle details.
+眼前桌子的存在与本质看起来产生了某种根本性的分离，但你已经没有心力去捕捉这种恼人的细节。
+The form and the content of the table in front of you seemed to have experienced some sort of fundamental detachment, but you could no longer pay attention to such annoying subtleties.
 因为你注意到，在美妙的蓝色消逝殆尽后，王霜并没有回来。
-Because you noticed that after the tantalizing azure waves faded, Shuang did not return.
+For you have noticed that after the tantalizing azure waves faded, Shuang did not return.
 空空如也的店里坐着空空如也的你。
 In the empty shop sat an empty you.
 
@@ -952,14 +979,33 @@ In the empty shop sat an empty you.
 
 【转场：甜品店对视8。这里就是以7为基础，逐渐碎裂然后转入黑屏的过程，我想就在周围背景里加一些裂纹就行。 】
 
-还原之后的世界仿佛脱了水般脆弱不堪，单是目光扫过就让其表面生出了细小的裂痕。
+还原之后的世界仿佛脱了水般脆弱不堪，单是目光扫过就让其表面生出了一连串细小的裂痕。
 The world after the regression was shriveled and brittle. Tiny cracks started to show simply with you laying eyes on its surface.
 更多裂痕。
 More cracks.
-直到周身的一切如同一副缺乏保养的老旧油画那样一片片剥落。
-And just like that, things around you started to fall in pieces like unmaintained oil paint.
+直到它们汇聚成令人不安的绵延裂隙。
+Until they converged into an unsettling chasm. 
+直到周身一切如同一幅缺乏保养的老旧油画那样，一片片剥落，露出背景里黑黢黢的虚空。
+Until things around you started to fall in pieces like an unmaintained oil painting, exposing the pitch-black void behind it.
+
+【Extended大文本框结束】
+
+【Extended大文本框开始】
+你明知该离开了，却仍旧无动于衷。
+You knew that it was time to leave, and yet you remained unmoved.
+周身空间在微颤中继续碎裂，而你则带着某种同样脆弱的信念静坐原地，任凭倦意侵蚀你脑海中所剩无几的清醒意识。
+The space around you continued to shatter as it trembled. And you stayed in your seat, holding onto a certain faith as brittle as the space around you, letting fatigue encroach away on your already shattered mind.  
+【小字】只需要她带你离开这里...这样就够了...
+As long as she took me away from here...that will do it...
+【小字】只需要她...这样...就够了...
+As long as she...that...will be enough
+...
+......
+.........
+就够了...
+i ask for nothing more...
 即使如此，王霜依旧没有回来。
-But Shuang still never returned.
+But despite your fragile conviction, Shuang never returned.
 
 【Extended大文本框结束】
 

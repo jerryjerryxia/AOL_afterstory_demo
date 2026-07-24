@@ -4,7 +4,7 @@
 translate english route1_prologue_6c95f221:
 
     # large_narrator "一颗无色透明的多面体在无垠黑暗中幽幽地闪着冷光。"
-    large_narrator "A translucent polygon emitted a chilly hue within the vast darkness."
+    large_narrator "A translucent polyhedron gave off a chilly hue in the vast darkness."
 
 # game/scripts/prologue.rpy:28
 translate english route1_prologue_23ac45cc:
@@ -22,13 +22,13 @@ translate english route1_prologue_9ed104a4:
 translate english route1_prologue_7dbe6375:
 
     # extend "\n亦或是另一个人？"
-    extend "\nOr, maybe, another human?"
+    extend "\nOr, maybe, another soul?"
 
 # game/scripts/prologue.rpy:33
 translate english route1_prologue_17096783:
 
     # large_narrator "周身黑暗暖得让人毛骨悚然——不知多久以前，你一定来过这里。"
-    large_narrator "The darkness around you felt frightening - you must have been here before, though god knows how long ago."
+    large_narrator "The darkness around you was unnervingly warm - you must have been here before, though god knows how long ago."
 
 # game/scripts/prologue.rpy:34
 translate english route1_prologue_a780d484:
@@ -82,7 +82,7 @@ translate english route1_prologue_c05a2834:
 translate english route1_prologue_46cfe1c9:
 
     # extend "\n——一句在词穷时用来欲盖弥彰的空话。"
-    extend "\n——You only say this when you have nothing else better to say."
+    extend "\n——You only say this when you have nothing better to say."
 
 # game/scripts/prologue.rpy:49
 translate english route1_prologue_96cf2dfb:
@@ -124,7 +124,7 @@ translate english route1_prologue_4b0afd53:
 translate english route1_prologue_6183a470:
 
     # extend "\n——不如顺便移开目光，看看别处。"
-    extend "\n——Maybe you should turn your gaze away and look elsewhere."
+    extend "\n——Maybe you should turn away and look elsewhere."
 
 # game/scripts/prologue.rpy:56
 translate english route1_prologue_0b7e5202:
@@ -166,7 +166,7 @@ translate english route1_prologue_a691e6a6:
 translate english route1_prologue_a1985929:
 
     # extend "\n——我以为这种事对于现在的你来说易如反掌。"
-    extend "\n——I thought this kinda stuff is easy for you now, no?"
+    extend "\n——I thought this kinda stuff was easy for you now, no?"
 
 # game/scripts/prologue.rpy:71
 translate english route1_prologue_923b9435:
@@ -190,7 +190,7 @@ translate english route1_prologue_cbda4b8b:
 translate english route1_prologue_b6b9563e:
 
     # extend "\n——哦。歉意，你能感受到那种东西？"
-    extend "\n——Oh, so you are saying you feel guilty? That's a thing for you now?"
+    extend "\n——Oh, so you are saying you can feel guilt? That's a thing for you now?"
 
 # game/scripts/prologue.rpy:75
 translate english route1_prologue_bf4233f7:
@@ -214,7 +214,7 @@ translate english route1_prologue_768b66e8:
 translate english route1_prologue_e561b331:
 
     # extend "\n——向一个不具备意志的人征求认可又是何苦？彰显你那虚伪的开明？"
-    extend "\n——What's the point of asking the opinion of someone that has no will for anything? Just to showcase your fake-ass generosity?"
+    extend "\n——What's the point of asking the opinion of someone who has no will for anything? Just to showcase your fake-ass generosity?"
 
 # game/scripts/prologue.rpy:79
 translate english route1_prologue_51a9894c:
@@ -274,7 +274,7 @@ translate english route1_prologue_f60cc89a:
 translate english route1_prologue_8e464739:
 
     # large_narrator "失望之余，你索性俯身漂浮，不再试图活动任何肌肉，只是慵懒地眯着双眼。你想，也许能从水下那幽暗世界里看出些什么。"
-    large_narrator "In dismay, you let yourself afloat, no longer moving even a single muscle. All you did was stare down the ocean with a lazy gaze, hoping to spot something from it."
+    large_narrator "In dismay, you let yourself drift, no longer moving even a single muscle. All you did was stare down the ocean with a lazy gaze, hoping to spot something in it."
 
 # game/scripts/prologue.rpy:106
 translate english route1_prologue_fd970fe4:
@@ -298,7 +298,7 @@ translate english route1_prologue_53b31ee5:
 translate english route1_prologue_d723988b:
 
     # large_narrator "都说远道而来的友人要以热情相迎。"
-    large_narrator "Confucius has once said, having friends visiting from afar brings one great joy."
+    large_narrator "Confucius once said, having friends visiting from afar brings one great joy."
 
 # game/scripts/prologue.rpy:115
 translate english route1_prologue_39888884:
@@ -310,7 +310,7 @@ translate english route1_prologue_39888884:
 translate english route1_prologue_1c18d479:
 
     # extend "\n但你累了，实在是太累了。长时间保持不动竟是一件如此令人疲惫的事。"
-    extend "\nBut you felt tired, way too fatigued. You had no idea that staying still for a long time can be this tiring."
+    extend "\nBut you felt tired, way too fatigued. You had no idea that staying still for a long time could be this tiring."
 
 # game/scripts/prologue.rpy:117
 translate english route1_prologue_7792221f:
@@ -328,7 +328,7 @@ translate english route1_prologue_a4c524ff:
 translate english route1_prologue_754ba4da:
 
     # extend "\n然而来者终归要到来——应你之邀而来。"
-    extend "\nBut the arriving one will eventually arrive - as per your invitation."
+    extend "\nBut the one who was coming would eventually arrive - as per your invitation."
 
 # game/scripts/prologue.rpy:120
 translate english route1_prologue_c203c7c0:
@@ -346,7 +346,7 @@ translate english route1_prologue_49a66727:
 translate english route1_prologue_877061f0:
 
     # large_narrator "虽然早就无路可逃，但移开目光就能解燃眉之急，如此便利之事又有什么推脱的借口？"
-    large_narrator "You knew that there was no where to run, but if looking away could help you avoid the immediate pain, there was no reason to turn down that offer."
+    large_narrator "You knew that there was nowhere to run, but if looking away could help you avoid the immediate pain, there was no reason to turn down that offer."
 
 # game/scripts/prologue.rpy:127
 translate english route1_prologue_ba73ef04:
