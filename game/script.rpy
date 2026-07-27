@@ -8,7 +8,9 @@
 label splashscreen:
     ## 这个 label 在游戏启动时运行，确保主菜单正常显示
     ## return 后 Ren'Py 会自动显示 main_menu 屏幕
-    $ renpy.music.play("images/bg/polyhedron.webm", channel="polyhedron_video", loop=True)
+    ## （这里以前 play polyhedron_video —— 那是给旧的视频主菜单预热用的。
+    ## 现在主菜单是 sea.png，channel 统一在 label start 里、Movie 即将显示前
+    ## 才启动，此处不再碰。）
     return
 
 ################################################################################
@@ -61,6 +63,23 @@ label start:
 
     ## 3) 到点自动摘掉 camera transform（不摘会一直多跑一遍全屏 mesh）。
     show screen ripple_intro_fx
+
+    ## 4) 重启 polyhedron channel —— 必须在 Movie 即将显示前做，这是它唯一可靠
+    ##    的时机。历史教训：走过一轮游戏后 channel 状态会坏（显示 playing 但
+    ##    Movie 渲染成 checker board / 黑屏），唯一有效的修法是 stop+play 重启。
+    ##    旧版把重启放在主菜单 mount 时，那时主菜单本身显示着这个 Movie、channel
+    ##    有消费者，一直被消费到序章所以有效；换成 sea.png 主菜单后 mount 时重启
+    ##    的 channel 没有任何 Movie 在取帧，到第二次进序章时又是坏的。
+    ##    所以挪到这里：紧贴着序章的 `scene bg_polyhedron_video` 之前。
+    ##    首帧解码需要几十毫秒，被 2.5s 的 ripple_reveal 溶解完全盖住。
+    python:
+        try:
+            renpy.music.stop(channel="polyhedron_video")
+        except Exception:
+            pass
+        renpy.music.play(
+            "images/bg/polyhedron.webm",
+            channel="polyhedron_video", loop=True)
 
     ## 跳转到序章。序章首个 scene 带 ripple_reveal，在荡漾进行中交叉溶解进来。
     jump prologue

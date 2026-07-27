@@ -87,8 +87,20 @@ default no_click_split = False
 label after_load:
     if current_music_scene is not None:
         $ set_scene_music(current_music_scene)
-    ## 同 `label start`：进游戏(任何方式，包括 load save)都要标记 polyhedron
-    ## 在下次回到主菜单时强制重启 channel。否则 load → 玩 → 回菜单又会破。
+    ## 如果这份存档正停在多面体场景上，要在这里重启视频 channel：主菜单现在
+    ## mount 时会把 channel 停掉（sea.png 背景，视频没人看），不重启的话
+    ## load 进来 Movie 没有帧源，渲染成黑屏/checker board。
+    ## 只在场景真的显示这个 Movie 时才播 —— 其他场景没必要白解一路 webm。
+    if renpy.showing("bg_polyhedron_video"):
+        python:
+            try:
+                renpy.music.stop(channel="polyhedron_video")
+            except Exception:
+                pass
+            renpy.music.play(
+                "images/bg/polyhedron.webm",
+                channel="polyhedron_video", loop=True)
+    ## flag 语义已废弃，只是保持置位（老逻辑兼容）。
     $ persistent.polyhedron_started_game = True
     ## load 进游戏说明肯定有存档可继续（兼容老 flag，新逻辑用 last_route_completion_time）
     $ persistent.has_save_in_run = True

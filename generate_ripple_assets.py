@@ -29,6 +29,11 @@ SCREEN_W, SCREEN_H = 1920, 1080
 WIPE_RIPPLE_AMP = 0.045
 WIPE_RIPPLE_WAVELENGTH = 130.0
 
+## 斜视角系数 = 1/sin(视角)。必须和 shader 侧的 u_ripple_tilt（shaders.rpy 的
+## screen_ripple + screens.rpy 的 menu_ripple）一致：荡漾的椭圆和转场揭开的
+## 椭圆要是同一套，2.0 = 约 30° 俯视（纵向压成一半）。
+WIPE_TILT = 2.0
+
 def _write(img, name):
     path = os.path.join(OUT_DIR, name)
     img.save(path)
@@ -37,20 +42,21 @@ def _write(img, name):
 
 
 def make_wipe():
-    """中心白 → 四角黑的径向斜坡，叠加正弦环。
+    """中心白 → 四角黑的径向斜坡（斜视角椭圆度量），叠加正弦环。
 
-    归一化用的是"中心到角"的距离而不是到边的距离 —— 用后者的话四个角永远到不了
-    纯黑，斜坡在角上被截断，转场收尾时角落的时序会和别处不一致。
+    dy 乘 WIPE_TILT = 等值线是纵向压扁的椭圆，跟 shader 里的涟漪同一套投影。
+    归一化用的是"中心到角"的距离（同一椭圆度量）而不是到边的距离 —— 用后者的
+    话四个角永远到不了纯黑，斜坡在角上被截断，转场收尾时角落的时序会不一致。
     """
     w, h = SCREEN_W, SCREEN_H
     cx, cy = w / 2.0, h / 2.0
-    max_r = math.hypot(cx, cy)
+    max_r = math.hypot(cx, cy * WIPE_TILT)
 
     img = Image.new("L", (w, h))
     px = img.load()
 
     for y in range(h):
-        dy = y - cy
+        dy = (y - cy) * WIPE_TILT
         for x in range(w):
             r = math.hypot(x - cx, dy)
             v = r / max_r

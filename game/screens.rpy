@@ -841,16 +841,25 @@ define RIPPLE_T0 = MENU_EXIT_DELAY / RIPPLE_DURATION   ## 游戏侧续跑的起�
 define RIPPLE_CLEANUP = 3.0      ## 进游戏后多久摘 camera（> 剩余荡漾 2.8s 即可）
 
 ## 菜单侧的整屏涟漪：包住 main_menu 的全部内容（见下面 screen main_menu 的 fixed）。
-## 平时 u_ripple_t 停在 0 —— shader 里波前 front=0，画面纹丝不动；点击"开始游戏"
-## 翻 _main_menu_starting → function 放行 → t 从 0 跑到 1。
-## 参数必须和 shaders.rpy 的 screen_ripple 保持一致，两边接力时才无缝。
+## 平时 u_ripple_t 停在 0 —— t=0 时波包还压在落点半径里、settle=1 但 env≈0，
+## 画面纹丝不动；点击"开始游戏"翻 _main_menu_starting → function 放行 → t 从 0 跑到 1。
+## 所有参数引用 shaders.rpy 的 RIPPLE_* define（单一数据源），和游戏侧
+## screen_ripple 必然一致，接力才无缝 —— 调参数去 shaders.rpy 改。
 transform menu_ripple:
     mesh True
     shader "game.screen_ripple"
-    u_ripple_amp 0.015
-    u_ripple_freq 46.0
-    u_ripple_speed 26.0
-    u_ripple_aspect 1.7778
+    u_ripple_amp RIPPLE_AMP
+    u_ripple_freq RIPPLE_FREQ
+    u_ripple_phspeed RIPPLE_PHSPEED
+    u_ripple_r0 RIPPLE_R0
+    u_ripple_gspeed RIPPLE_GSPEED
+    u_ripple_w0 RIPPLE_W0
+    u_ripple_spread RIPPLE_SPREAD
+    u_ripple_impr RIPPLE_IMP_R
+    u_ripple_impamp RIPPLE_IMP_AMP
+    u_ripple_irreg RIPPLE_IRREG
+    u_ripple_aspect RIPPLE_ASPECT
+    u_ripple_tilt RIPPLE_TILT
     u_ripple_t 0.0
     function _wait_for_main_menu_exit
     linear RIPPLE_DURATION u_ripple_t 1.0
@@ -887,22 +896,17 @@ screen main_menu():
 
     style_prefix "main_menu"
 
-    ## 主菜单每次 mount 都强制重启 polyhedron channel —— 走过游戏一遭后
-    ## Movie/channel lifecycle 会乱，channel 显示 playing 但 Movie() 渲染成
-    ## checker board。原来用 persistent flag 判断 "是否需要重启"，但有些边
-    ## 角情况 flag 没被设上（比如玩家不通过 start label 也不通过 after_load
-    ## 进游戏），checker board 又冒回来。直接无脑每次 main_menu mount 就
-    ## stop+play，最稳。fresh launch 时 splashscreen 刚 play 完会被立刻 stop
-    ## +play 一遍，肉眼基本看不出来，但能保证后续永远不出 checker board。
-    ## flag 留着只是为了清，对外语义已经废弃。
+    ## 主菜单不再显示 polyhedron 视频（背景是 sea.png），这里只把 channel 停掉：
+    ## 一来省一路没人看的 webm 解码，二来把 channel 归零成干净状态。
+    ## 真正的启动在 label start 里、序章 Movie 即将显示前做 stop+play ——
+    ## 那是唯一可靠的重启时机（历史教训见 script.rpy label start 的注释：
+    ## 在没有 Movie 取帧的时候重启 channel，到第二次进序章时它照样是坏的）。
+    ## persistent.polyhedron_started_game 只是清一下，对外语义早已废弃。
     python:
         try:
             renpy.music.stop(channel="polyhedron_video")
         except Exception:
             pass
-        renpy.music.play(
-            "images/bg/polyhedron.webm",
-            channel="polyhedron_video", loop=True)
         persistent.polyhedron_started_game = False
 
     ## 整个可见内容（背景+暗化+标题+按钮）包进一个 fixed、挂 menu_ripple ——
