@@ -17,6 +17,16 @@ define fade_to_black_long = Fade(1.5, 0.3, 0.8)
 ## 时间慢慢流过去那样彼此过渡，而不是每次都"切走又切回来"。
 define scene_dissolve = Dissolve(0.8)
 
+## 涟漪转场 —— 主菜单"开始游戏"进序章专用（配合 script.rpy 的 label start）。
+## 从画面中心向外交叉溶解：中心先换成序章，边缘最后换，方向和涟漪扩散一致。
+## 控制图 ripple_wipe.png 由 generate_ripple_assets.py 生成。ImageDissolve 是
+## 白先黑后（SDK transition.py："white pixels will dissolve in first"），所以
+## 控制图是中心白 → 四角黑，并烘焙了正弦环 —— 推进的边界是一圈圈水波而不是
+## 一个干净的几何圆。
+## ramplen 给到 255（上限）= 灰度斜坡拉到最软，看起来接近整体溶解、只是带方向感，
+## 不会出现一条能看清的推进边 —— 要的就是"顺滑"，不是"扫过去"。
+define ripple_reveal = ImageDissolve("images/ui/fx/ripple_wipe.png", RIPPLE_DISSOLVE, ramplen=255)
+
 ## 戏剧性瞬间的特效转场（由舞台提示关键词触发，见 convert_script.py 的 SPECIAL_FX）
 define fx_glitch = hpunch    ## 故障 / glitch —— 横向震动
 define fx_shock = vpunch     ## 惊吓 / 冲击 —— 纵向震动

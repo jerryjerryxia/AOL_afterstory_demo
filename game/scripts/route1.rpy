@@ -11,6 +11,9 @@ label route1_start:
     show void default with scene_dissolve
     wangshuang "欢迎回来，阿鹤。"
     ahe "倒不如去死。"
+    ## 表情：小吃惊
+    show void surprised
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦？有趣的提议，为什么呢？"
     ahe "我...不好意思...我觉得我有点..."
 

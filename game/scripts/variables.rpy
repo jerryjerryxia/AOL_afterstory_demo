@@ -234,6 +234,32 @@ init python:
     ## 场景音乐
     ##########################################################################
 
+    def music_track_spec(track):
+        """把 music_config 里的一条 track 拼成带音频前缀的播放路径。
+
+        单一数据源：剧情播放（set_scene_music）和音乐鉴赏（music_room screen）都
+        走这里，所以两边的响度/循环点必然一致。以前音乐鉴赏直接播裸文件名，没有
+        <volume> 前缀，同一首曲子在鉴赏里比游戏里响（glitter 差 10dB 以上）。
+
+        可选无缝循环（秒）：loop=回跳点，end=每遍结束点（切掉尾部静音，避免回跳爆 pop）。
+        响度匹配增益（线性）见 music_config.rpy 的 volume 注释。
+
+        clause 顺序（to → loop → volume）不能改：glitter 拼出的前缀必须与
+        config.main_menu_music 逐字一致，否则 if_changed 认作两首曲子、
+        主菜单→序章会重启这首。
+        """
+        filename = "audio/bgm/" + track["file"]
+        clauses = []
+        if "end" in track:
+            clauses.append("to %s" % track["end"])
+        if "loop" in track:
+            clauses.append("loop %s" % track["loop"])
+        if "volume" in track:
+            clauses.append("volume %s" % track["volume"])
+        if clauses:
+            filename = "<%s>%s" % (" ".join(clauses), filename)
+        return filename
+
     def set_scene_music(scene_id):
         """设置当前场景音乐并播放（每个场景固定一首）。
 
@@ -253,18 +279,5 @@ init python:
         track = tracks[0]
         ## 玩家第一次听到这首曲子 → 在音乐鉴赏里解锁它。
         unlock_music(track["id"])
-        ## 可选无缝循环（秒）：loop=回跳点，end=每遍结束点（切掉尾部静音，避免回跳爆 pop）。
-        filename = "audio/bgm/" + track["file"]
-        clauses = []
-        if "end" in track:
-            clauses.append("to %s" % track["end"])
-        if "loop" in track:
-            clauses.append("loop %s" % track["loop"])
-        ## 响度匹配增益（线性）。见 music_config.rpy 的 volume 注释。glitter 的前缀
-        ## 必须与 config.main_menu_music 逐字一致，否则 if_changed 会重启主菜单曲。
-        if "volume" in track:
-            clauses.append("volume %s" % track["volume"])
-        if clauses:
-            filename = "<%s>%s" % (" ".join(clauses), filename)
-        renpy.music.play(filename,
+        renpy.music.play(music_track_spec(track),
                          fadeout=1.0, fadein=1.0, if_changed=True)

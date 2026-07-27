@@ -109,12 +109,22 @@ CROSS_DISSOLVE_SCENES = {
     '甜品店对视8',
 }
 
-# Tracks whether the prologue's first 【转场：...】 still needs to be emitted
-# without a transition (with None). The main menu's polyhedron video bg
-# already shows what the prologue is about to scene to, so a fade-through-black
-# would break the seamless handoff. convert_prologue() sets this to True at
-# its start; convert_content_line()'s transition branch consumes it once.
+# Tracks whether the prologue's first 【转场：...】 still needs its own special
+# transition. convert_prologue() sets this to True at its start;
+# convert_content_line()'s transition branch consumes it once.
+#
+# History: this used to emit `with None`, because the main menu's background WAS
+# the polyhedron video the prologue scenes to — a fade would have broken a
+# seamless handoff. The main menu is sea.png now, so there is nothing seamless
+# left to protect and a hard cut is just a hard cut. It emits the water-drop
+# ripple instead: the drop lands on the main menu, and the ripple wipes the
+# prologue in from the centre. See PROLOGUE_ENTRY_TRANSITION.
 _PROLOGUE_FIRST_TRANSITION_PENDING = False
+
+# The transition on the main-menu → prologue boundary. Timed to start right as
+# the water-drop overlay's ripple rings are spreading (see DROP_* in
+# game/screens.rpy); defined in game/scripts/transitions.rpy.
+PROLOGUE_ENTRY_TRANSITION = 'ripple_reveal'
 
 # Standalone stage-direction keyword -> FX transition emitted right after
 # the comment, for genuine *visual* dramatic beats only. Audio-only cues
@@ -743,8 +753,9 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         bg_image = SCENE_BG_MAP.get(scene_name, 'black')
         global _PROLOGUE_FIRST_TRANSITION_PENDING
         if _PROLOGUE_FIRST_TRANSITION_PENDING:
-            # Main menu's bg is already what we're scening to; skip the fade.
-            transition = 'None'
+            # Entering the game from the main menu: the water drop's ripple
+            # wipes this first scene in from the centre.
+            transition = PROLOGUE_ENTRY_TRANSITION
             _PROLOGUE_FIRST_TRANSITION_PENDING = False
         elif scene_name in SCENE_TRANSITIONS:
             transition = SCENE_TRANSITIONS[scene_name]

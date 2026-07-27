@@ -30,8 +30,11 @@ define config.default_sfx_volume = 0.8
 define config.allow_skipping = True
 
 ## 存档缩略图大小
-define config.thumbnail_width = 384
-define config.thumbnail_height = 216
+## 存档截图尺寸。必须与 gui.slot_button_width/height 一致 —— 存档界面的槽位
+## 就是这张截图本身（见 screens.rpy 的 slot_button），尺寸对不上就会出现
+## 图浮在框里、四边留白不均的样子。16:9，和游戏分辨率同比例。
+define config.thumbnail_width = 448
+define config.thumbnail_height = 252
 
 ## 存档槽数量
 define config.has_autosave = True

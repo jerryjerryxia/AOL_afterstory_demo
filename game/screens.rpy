@@ -645,29 +645,101 @@ screen split_right_page(who, what):
 ## 快捷菜单 - Quick Menu
 ################################################################################
 
+## 右下角悬停展开菜单的几何参数（虚拟 1920x1080 坐标）。改按钮数量/字号时只改这里。
+define QM_EDGE_X = -30          ## 离右边界
+define QM_EDGE_Y = -15          ## "菜单"按钮离下边界
+define QM_PANEL_Y = -54         ## 选项列底边的位置 = 边距 + "菜单"按钮行高 + 间隙
+define QM_AREA_W = 220          ## 悬停感应区宽度（比最宽的按钮宽即可）
+define QM_AREA_H_SHUT = 62      ## 收起时只盖住"菜单"按钮本身
+
+## 展开后的感应区高度必须真的盖住整列，否则鼠标移到靠上的选项时就掉出感应区、
+## 整个菜单缩回去（原来写死 340，顶边正好落在"历史"这一项的中间）。
+## 所以按几何算出来，别再手填：底边偏移 + 全部选项的高度 + 20px 余量。
+define QM_ITEM_PITCH = 40       ## 单项行高：21px 文字的按钮高约 34 + spacing 6
+define QM_ITEM_COUNT = 8        ## 选项数量。增删按钮时改这里，感应区自动跟着长
+define QM_AREA_H_OPEN = -QM_PANEL_Y + QM_ITEM_COUNT * QM_ITEM_PITCH + 20
+
+init python:
+    def qm_is_open():
+        return renpy.session.get("_qm_open", False)
+
+    def qm_track_pointer():
+        """轮询指针是否落在右下角感应区内，据此开合快捷菜单。
+
+        为什么是直接读指针坐标，而不是 mousearea 或按钮的 hovered/unhovered
+        —— 这两条路都试过，都不成立：
+          * 挂在"菜单"按钮的 hovered/unhovered 上：玩家把鼠标往上移到选项时
+            必然先离开按钮本身，菜单立刻收起，选项永远点不到。
+          * mousearea：它的 render() 直接采用父容器给的尺寸（见 SDK 的
+            display/behavior.py MouseArea.render），xsize/ysize 收不窄感应区；
+            而且 quick_menu 是被 say 屏 `use` 进来的，SetScreenVariable 写的是
+            say 屏的作用域、showif 读的是 use 块的作用域，两边根本对不上。
+        "指针在不在这个矩形里"本来就是这个交互的原始问题，直接问指针坐标即可，
+        不经过焦点系统就没有这些边角情况。
+
+        状态存在 renpy.session：不写进存档、不参与 rollback。
+        展开后感应区变高覆盖整列 —— 在列内移动不会收起，移出矩形才收起。
+        """
+        x, y = renpy.get_mouse_pos()
+        open_now = qm_is_open()
+        h = QM_AREA_H_OPEN if open_now else QM_AREA_H_SHUT
+        want = (x >= config.screen_width - QM_AREA_W) and (y >= config.screen_height - h)
+        if want != open_now:
+            renpy.session["_qm_open"] = want
+            renpy.restart_interaction()
+
+## 选项列滑出。showif 条件翻转时触发 ATL 的 on show / on hide。
+transform qm_slide:
+    on show:
+        alpha 0.0
+        yoffset 24
+        easein 0.18 alpha 1.0 yoffset 0
+    on hide:
+        easeout 0.14 alpha 0.0 yoffset 24
+
 screen quick_menu():
     zorder 100
 
+    ## 收起状态只占右下角一个"菜单"按钮，鼠标移上去整列向上滑出。
+    ## 原来 8 个按钮常驻竖排，占掉右下角一大块画面。
     if quick_menu:
-        vbox:
-            style_prefix "quick"
+        ## _update_screens=False 是必须的：Function 默认在每次调用后
+        ## renpy.restart_interaction() —— 这个 timer 一秒跑 20 次，等于每秒重启
+        ## 20 次交互，所有靠 st 计时的 displayable（首当其冲是打字光标 ctc_dots，
+        ## 它用 st % 1.0 闪烁）时钟被不停清零，表现为光标以诡异的不规则频率乱闪。
+        ## qm_track_pointer 内部只在开合状态真正翻转时才自己 restart_interaction。
+        timer 0.05 repeat True action Function(qm_track_pointer, _update_screens=False)
 
-            ## 竖排放在屏幕右下角（原本是横排居中底部）。
-            ## 想调位置就改 xoffset（离右边界）/ yoffset（离下边界）/ spacing（行距）。
+        ## "菜单"按钮和选项列各自独立定位（不放进同一个 vbox）：
+        ## showif 隐藏时子件仍留在显示树里，同 vbox 会让按钮被顶离右下角。
+        ## NullAction：它只是块悬停靶子和视觉提示，点击不该有额外行为。
+        textbutton _("菜单"):
+            style "quick_toggle"
             xalign 1.0
             yalign 1.0
-            xoffset -30
-            yoffset -15
-            spacing 6
+            xoffset QM_EDGE_X
+            yoffset QM_EDGE_Y
+            action NullAction()
 
-            textbutton _("历史") action ShowMenu('history')
-            textbutton _("跳过") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("自动") action Preference("auto-forward", "toggle")
-            textbutton _("存档") action ShowMenu('save')
-            textbutton _("读档") action ShowMenu('load')
-            textbutton _("快存") action QuickSave()
-            textbutton _("快读") action QuickLoad()
-            textbutton _("设置") action ShowMenu('preferences')
+        showif qm_is_open():
+            vbox:
+                style_prefix "quick"
+                at qm_slide
+
+                xalign 1.0
+                yalign 1.0
+                xoffset QM_EDGE_X
+                yoffset QM_PANEL_Y
+                spacing 6
+
+                textbutton _("历史") action ShowMenu('history')
+                textbutton _("跳过") action Skip() alternate Skip(fast=True, confirm=True)
+                textbutton _("自动") action Preference("auto-forward", "toggle")
+                textbutton _("存档") action ShowMenu('save')
+                textbutton _("读档") action ShowMenu('load')
+                textbutton _("快存") action QuickSave()
+                textbutton _("快读") action QuickLoad()
+                textbutton _("设置") action ShowMenu('preferences')
 
 default quick_menu = True
 
@@ -684,6 +756,14 @@ style quick_button_text:
     hover_color gui.hover_color
     selected_color gui.selected_color
     outlines gui.text_outlines  # 和正文一致的黑色描边，浮在画面上也清晰
+
+## 收起状态那颗"菜单"按钮：比列表项亮一档，让人知道这里有东西可点。
+style quick_toggle is quick_button
+style quick_toggle_text is quick_button_text
+
+style quick_toggle_text:
+    idle_color gui.idle_color
+    hover_color gui.hover_color
 
 ################################################################################
 ## 选择支界面 - Choice Screen
@@ -733,6 +813,58 @@ init python:
     def _wait_for_main_menu_exit(trans, st, at):
         return None if _main_menu_starting else 0
 
+## ---------------------------------------------------------------------------
+## 涟漪过场：点下"开始游戏"的瞬间，整个主菜单画面（背景+标题+按钮）开始荡漾，
+## 荡漾进行中切进序章。类似甜品店的 water_effect —— 那边是可循环的持续晃动，
+## 这边是一次性的"石入水面"：有波前、向外推进、振幅衰减到平静。
+##
+## 结构（踩过的坑，别推翻）：
+##   * 主菜单是 screen，jump_out_of_context 时它连同上面的一切立即消失，所以
+##     "荡漾"必须两边接力：菜单侧把整个 screen 内容包进一个 fixed、挂涟漪 shader
+##     （menu_ripple，点击瞬间启动）；游戏侧 label start 把同一张 bg_menu_sea 铺上
+##     master 层、用 camera 挂 screen_ripple(RIPPLE_T0) 从中断处续跑 —— 两边
+##     shader 参数一致、进度衔接，切换那一帧看不出接缝。
+##   * 游戏侧用 camera 而不是 show layer：scene 语句会清 layer_at_list（见
+##     shaders.rpy 里 screen_ripple 的注释），而序章第一句正好就是 scene。
+##
+## 时间轴（秒，从点击"开始游戏"算起）：
+##   0.00  整屏开始荡漾（菜单侧 menu_ripple 从 t=0 起跑）
+##   0.50  离开主菜单 → label start：bg_menu_sea 上 master，camera 从 RIPPLE_T0
+##         续跑涟漪；序章首个 scene 同时以 ripple_reveal 从中心向外交叉溶解进来
+##         （溶解方向和涟漪一致：都是从中心往四周走）
+##   3.00  溶解完成（0.5 + 2.5）
+##   3.30  荡漾衰减完毕（游戏侧在进入后 RIPPLE_CLEANUP 秒摘掉 camera transform）
+define MENU_EXIT_DELAY = 0.5     ## 点击后多久离开主菜单 = 转场开始前的荡漾时间
+define RIPPLE_DURATION = 3.3     ## 整屏荡漾从最强衰减到平静（从点击算起）
+define RIPPLE_DISSOLVE = 2.5     ## 海面 → 序章首帧的交叉溶解时长
+define RIPPLE_T0 = MENU_EXIT_DELAY / RIPPLE_DURATION   ## 游戏侧续跑的起点进度
+define RIPPLE_CLEANUP = 3.0      ## 进游戏后多久摘 camera（> 剩余荡漾 2.8s 即可）
+
+## 菜单侧的整屏涟漪：包住 main_menu 的全部内容（见下面 screen main_menu 的 fixed）。
+## 平时 u_ripple_t 停在 0 —— shader 里波前 front=0，画面纹丝不动；点击"开始游戏"
+## 翻 _main_menu_starting → function 放行 → t 从 0 跑到 1。
+## 参数必须和 shaders.rpy 的 screen_ripple 保持一致，两边接力时才无缝。
+transform menu_ripple:
+    mesh True
+    shader "game.screen_ripple"
+    u_ripple_amp 0.015
+    u_ripple_freq 46.0
+    u_ripple_speed 26.0
+    u_ripple_aspect 1.7778
+    u_ripple_t 0.0
+    function _wait_for_main_menu_exit
+    linear RIPPLE_DURATION u_ripple_t 1.0
+
+## 游戏侧收尾：由 script.rpy 的 label start `show screen ripple_intro_fx` 拉起。
+## RIPPLE_CLEANUP 后摘掉 master 层的 camera transform 并隐藏自己 ——
+## 不摘的话整局游戏都会一直多跑一遍全屏 mesh 渲染。
+screen ripple_intro_fx():
+    timer RIPPLE_CLEANUP action [Function(renpy.show_layer_at, [], layer="master", camera=True), Hide("ripple_intro_fx")]
+## ---------------------------------------------------------------------------
+
+## 标题/按钮退场动画 —— 暂时停用（现在是整屏原地荡漾着切场景，元素不再滑出）。
+## 想恢复：把 main_menu 里对应元素的 `at menu_title_anim` / `at menu_btn_anim(...)`
+## 加回去即可（下面 screen 里有注释标出原来挂在哪），transform 本体保留：
 ## 标题：上滑淡出。先停在 alpha=1 yoffset=0，等变量翻 True，再易出动画。
 transform menu_title_anim:
     alpha 1.0
@@ -773,54 +905,71 @@ screen main_menu():
             channel="polyhedron_video", loop=True)
         persistent.polyhedron_started_game = False
 
-    ## 背景：polyhedron Movie 从共享 channel 取帧，主菜单 → 序章首场景无缝。
-    add "bg_polyhedron_video"
+    ## 整个可见内容（背景+暗化+标题+按钮）包进一个 fixed、挂 menu_ripple ——
+    ## 点"开始游戏"的瞬间它们作为一个整体开始荡漾，而不是涟漪浮在表面。
+    fixed at menu_ripple:
 
-    ## 暗化效果（也跟标题一起淡出）
-    frame at menu_title_anim:
-        style "main_menu_frame"
+        ## 背景：sea.png，与 save/load/设置/音乐鉴赏（game_menu）统一。
+        ## 图本身在 script.rpy 里定义成 bg_menu_sea（含黑底 + contain + 压暗层）。
+        ## 这里和 label start 引用的必须是同一个 image —— 进游戏时要把它原样铺到
+        ## master 层上接住画面，两边只要有一点不一样，切换的瞬间就会看到跳变。
+        add "bg_menu_sea"
 
-    ## 游戏标题：上滑淡出。按语言切换中/英标题图。
-    vbox at menu_title_anim:
-        xalign 0.5
-        yalign 0.18
+        ## 原背景：polyhedron Movie 从共享 channel 取帧，主菜单 → 序章首场景无缝。
+        ## 想换回视频主菜单，取消下面这行的注释、并删掉上面的 bg_menu_sea：
+        # add "bg_polyhedron_video"
+        ##
+        ## 注意：上面那段 stop+play polyhedron_video 的 python 块**故意保留在运行状态**，
+        ## 没有一起注释掉。视频现在只是不显示，channel 仍在跑 —— 它撑着两件事：
+        ##   1) prologue.rpy 的 `scene bg_polyhedron_video` 要有一个健康的 channel 才有画面；
+        ##   2) 玩过一轮回主菜单后不 stop+play，第二次进序章会渲染成 checker board。
+        ## 代价只是主菜单期间多解一路不可见的 webm。
 
-        if _preferences.language == "english":
-            add "images/ui/titles/en_title.png" zoom 0.24 xalign 0.5
-        else:
-            add "images/ui/titles/zh_title.png" zoom 0.30 xalign 0.5
+        ## 暗化效果（退场动画停用中；恢复时在这行尾加回 at menu_title_anim）
+        frame:
+            style "main_menu_frame"
 
-    ## 主菜单按钮：直接 inline，不走 `use navigation`，因为每个要带自己的 delay。
-    ## stagger = 0.06s。点击"开始游戏" → _main_menu_starting=True → 所有 transform
-    ## 同时翻动；sensitive 在退场期间关掉所有按钮，避免误触发。
-    vbox:
-        style_prefix "navigation"
-        xpos gui.navigation_xpos
-        yalign 0.5
-        spacing gui.navigation_spacing
+        ## 游戏标题。按语言切换中/英标题图。（恢复退场动画：at menu_title_anim）
+        vbox:
+            xalign 0.5
+            yalign 0.18
 
-        ## 通关之后做的存档 → 显示"继续游戏"；否则显示"开始游戏"。
-        ## has_continuable_save() 比较 max(slot_mtime) 和 last_route_completion_time，
-        ## 通关后老存档自动失效；玩家新周目存档后又自动出 Continue。
-        if has_continuable_save():
-            textbutton _("继续游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting at menu_btn_anim(0.42)
-        else:
-            textbutton _("开始游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting at menu_btn_anim(0.42)
-        textbutton _("读取存档") action ShowMenu("load") sensitive not _main_menu_starting at menu_btn_anim(0.36)
-        textbutton _("音乐鉴赏") action ShowMenu("music_room") sensitive not _main_menu_starting at menu_btn_anim(0.30)
-        textbutton _("设置") action ShowMenu("preferences") sensitive not _main_menu_starting at menu_btn_anim(0.24)
-        textbutton _("关于") action ShowMenu("about") sensitive not _main_menu_starting at menu_btn_anim(0.18)
+            if _preferences.language == "english":
+                add "images/ui/titles/en_title.png" zoom 0.24 xalign 0.5
+            else:
+                add "images/ui/titles/zh_title.png" zoom 0.30 xalign 0.5
 
-        if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
-            textbutton _("退出") action Quit(confirm=not main_menu) sensitive not _main_menu_starting at menu_btn_anim(0.12)
+        ## 主菜单按钮。sensitive 在退场期间关掉所有按钮，避免误触发。
+        ## （恢复阶梯退场：给各按钮加回 at menu_btn_anim(0.42/0.36/…)，
+        ## 自上而下 0.42→0.12，stagger 0.06s。）
+        vbox:
+            style_prefix "navigation"
+            xpos gui.navigation_xpos
+            yalign 0.5
+            spacing gui.navigation_spacing
 
-    ## 时序：按钮 stagger 最顶 0.42 + 0.35 = 0.77s 完成；标题 0.5s。
-    ## 再加 ~0.5s 让玩家看到纯背景视频"喘口气"，文本框再进。
+            ## 通关之后做的存档 → 显示"继续游戏"；否则显示"开始游戏"。
+            ## has_continuable_save() 比较 max(slot_mtime) 和 last_route_completion_time，
+            ## 通关后老存档自动失效；玩家新周目存档后又自动出 Continue。
+            if has_continuable_save():
+                textbutton _("继续游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting
+            else:
+                textbutton _("开始游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting
+            textbutton _("读取存档") action ShowMenu("load") sensitive not _main_menu_starting
+            textbutton _("音乐鉴赏") action ShowMenu("music_room") sensitive not _main_menu_starting
+            textbutton _("设置") action ShowMenu("preferences") sensitive not _main_menu_starting
+            textbutton _("关于") action ShowMenu("about") sensitive not _main_menu_starting
+
+            if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
+                textbutton _("退出") action Quit(confirm=not main_menu) sensitive not _main_menu_starting
+
+    ## 点击"开始游戏"后：整屏立即开始荡漾（menu_ripple），MENU_EXIT_DELAY 秒后
+    ## 离开主菜单，涟漪由游戏侧接力（见上面涟漪过场的时间轴）。
     ## timer 跑完 → 重置状态 → exit_main_menu_to_game() 决定 Continue / Start。
     ## (exit_main_menu_to_game 内部按 has_save_in_run 选 load_most_recent_save
     ## 或者武装 intro_fade_pending + jump_out_of_context("start")。)
     if _main_menu_starting:
-        timer 1.25 action [SetVariable("_main_menu_starting", False), Function(exit_main_menu_to_game)]
+        timer MENU_EXIT_DELAY action [SetVariable("_main_menu_starting", False), Function(exit_main_menu_to_game)]
 
     ## demo 通关 reboot 回主菜单：整屏从黑淡入一次，然后清标志（只淡入这一次）。
     ## 放在 screen 最后 = 盖在背景/标题/按钮之上；淡完由 timer 清 session 标志。
@@ -863,8 +1012,15 @@ style main_menu_button_text is gui_button_text:
 screen game_menu(title, scroll=None, yinitial=0.0):
     style_prefix "game_menu"
 
-    ## 占位符背景
-    add Solid("#1a1a2acc")
+    ## 背景：sea.png（3840x1240，3.10:1）。fit="contain" 按宽度铺满，
+    ## 上下各留约 230px 黑边 —— 暂时接受，等有 16:9 版本的图再换。
+    ## 铺满不透明 = 游戏中 ESC 进菜单不再透出当前场景（原来 #1a1a2acc 是 80% 遮罩）。
+    ## 上面还叠着 game_menu_outer_frame 的 #00000080 压暗层，保证文字可读。
+    add Solid("#000000")
+    add Transform(
+        "images/ui/menu_background/sea.png",
+        xysize=(config.screen_width, config.screen_height),
+        fit="contain", xalign=0.5, yalign=0.5)
 
     frame:
         style "game_menu_outer_frame"
@@ -1058,15 +1214,29 @@ screen file_slots(title):
                             style "slot_button"
                             action FileAction(slot)
 
-                            has vbox
+                            ## 截图 = 槽位本身。以前是 384x216 的图装在 414x309 的
+                            ## 灰框里、外加 vbox 把文字往下顶，四边留白全不均。
+                            ## 现在 slot_button 的尺寸就是截图尺寸、padding 归零，
+                            ## 再用 Transform 把截图强制拉到同一尺寸（fit="cover"），
+                            ## 于是无论旧存档的缩略图是什么尺寸都逐像素铺满，不留边。
+                            ## 时间/存档名压在底部半透明条上，不再改变槽位高度。
+                            fixed:
+                                add Transform(
+                                    FileScreenshot(slot),
+                                    xysize=(gui.slot_button_width, gui.slot_button_height),
+                                    fit="cover")
 
-                            add FileScreenshot(slot) xalign 0.5
+                                frame:
+                                    style "slot_caption"
 
-                            text FileTime(slot, format=_("{#file_time}%Y-%m-%d %H:%M"), empty=_("空存档位")):
-                                style "slot_time_text"
+                                    has vbox
+                                    spacing 2
 
-                            text FileSaveName(slot):
-                                style "slot_name_text"
+                                    text FileTime(slot, format=_("{#file_time}%Y-%m-%d %H:%M"), empty=_("空存档位")):
+                                        style "slot_time_text"
+
+                                    text FileSaveName(slot):
+                                        style "slot_name_text"
 
                         ## Delete button - only show if slot has a save
                         if FileLoadable(slot):
@@ -1130,8 +1300,11 @@ style slot_vbox:
     spacing 5
 
 style slot_button:
-    background Solid("#333333aa")
-    hover_background Solid("#555555aa")
+    ## padding 归零：槽位的可视尺寸必须精确等于截图尺寸，否则又会出现留白。
+    ## 背景只在空存档位（截图是透明的）时看得见。
+    padding (0, 0, 0, 0)
+    background Solid("#1a1d26cc")
+    hover_background Solid("#2f3a4ccc")
     xsize gui.slot_button_width
     ysize gui.slot_button_height
 
@@ -1139,15 +1312,23 @@ style slot_button_text:
     idle_color gui.idle_color
     hover_color gui.hover_color
 
-style slot_time_text:
-    idle_color gui.idle_color
-    size gui.slot_button_text_size
-    xalign gui.slot_button_text_xalign
+## 截图底部的字幕条：压在图上，不占额外高度。
+style slot_caption is empty:
+    xfill True
+    yalign 1.0
+    background Solid("#000000b3")
+    padding (12, 6, 12, 7)
 
-style slot_name_text:
-    idle_color gui.idle_color
+## 继承 slot_button_text ⇒ 文字跟随按钮的 idle/hover 状态变色。
+style slot_time_text is slot_button_text:
     size gui.slot_button_text_size
     xalign gui.slot_button_text_xalign
+    outlines []
+
+style slot_name_text is slot_button_text:
+    size gui.slot_button_text_size
+    xalign gui.slot_button_text_xalign
+    outlines []
 
 style slot_delete_button:
     xalign 0.5
@@ -1438,8 +1619,11 @@ screen music_room():
 
             for track in get_music_room_tracks():
                 if is_music_unlocked(track["id"]):
+                    ## music_track_spec 带上 <volume>/<loop> 前缀 —— 和剧情里
+                    ## set_scene_music 播的是逐字相同的路径，所以鉴赏里的响度
+                    ## 和循环点与游戏中完全一致（以前这里播裸文件名，偏响）。
                     textbutton _(track["name"]):
-                        action Play("music", "audio/bgm/" + track["file"])
+                        action Play("music", music_track_spec(track))
                 else:
                     textbutton "???":
                         sensitive False

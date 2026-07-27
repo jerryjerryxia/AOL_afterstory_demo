@@ -160,8 +160,13 @@ define gui.choice_button_text_insensitive_color = '#444444'
 ## 存档/读档按钮
 ################################################################################
 
-define gui.slot_button_width = 414
-define gui.slot_button_height = 309
+## 槽位尺寸 = 存档截图尺寸。必须与 options.rpy 的 config.thumbnail_width/height
+## 一致：槽位里的截图被 Transform 强制拉到这个尺寸并铺满，两者相等时才是原生
+## 像素、不缩放。（不能在这里写 config.thumbnail_width —— gui.rpy 是 init -2，
+## options.rpy 的 define 还没跑。改一处务必改另一处。）
+## 16:9；3 列 × 448 + 2 × 15 间距 = 1374，正好吃满 1380 的内容区宽度。
+define gui.slot_button_width = 448
+define gui.slot_button_height = 252
 define gui.slot_button_borders = Borders(15, 15, 15, 15)
 define gui.slot_button_text_size = 21
 define gui.slot_button_text_xalign = 0.5

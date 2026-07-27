@@ -2,6 +2,10 @@
 
 translate english strings:
 
+    # game/screens.rpy — 右下角悬停展开菜单的收起态标签
+    old "菜单"
+    new "Menu"
+
     # game/screens.rpy:298
     old "历史"
     new "History"
