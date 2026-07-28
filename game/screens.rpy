@@ -859,7 +859,9 @@ transform menu_ripple:
     u_ripple_impamp RIPPLE_IMP_AMP
     u_ripple_irreg RIPPLE_IRREG
     u_ripple_aspect RIPPLE_ASPECT
-    u_ripple_tilt RIPPLE_TILT
+    u_ripple_pitch RIPPLE_PITCH
+    u_ripple_focal RIPPLE_FOCAL
+    u_ripple_height RIPPLE_HEIGHT
     u_ripple_t 0.0
     function _wait_for_main_menu_exit
     linear RIPPLE_DURATION u_ripple_t 1.0
