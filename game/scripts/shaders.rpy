@@ -151,10 +151,30 @@ init python:
             // 整体回平：临近结束加速归零，t=1 位移严格为 0（之后摘 camera）。
             float settle = 1.0 - t * t;
 
-            // ---- 中心冲击 ---------------------------------------------------
-            float plop = exp(-rho * rho / (2.0 * u_ripple_impr * u_ripple_impr))
-                       * sin(t * 55.0) * exp(-t * 9.0)
-                       * u_ripple_impamp * smoothstep(0.0, 0.015, rho);
+            // ---- 中心冲击：凹坑 → 回弹冲高 → 余摆 ----------------------------
+            // 真实落水的中心不是一味乱颤：先砸出凹坑（水面下陷），涟漪出发，
+            // 然后回弹水柱冲**高过水面**，再一次小回落归平。三段正弦，相接处
+            // 都过零（无跳变），t=0 严格为 0（菜单待机不动）。
+            // 采样语义：ia > 0 = 径向向外采样 → 画面被"吸"向四周 = 下陷；
+            //           ia < 0 = 向内采样 → 中心放大凸起 = 鼓起冒头。
+            // 回弹做得比凹坑更强(1.3×)更慢(T2>T1) —— "冒出水面"要看得清。
+            float T1 = 0.07;
+            float T2 = 0.16;
+            float T3 = 0.20;
+            float ia = 0.0;
+            if (t < T1) {
+                ia = sin(3.14159265 * t / T1);                     // 凹坑
+            } else if (t < T1 + T2) {
+                ia = -1.3 * sin(3.14159265 * (t - T1) / T2);       // 回弹冲高
+            } else if (t < T1 + T2 + T3) {
+                ia = 0.3 * sin(3.14159265 * (t - T1 - T2) / T3);   // 余摆
+            }
+            // 回弹的水柱比凹坑窄（0.6×半径）；相接处 ia=0，半径切换无缝。
+            float ir = u_ripple_impr * ((ia < 0.0) ? 0.6 : 1.0);
+            float domeg = exp(-rho * rho / (2.0 * ir * ir));
+            // 径向分量在正中心归零（rho→0 方向未定义）；竖直抬升不受此限。
+            float plop = domeg * ia * u_ripple_impamp
+                       * smoothstep(0.0, 0.015, rho);
 
             // ---- 平面空间位移 → 投影回屏幕 -----------------------------------
             // 位移沿平面上的径向（从落点向外），单位是平面单位；重投影会自动
@@ -170,6 +190,12 @@ init python:
             float etp = fo * (Zp * sn - hh * cs) / wc;
             vec2 suv = vec2(0.5 + xip / u_ripple_aspect, 0.5 - etp);
 
+            // 回弹期的竖直抬升：水柱是垂直运动，纯径向位移表现不出"冒出水面"。
+            // 向下偏移采样点 = 内容在屏幕上向上抬。只在 ia<0（回弹）时生效，
+            // 幅度跟着回弹包络走，中心最强、随 domeg 高斯衰减。
+            suv.y += max(-ia, 0.0) * domeg * u_ripple_amp * u_ripple_impamp
+                   * 0.15 * settle;
+
             gl_FragColor = texture2D(tex0, suv, u_lod_bias);
         """
     )
@@ -179,15 +205,15 @@ init python:
 ## define，两边必然一致，接力才无缝。改任何一个只改这里。
 ## 长度类参数（R0/W0/IMP_R/GSPEED 等）的单位都是"水面平面单位"：
 ## 屏幕下缘 ≈ ρ 0.55、左右缘 ≈ 0.79、上缘 ≈ 2.34、上角 ≈ 3.13（由相机参数决定）。
-define RIPPLE_AMP     = 0.03     ## 位移幅度（平面单位；近处约合 30px，远处被透视自动缩小）
+define RIPPLE_AMP     = 0.048    ## 位移幅度（平面单位；近处约合 50px，远处被透视自动缩小）
 define RIPPLE_FREQ    = 60.0     ## 载波密度（chirp 前的基准波数）
 define RIPPLE_PHSPEED = 190.0    ## 波峰相位推进速度（≈1.6×群速的效果：波峰穿过波包）
 define RIPPLE_R0      = 0.05     ## 落点半径 = 波包出发位置（"中心冲击的大小"就是它）
 define RIPPLE_GSPEED  = 3.8      ## 波包推进速度：t≈0.81 时包络中心扫过最远的上角(ρ≈3.13)
-define RIPPLE_W0      = 0.06     ## 波包初始半宽 —— 环带一开始有多"窄"
+define RIPPLE_W0      = 0.08     ## 波包初始半宽 —— 环带一开始有多"窄"
 define RIPPLE_SPREAD  = 2.2      ## 波包展宽率（行进中环带慢慢变宽）
-define RIPPLE_IMP_R   = 0.07     ## 中心"扑通"的作用半径
-define RIPPLE_IMP_AMP = 2.6      ## 中心"扑通"的强度（相对主波，落点必须明显比涟漪猛）
+define RIPPLE_IMP_R   = 0.10     ## 中心"扑通"的作用半径
+define RIPPLE_IMP_AMP = 3.6      ## 中心"扑通"的强度（相对主波，落点必须明显比涟漪猛）
 define RIPPLE_IRREG   = 0.15     ## 角向不均匀度（0 = 完美同心圆，太大会破相）
 define RIPPLE_ASPECT  = 1.7778   ## 屏幕宽高比（16:9）
 define RIPPLE_PITCH   = 0.5236   ## 相机俯仰角（弧度）。0.5236 = 30°：越小越贴水面、
