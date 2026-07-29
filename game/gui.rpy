@@ -188,16 +188,9 @@ define gui.vslider_borders = Borders(6, 6, 6, 6)
 ################################################################################
 ## 历史记录（回顾）
 ################################################################################
-
-define gui.history_height = 210
-define gui.history_name_xpos = 233
-define gui.history_name_ypos = 0
-define gui.history_name_width = 233
-define gui.history_name_xalign = 1.0
-define gui.history_text_xpos = 255
-define gui.history_text_ypos = 3
-define gui.history_text_width = 1110
-define gui.history_text_xalign = 0.0
+## 官方模板的 gui.history_*（左右双列 + 固定行高 210px）已删除：本作历史条目
+## 是多行大段旁白，固定行高会溢出叠字。现在的布局在 screens.rpy 的
+## screen history() 里——竖排堆叠、条目自适应高度，没有几何常量可调。
 
 ################################################################################
 ## NVL 模式（如果需要）

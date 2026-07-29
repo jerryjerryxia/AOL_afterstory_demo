@@ -29,6 +29,12 @@ define config.default_sfx_volume = 0.8
 ## 允许跳过未读文本
 define config.allow_skipping = True
 
+## 对话历史记录的条数上限。引擎默认是 None = 完全不记录 —— 项目模板本该带
+## 这行但这里一直缺失，导致"历史"界面永远显示"没有历史"。250 是官方模板值。
+## （历史文本里的 {w} 点击停顿标签由 history 界面的 filter_text_tags 过滤，
+## 不会显示出来。）
+define config.history_length = 250
+
 ## 存档缩略图大小
 ## 存档截图尺寸。必须与 gui.slot_button_width/height 一致 —— 存档界面的槽位
 ## 就是这张截图本身（见 screens.rpy 的 slot_button），尺寸对不上就会出现

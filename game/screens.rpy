@@ -1551,56 +1551,52 @@ screen history():
     use game_menu(_("历史"), scroll="viewport", yinitial=1.0):
         style_prefix "history"
 
-        for h in _history_list:
-            window:
-                has fixed:
-                    yfit True
+        ## 布局：每条记录"名字一行 + 正文若干行"竖排堆叠，条目自适应高度。
+        ## 不用官方模板那套"名字左列 + 正文右列 + 固定行高"——那套的
+        ## gui.history_height 是写死的 210px，而本作历史条目多是 extend "\n…"
+        ## 累积出来的多行大段旁白（33px 中文），一条超过 210px 就会溢出去
+        ## 压在下一条上面，看起来就是字全叠在一起的乱码。自适应高度不设上限，
+        ## 多长的条目都各占各的地方。
+        vbox:
+            spacing 28
 
-                if h.who:
-                    label h.who:
-                        style "history_name"
+            for h in _history_list:
+                vbox:
+                    spacing 6
+                    xfill True
+
+                    if h.who:
+                        label h.who:
+                            style "history_name"
+                            substitute False
+
+                            if "color" in h.who_args:
+                                text_color h.who_args["color"]
+
+                    $ what = renpy.filter_text_tags(h.what, allow=gui.history_allow_tags)
+                    text what:
                         substitute False
 
-                        if "color" in h.who_args:
-                            text_color h.who_args["color"]
+            if not _history_list:
+                label _("暂无历史记录。")
 
-                $ what = renpy.filter_text_tags(h.what, allow=gui.history_allow_tags)
-                text what:
-                    substitute False
+## 历史正文里保留的文本标签。{w}/{shake} 等表演用标签都会被过滤掉，只留纯排版。
+## 注意不放行 size/font：正文里若混进大字号标签会把历史排版撑乱，历史里统一字号。
+define gui.history_allow_tags = {"b", "i", "u", "s", "color"}
 
-        if not _history_list:
-            label _("暂无历史记录。")
-
-define gui.history_allow_tags = {"b", "i", "u", "s", "color", "font", "size"}
-
-style history_window is empty
 style history_name is gui_label
 style history_name_text is gui_label_text
 style history_text is gui_text
 style history_label is gui_label
 style history_label_text is gui_label_text
 
-style history_window:
-    xfill True
-    ysize gui.history_height
-
-style history_name:
-    xpos gui.history_name_xpos
-    xanchor gui.history_name_xalign
-    ypos gui.history_name_ypos
-    xsize gui.history_name_width
-
 style history_name_text:
-    min_width gui.history_name_width
-    textalign gui.history_name_xalign
+    size 26
 
 style history_text:
-    xpos gui.history_text_xpos
-    ypos gui.history_text_ypos
-    xanchor gui.history_text_xalign
-    xsize gui.history_text_width
-    min_width gui.history_text_width
-    textalign gui.history_text_xalign
+    size 26
+    ## 行距稍收紧（正文 33px 用的行距对 26px 显松），大段旁白更紧凑。
+    line_spacing 4
 
 style history_label:
     xfill True
