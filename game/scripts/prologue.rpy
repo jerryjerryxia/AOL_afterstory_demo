@@ -119,6 +119,7 @@ label route1_prologue:
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "逃避吧！"
     ## 居中大字文本框结束
+    $ stash_music_pos()
     $ current_music_scene = None
     stop music fadeout 3.0
     ## Extended大文本框开始 - accumulating large textbox

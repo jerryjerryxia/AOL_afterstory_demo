@@ -107,6 +107,42 @@ image bg_dessertshop:
 image bg_white_video = Movie(play="images/bg/white_screen.webm", size=(1920, 1080), start_image="white", image="white")
 image bg_black_video = Movie(play="images/bg/black_screen.webm", size=(1920, 1080), start_image="black", image="black")
 
+## 静帧黑屏：从 black_screen.webm 里截的一帧（t=5.5s），不走 Movie。
+## 用在"灯灭一下"的段落节拍上——剧本里裸写 【黑屏】 的那两处（详见 convert_script.py）。
+## 挑这一帧的理由：全片 18 帧candidates里它峰值最低（max 48，别的到 90+）、
+## 均值 3.66 又贴着全片均值 3.57 —— 静止画面上一个亮斑会变成固定污点，动图里则看不出来。
+## 保持源分辨率 1280x720 交给 Transform 放大，和 Movie(size=(1920,1080)) 走同一条缩放路径，
+## 这样静帧和视频之间切换看不出画质差别。
+image bg_black_still = Transform("images/bg/black_screen_still.png", xysize=(1920, 1080), fit="cover")
+
+## 粉红屏 / 灰屏（★临时版★ —— 正式素材做好后替换掉这两条 image，
+## convert_script.py 的 SCENE_BG_MAP 不用动）。
+##
+## 粉红屏：没有专门素材，先拿白屏视频蒙一层粉色滤镜。
+## TintMatrix 是逐通道相乘：白色底(1,1,1) 乘出来正好是染色本身，而白屏视频里
+## 那些细微的明暗起伏会按比例保留下来 —— 所以出来的是"会呼吸的粉雾"，
+## 不是一块死的纯色。start_image/image 的 white 也一并被染，冷启动不会闪白。
+##
+## ↓ 调色就改这一个值。偏冷/偏紫往 #f0a0d0，偏肉粉往 #ffb0a8。
+define PINK_SCREEN_TINT = "#ffa3c4"
+image bg_pink_video = Transform(
+    Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
+          start_image="white", image="white"),
+    matrixcolor=TintMatrix(PINK_SCREEN_TINT))
+
+## 灰屏（★临时版★）：同一招，但多乘一个 SaturationMatrix(0.0)。
+## 多这一步是照着正文来的 ——「任何色彩倾泻其中，都只能归零的灰」：白屏视频里
+## 那些残影本身带着暖/冷色偏，只染灰的话它们会透出淡淡的颜色，正好和这句话打架。
+## 先去饱和再染灰 = 色彩真的归零，只剩明暗起伏在动。（顺序同 Ren'Py 自带的
+## SepiaMatrix：TintMatrix(...) * SaturationMatrix(0.0)。）
+##
+## ↓ 调明暗就改这一个值。更亮往 #b2b2b2，更压抑往 #6e6e6e。
+define GREY_SCREEN_TINT = "#9a9a9a"
+image bg_grey_video = Transform(
+    Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
+          start_image="white", image="white"),
+    matrixcolor=TintMatrix(GREY_SCREEN_TINT) * SaturationMatrix(0.0))
+
 ################################################################################
 ## 表情差分（全图 / 透明叠层）。转换器在 王霜【表情】 处切换：
 ##   full 场景（夏日对视 / 甜品店1-3）：scene <差分> —— 整图已含人物，默认图==bg。

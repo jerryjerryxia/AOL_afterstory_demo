@@ -31,7 +31,9 @@ def _build_sfx_index():
     sfx_root = os.path.join(game_dir, 'audio', 'sfx')
     for dirpath, dirnames, filenames in os.walk(sfx_root):
         rel_parts = os.path.relpath(dirpath, sfx_root).split(os.sep)
-        if 'outdated' in rel_parts:
+        # outdated/ = 弃用；masters/ = 处理前的原始素材（成品另存，见 desert_wind）。
+        # 两者都不该被剧本引用到，所以干脆不进索引。
+        if 'outdated' in rel_parts or 'masters' in rel_parts:
             continue
         for fn in filenames:
             base, ext = os.path.splitext(fn)
@@ -55,6 +57,20 @@ def resolve_sfx(sfx_name, label=""):
         return f"audio/sfx/{sfx_name}.wav"
     return path
 
+
+# 有些音效标记只写"是什么声音"，不写文件名（如 【沙漠长风音效】）—— 剧本描述意图，
+# 挑素材是后一步的事。这张表把意图名映射到 game/audio/sfx/ 下的文件基名；子目录与
+# 扩展名仍旧由 SFX_INDEX 解析，所以素材换文件夹不用动这里。
+#   ambient=True  -> 长循环铺底，走 ambient 声道（play_ambient）
+#   ambient=False -> 一次性音效，走 sound 声道（play_sfx）
+# 表里没有的标记照旧退化成纯注释（无声）—— 素材还没做的 cue 就是这个状态。
+SFX_CUES = {
+    # 沙漠长风：4 分半的环境音。绝不能当一次性音效发 —— play_sfx 会把它记进
+    # _sfx_end_time，下一句正文就要 hard 等 282 秒。
+    # 指向限幅重制过的 _bed 版本，原始素材留在 masters/（不进索引）。
+    '沙漠长风': ('desert_wind_bed', True),
+}
+
 # Scene names (the part before the first period in 【转场：场景名。描述】) that
 # have a real background image. Maps the scene name to its Ren'Py image name,
 # defined in game/images/bg/placeholder.rpy. When a transition uses one of
@@ -69,6 +85,15 @@ SCENE_BG_MAP = {
     # 白屏 / 黑屏：循环视频背景（bg/white_screen.webm、black_screen.webm）。
     '白屏': 'bg_white_video',
     '黑屏': 'bg_black_video',
+    # 粉红屏 / 灰屏：临时版 —— 白屏视频蒙滤镜（见 placeholder.rpy 的 bg_pink_video /
+    # bg_grey_video）。专门素材做好后把 placeholder.rpy 那两条换掉即可，这里不用动。
+    '粉红屏': 'bg_pink_video',
+    '灰屏': 'bg_grey_video',
+    # 图片黑屏：不走 Movie 的黑屏，用 black_screen.webm 截的一帧静帧。
+    # 和 '黑屏'（循环视频）是有意区分的两种：视频黑屏是"会呼吸的深蓝黑"，
+    # 图片黑屏是"灯灭一下"的段落节拍 —— 后者用在紧接 utter_restart、或者要长时间
+    # 挂着放旁白的地方，Movie 在那两种场合 lifecycle 容易出乱子（见 placeholder.rpy）。
+    '图片黑屏': 'bg_black_still',
     # 虚空对视：黑屏视频背景 + 透明立绘叠层（overlay 模型，见 SCENE_EXPRESSIONS）。
     # 用视频而非纯色 Solid，这样立绘透明处能透出"背景里的黑屏"动画。
     '虚空对视': 'bg_black_video',
@@ -683,10 +708,20 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         scene_id = music_match.group(1).strip()
         return f'{indent}$ set_scene_music("{scene_id}")'
 
-    # Music stop markers 【音乐停】 or 【音效和音乐停】
+    # Music stop markers 【音乐停】 / 【音效和音乐停】
     # fadeout 3.0：让音乐柔和淡出而非戛然而止（1.0 太突兀）。
-    if '音乐停' in line:
-        return f'{indent}$ current_music_scene = None\n{indent}stop music fadeout 3.0'
+    # stash_music_pos() 必须在 stop 之前 —— 它记下停下那一刻的播放位置，供后面标了
+    # "resume" 的场景接着放（route1_horror3：「从上次音乐停的位置继续，不要重头开始」）。
+    #
+    # 必须整行严格匹配标记本身。这里原来是 `'音乐停' in line` 的子串判断，而剧本里
+    # 【场景音乐参考：N2-14 - 从上次音乐停的位置继续播放，不要重头开始】 这句说明性
+    # 注释也含"音乐停"三个字 —— 子串匹配会在那儿凭空停一次音乐，并且因为那一刻已经
+    # 没有音乐在播，stash 到的位置会被清成 0，恰好毁掉这句话要求的"接着放"。
+    # 说明性注释里出现控制词是迟早的事，判断得盯着标记的形状，不是它的字面。
+    if re.match(r'^【(?:音效和)?音乐停】$', line):
+        return (f'{indent}$ stash_music_pos()\n'
+                f'{indent}$ current_music_scene = None\n'
+                f'{indent}stop music fadeout 3.0')
 
     # Music fade-out marker 【音乐开始fade out】：当前音乐缓缓淡出（进入幻视前的留白）。
     # current_music_scene 置 None，淡出后存档/读档不会把这段音乐恢复回来。
@@ -709,12 +744,24 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         sfx_path = resolve_sfx(sfx_name, sfx_label)
         return f'{indent}## {sfx_label}：{sfx_name}\n{indent}$ play_sfx("{sfx_path}")'
 
+    # 【…音效】（只写了声音是什么、没写文件名）-> 查 SFX_CUES 决定播什么、走哪条声道。
+    # 查不到的（素材还没做的 cue）落到下面的 stage-direction 分支，退化成纯注释。
+    cue_match = re.match(r'^【(.*?音效.*?)】$', line)
+    if cue_match:
+        cue = cue_match.group(1)
+        for key, (base, is_ambient) in SFX_CUES.items():
+            if key in cue:
+                cue_path = resolve_sfx(base, cue)
+                fn = 'play_ambient' if is_ambient else 'play_sfx'
+                return f'{indent}## {cue}\n{indent}$ {fn}("{cue_path}")'
+
     # Demo 结尾 【fade out屏幕之后，回主菜单】：图像与音乐一起淡出、黑屏留白，
     # 随后 main() 追加的 demo_reboot_after_route() reboot 回主菜单。音乐一起淡出
     # （而非硬切），是为了衔接主菜单曲；current_music_scene 置 None 以免读档恢复。
     if 'fade out' in line and '回主菜单' in line:
-        return (f'{indent}## fade out 屏幕（图像+音乐）之后，reboot 回主菜单\n'
+        return (f'{indent}## fade out 屏幕（图像+音乐+环境音）之后，reboot 回主菜单\n'
                 f'{indent}$ current_music_scene = None\n'
+                f'{indent}$ stop_ambient(2.0)\n'
                 f'{indent}stop music fadeout 2.0\n'
                 f'{indent}scene black with fade_to_black_long\n'
                 f'{indent}$ hard_pause(1.0)')

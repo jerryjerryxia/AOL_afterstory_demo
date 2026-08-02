@@ -76,6 +76,14 @@ default choice_flags = {}
 ## 当前场景音乐 ID（由 set_scene_music 设置；after_load 用它恢复音乐）
 default current_music_scene = None
 
+## 当前环境音路径（由 play_ambient 设置；after_load 用它恢复。不存这个的话，
+## 在沙漠里存档再读档就是一片死寂——和音乐一样的问题，一样的解法）
+default current_ambient = None
+
+## 上一次 【音乐停】 时音乐播到的位置（秒）。music_config 里标了 "resume": True
+## 的曲子从这里接着放，而不是从头开始。见 stash_music_pos / music_track_spec。
+default music_resume_pos = 0.0
+
 ## 「不分句」开关：转换器在 Extended 大文本框「不分句」块前后置 True/False，
 ## 期间 add_click_pauses 直接放行——该块每行整句一次点击展示，不在句中插 {w}。
 default no_click_split = False
@@ -87,6 +95,9 @@ default no_click_split = False
 label after_load:
     if current_music_scene is not None:
         $ set_scene_music(current_music_scene)
+    if current_ambient is not None:
+        ## fadein=0：读档瞬间环境音就该在场，2 秒渐入会让开场几句显得突兀。
+        $ play_ambient(current_ambient, fadein=0.0)
     ## 如果这份存档正停在多面体场景上，要在这里重启视频 channel：主菜单现在
     ## mount 时会把 channel 停掉（sea.png 背景，视频没人看），不重启的话
     ## load 进来 Movie 没有帧源，渲染成黑屏/checker board。
@@ -193,6 +204,41 @@ init python:
         renpy.sound.play(path, relative_volume=SFX_GAIN.get(base, 1.0))
         _sfx_end_time[0] = time.time() + _sfx_duration(path)
 
+    ## ★环境音相对音量★——键 = audio/sfx/ 下的文件基名。同 SFX_GAIN 的用法。
+    ##
+    ## 沙漠长风现在播的是限幅重制版 desert_wind_bed.ogg：-23.0 LUFS、峰 -1.3 dBFS，
+    ## 已经在文件里配平好，所以这里是 1.0（不列出即 1.0）。
+    ##
+    ## 为什么必须重制而不是继续在这里推增益：原始素材 -30.1 LUFS 但峰值 -0.11 dBFS，
+    ## 波峰因数 30 dB（中位数才 -24.8 dBFS，只有孤立阵风摸到顶）—— 平均响度低、
+    ## 峰值却没余量，纯增益一过 1.0 阵风就削顶，天花板卡死在 +2.9 dB。限幅把那些
+    ## 尖峰按下去（最大压缩 10.3 dB，释放 800ms），腾出的余量整体抬起来，净得 +7 dB。
+    ## 顺带也让铺底不再有 30 dB 起伏 —— 垫在对白底下的环境音本来就不该忽大忽小。
+    ## 现在离 0 dBFS 还剩 1.3 dB，想再微调可以在这里给到 1.15 上下，别超过。
+    AMBIENT_GAIN = {
+    }
+
+    def play_ambient(path, fadein=2.0):
+        """环境音铺底：在 ambient 声道上循环播放（声道注册见 videos.rpy）。
+        与 play_sfx 的区别是「一直响」而不是「响一下」，所以不进 _sfx_end_time，
+        后面的正文不会等它 —— 一段 4 分半的长风等完游戏就没法玩了。
+
+        if_changed=True：同一段环境音重复触发不重头开始。剧本在黑屏前后各标了三次
+        【沙漠长风音效】，中间不该出现接缝。
+
+        单独响度见上面的 AMBIENT_GAIN（relative_volume）。"""
+        import os as _os
+        base = _os.path.splitext(_os.path.basename(path))[0]
+        store.current_ambient = path
+        renpy.music.play(path, channel="ambient", loop=True,
+                         fadein=fadein, if_changed=True,
+                         relative_volume=AMBIENT_GAIN.get(base, 1.0))
+
+    def stop_ambient(fadeout=2.0):
+        """停掉环境音。current_ambient 置 None，读档不会把它恢复回来。"""
+        store.current_ambient = None
+        renpy.music.stop(channel="ambient", fadeout=fadeout)
+
     def hard_pause(t):
         """不可点击快进的暂停（长黑场过渡用）。和 wait_sfx 一样，自动化测试里跳过 ——
         否则 5s+ 的 hard 暂停会吃满 `advance until` 的超时预算。正常游玩照常等。"""
@@ -246,7 +292,21 @@ init python:
     ## 场景音乐
     ##########################################################################
 
-    def music_track_spec(track):
+    def stash_music_pos():
+        """记下音乐停下那一刻的播放位置，供之后标了 "resume" 的场景接着放。
+        转换器在每个 【音乐停】 的 stop 之前发这一行 —— 必须在 stop 之前，
+        stop 之后 get_pos 就拿不到了。
+
+        注意语义：记的是**声道**的播放位置，不是某一首曲子自己的播放进度。
+        route1_horror2 是 N2-14 播完接 N2-07 循环，所以到 route1_horror3 之前那次
+        音乐停时，台上的很可能已经是 N2-07 —— 于是 horror3 的 N2-14 会从"N2-07 当时
+        走到的秒数"接上。这正是剧本要的效果（不重头开始 / 接着往下走），而且无论
+        停在哪一首都有确定行为；反过来若按"N2-14 自己的进度"记，一旦它已经播完，
+        进度就在结尾，接上去等于立刻回到 0 —— 恰好是剧本不要的那种重头开始。"""
+        t = renpy.music.get_pos(channel="music")
+        store.music_resume_pos = t if t else 0.0
+
+    def music_track_spec(track, start=None):
         """把 music_config 里的一条 track 拼成带音频前缀的播放路径。
 
         单一数据源：剧情播放（set_scene_music）和音乐鉴赏（music_room screen）都
@@ -256,16 +316,26 @@ init python:
         可选无缝循环（秒）：loop=回跳点，end=每遍结束点（切掉尾部静音，避免回跳爆 pop）。
         响度匹配增益（线性）见 music_config.rpy 的 volume 注释。
 
+        start：起播位置（秒）。给 "resume" 曲子用 —— 拼成 `from START loop 0`：
+        Ren'Py 解析音频前缀时，第一遍用 from、之后每一遍循环改用 loop
+        （renpy/audio/audio.py: `if (loop is not None) and looped: start = loop`）。
+        所以效果是"这一遍从 START 接着放，放完之后整曲从头循环"，而不是
+        永远只播 START 之后那一段。track 自己写了 "loop" 时以 track 的为准。
+
         clause 顺序（to → loop → volume）不能改：glitter 拼出的前缀必须与
         config.main_menu_music 逐字一致，否则 if_changed 认作两首曲子、
-        主菜单→序章会重启这首。
+        主菜单→序章会重启这首。（from 只在 resume 曲子上出现，glitter 不受影响。）
         """
         filename = "audio/bgm/" + track["file"]
         clauses = []
+        if start:
+            clauses.append("from %s" % round(start, 3))
         if "end" in track:
             clauses.append("to %s" % track["end"])
         if "loop" in track:
             clauses.append("loop %s" % track["loop"])
+        elif start:
+            clauses.append("loop 0")
         if "volume" in track:
             clauses.append("volume %s" % track["volume"])
         if clauses:
@@ -273,7 +343,16 @@ init python:
         return filename
 
     def set_scene_music(scene_id):
-        """设置当前场景音乐并播放（每个场景固定一首）。
+        """设置当前场景音乐并播放。
+
+        一个场景的音乐是一个**序列**：tracks 按顺序各播一遍，最后一首无限循环。
+        绝大多数场景是长度 1 的序列 = 单曲循环（和以前完全一样）。route1_horror2
+        是长度 2 的序列：N2-14 完整播一遍，然后 N2-07 循环到场景结束。
+        没有单独的"intro 曲"开关 —— 循环点就是序列末尾，不需要额外概念。
+
+        track 上标 "resume": True 时，这首从上次 【音乐停】 的位置接着放
+        （route1_horror3）。只对序列第一首有意义 —— 后面几首是接在前一首之后的，
+        本来就没有"从哪儿接上"的问题。
 
         if_changed=True：若该曲已在播放则不重启 —— 这样主菜单的 glitter_in_the_dark
         能无缝续进序章（序章首曲也是它），玩家点"开始游戏"前后不断。
@@ -288,8 +367,19 @@ init python:
         if not tracks:
             return
 
-        track = tracks[0]
-        ## 玩家第一次听到这首曲子 → 在音乐鉴赏里解锁它。
-        unlock_music(track["id"])
-        renpy.music.play(music_track_spec(track),
-                         fadeout=1.0, fadein=1.0, if_changed=True)
+        ## 玩家第一次听到这些曲子 → 在音乐鉴赏里解锁。
+        for t in tracks:
+            unlock_music(t["id"])
+
+        ## 序列只有一首时 loop=True（=以前的行为）；有后续时第一首只播一遍，
+        ## 由下面的 queue 接上。
+        head_start = music_resume_pos if tracks[0].get("resume") else None
+        renpy.music.play(music_track_spec(tracks[0], start=head_start),
+                         fadeout=1.0, fadein=1.0, if_changed=True,
+                         loop=(len(tracks) == 1))
+        for i, t in enumerate(tracks[1:], start=1):
+            ## clear_queue=False 是必须的：play() 已经清过队列，而 queue() 的
+            ## clear_queue=True 会连 play() 刚入队、还没开始播的第一首一起抹掉
+            ## （Channel.dequeue 直接截断 self.queue），结果就是跳过 N2-14 直接放 N2-07。
+            renpy.music.queue(music_track_spec(t),
+                              loop=(i == len(tracks) - 1), clear_queue=False)

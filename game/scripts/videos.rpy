@@ -11,3 +11,14 @@ init python:
         stop_on_mute=False,
         movie=True,
     )
+
+    ## 环境音铺底（长循环，如沙漠长风）。为什么要单开一条声道：
+    ##   - 挂 music 不行 —— 沙漠段落里 BGM 起停好几次（desert → horror1 → horror2
+    ##     → 音乐停），风必须从头吹到尾，不能跟着 BGM 一起被掐掉；
+    ##   - 挂 sound 不行 —— 那是一次性音效声道，下一个音效就把它顶掉，而且不循环。
+    ## mixer="sfx"：玩家心智里风就是环境音效，跟着"音效音量"滑条走。
+    renpy.music.register_channel(
+        "ambient",
+        mixer="sfx",
+        loop=True,
+    )
