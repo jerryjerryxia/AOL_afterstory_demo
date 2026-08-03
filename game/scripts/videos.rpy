@@ -17,8 +17,17 @@ init python:
     ##     → 音乐停），风必须从头吹到尾，不能跟着 BGM 一起被掐掉；
     ##   - 挂 sound 不行 —— 那是一次性音效声道，下一个音效就把它顶掉，而且不循环。
     ## mixer="sfx"：玩家心智里风就是环境音效，跟着"音效音量"滑条走。
+    ## 两条：铺底要和脉冲同时响（沙漠的风底下压着狂跳的心脏），一条声道装不下。
+    ##   ambient       —— 场所的声音：沙漠长风、呼吸 ambience
+    ##   ambient_pulse —— 身体的声音：心跳
+    ## 分开还有个好处：换场时可以只掐掉其中一条。
     renpy.music.register_channel(
         "ambient",
+        mixer="sfx",
+        loop=True,
+    )
+    renpy.music.register_channel(
+        "ambient_pulse",
         mixer="sfx",
         loop=True,
     )

@@ -65,10 +65,48 @@ def resolve_sfx(sfx_name, label=""):
 #   ambient=False -> 一次性音效，走 sound 声道（play_sfx）
 # 表里没有的标记照旧退化成纯注释（无声）—— 素材还没做的 cue 就是这个状态。
 SFX_CUES = {
+    # ---- 铺底（ambient 声道：场所的声音）----
     # 沙漠长风：4 分半的环境音。绝不能当一次性音效发 —— play_sfx 会把它记进
     # _sfx_end_time，下一句正文就要 hard 等 282 秒。
     # 指向限幅重制过的 _bed 版本，原始素材留在 masters/（不进索引）。
-    '沙漠长风': ('desert_wind_bed', True),
+    '沙漠长风': {'file': 'desert_wind_bed', 'ambient': True},
+
+    # 慢呼吸 ambience：深空段从「呼吸ambience音效开始」铺到「呼吸ambient音效停止」。
+    # 中间那几处只写 【呼吸音效】 的落到同一条铺底上 —— if_changed 让它们成为空操作，
+    # 正好是剧本的意思（那几处是提醒"还在呼吸"，不是要重新起一次）。
+    '呼吸ambience音效开始': {'file': 'freesound_community-slow-breath-relaxmp3-14704',
+                             'ambient': True, 'fadein': 4.0, 'level': 0.55},
+    '呼吸ambient音效停止': {'stop': True},
+    # 「随着文字进程逐渐加快&变响」：只做变响（14 秒从 0.55 档缓慢推到满档）。
+    # 不做加快是定下来的 —— 心跳能加快是因为击点之间有干净静音可切、重排不碰波形；
+    # 呼吸是连续气流声，没有那样的边界，任何重排都会切在气声中间。
+    '呼吸音效渐强': {'swell': 1.0, 'swell_time': 14.0},
+    '呼吸音效': {'file': 'freesound_community-slow-breath-relaxmp3-14704', 'ambient': True, 'level': 0.55},
+
+    # ---- 脉冲（ambient_pulse 声道：身体的声音）----
+    # 心跳有常速/急促两档，是同一素材重排出来的两个文件（60 / 104 BPM，波形逐样本相同，
+    # 只是击点间隔不同 —— 见 variables.rpy 的 AMBIENT_GAIN 注释）。切换 = 换文件，
+    # 所以 fadein 给短，让"心跳突然快起来"这件事听得见。
+    '心跳音效渐强': {'file': 'heartbeat_104', 'ambient': True, 'channel': 'ambient_pulse',
+                     'fadein': 0.6, 'level': 1.0},
+    '心跳音效恢复': {'file': 'heartbeat_60', 'ambient': True, 'channel': 'ambient_pulse',
+                     'fadein': 1.5, 'level': 0.6},
+    '心跳音效': {'file': 'heartbeat_60', 'ambient': True, 'channel': 'ambient_pulse',
+                 'fadein': 0.8, 'level': 0.6},
+
+    # ---- 一次性 ----
+    # 电视机关机 / 关闭：剧本两种写法都有，'电视机关' 一并覆盖。
+    '电视机关': {'file': 'dragon-studio-tv-shutdown-386167'},
+    # 连续破裂（眼珠一颗颗炸开）：暂不接。现有的 bone_break 是骨裂声，
+    # 未必是这里要的东西，等素材定下来再加一条。当前 cue 退化成纯注释（无声）。
+
+    # glitch（★临时★）：素材是 23.3 秒连续的削顶噪声墙，不是一记 stinger，
+    # 整段播下去会盖住后面二十几句旁白。改由运行时函数从中随机挑一段 0.55 秒的
+    # 切片来放（切点与理由见 variables.rpy 的 GLITCH_CUTS / play_glitch）——
+    # 这样多处 cue 不会听起来是同一记，重玩也不重样。
+    # 键就写 'glitch'：剧本里 【glitch音效】/【glitchy音效】 两种写法都有。
+    # 不会误伤 【glitch消失】 —— 那行不含"音效"，根本进不到这个分支。
+    'glitch': {'call': 'play_glitch()'},
 }
 
 # Scene names (the part before the first period in 【转场：场景名。描述】) that
@@ -89,6 +127,11 @@ SCENE_BG_MAP = {
     # bg_grey_video）。专门素材做好后把 placeholder.rpy 那两条换掉即可，这里不用动。
     '粉红屏': 'bg_pink_video',
     '灰屏': 'bg_grey_video',
+    '红屏': 'bg_red_video',
+    # 「黑屏，但是里面盖着王霜微笑的幽灵」：幽灵叠层的素材还没有，先按普通视频黑屏走。
+    # 不让它掉进默认的纯黑 Solid —— 前后左右全是视频黑屏，一格死黑插在中间会跳。
+    # 幽灵做好后在 placeholder.rpy 里定义叠层、把这里改指过去即可。
+    '黑屏，但是里面盖着王霜微笑的幽灵': 'bg_black_video',
     # 图片黑屏：不走 Movie 的黑屏，用 black_screen.webm 截的一帧静帧。
     # 和 '黑屏'（循环视频）是有意区分的两种：视频黑屏是"会呼吸的深蓝黑"，
     # 图片黑屏是"灯灭一下"的段落节拍 —— 后者用在紧接 utter_restart、或者要长时间
@@ -656,6 +699,13 @@ def emit_extended_segments(collected, output, indent, large=False, centered=Fals
             output.append(expr_line if expr_line else f'{indent}## {text}')
             first_emitted = False
             continue
+        if speaker == '__sfx__':
+            # 块内音频标记。不重置 first_emitted —— 声音不打断文字的累积，
+            # 语句夹在两条 extend 之间，玩家点下一句时触发。
+            code = convert_content_line(text, indent)
+            if code:
+                output.append(code)
+            continue
         if speaker == '__transition__':
             scene_name, scene_desc = text
             emit_transition_lines(output, indent, scene_name, scene_desc)
@@ -749,11 +799,37 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     cue_match = re.match(r'^【(.*?音效.*?)】$', line)
     if cue_match:
         cue = cue_match.group(1)
-        for key, (base, is_ambient) in SFX_CUES.items():
-            if key in cue:
-                cue_path = resolve_sfx(base, cue)
-                fn = 'play_ambient' if is_ambient else 'play_sfx'
-                return f'{indent}## {cue}\n{indent}$ {fn}("{cue_path}")'
+        # 按键长从长到短匹配：'心跳音效' 是 '心跳音效渐强'/'心跳音效恢复' 的子串，
+        # 呼吸那几个也是一样的包含关系。谁更具体谁优先，不能靠字典顺序碰运气。
+        for key in sorted(SFX_CUES, key=len, reverse=True):
+            if key not in cue:
+                continue
+            cfg = SFX_CUES[key]
+            head = f'{indent}## {cue}\n'
+            # 'call' = 交给 variables.rpy 里的函数自己决定放什么
+            # （glitch 要在运行时随机挑切片，转换期定不下来）。
+            if 'call' in cfg:
+                return head + f'{indent}$ {cfg["call"]}'
+            ch = cfg.get('channel', 'ambient')
+            # 'stop' = 停掉这条铺底声道
+            if cfg.get('stop'):
+                return head + f'{indent}$ stop_ambient(channel="{ch}")'
+            # 'swell' = 不换素材，只把音量推上去（同一段声音逐渐变响）
+            if 'swell' in cfg:
+                return head + (f'{indent}$ swell_ambient({cfg["swell"]}, '
+                               f'channel="{ch}", swell={cfg.get("swell_time", 8.0)})')
+            cue_path = resolve_sfx(cfg['file'], cue)
+            # 'to' = 只播开头这么多秒（Ren'Py 音频前缀），把长素材截成一击。
+            if 'to' in cfg:
+                cue_path = '<to %s>%s' % (cfg['to'], cue_path)
+            if cfg.get('ambient'):
+                args = [f'"{cue_path}"', f'channel="{ch}"']
+                if 'fadein' in cfg:
+                    args.append(f'fadein={cfg["fadein"]}')
+                if 'level' in cfg:
+                    args.append(f'level={cfg["level"]}')
+                return head + f'{indent}$ play_ambient({", ".join(args)})'
+            return head + f'{indent}$ play_sfx("{cue_path}")'
 
     # Demo 结尾 【fade out屏幕之后，回主菜单】：图像与音乐一起淡出、黑屏留白，
     # 随后 main() 追加的 demo_reboot_after_route() reboot 回主菜单。音乐一起淡出
@@ -761,7 +837,7 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     if 'fade out' in line and '回主菜单' in line:
         return (f'{indent}## fade out 屏幕（图像+音乐+环境音）之后，reboot 回主菜单\n'
                 f'{indent}$ current_music_scene = None\n'
-                f'{indent}$ stop_ambient(2.0)\n'
+                f'{indent}$ stop_all_ambient(2.0)\n'
                 f'{indent}stop music fadeout 2.0\n'
                 f'{indent}scene black with fade_to_black_long\n'
                 f'{indent}$ hard_pause(1.0)')
@@ -1023,6 +1099,15 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
             char_var = char_var_map[char_name]
             collected.append((char_var, dialogue))
         else:
+            # 块内的音频标记（音效 / 音乐）不能跟着普通舞台提示一起被丢掉。
+            # 剧本会把 cue 写在文本框里（如 【心跳音效恢复】 就在 Extended 块的第一行），
+            # 以前会被下面那句 skip 静默吃掉 —— 心跳再也回不到常速，而且不报任何错。
+            # 交回 convert_content_line 处理，作为 __sfx__ 插进累积序列，
+            # 真正的代码在 emit 阶段按当时的缩进生成。
+            if (line.startswith('【') and line.endswith('】')
+                    and ('音效' in line or '音乐' in line)):
+                collected.append(('__sfx__', line))
+                continue
             # Stage directions - skip
             if line.startswith('【') and line.endswith('】'):
                 continue
@@ -1190,6 +1275,57 @@ def process_choice_content(content_lines, indent="            "):
             output.append(converted)
 
     return output
+
+
+## 允许环境音上提越过的标记：淡出音乐、转场、以及普通舞台指示。
+## 反过来说，遇到正文/选项/文本框边界/结局标记就停 —— 那些是段落骨架，
+## 跨过去会打乱块结构或让声音出现在错误的段落里。
+_HOIST_BLOCKERS = ('文本框', '选项', '音乐：', '展示', 'Bad End', 'Normal End',
+                   'Happy End', 'True End', '回主菜单')
+
+
+def hoist_ambient_cues(lines):
+    """把环境音铺底的 cue 上提到它所属的这一段转场之前。
+
+    为什么需要：铺底是"场所本身的声音"，玩家进这个场所时它就该在了。但剧本里
+    自然的写法是 【音乐停】→【转场：银白色沙漠】→【沙漠长风音效】，按字面顺序生成
+    出来是这样的 ——
+
+        stop music fadeout 3.0          # 非阻塞，音乐开始 3 秒淡出
+        scene bg_desert with scene_soft # ★阻塞★，转场演完才往下走（1~2 秒）
+        $ play_ambient(...)             # 到这儿才起，再 2 秒淡入
+
+    结果风声完全建立起来时音乐早没了，听感是"音乐先没，过一会儿才刮起风"，
+    而不是"风一直在，音乐从风里退出去"。关键在那个 with 是阻塞的 —— 只把
+    fadeout 调长没用。所以在转换前把 cue 提到这一段的最前面，让风先起、音乐
+    再从它上面淡出去。
+
+    只上提 ambient=True 的 cue（一次性音效必须留在原位，它们是踩点用的）。
+    """
+    ambient_keys = [k for k, cfg in SFX_CUES.items() if cfg.get('ambient')]
+    if not ambient_keys:
+        return lines
+
+    out = list(lines)
+    for i, raw in enumerate(out):
+        line = raw.strip()
+        m = re.match(r'^【(.*?音效.*?)】$', line)
+        if not m or not any(k in m.group(1) for k in ambient_keys):
+            continue
+        # 往回走，跨过空行与"可跨越"的标记，找到该插入的位置
+        j = i
+        while j > 0:
+            prev = out[j - 1].strip()
+            if not prev:
+                j -= 1
+                continue
+            pm = re.match(r'^【(.+)】$', prev)
+            if not pm or any(b in pm.group(1) for b in _HOIST_BLOCKERS):
+                break
+            j -= 1
+        if j < i:
+            out.insert(j, out.pop(i))
+    return out
 
 
 def convert_route(lines, start_line, end_line, label_name, route_num):
@@ -1690,6 +1826,8 @@ def main():
 
     with open(os.path.join(BASE_DIR, 'demo_script.txt'), 'r', encoding='utf-8') as f:
         lines = [line.rstrip('\n') for line in f.readlines()]
+
+    lines = hoist_ambient_cues(lines)
 
     if args.check_unmapped:
         report_unmapped(lines)

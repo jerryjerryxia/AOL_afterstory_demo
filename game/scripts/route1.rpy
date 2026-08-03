@@ -628,6 +628,8 @@ label route1_start:
     extend "\n试着蜷起手指，只觉得手心传来一阵稍纵即逝的触感，冰凉而虚幻。"
     extend "\n你挣扎着想要活动身体，却猛地意识到自己的横膈膜停止了张弛。"
     extend "\n保持呼吸。"
+    ## 呼吸ambience音效开始
+    $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", fadein=4.0, level=0.55)
     extend "\n空气中充斥着一股微妙的甜腻味道。"
     extend "\n在童年故乡的某个傍晚，太阳将要落山，你踌躇满志地幻想未来时，也闻到过这样的味道。"
     extend "\n它让你想起一些美好但没有意义的事情。"
@@ -649,6 +651,7 @@ label route1_start:
     centered_large_narrator "请保持呼吸。"
     ## 居中大字文本框结束
     ## 呼吸音效
+    $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "粉红色的雾气。"
     extend "\n也许无论如何都必须去向更加遥远的地方。"
@@ -685,6 +688,7 @@ label route1_start:
     extend "\n但请保持呼吸。"
     ## Extended大文本框结束
     ## 呼吸音效
+    $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ahe "哦。"
     ahe "呃..."
     ahe "啊...！"
@@ -704,6 +708,7 @@ label route1_start:
     extend "\n所以必须要保持呼吸。"
     ## Extended大文本框结束
     ## 呼吸音效
+    $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你想起她的善。"
     extend "\n你只能想起她的善。"
@@ -718,6 +723,7 @@ label route1_start:
     extend "\n保持呼吸。"
     ## Extended大文本框结束
     ## 呼吸音效
+    $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ## Extended大文本框开始 - accumulating large textbox
     ## 转场：灰屏
     scene bg_grey_video with scene_soft
@@ -745,6 +751,7 @@ label route1_start:
         extend ""
         "保持呼吸。":
             ## 呼吸音效渐强，随着文字进程逐渐加快&变响
+            $ swell_ambient(1.0, channel="ambient", swell=14.0)
             ## Extended大文本框开始 - 大文本框分句
             large_narrator "仍要坚持？那就请继续忍耐吧。"
             extend "\n灰幕的蔓延永无止境，一如疼痛的叠加永无止境。"
@@ -752,16 +759,21 @@ label route1_start:
             extend "\n继续呼吸，因为你必须活下去，在无止境的灰幕里像你不存在的爱人那样活下去。"
             ## Extended大文本框结束
             ## 电视机关机音效
+            $ play_sfx("audio/sfx/tv_off/dragon-studio-tv-shutdown-386167.mp3")
             ## 转场：黑屏
             scene bg_black_video with scene_soft
             ## Extended大文本框开始 - 大文本框分句
+            $ wait_sfx()
             large_narrator "..."
             extend "\n......"
             extend "\n........"
             ## Extended大文本框结束
+            ## 呼吸ambient音效停止
+            $ stop_ambient(channel="ambient")
         "放弃。":
             $ madness += 1
-            ## 呼吸音效停止
+            ## 呼吸ambient音效停止
+            $ stop_ambient(channel="ambient")
             ## Extended大文本框开始 - 大文本框分句
             large_narrator "主动放弃呼吸后，你反倒听见了某种远超于你存在的召唤。"
             extend "\n女人的声音，那嗓音神秘而熟悉 - 你的病终于和我一样，我羸弱的爱人。"
@@ -783,14 +795,14 @@ label route1_start:
             extend "\n........."
             ## Extended大文本框结束
 
+    ## 沙漠长风音效
+    $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg", channel="ambient")
     $ stash_music_pos()
     $ current_music_scene = None
     stop music fadeout 3.0
     ## 沙漠中的脚步声
     ## 转场：银白色沙漠
     scene bg_desert with scene_soft
-    ## 沙漠长风音效
-    $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg")
     ## 抱胸站立，抱怨表情
     wangshuang "喂，到了没啊？"
     ahe "没。"
@@ -925,11 +937,11 @@ label route1_start:
     ahe "所以为什么没有让其他被试来这里..."
     ## 背手站立，心虚笑表情
     wangshuang "哦...哈哈...这个嘛，毕竟当时搭得比较匆忙，这个梦境第一版的认知收束任务只能单线程地跑，慢得不行的同时还会很吃资源，所以救不了太多人...哈哈..."
+    ## 沙漠长风音效
+    $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg", channel="ambient")
     $ stash_music_pos()
     $ current_music_scene = None
     stop music fadeout 3.0
-    ## 沙漠长风音效
-    $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg")
     ahe "..."
     wangshuang "..."
     ahe "这就是你后悔的事情？"
@@ -965,14 +977,19 @@ label route1_start:
     ## 原本王霜的位置闪过尸首的黑影
     with fx_shock
     ahe "啊——！"
-    ## 王霜说话时播放glitchy音效
+    ## glitchy音效
+    $ play_glitch()
     ## 背手站立，默认表情上蒙了glitch
-    wangshuang "因为——欧按物——咽——"
+    wangshuang "因为欧按物昆咽——"
     ahe "阿...霜？"
     ## 王霜面部开始出现glitch
     with fx_glitch
+    ## glitchy音效
+    $ play_glitch()
     ## 抱胸站立，坏笑表情上蒙了glitch
-    wangshuang "啊啊呐唔——一握艾鈤——..."
+    wangshuang "啊啊呐唔一握艾鈤——..."
+    ## glitchy音效
+    $ play_glitch()
     ## 右手叉腰，左手食指竖起做讲解状，默认表情上蒙了glitch
     wangshuang "唵椅迩唵毋炆戊囮吔坳唔岙莪。"
     ## glitch消失
@@ -986,6 +1003,8 @@ label route1_start:
     ahe "这样..."
     ## 王霜面部开始出现glitch
     with fx_glitch
+    ## glitchy音效
+    $ play_glitch()
     ## 尸首黑影闪过
     with fx_shock
     ## 背手站立，默认表情上蒙了glitch
@@ -997,23 +1016,30 @@ label route1_start:
     wangshuang "哎，我也没说缺了头骨就不行啊。"
     wangshuang "既然你们这么想见面，那肯定得成全你嘛——你看，你的“作品”从各种意义上已经完成了。"
     ahe "什——"
+    ## 尤里娅登场
     ## 一般态默认
     youliya "你好，阿鹤。"
     ahe "诶？你——"
     youliya "嗯，我当然还活着。"
     ahe "可是...可是我..."
+    ## glitchy音效
+    $ play_glitch()
     ## 一般态面部glitch
     youliya "你豋炅宓恇蠹璱钅飰棏巠敪玸——"
     ahe "啊...等等...等一下！"
     ## 一般态默认
     youliya "嗯，又失忆了么...离我们上次分别也没过多久吧，阿鹤？"
     ahe "不是...{i}尤里娅{/i}...不对..."
+    ## glitchy音效
+    $ play_glitch()
     ## 一般态面部glitch
     youliya "喔，确实是不太对啊呃呃呃啊——。"
     ## 尤里娅消失
     ## 场景音乐参考：N2-07
     $ set_scene_music("route1_horror1")
     ahe "{i}尤里娅{/i}，{i}尤里娅{/i}？"
+    ## glitchy音效
+    $ play_glitch()
     ## 抱胸站立，疑问表情上蒙了glitch
     wangshuang "飒炟曠莩皎靸礚睫覅是否解释你的诨涤？"
     ahe "啊...你们...你们..."
@@ -1047,13 +1073,14 @@ label route1_start:
     youliya "那么——"
     ## 一般态邪恶表情2
     youliya "请见证你愚行真正的后果吧。"
+    ## 场景音乐参考：N2-14，播放完一次N2-14之后，回到N2-07
+    $ set_scene_music("route1_horror2")
+    ## 心跳音效
+    $ play_ambient("audio/sfx/heart_beat/heartbeat_60.wav", channel="ambient_pulse", fadein=0.8, level=0.6)
     ## 尤里娅异变
     ## 炸裂jump scare音效
     ## 浑身伤痕累累仿佛由尸块缝纫而成的无头尸首登场
-    ## 高速心跳音效
     ## 屏幕边缘开始随着心跳的节奏震动
-    ## 场景音乐参考：N2-14，播放完一次N2-14之后，回到N2-07
-    $ set_scene_music("route1_horror2")
     ahe "——么！！！"
     shishou "阿鹤，事到如今你又在害怕什么呢？"
     ahe "啊...啊啊啊啊...啊啊啊啊啊啊啊啊啊啊——"
@@ -1062,7 +1089,6 @@ label route1_start:
     ahe "别过来！"
     shishou "阿鹤，我们还没聊完——"
     ahe "你别过来！！！"
-    ## 沙地里跑步音效
     ## 进入一个向前跑动的sequence，可以是少量几帧透视感比较明显的画面，然后无限循环
     ## 做些古怪特效，世界有点崩解的感觉
     ahe "这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的！"
@@ -1073,6 +1099,8 @@ label route1_start:
     wangshuang "我当然在啦，她也还在——"
     shishou "哈喽~"
     ahe "别过来！你别过来！再见！"
+    ## 心跳音效渐强
+    $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
     ## 重新开始跑动sequence
     ahe "啊...保持呼吸...保持呼吸...保持呼吸...保持呼吸..."
     shishou "你好。"
@@ -1087,24 +1115,28 @@ label route1_start:
     wangshuang "你费了这么大力气把她拼凑出来，却又无法直视她了？"
     ahe "这不是我想要的..."
     ## 背手站立，疑问表情
-    wangshuang "只因为她没有头？"
+    wangshuang "只因为她身子不完整？"
     ahe "这不是我想要的！"
     ## 单手叉腰站立，得意表情
     wangshuang "那就把头埋进沙子里啊，那样你就什么都不用看了。"
     ahe "呃...啊——对不起——"
+    ## 沙漠长风音效
+    $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg", channel="ambient")
     ## 转场：图片黑屏
     scene bg_black_still with scene_soft
     $ stash_music_pos()
     $ current_music_scene = None
     stop music fadeout 3.0
-    ## 沙漠长风音效
-    $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg")
     ## Extended大文本框开始 - accumulating large textbox
+    ## 心跳音效恢复
+    $ play_ambient("audio/sfx/heart_beat/heartbeat_60.wav", channel="ambient_pulse", fadein=1.5, level=0.6)
     large_narrator "沙地冰凉而干燥，在这个无声的世界里，你艰难地呼吸。"
     extend "\n随着恐惧略微消散，你察觉到这地下似乎不像想象中那样黑暗，便试探性地睁开双眼，但立刻后悔了，因为你见到了比地面上那无头尸首更加令人绝望的恐怖——"
     extend "\n沙砾。"
     extend "\n满眼都是沙砾。但只消稍稍细看，那一颗颗的，分明就不是沙砾。"
     ## Extended大文本框结束
+    ## 心跳音效渐强
+    $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
     ## 转场：眼珠背景
     scene black with scene_soft
     ## Extended大文本框开始 - accumulating large textbox
@@ -1127,19 +1159,78 @@ label route1_start:
     extend "\n你极力缩紧喉头，拼尽全力不哇地一声吐出来，但那念头很快就被另一种思绪所覆盖了。"
     ## Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox
-    centered_large_narrator "你想死。"
+    centered_large_narrator "你想——"
     ## 居中大字文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "尸体气味的浓度达到了顶峰。"
-    extend "\n你早就清楚那气味的来源，只是还在试图移开目光。"
-    extend "\n然而逃避与走投无路总是形影相随。"
+    extend "\n你十分清楚那气味的来源，只是仍在试图移开目光，就像你一直以来所做的那样。"
+    extend "\n只是一直逃避的人终究会无路可逃。"
     extend "\n当人制造了过多的尸体，那他自己迟早也会步入其造物的行列。"
+    extend "\n一阵遥远而熟悉的冲动自心底涌上来。"
     extend "\n你想死。"
-    extend "\n你拼尽全力扼住自己的脖颈；你听见脑血管的轰鸣；视野四周开始坍缩，黑暗挤进来；你马上就要成功了。"
-    extend "\n地心引力渐强，你的身躯逐渐被沙砾吞没。人为的窒息终于在血污将你口鼻覆盖之前到来。"
-    extend "\n死亡，你此刻唯一的救赎在你面前舒展她魅惑的身躯。"
-    extend "\n黑暗，一切都坠入黑暗，你的视野，你的身躯，你无际的意识。"
+    ## Extended大文本框结束
+    ## 转场：红屏
+    scene bg_red_video with scene_soft
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "手心传来温热而粘稠的触感，你自然知道那是什么，于是开始用力甩手。"
+    extend "\n但无论你怎么使劲，那事物仍旧纹丝不动地包裹着你整个手掌。"
+    extend "\n就像一副牢靠的手套。"
+    extend "\n就像你的第二层皮肤。"
+    ## Extended大文本框结束
+    ## 闪现尤里娅破碎的脸
+    ## glitch音效
+    $ play_glitch()
+    ahe "啊——！"
+    ahe "对不起...对不起...对不起..."
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
+    extend "\n对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
+    extend "\n对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
+    extend "\n对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "口中不断重复着同样的三个音节，直到语言失去意义，只剩下干涩的空气波动无情地敲打你的耳膜。"
+    extend "\n血液骨髓脂肪溢出来。脂肪明黄。胆汁墨绿。血液暗红。"
+    extend "\n手心依旧粘稠。"
+    extend "\n痛觉麻木，你厚实的第二层皮肤将触觉尽数咽下，只是把一种绝不可饶恕的体验传进你的血管，鞭辟入里。"
+    ## Extended大文本框结束
+    ahe "别...请不要..."
+    ahe "喂！"
+    ahe "喂——不要——不要啊啊啊啊啊啊啊啊！"
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "快感。"
+    ## 居中大字文本框结束
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "你回忆起了快感。"
+    ## 居中大字文本框结束
+    ## 闪现尤里娅破碎的脸
+    ## glitch音效
+    $ play_glitch()
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "你正欲一拳轰向自己的太阳穴死而后快，可你那呼啸的拳头却只能砸在软绵绵的沙地上，连自己的脸颊都碰不到就泄尽了力气。"
+    extend "\n呕吐欲再次升翻涌起来。"
+    extend "\n你屏住呼吸，一拳拳砸向沙地，却始终徒劳无功。"
+    extend "\n把头颅从沙地中抽出也做不到，沙地像断头台的木枷般将你头颅死死扼住。"
+    extend "\n而刀板则迟迟不落下。"
+    extend "\n它在等你自己动手。"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "无力忍耐眼前非人的幻象，你死死扼住自己沙地以上的脖颈。"
+    extend "\n锁骨似乎断了，但那疼痛反倒让呕吐欲减轻了些。"
+    extend "\n脑血管轰鸣，视野四周开始坍缩，黑暗自无形中侵入进来。"
+    extend "\n地心引力渐强，你的身躯逐渐被沙砾吞没。窒息终于在眼球中冒出的血污将你口鼻覆盖之前到来了。"
+    extend "\n死亡，你此刻唯一的救赎，她在你面前舒展开魅惑的身躯。"
+    extend "\n黑暗，一切都坠入黑暗，你的视野、身躯，你无际的意识。"
     extend "\n黑暗。"
+    ## Extended大文本框结束
+    ## 转场：黑屏，但是里面盖着王霜微笑的幽灵
+    scene bg_black_video with scene_soft
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "——但你也不可能就这样一走了之。"
+    extend "\n——你早就明白这一点了。"
+    extend "\n——即使如此也要继续折磨自己？"
+    extend "\n意识消散的前一刻，你依稀听见一个温柔声音在你耳边低语。"
+    extend "\n——不如再次伸出手去，撕——"
     ## Extended大文本框结束
     $ stash_music_pos()
     $ current_music_scene = None
@@ -1147,7 +1238,9 @@ label route1_start:
     ## 转场：图片黑屏
     scene bg_black_still with scene_soft
     ## 电视机关闭音效
+    $ play_sfx("audio/sfx/tv_off/dragon-studio-tv-shutdown-386167.mp3")
     ## Extended大文本框开始 - accumulating large textbox
+    $ wait_sfx()
     large_narrator "..."
     extend "\n......"
     extend "\n........."
@@ -1158,7 +1251,7 @@ label route1_start:
     ## 居中Extended文本框结束
     ## fade out 屏幕（图像+音乐+环境音）之后，reboot 回主菜单
     $ current_music_scene = None
-    $ stop_ambient(2.0)
+    $ stop_all_ambient(2.0)
     stop music fadeout 2.0
     scene black with fade_to_black_long
     $ hard_pause(1.0)

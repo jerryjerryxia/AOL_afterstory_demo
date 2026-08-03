@@ -76,9 +76,9 @@ default choice_flags = {}
 ## 当前场景音乐 ID（由 set_scene_music 设置；after_load 用它恢复音乐）
 default current_music_scene = None
 
-## 当前环境音路径（由 play_ambient 设置；after_load 用它恢复。不存这个的话，
-## 在沙漠里存档再读档就是一片死寂——和音乐一样的问题，一样的解法）
-default current_ambient = None
+## 当前环境音：{声道: (路径, 音量档)}。由 play_ambient 维护，after_load 用它恢复。
+## 不存这个的话，在沙漠里存档再读档就是一片死寂——和音乐一样的问题，一样的解法。
+default current_ambient = {}
 
 ## 上一次 【音乐停】 时音乐播到的位置（秒）。music_config 里标了 "resume": True
 ## 的曲子从这里接着放，而不是从头开始。见 stash_music_pos / music_track_spec。
@@ -95,9 +95,10 @@ default no_click_split = False
 label after_load:
     if current_music_scene is not None:
         $ set_scene_music(current_music_scene)
-    if current_ambient is not None:
-        ## fadein=0：读档瞬间环境音就该在场，2 秒渐入会让开场几句显得突兀。
-        $ play_ambient(current_ambient, fadein=0.0)
+    ## fadein=0：读档瞬间环境音就该在场，2 秒渐入会让开场几句显得突兀。
+    python:
+        for _ch, (_path, _lv) in dict(current_ambient).items():
+            play_ambient(_path, channel=_ch, fadein=0.0, level=_lv)
     ## 如果这份存档正停在多面体场景上，要在这里重启视频 channel：主菜单现在
     ## mount 时会把 channel 停掉（sea.png 背景，视频没人看），不重启的话
     ## load 进来 Movie 没有帧源，渲染成黑屏/checker board。
@@ -193,6 +194,14 @@ init python:
         "Bubbles_10":             1.8,  # 泡泡：头出水面 / 水底上浮（原 -9.5dBFS，偏轻）→调响；安全上限约 ×3.0
         "face-down-bubble":       1.0,  # 脸入水冒泡（原 -3.0dBFS，已较响）；安全上限仅约 ×1.4
         "glass-smash-normalized": 1.0,  # 玻璃破碎（原 -15.4dBFS）；安全上限约 ×5.9
+        ## glitch：素材本身就是削顶的（峰 +7.3 dBFS），0.3 把峰拉回约 -3 dBFS。
+        ## 数字噪声的粗糙感是要的，音量失控不是。
+        "freesound_community-glitch-sounds-26212": 0.3,
+        ## 电视机关机：素材峰 +0.50 dBFS（母带就过顶了），0.85 拉回 -0.9 dBFS。
+        "dragon-studio-tv-shutdown-386167": 0.85,
+        ## 骨裂（用作"连续破裂"）：峰 -0.87 dBFS，已经贴顶，只能原样播。
+        ## 积分响度 -22.8 LUFS 偏轻，想更冲只能对素材做限幅，不能在这里推。
+        "universfield-bone-break-2-140224": 1.0,
     }
 
     def play_sfx(path):
@@ -204,40 +213,94 @@ init python:
         renpy.sound.play(path, relative_volume=SFX_GAIN.get(base, 1.0))
         _sfx_end_time[0] = time.time() + _sfx_duration(path)
 
-    ## ★环境音相对音量★——键 = audio/sfx/ 下的文件基名。同 SFX_GAIN 的用法。
+    ## ★环境音素材自身的相对音量★——键 = audio/sfx/ 下的文件基名，不列出即 1.0。
+    ## 这一档管的是"素材之间互相配平"，剧情里的强弱变化走 play_ambient 的 level。
+    ## 两层分开之后，"把某段调响"不需要动素材配平，反之亦然。
     ##
-    ## 沙漠长风现在播的是限幅重制版 desert_wind_bed.ogg：-23.0 LUFS、峰 -1.3 dBFS，
-    ## 已经在文件里配平好，所以这里是 1.0（不列出即 1.0）。
+    ## 沙漠长风播的是限幅重制版 desert_wind_bed.ogg：-23.0 LUFS、峰 -1.3 dBFS，
+    ## 已经在文件里配平好，所以是 1.0。为什么必须重制而不是在这里推增益：原素材
+    ## -30.1 LUFS 但峰值 -0.11 dBFS，波峰因数 30 dB —— 平均轻、峰值却没余量，
+    ## 纯增益一过 1.0 阵风就削顶，天花板卡死在 +2.9 dB；限幅腾出余量后净得 +7 dB。
     ##
-    ## 为什么必须重制而不是继续在这里推增益：原始素材 -30.1 LUFS 但峰值 -0.11 dBFS，
-    ## 波峰因数 30 dB（中位数才 -24.8 dBFS，只有孤立阵风摸到顶）—— 平均响度低、
-    ## 峰值却没余量，纯增益一过 1.0 阵风就削顶，天花板卡死在 +2.9 dB。限幅把那些
-    ## 尖峰按下去（最大压缩 10.3 dB，释放 800ms），腾出的余量整体抬起来，净得 +7 dB。
-    ## 顺带也让铺底不再有 30 dB 起伏 —— 垫在对白底下的环境音本来就不该忽大忽小。
-    ## 现在离 0 dBFS 还剩 1.3 dB，想再微调可以在这里给到 1.15 上下，别超过。
+    ## ★注意这里存的是每个素材的「最大档」★，剧情里的常态档由 play_ambient 的
+    ## level（0~1 的分数）往下压。为什么是这个方向而不是反过来：
+    ## level 走 renpy.music.set_volume，官方文档明确写「0.0 到 1.0」，超过 1 的行为
+    ## 没有保证（Python 层不 clamp，但值是直接丢给 C 混音层的）；而 relative_volume
+    ## 支持 >1 在本项目里是验证过的（SFX_GAIN 里 Bubbles_10 就是 1.8）。
+    ## 所以：能放大的那一层用 relative_volume，只做衰减的那一层用 level。
     AMBIENT_GAIN = {
+        ## 心跳两个变体同源同响度（-23.2 LUFS / 峰 -6.1 dBFS）。
+        ## 1.8 把峰推到 -1.0 dBFS = 急促档（level 1.0）；常速档用 level 0.6 压下来。
+        "heartbeat_60":  1.8,
+        "heartbeat_104": 1.8,
+        ## 慢呼吸 ambience：原生 -35.1 LUFS（很轻），峰 -5.45 dBFS。
+        ## 1.7 把峰推到 -0.8 dBFS —— 不削顶的上限，即渐强后的最大档。
+        ## 还要更响只能像沙漠长风那样重制。常态档用 level 0.55。
+        "freesound_community-slow-breath-relaxmp3-14704": 1.7,
     }
 
-    def play_ambient(path, fadein=2.0):
-        """环境音铺底：在 ambient 声道上循环播放（声道注册见 videos.rpy）。
+    ## glitch 一击：素材 freesound_community-glitch-sounds-26212.mp3 是 23.3 秒连续的
+    ## 削顶噪声墙，没有可辨认的"击"，整段播下去会盖住后面二十几句旁白。所以从中截了
+    ## 5 段 0.55 秒，每次触发随机挑一段 —— 同一段素材反复用不会听出是同一记。
+    ##
+    ## 起点不是乱定的：按 30ms 内的上升量找最陡的 5 个上升沿，彼此至少隔 1.5 秒，
+    ## 这样每段都以一次"攻击"开头而不是从噪声中间切进来。五段峰值 +5.3~+6.0 dBFS、
+    ## RMS 相差 2 dB 以内，所以共用一个 SFX_GAIN 就够（见上面 0.3 那条）。
+    ## 不切成 5 个文件，直接用 Ren'Py 的 <from A to B> 音频前缀 —— 不动素材、不重编码。
+    GLITCH_SFX = "audio/sfx/glitch/freesound_community-glitch-sounds-26212.mp3"
+    GLITCH_CUTS = [(0.04, 0.59), (3.81, 4.36), (6.61, 7.16), (10.83, 11.38), (15.57, 16.12)]
+    _glitch_last = [None]
+
+    def play_glitch():
+        """随机放一记 glitch。转换器在每个 【glitch音效】/【glitchy音效】 处发这一行。
+
+        排除上一次用过的那段：王霜/尤里娅 glitch 那一串有 6 个触发点挨得很近，
+        纯随机免不了连着抽中同一段，那一下就会露馅（"刚才那声一模一样"）。
+        排掉前一次之后每次都是 5 选 4，听感上就是每次都不一样。
+
+        用 renpy.random 而不是标准库 random —— 前者是回滚安全的，玩家往回翻再前进
+        不会让引擎的随机状态和存档对不上。"""
+        pool = [c for c in GLITCH_CUTS if c != _glitch_last[0]] or GLITCH_CUTS
+        cut = renpy.random.choice(pool)
+        _glitch_last[0] = cut
+        play_sfx("<from %s to %s>%s" % (cut[0], cut[1], GLITCH_SFX))
+
+    def play_ambient(path, channel="ambient", fadein=2.0, level=1.0, swell=0.0):
+        """环境音铺底：在指定声道上循环播放（声道注册见 videos.rpy）。
         与 play_sfx 的区别是「一直响」而不是「响一下」，所以不进 _sfx_end_time，
         后面的正文不会等它 —— 一段 4 分半的长风等完游戏就没法玩了。
 
-        if_changed=True：同一段环境音重复触发不重头开始。剧本在黑屏前后各标了三次
-        【沙漠长风音效】，中间不该出现接缝。
+        level = 剧情强弱档（走声道次级音量），素材配平在 AMBIENT_GAIN 里，两层不混。
+        swell = level 的渐变秒数：0 立刻到位（换曲子时用），>0 缓慢推上去。
 
-        单独响度见上面的 AMBIENT_GAIN（relative_volume）。"""
+        if_changed=True：同一段环境音重复触发不重头开始。剧本在黑屏前后标了三次
+        【沙漠长风音效】，中间不该出现接缝；呼吸那段也靠它反复标记而不断。"""
         import os as _os
         base = _os.path.splitext(_os.path.basename(path))[0]
-        store.current_ambient = path
-        renpy.music.play(path, channel="ambient", loop=True,
+        current_ambient[channel] = (path, level)
+        renpy.music.set_volume(level, delay=swell, channel=channel)
+        renpy.music.play(path, channel=channel, loop=True,
                          fadein=fadein, if_changed=True,
                          relative_volume=AMBIENT_GAIN.get(base, 1.0))
 
-    def stop_ambient(fadeout=2.0):
-        """停掉环境音。current_ambient 置 None，读档不会把它恢复回来。"""
-        store.current_ambient = None
-        renpy.music.stop(channel="ambient", fadeout=fadeout)
+    def swell_ambient(level, channel="ambient", swell=8.0):
+        """只把音量推上去，不动正在播的东西 —— 用于"同一段声音逐渐变响"。
+        【呼吸音效渐强，随着文字进程逐渐加快&变响】 走这条。"""
+        if channel in current_ambient:
+            current_ambient[channel] = (current_ambient[channel][0], level)
+        renpy.music.set_volume(level, delay=swell, channel=channel)
+
+    def stop_ambient(channel="ambient", fadeout=2.0):
+        """停掉某条环境音声道。从 current_ambient 摘掉，读档不会把它恢复回来。
+        次级音量顺手复位 —— 否则下一段铺底会继承上一段推上去的档位。"""
+        current_ambient.pop(channel, None)
+        renpy.music.stop(channel=channel, fadeout=fadeout)
+        renpy.music.set_volume(1.0, delay=0, channel=channel)
+
+    def stop_all_ambient(fadeout=2.0):
+        """所有环境音声道一起停（Demo 结尾用）。"""
+        for _ch in ("ambient", "ambient_pulse"):
+            stop_ambient(channel=_ch, fadeout=fadeout)
 
     def hard_pause(t):
         """不可点击快进的暂停（长黑场过渡用）。和 wait_sfx 一样，自动化测试里跳过 ——

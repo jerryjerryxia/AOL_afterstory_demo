@@ -143,6 +143,17 @@ image bg_grey_video = Transform(
           start_image="white", image="white"),
     matrixcolor=TintMatrix(GREY_SCREEN_TINT) * SaturationMatrix(0.0))
 
+## 红屏（★临时版★）：同粉红屏的做法。取暗红而不是警报红，两个理由 ——
+## 正文写的是"血液暗红"；而且这一段要挂着放二十几句旁白，一整屏高饱和亮红
+## 顶着看眼睛受不了。
+##
+## ↓ 调色就改这一个值。要更刺目往 #ff3b30，要更偏橙往 #e0483a。
+define RED_SCREEN_TINT = "#a81f1f"
+image bg_red_video = Transform(
+    Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
+          start_image="white", image="white"),
+    matrixcolor=TintMatrix(RED_SCREEN_TINT))
+
 ################################################################################
 ## 表情差分（全图 / 透明叠层）。转换器在 王霜【表情】 处切换：
 ##   full 场景（夏日对视 / 甜品店1-3）：scene <差分> —— 整图已含人物，默认图==bg。
