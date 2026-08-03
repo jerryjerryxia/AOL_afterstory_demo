@@ -627,17 +627,21 @@ label route1_start:
     large_narrator "没有人。周身只有一片暧昧的粉红色雾气。"
     extend "\n试着蜷起手指，只觉得手心传来一阵稍纵即逝的触感，冰凉而虚幻。"
     extend "\n你挣扎着想要活动身体，却猛地意识到自己的横膈膜停止了张弛。"
-    extend "\n保持呼吸。"
+    ## Extended大文本框结束
+    ## 居中大字文本框开始 - centered large font textbox
+    centered_large_narrator "请保持呼吸。"
+    ## 居中大字文本框结束
     ## 呼吸ambience音效开始
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", fadein=4.0, level=0.55)
-    extend "\n空气中充斥着一股微妙的甜腻味道。"
-    extend "\n在童年故乡的某个傍晚，太阳将要落山，你踌躇满志地幻想未来时，也闻到过这样的味道。"
-    extend "\n它让你想起一些美好但没有意义的事情。"
-    extend "\n无论如何也找不到，但要保持呼吸。"
-    ## Extended大文本框结束
+    "空气中充斥着一股微妙的甜腻味道。"
+    "在童年故乡的某个傍晚，太阳将要落山，你踌躇满志地幻想未来时，也闻到过这样的味道。"
+    "它让你想起一些美好但没有意义的事情。"
+    "无论如何也没法从中意义，但要保持呼吸。"
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你漂浮着。"
-    extend "\n腹中偶有痉挛，宛如方才经历了一场盛大的呕吐。"
+    extend "\n腹中偶有痉挛，就像方才经历了一场盛大的呕吐。"
+    extend "\n吐到浑身只剩下电流与心跳。"
+    extend "\n色彩与声音。"
     ## Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "原来如此，原来如此。"
@@ -648,15 +652,15 @@ label route1_start:
     ## Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "请不要脱水。"
-    centered_large_narrator "请保持呼吸。"
+    centered_large_narrator "请不要腐烂。"
     ## 居中大字文本框结束
     ## 呼吸音效
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "粉红色的雾气。"
-    extend "\n也许无论如何都必须去向更加遥远的地方。"
+    large_narrator "粉红色的雾气愈发凝重。"
+    extend "\n也许此行的目的只是：无论如何都必须去向更加遥远的地方。"
     extend "\n更加遥远，更加遥不可及，更加可望不可即。"
-    extend "\n成为一个留给后人观测的坐标，仅此而已，仅此而已。"
+    extend "\n在天空中与书籍里成为一个留给后人观测的坐标，仅此而已，仅此而已。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "凝胶柔软。"
@@ -667,25 +671,31 @@ label route1_start:
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "需要时刻监测的数据点："
-    extend "\n生命体征"
-    extend "\n死亡体征"
+    extend "\n生命体征。"
+    extend "\n死亡体征。"
     extend "\n不可有误。"
+    extend "\n脑电波无法精确验测，束手无策。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "24小时核磁共振？小意思！除非这人的骨头是铁做的。"
-    extend "\n当然，由内而外烤熟也不失为一种凄美悲壮的结局。"
-    extend "\n所以会为你继续监测的。"
-    extend "\n因为那正是你的目的，凄美悲壮地收场，然后为后人所铭记。"
-    extend "\n你的目标。"
-    extend "\n你的理想？"
-    extend "\n理想？说得好像你这年近三十的男人是一个十三岁的孩子。"
+    large_narrator "——插入记忆——"
+    extend "\n连续24小时核磁共振？小意思！除非这人的骨头是铁做的——？"
+    extend "\n当然，由内而外彻底烤熟也不失为一种凄美悲壮的结局。"
+    extend "\n所以...会继续为你监测的。"
+    extend "\n因为那正是你...目的...盛大地收...后为后人所铭记。"
+    extend "\n你的目标——"
+    extend "\n你的理想——"
+    extend "\n理想？说得好像你这年近三十的__是一个十三岁的孩子。"
+    extend "\n同时，请务必...忘记..."
+    extend "\n——弹出中——弹出中——"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "所以你会为我保持呼吸么？"
-    extend "\n为我拆出旁人的肋骨，为我洞穿无辜者的肺叶。"
+    large_narrator "——读取——读取——"
+    extend "\n所以你会为我保持呼吸么？"
+    extend "\n为我拆出旁人的肋骨，为我洞穿无辜者的肺叶？"
     extend "\n为我毫无理由地献上溢美之词？"
     extend "\n无趣。"
     extend "\n但请保持呼吸。"
+    extend "\n——读取失败——"
     ## Extended大文本框结束
     ## 呼吸音效
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
@@ -704,23 +714,24 @@ label route1_start:
     extend "\n这分明是一场长期疗程的开端，却因为视线模糊而永远定格在了肤浅的一面。"
     extend "\n杀人的也罢，懦弱的也罢，捏成一个便是了。"
     extend "\n剧毒的也罢，解毒的也罢，混成一锅就行了。"
-    extend "\n总之要合而为一，总之要并联，总之要揉碎了再捏起来，总之不彻底毁灭就无法重生。"
+    extend "\n总之要合而为一，总之要并联，总之要揉碎了再捏起来，总之即使不为了重生也要毁灭。"
     extend "\n所以必须要保持呼吸。"
     ## Extended大文本框结束
     ## 呼吸音效
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "你想起她的善。"
+    large_narrator "你想了起她的善。"
     extend "\n你只能想起她的善。"
     extend "\n在这水母勾勒的温暖牢笼里，你只被允许想起她的善。"
     extend "\n伞盖边缘在你看不到的远处有节奏地收缩舒张。每一根触手都与你相连。"
+    extend "\n触手连接肌肤的地方，火苗在跳动。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "呼吸停止的那一刻，你感到舌尖有些麻木。"
+    large_narrator "偶尔执意呼吸停止时，你便感到舌尖开始麻木。"
     extend "\n一阵苦涩液体自喉管深处涌上来。"
-    extend "\n却在抵达舌尖的瞬间便消散了。"
+    extend "\n却在抵达舌尖的瞬间消散。"
     extend "\n所以要保持呼吸道畅通。"
-    extend "\n保持呼吸。"
+    extend "\n请保持呼吸。"
     ## Extended大文本框结束
     ## 呼吸音效
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
@@ -732,15 +743,15 @@ label route1_start:
     extend "\n任何色彩倾泻其中，都只能归零的灰。"
     extend "\n灰在扩散，由点到面，最后变得像一帘浩大的幕布般徐徐展开。"
     extend "\n所以追求“还原”何罪之有？"
-    extend "\n捂嘴。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你只能眼睁睁地看着面前的灰幕展开。"
     extend "\n无能为力。"
     extend "\n当然无能为力，因为还原的灰幕也是你的愿望。"
-    extend "\n即使身处灰幕下就必须遭受你拼尽全力也难以忍受的痛苦。"
+    extend "\n即使身处灰幕下就必须遭受你拼尽全力也难以忍受的疼痛。"
     extend "\n嚎叫。歇斯底里的嚎叫。你在嚎叫中睡去又醒来。"
-    extend "\n在全身骨骼被碾碎又重组的欢欣中放声嚎叫，庆祝一个与你毫不相干的灵魂的“自由”。"
+    extend "\n你并不明白自己为何嚎叫，明明只是感到疼痛而已。"
+    extend "\n也许那源自一种强加于你的欢欣，使你由衷地庆祝一个陌生灵魂的自由。"
     ## Extended大文本框结束
     ## Extended文本框开始 - accumulating textbox
     "灰色是零。你也是。"
@@ -755,11 +766,16 @@ label route1_start:
             ## Extended大文本框开始 - 大文本框分句
             large_narrator "仍要坚持？那就请继续忍耐吧。"
             extend "\n灰幕的蔓延永无止境，一如疼痛的叠加永无止境。"
-            extend "\n更多毒液渗入血管，血液沸腾，内脏在沸腾血液的浇灌下燃烧，但你只能看见你执意选择的灰。"
+            extend "\n更多毒液渗入血管，血液沸腾，内脏在沸腾血液的浇灌下燃烧破裂，但你只能看见你执意选择的灰。"
             extend "\n继续呼吸，因为你必须活下去，在无止境的灰幕里像你不存在的爱人那样活下去。"
             ## Extended大文本框结束
             ## 电视机关机音效
             $ play_sfx("audio/sfx/tv_off/dragon-studio-tv-shutdown-386167.mp3")
+            ## 电视机关机转场（CRT 断电，与关机音效同帧触发）
+            show layer master at crt_shutdown
+            $ hard_pause(0.8)
+            scene black with None
+            show layer master
             ## 转场：黑屏
             scene bg_black_video with scene_soft
             ## Extended大文本框开始 - 大文本框分句
@@ -775,21 +791,24 @@ label route1_start:
             ## 呼吸ambient音效停止
             $ stop_ambient(channel="ambient")
             ## Extended大文本框开始 - 大文本框分句
-            large_narrator "主动放弃呼吸后，你反倒听见了某种远超于你存在的召唤。"
-            extend "\n女人的声音，那嗓音神秘而熟悉 - 你的病终于和我一样，我羸弱的爱人。"
+            large_narrator "主动放弃呼吸后，你在视野的余光中瞥见了某种远大于你存在，祂在召唤你。"
+            extend "\n耳畔传来女人的声音，那嗓音神秘而熟悉 - 你的病终究与我一样，我羸弱的爱人。"
             extend "\n你听见那声音，就像听见了复活的钟声，虽然振聋发聩，却让你义无反顾地站了起来。"
             extend "\n要去哪儿呢？"
-            extend "\n总要去些地方。即使不呼吸也罢。"
+            extend "\n总归要从粉红色雾气里走出去。"
             extend "\n治病也罢，杀人也罢。"
-            extend "\n总之要去些地方。"
+            extend "\n总要去些地方。"
             extend "\n在无际的灰幕中，你把灰色踩在脚下，开始仔细思考接下来的目的地。"
             ## Extended大文本框结束
+            ## 水底泡泡上浮音效：Bubbles_10
+            $ play_sfx("audio/sfx/bubbles/Bubbles_10.wav")
             ## 转场：黑屏
             scene bg_black_video with scene_soft
             $ stash_music_pos()
             $ current_music_scene = None
             stop music fadeout 3.0
             ## Extended大文本框开始 - 大文本框分句
+            $ wait_sfx()
             large_narrator "..."
             extend "\n......"
             extend "\n........."
@@ -1182,12 +1201,11 @@ label route1_start:
     $ play_glitch()
     ahe "啊——！"
     ahe "对不起...对不起...对不起..."
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
-    extend "\n对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
-    extend "\n对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
-    extend "\n对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
-    ## Extended大文本框结束
+    ## 文字墙演出：锁操作 / 堆满 → 抖动 → 放大（约 10.8 秒，见 transitions.rpy 的 text_wall_anim）
+    show screen text_wall(_("对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"))
+    $ hard_pause(10.8)
+    hide screen text_wall
+    ## 玻璃破碎音效
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "口中不断重复着同样的三个音节，直到语言失去意义，只剩下干涩的空气波动无情地敲打你的耳膜。"
     extend "\n血液骨髓脂肪溢出来。脂肪明黄。胆汁墨绿。血液暗红。"
@@ -1195,8 +1213,8 @@ label route1_start:
     extend "\n痛觉麻木，你厚实的第二层皮肤将触觉尽数咽下，只是把一种绝不可饶恕的体验传进你的血管，鞭辟入里。"
     ## Extended大文本框结束
     ahe "别...请不要..."
-    ahe "喂！"
-    ahe "喂——不要——不要啊啊啊啊啊啊啊啊！"
+    ahe "啊...！"
+    ahe "啊——不要——不要啊啊啊啊啊啊啊啊！"
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "快感。"
     ## 居中大字文本框结束
@@ -1214,7 +1232,10 @@ label route1_start:
     extend "\n而刀板则迟迟不落下。"
     extend "\n它在等你自己动手。"
     ## Extended大文本框结束
+    ## 骨头断裂音效
+    $ play_sfx("audio/sfx/bone_break/universfield-bone-break-2-140224.mp3")
     ## Extended大文本框开始 - accumulating large textbox
+    $ wait_sfx()
     large_narrator "无力忍耐眼前非人的幻象，你死死扼住自己沙地以上的脖颈。"
     extend "\n锁骨似乎断了，但那疼痛反倒让呕吐欲减轻了些。"
     extend "\n脑血管轰鸣，视野四周开始坍缩，黑暗自无形中侵入进来。"
@@ -1223,6 +1244,9 @@ label route1_start:
     extend "\n黑暗，一切都坠入黑暗，你的视野、身躯，你无际的意识。"
     extend "\n黑暗。"
     ## Extended大文本框结束
+    $ stash_music_pos()
+    $ current_music_scene = None
+    stop music fadeout 3.0
     ## 转场：黑屏，但是里面盖着王霜微笑的幽灵
     scene bg_black_video with scene_soft
     ## Extended大文本框开始 - accumulating large textbox
@@ -1232,13 +1256,15 @@ label route1_start:
     extend "\n意识消散的前一刻，你依稀听见一个温柔声音在你耳边低语。"
     extend "\n——不如再次伸出手去，撕——"
     ## Extended大文本框结束
-    $ stash_music_pos()
-    $ current_music_scene = None
-    stop music fadeout 3.0
+    ## 电视机关机音效
+    $ play_sfx("audio/sfx/tv_off/dragon-studio-tv-shutdown-386167.mp3")
+    ## 电视机关机转场（CRT 断电，与关机音效同帧触发）
+    show layer master at crt_shutdown
+    $ hard_pause(0.8)
+    scene black with None
+    show layer master
     ## 转场：图片黑屏
     scene bg_black_still with scene_soft
-    ## 电视机关闭音效
-    $ play_sfx("audio/sfx/tv_off/dragon-studio-tv-shutdown-386167.mp3")
     ## Extended大文本框开始 - accumulating large textbox
     $ wait_sfx()
     large_narrator "..."

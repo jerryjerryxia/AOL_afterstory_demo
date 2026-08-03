@@ -92,7 +92,7 @@ label route1_prologue:
     ## 居中大字文本框结束
     ## 转场：黑屏
     scene bg_black_video with scene_soft
-    ## 头出水面音效：Bubbles_10
+    ## 水底泡泡上浮音效：Bubbles_10
     $ play_sfx("audio/sfx/bubbles/Bubbles_10.wav")
     ## Extended大文本框开始 - accumulating large textbox
     $ wait_sfx()

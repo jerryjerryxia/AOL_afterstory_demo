@@ -1882,3 +1882,104 @@ style route_subtitle_text:
     color "#cccccc"
     xalign 0.5
     outlines [(2, "#000000", 0, 0)]
+
+################################################################################
+## 文字墙 - Text Wall
+## 「对不起」那面墙：锁操作，文字一行行把屏幕堆满，然后抖动，然后逐渐放大压过来。
+## 由 convert_script.py 在 【大文本框开始 - …锁操作…】 处发 show screen + hard_pause。
+################################################################################
+
+## ★每行字数必须自己算，不能靠自动换行★
+## 逐字颤动会把每个字换成内联 displayable，而 Ren'Py 的断行是在**文本段**上找断点的 ——
+## 一串首尾相连的 displayable 之间没有任何断行机会，整段会排成一行捅出屏幕。
+## （所以之前只有碎裂阶段看得见整面墙：那一段用的是普通文本，照常换行。）
+## 显式插 \n 还有第二个好处：完好阶段（逐字）和碎裂阶段（整段）的排版逐字一致，
+## 两者对切时不会错位。
+##
+## 36 是量出来的，不是估的：body.ttf 的汉字步进正好 1.0 em、行高 1.3333 em，
+## 所以 1760px 宽 ÷ 48px 字号 = 36 字/行；528 字 → 15 行 × (48×1.3333+4) ≈ 1020px，
+## 占满 1080 高的 94%。改字号或改正文长度都要重算这个数。
+define WALL_CHARS_PER_LINE = 36
+
+init python:
+    def wall_wrap(s):
+        """按固定字数硬换行。墙的正文全是等宽汉字，所以按字数切就等于按宽度切。"""
+        n = WALL_CHARS_PER_LINE
+        return "\n".join(s[i:i + n] for i in range(0, len(s), n))
+
+    def _wall_shake_tag(tag, argument, contents):
+        ## wall_tremble / wall_char_phase 在函数体里取，不在 init 时取：本文件是
+        ## init offset -1，而它们定义在 scripts/transitions.rpy（offset 0），
+        ## init 阶段这里还看不见。函数体是渲染时才执行的，那时早就定义好了。
+        new_list = []
+        n = 0
+        for kind, text in contents:
+            if kind == renpy.TEXT_TEXT:
+                for ch in text:
+                    ## 换行符要还原成段落 token。若也包成 displayable，
+                    ## 它就只是"一个内容为换行的方块"，不会真的换行。
+                    if ch == "\n":
+                        new_list.append((renpy.TEXT_PARAGRAPH, ""))
+                        continue
+                    new_list.append((
+                        renpy.TEXT_DISPLAYABLE,
+                        At(Text(ch, style="wall_tremble_char"),
+                           wall_tremble(wall_char_phase(n))),
+                    ))
+                    n += 1
+            else:
+                new_list.append((kind, text))
+        return new_list
+
+    config.custom_text_tags["wallshake"] = _wall_shake_tag
+
+
+screen text_wall(what):
+    ## ★千万别加 modal True★
+    ## renpy.pause 的 modal 参数默认为 True，语义是"有模态屏幕在显示时，定时 pause
+    ## 不会到期"。所以 modal 屏 + hard_pause 组合 = 计时器永不触发、又因为 hard=True
+    ## 点击也中断不了 —— 整个游戏死锁在这里。锁输入本来就由 hard_pause 负责，
+    ## modal 是多余的，而且是致命的。
+    zorder 150
+
+    ## 黑底：碎裂时褪去，露出下面的红屏
+    add Solid("#000000") at wall_backdrop
+
+    ## 两层外框，各管一件事（为什么必须分层见 transitions.rpy 的注释）：
+    ##   text_wall_anim   放大（align 居中，所以是从中心压过来）
+    ##   text_wall_reveal crop 自上而下揭开（crop 会改尺寸，不能和 align 同层）
+    fixed xysize (1920, 1080) at text_wall_anim:
+        fixed xysize (1920, 1080) at text_wall_reveal:
+            ## ★只能有一份文本★
+            ## 逐字颤动会把每个字变成一个独立的内联 displayable，528 字就是 528 个
+            ## 每帧都在动的显示物 —— 这已经是这套渲染路径能扛的上限。试过复制成两份
+            ## 做"对半分开"（1056 个），正片里直接卡死到没法看。
+            ## 任何"把墙拆成 N 块各自动"的想法都会撞上同一堵墙，别再试。
+            text ("{wallshake}" + wall_wrap(what) + "{/wallshake}") style "text_wall_text"
+
+    ## 白闪盖在最上层
+    add Solid("#ffffff") at wall_flash
+
+style text_wall_text:
+    font gui.text_font
+    ## ★字号决定"刚好堆满一屏"，和 WALL_CHARS_PER_LINE 是一组，改一个必须改另一个★
+    ## body.ttf 实测：汉字步进 1.0 em、行高 1.3333 em（不是估的，量的字体度量表）。
+    ##   每行字数 = 1760 ÷ 48 = 36
+    ##   行数     = 528 ÷ 36 = 15
+    ##   总高     = 15 × (48×1.3333 + 4) ≈ 1020px，占满 1080 的 94%
+    ## 正文长度变了就要重算，否则要么填不满、要么溢出屏幕被 crop 切掉。
+    size 48
+    color "#c8c0bc"
+    line_spacing 4
+    xsize 1760
+    xalign 0.5
+    yalign 0.5
+    outlines [(2, "#000000", 0, 0)]
+
+## 逐字颤动时每个字是独立的 Text，字体/字号/颜色必须和上面逐字对齐，
+## 否则完好阶段（逐字）和碎裂阶段（整段）会长得不一样。
+style wall_tremble_char is default:
+    font gui.text_font
+    size 48
+    color "#c8c0bc"
+    outlines [(2, "#000000", 0, 0)]

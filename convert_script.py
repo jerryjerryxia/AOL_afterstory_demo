@@ -97,8 +97,10 @@ SFX_CUES = {
     # ---- 一次性 ----
     # 电视机关机 / 关闭：剧本两种写法都有，'电视机关' 一并覆盖。
     '电视机关': {'file': 'dragon-studio-tv-shutdown-386167'},
-    # 连续破裂（眼珠一颗颗炸开）：暂不接。现有的 bone_break 是骨裂声，
-    # 未必是这里要的东西，等素材定下来再加一条。当前 cue 退化成纯注释（无声）。
+    # 骨头断裂（"锁骨似乎断了"）：bone_break 用在这里名副其实。
+    '骨头断裂': {'file': 'universfield-bone-break-2-140224'},
+    # 连续破裂（眼珠一颗颗炸开）：暂不接。bone_break 是骨裂声，未必是这里要的东西，
+    # 等素材定下来再加一条。当前 cue 退化成纯注释（无声）。
 
     # glitch（★临时★）：素材是 23.3 秒连续的削顶噪声墙，不是一记 stinger，
     # 整段播下去会盖住后面二十几句旁白。改由运行时函数从中随机挑一段 0.55 秒的
@@ -205,6 +207,16 @@ SPECIAL_FX = [
 
 # 表情切换过渡（短溶解；改这里改全局表情切换速度）。
 EXPR_TRANSITION = "Dissolve(0.2)"
+
+# 电视机关机（CRT 断电）动画总时长，秒。必须与 transitions.rpy 里 crt_shutdown 的
+# 时间轴总和一致 —— 短了会在光点没灭时就切走，长了会在黑屏上干等。
+CRT_SHUTDOWN_SECONDS = 0.8
+
+# 文字墙演出总时长，秒。必须与 transitions.rpy 里那组 transform 的时间轴一致：
+# 4s 堆满 → 紧接着 6s 放大到 3.4 倍（铺满与开始变大之间不留空档）→ 0.55s 整面墙
+# 从正中对半分开推出画面，同时白闪 + 黑底褪去露出红屏。合计 10.55，取 10.8 留余量。
+# （逐字四散坠落试过两版都没做成，原因写在 transitions.rpy 的 WALL_SHATTER_AT 注释里。）
+TEXT_WALL_SECONDS = 10.8
 
 # 指定场景转场的特殊过渡（覆盖默认 scene_soft）。场景名 -> transitions.rpy 里的过渡名。
 SCENE_TRANSITIONS = {
@@ -891,6 +903,23 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         _emit_scene(output_lines, indent, scene_name, bg_image, transition)
         return '\n'.join(output_lines)
 
+    # 【电视机关机转场】-> CRT 断电：画面纵向塌成亮线、横向收成光点、熄灭。
+    # 变换作用在整个 master 图层上，所以塌的是画面本身而不是盖一层遮罩。
+    #
+    # ★与音效严格同步★：剧本把 【电视机关机音效】 写在这一行前面，两条语句之间
+    # 没有任何阻塞，所以在同一帧发出 —— 音画起点对齐到毫秒级。之后的 0.80s 时间轴
+    # 是照着音效波形逐段对的（见 transitions.rpy 的 crt_shutdown 注释）。
+    # CRT_SHUTDOWN_SECONDS 必须和那条 transform 的总时长一致，改一个就要改另一个。
+    #
+    # 结尾的 scene black 是必须的：动画结束时图层已经 alpha 0（看不见），此时把内容
+    # 换成纯黑，再复位图层变换 —— 否则一复位就会把塌陷前的旧画面整张闪回来一帧。
+    if line.strip() == '【电视机关机转场】':
+        return (f'{indent}## 电视机关机转场（CRT 断电，与关机音效同帧触发）\n'
+                f'{indent}show layer master at crt_shutdown\n'
+                f'{indent}$ hard_pause({CRT_SHUTDOWN_SECONDS})\n'
+                f'{indent}scene black with None\n'
+                f'{indent}show layer master')
+
     # Bad End markers - unlock ending and return to main menu (MUST be before general stage direction check)
     bad_end_match = re.match(r'^【(Bad End \d+[：:].*)】$', line)
     if bad_end_match:
@@ -1412,6 +1441,29 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended文本框结束', use_large=False, centered=centered_box)
             output.extend(accumulated)
             output.append(f"    ## {label}结束")
+            continue
+
+        # 文字墙：【大文本框开始 - 这里锁操作，…堆满…抖动…放大…】
+        # 这一段不是普通文本框 —— 它是一段固定时长的演出（锁操作，文字一行行堆满
+        # 屏幕，然后抖动，然后一边抖一边压过来），走专门的 text_wall 屏幕。
+        # 必须排在下面普通大文本框分支之前：它同样含 '大文本框开始'。
+        if '大文本框开始' in line and '锁操作' in line:
+            wall = []
+            while i < end_line and i < len(lines):
+                nxt = lines[i].strip()
+                i += 1
+                if '大文本框结束' in nxt and 'Extended' not in nxt:
+                    break
+                if not nxt or (nxt.startswith('【') and nxt.endswith('】')):
+                    continue
+                wall.append(nxt)
+            if wall:
+                body = escape_quotes('\\n'.join(wall))
+                output.append("    ## 文字墙演出：锁操作 / 堆满 → 抖动 → 放大"
+                              f"（约 {TEXT_WALL_SECONDS} 秒，见 transitions.rpy 的 text_wall_anim）")
+                output.append(f'    show screen text_wall(_("{body}"))')
+                output.append(f"    $ hard_pause({TEXT_WALL_SECONDS})")
+                output.append("    hide screen text_wall")
             continue
 
         # Check for large textbox markers (non-combined, single line mode)
