@@ -1,6 +1,7 @@
 {
   "build_update": false,
   "packages": [
+    "mac",
     "pc"
   ],
   "add_from": true,
