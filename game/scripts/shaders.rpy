@@ -257,8 +257,8 @@ transform screen_ripple(t0=0.0):
     linear (RIPPLE_DURATION * (1.0 - t0)) u_ripple_t 1.0
 
 ################################################################################
-## 按钮悬停特效 —— 鼠标停在任何按钮上时，**这颗按钮自己的矩形里** glitch 一下，
-## 同时按钮四周浮出一圈会荡的水框。
+## 按钮悬停特效 —— 鼠标停在任何按钮上时，**这颗按钮自己的矩形里** glitch 一下。
+## （按钮四周那圈会荡的水框已关闭但代码保留，见下面 HOVER_WAVE 的注释。）
 ################################################################################
 ## 挂在整个 screens 图层上（config.layer_transforms，见本节末尾），所以它扭的是
 ## **界面本身**（按钮上的字），不是在上面盖一个画好的特效图。
@@ -295,14 +295,18 @@ transform screen_ripple(t0=0.0):
 ##     只有整数倍频的 sin 在那里才接得上，否则框上会有一道明显的接缝。
 ##   * 两列不同频率、不同方向的波叠加，看起来才像水面而不像跑马灯。
 ## glitch 仍然作用在字上（撕裂/马赛克/通道错位都是采样位移），那是要的"坏掉"感。
-define HOVER_WAVE   = 0.85      ## 画框整体不透明度（0 = 不画框）
+## ★水框当前关闭★（HOVER_WAVE = 0.0）—— 试过圆盘水波、矩形内同心环、四周波动
+## 画框三版，都不好看：按钮太小，任何水的形态放进去都只是"多了一圈装饰"。
+## 悬停特效现在只留 glitch。代码整套留着（下面那段 SDF 画框是完好的），
+## 想再试就把这个值调回 0.4 上下，其余参数不用动。
+define HOVER_WAVE   = 0.0       ## 画框整体不透明度（0 = 不画框）
 define HOVER_FRAME_PAD = 0.005  ## 框离按钮矩形多远（uv）≈ 5px
-define HOVER_FRAME_W = 0.0016   ## 线宽（uv）≈ 1.7px。太粗就变成"选中底框"了
-define HOVER_WOB    = 0.0038    ## 荡幅：框离按钮的距离起伏多少（uv）≈ 4px
+define HOVER_FRAME_W = 0.0009   ## 线宽（uv）≈ 1px。太粗就变成"选中底框"了
+define HOVER_WOB    = 0.0026    ## 荡幅：框离按钮的距离起伏多少（uv）≈ 3px
 define HOVER_BUMPS  = 8.0       ## 主波：绕框一周几个起伏。★必须是整数★
 define HOVER_BUMPS2 = 13.0      ## 副波：另一个整数，与主波互质才不同步
 define HOVER_SPEED  = 3.2       ## 波沿框跑的速度
-define HOVER_GLOW   = 0.005     ## 线外侧的柔光衰减距离（uv）；0.0 = 硬线不发光
+define HOVER_GLOW   = 0.0030    ## 线外侧的柔光衰减距离（uv）；0.0 = 硬线不发光
 define HOVER_TINT   = (0.62, 0.85, 1.0)   ## 线的颜色（偏冷的水光）
 define HOVER_EDGE   = 0.0015    ## glitch 矩形边缘羽化（uv）≈ 2px，为了不出锯齿
 define HOVER_ASPECT = 1.7778    ## 16:9。框的圆角与波长要匀，x 必须按宽高比换算
@@ -473,8 +477,8 @@ init python:
             // 线本体 + 外侧柔光；亮度也跟着波走，波峰处更亮，像水面反光。
             float dd = abs(d - wob);
             float line = 1.0 - smoothstep(0.0, u_hover_frame_w, dd);
-            float glow = exp(-dd / max(u_hover_glow, 0.0001)) * 0.45;
-            float shine = 0.72 + 0.28 * sin(th * u_hover_bumps - u_time * u_hover_speed);
+            float glow = exp(-dd / max(u_hover_glow, 0.0001)) * 0.30;
+            float shine = 0.55 + 0.45 * sin(th * u_hover_bumps - u_time * u_hover_speed);
             float g = min(line + glow, 1.0) * shine * u_hover_wave * u_hover_amount;
 
             // source-over 一层自带 alpha 的水光：空白处也画得出来，字不会被推动。
