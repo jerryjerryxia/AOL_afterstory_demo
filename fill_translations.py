@@ -494,7 +494,7 @@ def main():
         '设置': 'Settings',
         # Main menu
         '开始游戏': 'Start',
-        '读取存档': 'Load Game',
+        '读取数据': 'Load Game',
         '删除存档': 'Delete Saves',
         '清除进度': 'Clear Progress',
         '音乐鉴赏': 'Music Room',

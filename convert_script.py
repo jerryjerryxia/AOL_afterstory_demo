@@ -125,10 +125,10 @@ SCENE_BG_MAP = {
     # 白屏 / 黑屏：循环视频背景（bg/white_screen.webm、black_screen.webm）。
     '白屏': 'bg_white_video',
     '黑屏': 'bg_black_video',
-    # 粉红屏 / 灰屏：临时版 —— 白屏视频蒙滤镜（见 placeholder.rpy 的 bg_pink_video /
-    # bg_grey_video）。专门素材做好后把 placeholder.rpy 那两条换掉即可，这里不用动。
+    # 粉红屏：临时版 —— 白屏视频蒙滤镜（见 placeholder.rpy 的 bg_pink_video）。
+    # 专门素材做好后把 placeholder.rpy 那条换掉即可，这里不用动。
+    # （灰屏不在这里 —— 它不换背景，是粉红屏就地褪过去的，见 IN_PLACE_SCENES。）
     '粉红屏': 'bg_pink_video',
-    '灰屏': 'bg_grey_video',
     '红屏': 'bg_red_video',
     # 「黑屏，但是里面盖着王霜微笑的幽灵」：幽灵叠层的素材还没有，先按普通视频黑屏走。
     # 不让它掉进默认的纯黑 Solid —— 前后左右全是视频黑屏，一格死黑插在中间会跳。
@@ -152,6 +152,16 @@ SCENE_BG_MAP = {
     '甜品店对视6.51': 'bg_dessertgaze6_51',
     '甜品店对视7': 'bg_dessertgaze7',
     '甜品店对视8': 'bg_dessertgaze8',
+}
+
+# 就地转场：不换背景，只在当前画面上启动一段效果。场景名 -> 要发的那一行。
+# 剧本里的 【转场：X】 在这里表示"变化开始"，不是"立刻变完" —— 发出去的是一个
+# 非阻塞的扳机，玩家照常点字推进，画面在背后自己走完。
+#
+# 灰屏：粉红屏用 10 秒缓慢褪成灰（ATL 在 placeholder.rpy 的 bg_pink_video 上，
+# 时长/曲线都在那里调）。之所以不是 scene 换图，理由写在那条 image 上面。
+IN_PLACE_SCENES = {
+    '灰屏': '$ pink_to_grey_started = True',
 }
 
 # Scenes that should NOT emit the default fade-through-black transition.
@@ -200,8 +210,10 @@ PROLOGUE_ENTRY_TRANSITION = 'ripple_reveal'
 # the comment, for genuine *visual* dramatic beats only. Audio-only cues
 # (containing 音效) are skipped. Transitions are defined in
 # game/scripts/transitions.rpy.
+# glitch 发的是 glitch_fx()（函数调用，不是常量）—— 每次随机挑一个视觉变体，
+# 见 transitions.rpy。音效那条路径不经过这里：play_glitch() 自己会配一记画面故障。
 SPECIAL_FX = [
-    ('glitch', 'fx_glitch'),
+    ('glitch', 'glitch_fx()'),
     ('黑影', 'fx_shock'),
 ]
 
@@ -605,6 +617,12 @@ def _emit_scene(out, indent, scene_name, bg_image, transition):
     """发出 scene 行，并更新当前表情场景。overlay 表情场景额外把透明立绘默认
     表情叠上去（scene <bg> + show <default> + with，三者同一个过渡一起淡入）。"""
     global _CURRENT_EXPR_SCENE
+    # 就地转场：不发 scene，只发一行扳机（见 IN_PLACE_SCENES）。画面上还是同一个
+    # displayable，转场由它自己的 ATL 在后台走完，不阻塞、不吃点击。
+    if scene_name in IN_PLACE_SCENES:
+        out.append(f'{indent}{IN_PLACE_SCENES[scene_name]}')
+        _CURRENT_EXPR_SCENE = scene_name
+        return
     # 长黑场 + 禁止点击快进：黑色叠层渐入 → 停留 → 换场后渐出，全程 hard pause。
     if scene_name in SCENE_HARD_FADE:
         fo, hold, fi = SCENE_HARD_FADE[scene_name]
@@ -1832,7 +1850,7 @@ def find_route_boundaries(lines):
 
 
 def find_unmapped_scenes(lines):
-    """Return sorted list of 转场 scene names not in SCENE_BG_MAP.
+    """Return sorted list of 转场 scene names not in SCENE_BG_MAP / IN_PLACE_SCENES.
     These currently fall back to a black background — usually a signal that
     a new marker was added to the raw script but the image registration in
     placeholder.rpy / SCENE_BG_MAP is missing.
@@ -1851,7 +1869,7 @@ def find_unmapped_scenes(lines):
         scene_name = content[:period_match.start()].strip() if period_match else content
         if scene_name:
             seen.add(scene_name)
-    return sorted(seen - set(SCENE_BG_MAP))
+    return sorted(seen - set(SCENE_BG_MAP) - set(IN_PLACE_SCENES))
 
 
 def report_unmapped(lines, prefix=""):

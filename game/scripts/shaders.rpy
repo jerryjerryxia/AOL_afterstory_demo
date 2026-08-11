@@ -256,6 +256,264 @@ transform screen_ripple(t0=0.0):
     u_ripple_t t0
     linear (RIPPLE_DURATION * (1.0 - t0)) u_ripple_t 1.0
 
+################################################################################
+## 按钮悬停特效 —— 鼠标停在任何按钮上时，**这颗按钮自己的矩形里** glitch 一下，
+## 同时按钮四周浮出一圈会荡的水框。
+################################################################################
+## 挂在整个 screens 图层上（config.layer_transforms，见本节末尾），所以它扭的是
+## **界面本身**（按钮上的字），不是在上面盖一个画好的特效图。
+##
+## 作用范围 = renpy.focus_coordinates() 给的那个焦点矩形，一个像素都不外溢：
+## 特效讲的是"这颗按钮的信号坏了"，不是"光标周围有个特效球"。所以形状必然是
+## 矩形（按钮本来就是矩形），也不需要知道光标在按钮里的哪个点 —— 矩形定一切。
+## 撕裂会把矩形外的像素横着拽进矩形内，那是 datamosh 该有的样子，仍然不出框。
+##
+## 为什么是 screens 层而不是连 master 一起：
+##   * 菜单/选项/快捷菜单全在 screens 层，"所有菜单选项"这个需求正好等于这一层；
+##   * master 层上已经挂着别的整层特效（camera screen_ripple、crt_shutdown），
+##     再叠一层只会互相打架，而且要多跑一遍全屏 mesh。
+##
+## 为什么用轮询而不是按钮的 hovered/unhovered：全游戏几十个 textbutton 都要挂，
+## 而且 hovered 给不出按钮的矩形。focus_coordinates() 一次给全，再问一次指针坐标
+## 就能区分"鼠标悬停"和"键盘选中"（键盘选中不该起特效）。
+##
+## ★空闲时不要每帧回调★ 回调返回 0 = 每帧强制重绘整屏。没悬停时按 0.05 轮询
+## （20Hz，够快到察觉不出延迟），悬停期间才返回 0 走满帧。
+##
+## ★水不扭字，水是按钮四周那一圈会荡的框★
+## screens 层上，按钮矩形里除了那几个字**什么都没有**（按钮 background None）——
+## 任何"扭曲"能扭的只有字本身，水波再小也在推着字游，字就读不清。所以水这一半
+## 完全不碰像素，改成 shader 自己**画**出来的一圈线：沿按钮外沿一周的矩形描边，
+## 描边到按钮的距离被两列正弦调制着上下起伏，波沿周长跑 —— 看起来就是这颗按钮
+## 被水面圈住、水面在荡。字一个像素都没被推动。
+##
+## 实现要点：
+##   * 用矩形 SDF（signed distance field）而不是画四条边：一个 d 就包含"离边框
+##     多远"，加个 wob 位移就是"边框在荡"，四个角自动是连续的圆角，不用拼接。
+##   * 波的相位取**归一化空间里的极角** atan(p.y/hs.y, p.x/hs.x)：这样长边短边
+##     上的波长看起来差不多。★bump 数必须取整数★ —— θ 在左边中点绕回 ±π，
+##     只有整数倍频的 sin 在那里才接得上，否则框上会有一道明显的接缝。
+##   * 两列不同频率、不同方向的波叠加，看起来才像水面而不像跑马灯。
+## glitch 仍然作用在字上（撕裂/马赛克/通道错位都是采样位移），那是要的"坏掉"感。
+define HOVER_WAVE   = 0.85      ## 画框整体不透明度（0 = 不画框）
+define HOVER_FRAME_PAD = 0.005  ## 框离按钮矩形多远（uv）≈ 5px
+define HOVER_FRAME_W = 0.0016   ## 线宽（uv）≈ 1.7px。太粗就变成"选中底框"了
+define HOVER_WOB    = 0.0038    ## 荡幅：框离按钮的距离起伏多少（uv）≈ 4px
+define HOVER_BUMPS  = 8.0       ## 主波：绕框一周几个起伏。★必须是整数★
+define HOVER_BUMPS2 = 13.0      ## 副波：另一个整数，与主波互质才不同步
+define HOVER_SPEED  = 3.2       ## 波沿框跑的速度
+define HOVER_GLOW   = 0.005     ## 线外侧的柔光衰减距离（uv）；0.0 = 硬线不发光
+define HOVER_TINT   = (0.62, 0.85, 1.0)   ## 线的颜色（偏冷的水光）
+define HOVER_EDGE   = 0.0015    ## glitch 矩形边缘羽化（uv）≈ 2px，为了不出锯齿
+define HOVER_ASPECT = 1.7778    ## 16:9。框的圆角与波长要匀，x 必须按宽高比换算
+define HOVER_FADE   = 0.12      ## 淡入/淡出秒数（进出按钮不能"啪"地开关）
+
+## glitch 的几个随机变体。每次**新的一次悬停**（换按钮也算）随机换一个，
+## 整体感觉一致（都是"这块界面信号坏了"），只是坏法不同。
+## 不写成 shader 里的 if 分支：四种坏法本来就是同一套数学的不同权重，
+## 让 Python 填不同的 uniform 就行 —— 加一个变体 = 加一行表，shader 不用动。
+##   tear  条带撕裂的最大横移量（uv）    bands 横向条带密度（整屏高分多少条）
+##   split RGB 三通道错位量              block 方块马赛克中招比例（0 = 不马赛克）
+##   cells 马赛克格子密度（整屏高分多少格，越大格子越小）
+define HOVER_GLITCH_MODES = [
+    ## 撕裂：横向条带整条错位，最"录像带"的一种
+    {"tear": 0.018, "bands": 220.0, "split": 0.0012, "block": 0.00, "cells": 90.0},
+    ## 块损：细密小方块马赛克，字被啃掉一块块
+    {"tear": 0.004, "bands": 160.0, "split": 0.0010, "block": 0.22, "cells": 150.0},
+    ## 错位：三通道分家为主，位移很小但色边很凶
+    {"tear": 0.006, "bands": 120.0, "split": 0.0024, "block": 0.00, "cells": 90.0},
+    ## 细纹：极细的高频条带抖动，像信号里混了噪声
+    {"tear": 0.010, "bands": 460.0, "split": 0.0016, "block": 0.12, "cells": 190.0},
+]
+
+init python:
+    ## 纯 UI 装饰用的随机源。**不用 renpy.random** —— 那个的状态进存档、参与
+    ## 回滚，在渲染回调里摇它会污染剧情用的随机序列。
+    import random as _ui_random
+
+    ## 透镜状态：只在渲染回调里读写，不进存档、不参与 rollback。
+    ## 这个 dict 是唯一的事实来源，每帧整套推给 trans —— ★不能只在"变了"的时候推★：
+    ## 层 transform 每次交互重建时会退回 ATL 里写的静态初值（u_hover_rect 退成
+    ## 全 0 = 遮罩恒为 0 = 特效整个消失），而缓存里的矩形没变、就再也不会补写。
+    ## 症状是"悬停时好时坏"，而且只有在某次交互之后才犯 —— 极难查，别再改回去。
+    _hover_lens = {"amount": 0.0, "st": 0.0, "rect": None,
+                   "uv": (0.0, 0.0, 0.0, 0.0), "seed": 0.0,
+                   "mode": HOVER_GLITCH_MODES[0]}
+
+    def _hover_lens_tick(trans, st, at):
+        x, y = renpy.get_mouse_pos()
+        fx, fy, fw, fh = renpy.focus_coordinates()
+        ## 焦点矩形存在**且指针确实在里面** —— 键盘选中的按钮不该自己坏给你看。
+        on = (fx is not None
+              and fx <= x < fx + fw
+              and fy <= y < fy + fh)
+
+        ## dt 用 st 差分。screen 重启时 ATL 会被重建、st 归零，此时 dt<0，
+        ## 这一帧不推进（下一帧就正常了）；掉帧太久也夹住，免得一步跳完。
+        dt = st - _hover_lens["st"]
+        _hover_lens["st"] = st
+        if dt < 0.0 or dt > 0.25:
+            dt = 0.0
+
+        amount = _hover_lens["amount"]
+        step = dt / HOVER_FADE
+        amount = min(amount + step, 1.0) if on else max(amount - step, 0.0)
+        _hover_lens["amount"] = amount
+
+        rect = (fx, fy, fw, fh) if on else None
+        if on and rect != _hover_lens["rect"]:
+            ## 换了按钮（或刚开始悬停）：换矩形、换种子、换一个 glitch 变体。
+            ## 排除上一次那个，理由同 glitch_fx —— 连着抽中同一个就看不出是随机的。
+            w = float(config.screen_width)
+            h = float(config.screen_height)
+            _hover_lens["uv"] = (fx / w, fy / h, (fx + fw) / w, (fy + fh) / h)
+            ## 种子由按钮矩形算出来：每颗按钮的花纹互不相同，且同一颗每次都一样。
+            _hover_lens["seed"] = (fx * 13.7 + fy * 7.1) % 100.0
+            pool = [m for m in HOVER_GLITCH_MODES
+                    if m is not _hover_lens["mode"]] or HOVER_GLITCH_MODES
+            _hover_lens["mode"] = _ui_random.choice(pool)
+        ## 淡出期间 uv/seed/mode 都保持不变 —— 特效留在刚离开的那颗按钮上淡掉。
+        _hover_lens["rect"] = rect
+
+        mode = _hover_lens["mode"]
+        trans.u_hover_rect = _hover_lens["uv"]
+        trans.u_hover_seed = _hover_lens["seed"]
+        trans.u_hover_tear = mode["tear"]
+        trans.u_hover_bands = mode["bands"]
+        trans.u_hover_split = mode["split"]
+        trans.u_hover_block = mode["block"]
+        trans.u_hover_cells = mode["cells"]
+        trans.u_hover_amount = amount
+
+        return 0 if (on or amount > 0.0) else 0.05
+
+    renpy.register_shader("game.hover_lens",
+        variables="""
+            uniform float u_time;
+            uniform vec4 u_hover_rect;
+            uniform float u_hover_amount;
+            uniform float u_hover_wave;
+            uniform float u_hover_frame_pad;
+            uniform float u_hover_frame_w;
+            uniform float u_hover_wob;
+            uniform float u_hover_bumps;
+            uniform float u_hover_bumps2;
+            uniform float u_hover_speed;
+            uniform float u_hover_glow;
+            uniform vec3 u_hover_tint;
+            uniform float u_hover_bands;
+            uniform float u_hover_tear;
+            uniform float u_hover_split;
+            uniform float u_hover_block;
+            uniform float u_hover_cells;
+            uniform float u_hover_edge;
+            uniform float u_hover_aspect;
+            uniform float u_hover_seed;
+        """,
+        fragment_300="""
+            vec2 uv = v_tex_coord.xy;
+
+            // ---- 矩形遮罩：只有按钮自己那一块会坏 ----
+            // 四条边各羽化 u_hover_edge（≈2px）纯粹是为了不出锯齿，形状仍是矩形。
+            // 乘 u_hover_amount 把淡入淡出也吃进来 —— amount=0 时下面所有位移
+            // 都恰好是 0、亮环强度也是 0，画面与不挂这个 shader 逐像素相同。
+            float e = u_hover_edge;
+            float mask = smoothstep(u_hover_rect.x - e, u_hover_rect.x + e, uv.x)
+                       * (1.0 - smoothstep(u_hover_rect.z - e, u_hover_rect.z + e, uv.x))
+                       * smoothstep(u_hover_rect.y - e, u_hover_rect.y + e, uv.y)
+                       * (1.0 - smoothstep(u_hover_rect.w - e, u_hover_rect.w + e, uv.y))
+                       * u_hover_amount;
+
+            float tick = floor(u_time * 12.0);
+
+            // ---- glitch（作用在字上）：横向条带撕裂 ----
+            // step(0.76, h)：只有约四分之一的条带会撕，全撕就糊成一团噪声了。
+            float band = floor(uv.y * u_hover_bands);
+            float h = fract(sin(band * 91.7 + tick * 37.3 + u_hover_seed) * 43758.5453);
+            vec2 disp = vec2(step(0.76, h) * (h - 0.88) * u_hover_tear * mask, 0.0);
+
+            // ---- glitch：方块马赛克（block 模式才开）----
+            // 硬切换（step）而不是渐变：采样点连续漂移会变成"糊"，不是"坏了一块"。
+            vec2 grid = vec2(u_hover_cells * u_hover_aspect, u_hover_cells);
+            vec2 cell = floor(uv * grid);
+            float hb = fract(sin(cell.x * 41.3 + cell.y * 289.1
+                                + tick * 13.1 + u_hover_seed) * 43758.5453);
+            float hit = step(1.0 - u_hover_block, hb) * step(0.5, mask);
+            vec2 quv = (floor(uv * grid * 2.0) + 0.5) / (grid * 2.0);
+            vec2 suv = mix(uv, quv, hit) + disp;
+
+            // ---- 采样 + RGB 三通道横向错位（信号不稳的色边）----
+            float split = (0.35 + 0.65 * h) * u_hover_split * mask;
+            vec4 c = texture2D(tex0, suv, u_lod_bias);
+            float cr = texture2D(tex0, suv + vec2(split, 0.0), u_lod_bias).r;
+            float cb = texture2D(tex0, suv - vec2(split, 0.0), u_lod_bias).b;
+            // 预乘 alpha：任何颜色通道都不能超过该点的 alpha，否则错位处会烧出白斑。
+            vec3 rgb = min(vec3(cr, c.g, cb), vec3(c.a));
+            float a = c.a;
+
+            // ---- 水：按钮四周那一圈会荡的框（不碰任何像素，纯画上去）----
+            // 全部在"等高比"空间里算：x 乘 aspect，于是 1.0 = 一个屏高，
+            // 圆角和波长在横竖两个方向上才是一致的。
+            vec2 ctr = vec2((u_hover_rect.x + u_hover_rect.z) * 0.5,
+                            (u_hover_rect.y + u_hover_rect.w) * 0.5);
+            vec2 hs = vec2((u_hover_rect.z - u_hover_rect.x) * 0.5 * u_hover_aspect,
+                           (u_hover_rect.w - u_hover_rect.y) * 0.5);
+            vec2 p = vec2((uv.x - ctr.x) * u_hover_aspect, uv.y - ctr.y);
+
+            // 矩形 SDF：d = 到"按钮外扩 pad"那个矩形边界的带符号距离（外正内负）
+            vec2 qd = abs(p) - (hs + vec2(u_hover_frame_pad));
+            float d = length(max(qd, vec2(0.0))) + min(max(qd.x, qd.y), 0.0);
+
+            // 相位 = 归一化空间里的极角。整数 bump 数保证 ±π 处接得上（无接缝）。
+            float th = atan(p.y / max(hs.y, 0.0001), p.x / max(hs.x, 0.0001));
+            float wob = (sin(th * u_hover_bumps - u_time * u_hover_speed) * 0.65
+                       + sin(th * u_hover_bumps2 + u_time * u_hover_speed * 0.73) * 0.35)
+                      * u_hover_wob;
+
+            // 线本体 + 外侧柔光；亮度也跟着波走，波峰处更亮，像水面反光。
+            float dd = abs(d - wob);
+            float line = 1.0 - smoothstep(0.0, u_hover_frame_w, dd);
+            float glow = exp(-dd / max(u_hover_glow, 0.0001)) * 0.45;
+            float shine = 0.72 + 0.28 * sin(th * u_hover_bumps - u_time * u_hover_speed);
+            float g = min(line + glow, 1.0) * shine * u_hover_wave * u_hover_amount;
+
+            // source-over 一层自带 alpha 的水光：空白处也画得出来，字不会被推动。
+            rgb = u_hover_tint * g + rgb * (1.0 - g);
+            a = g + a * (1.0 - g);
+
+            gl_FragColor = vec4(rgb, a);
+        """
+    )
+
+transform hover_lens:
+    mesh True
+    shader "game.hover_lens"
+    u_hover_rect (0.0, 0.0, 0.0, 0.0)
+    u_hover_amount 0.0
+    u_hover_seed 0.0
+    u_hover_tear 0.018
+    u_hover_bands 220.0
+    u_hover_split 0.0012
+    u_hover_block 0.0
+    u_hover_cells 90.0
+    u_hover_wave HOVER_WAVE
+    u_hover_frame_pad HOVER_FRAME_PAD
+    u_hover_frame_w HOVER_FRAME_W
+    u_hover_wob HOVER_WOB
+    u_hover_bumps HOVER_BUMPS
+    u_hover_bumps2 HOVER_BUMPS2
+    u_hover_speed HOVER_SPEED
+    u_hover_glow HOVER_GLOW
+    u_hover_tint HOVER_TINT
+    u_hover_edge HOVER_EDGE
+    u_hover_aspect HOVER_ASPECT
+    function _hover_lens_tick
+
+## 挂到 screens 图层。用 config.layer_transforms 而不是 renpy.show_layer_at：
+## 后者是每个 context 各自的状态（主菜单、游戏、game menu 是不同 context），
+## 得在每处入口都调一遍还容易漏；config 是全局的，一处生效处处生效。
+define config.layer_transforms = {"screens": [hover_lens]}
+
 ## 可独立 `at water_effect` 使用的 transform；image 块内嵌时也可直接复用这套参数。
 ## 参数解释：
 ##   u_ripple_strength —— 波纹振幅，数值越大扰动越明显
@@ -268,3 +526,199 @@ transform water_effect:
     u_ripple_speed 1.0
     u_ripple_scale 12.0
     function _ripple_tick
+
+################################################################################
+## 视觉 glitch 五连 —— 每记 glitch 音效随机配一记画面故障。
+################################################################################
+## 五个变体：抽搐 / 三通道错位 / 条带撕裂 / 垂直失锁 / 块状损坏。
+## 随机挑选在 transitions.rpy 的 glitch_fx()（剧本侧只认那一个名字）。
+##
+## 形式是 **ATL 转场**（transform 带 new_widget/old_widget 参数 + delay 属性，
+## 见 Ren'Py 文档 Transitions > ATL Transitions），而不是"挂在某一层上的 transform"：
+##   * 转场作用在"整屏这一帧"上，master + screens 一起扭 —— 故障是信号层面的，
+##     不该只扭背景不扭文字框；
+##   * 用完即弃，不留任何常驻状态，不像层 transform 那样要记得撤下来；
+##   * 剧本里原本就写 `with fx_glitch`，换成 `with glitch_fx()` 一行到位。
+## 只引用 new_widget（前后两帧通常是同一画面，glitch 不是"换场"而是"这一帧坏了"）。
+##
+## 时间轴统一用 u_glitch_t 0→1 线性推进（uniform 插值会自动触发重绘），
+## 每个 shader 自己按 t 算包络：前半程满强度，后半程收干净 —— 尾巴留着会显脏。
+## u_glitch_seed 让同一个变体每次的花纹都不一样（连着触发不会看出是同一记）。
+define GLITCH_FX_SECONDS = 0.32
+
+init python:
+    import math as _math
+
+    ## ① 抽搐：整屏按格跳动。没有 shader —— 纯位移的"硬跳"本身就是最像
+    ## 数字丢帧的一种故障，用 GPU 去做反而多余。
+    ## 每 1/26 秒重掷一次偏移（不是平滑摇晃：平滑的是"震动"，跳变的才是"故障"）。
+    def _glitch_stutter(seed, duration):
+        def f(trans, st, at):
+            k = st / duration
+            env = 1.0 - max(0.0, (k - 0.5) / 0.5)
+            tick = _math.floor(st * 26.0)
+            hx = _math.sin(tick * 12.9898 + seed) * 43758.5453
+            hy = _math.sin(tick * 78.2330 + seed) * 43758.5453
+            trans.xoffset = (hx - _math.floor(hx) - 0.5) * 64.0 * env
+            trans.yoffset = (hy - _math.floor(hy) - 0.5) * 20.0 * env
+            return 0 if st < duration else None
+        return f
+
+    ## ② 三通道错位：R/B 通道左右分家 + 起手两格白闪。最"电子"的一种。
+    renpy.register_shader("game.glitch_rgb",
+        variables="""
+            uniform float u_glitch_t;
+            uniform float u_glitch_seed;
+        """,
+        fragment_300="""
+            vec2 uv = v_tex_coord.xy;
+            float t = u_glitch_t;
+            float env = 1.0 - smoothstep(0.5, 1.0, t);
+
+            // 分成 9 格，每格一个错位量 —— 连续滑动看起来是"重影"，跳变才是"故障"
+            float tick = floor(t * 9.0);
+            float h = fract(sin(tick * 12.9898 + u_glitch_seed) * 43758.5453);
+            float sp = (h - 0.5) * 0.020 * env;
+
+            vec4 c = texture2D(tex0, uv, u_lod_bias);
+            float cr = texture2D(tex0, uv + vec2(sp, 0.0), u_lod_bias).r;
+            float cb = texture2D(tex0, uv - vec2(sp, 0.0), u_lod_bias).b;
+
+            // 预乘 alpha：通道值不能超过该点 alpha，否则错位处会烧白
+            vec3 rgb = min(vec3(cr, c.g, cb), vec3(c.a));
+            rgb = min(rgb + c.a * step(tick, 1.5) * 0.18 * env, vec3(c.a));
+            gl_FragColor = vec4(rgb, c.a);
+        """
+    )
+
+    ## ③ 条带撕裂：横切 26 条，其中三成整条横移，移出去的从另一边卷回来。
+    renpy.register_shader("game.glitch_slice",
+        variables="""
+            uniform float u_glitch_t;
+            uniform float u_glitch_seed;
+        """,
+        fragment_300="""
+            vec2 uv = v_tex_coord.xy;
+            float t = u_glitch_t;
+            float env = 1.0 - smoothstep(0.55, 1.0, t);
+
+            float band = floor(uv.y * 26.0);
+            float tick = floor(t * 7.0);
+            float h = fract(sin(band * 91.7 + tick * 37.3 + u_glitch_seed) * 43758.5453);
+
+            // step(0.6, h)：只有靠上的四成条带会撕；全撕就糊成一团噪声了
+            float hit = step(0.6, h);
+            float amt = hit * (h - 0.8) * 0.35 * env;
+            vec4 c = texture2D(tex0, vec2(fract(uv.x + amt), uv.y), u_lod_bias);
+
+            // 撕开的条带压暗一档，边界才看得清是"错位"而不是"糊了"
+            gl_FragColor = vec4(c.rgb * (1.0 - 0.25 * hit * env), c.a);
+        """
+    )
+
+    ## ④ 垂直失锁：整屏上下乱跳 + 一条同步亮带扫过 + 扫描线。CRT 掉同步的样子。
+    renpy.register_shader("game.glitch_roll",
+        variables="""
+            uniform float u_glitch_t;
+            uniform float u_glitch_seed;
+        """,
+        fragment_300="""
+            vec2 uv = v_tex_coord.xy;
+            float t = u_glitch_t;
+            float env = 1.0 - smoothstep(0.6, 1.0, t);
+
+            float tick = floor(t * 11.0);
+            float h = fract(sin(tick * 7.7 + u_glitch_seed) * 43758.5453);
+            float off = (h - 0.5) * 0.10 * env;
+            vec4 c = texture2D(tex0, vec2(uv.x, fract(uv.y + off)), u_lod_bias);
+            vec3 rgb = c.rgb;
+
+            // 同步亮带：一条横带自上而下扫过（fract 让它循环，abs(...-0.5) 是环绕距离）
+            float bandpos = fract(u_glitch_seed * 0.01 + t * 1.7);
+            float bd = 1.0 - smoothstep(0.0, 0.05, abs(fract(uv.y - bandpos + 0.5) - 0.5));
+            rgb = min(rgb + c.a * bd * 0.22 * env, vec3(c.a));
+
+            // 扫描线：隔行压暗
+            rgb *= 1.0 - 0.30 * step(0.5, fract(uv.y * 200.0)) * env;
+            gl_FragColor = vec4(rgb, c.a);
+        """
+    )
+
+    ## ⑤ 块状损坏：细密小方块被啃成马赛克，一部分整块被搬走，最坏的一批反色/掉黑。
+    ## 格子给到 64x36（≈30px 见方），马赛克再细分到 1/4 格（≈7px）—— 块要小要多，
+    ## 大格子看起来像"打了个码"，小格子才像数据在烂。
+    renpy.register_shader("game.glitch_block",
+        variables="""
+            uniform float u_glitch_t;
+            uniform float u_glitch_seed;
+        """,
+        fragment_300="""
+            vec2 uv = v_tex_coord.xy;
+            float t = u_glitch_t;
+            float env = 1.0 - smoothstep(0.5, 1.0, t);
+
+            vec2 grid = vec2(64.0, 36.0);
+            vec2 cell = floor(uv * grid);
+            float tick = floor(t * 8.0);
+            float h = fract(sin(cell.x * 41.3 + cell.y * 289.1
+                              + tick * 13.1 + u_glitch_seed) * 43758.5453);
+
+            // 马赛克用 step 硬切换：采样点连续漂移会变成"糊"，不是"块坏了"
+            float hit = step(0.62, h) * step(0.5, env);
+            vec2 quv = (floor(uv * grid * 4.0) + 0.5) / (grid * 4.0);
+
+            // 一部分中招的格子整块横向搬走 —— 单纯打码不吓人，"内容跑到别处"才吓人
+            float h2 = fract(sin(cell.y * 77.7 + cell.x * 13.9
+                               + tick * 5.3 + u_glitch_seed) * 24634.6345);
+            vec2 shift = vec2((h2 - 0.5) * 0.10 * step(0.55, h2) * hit, 0.0);
+            vec4 c = texture2D(tex0, mix(uv, quv, hit) + shift, u_lod_bias);
+
+            // 反色：预乘 alpha 下就是 a - rgb。只给最坏的一成方块。
+            vec3 rgb = mix(c.rgb, c.a - c.rgb, step(0.88, h) * env * 0.9);
+            // 再一小撮直接掉成黑洞
+            rgb *= 1.0 - step(0.965, h) * env;
+            gl_FragColor = vec4(rgb, c.a);
+        """
+    )
+
+transform gl_stutter(duration=GLITCH_FX_SECONDS, seed=0.0, *, new_widget=None, old_widget=None):
+    delay duration
+    new_widget
+    subpixel True
+    function _glitch_stutter(seed, duration)
+
+transform gl_rgb(duration=GLITCH_FX_SECONDS, seed=0.0, *, new_widget=None, old_widget=None):
+    delay duration
+    new_widget
+    mesh True
+    shader "game.glitch_rgb"
+    u_glitch_seed seed
+    u_glitch_t 0.0
+    linear duration u_glitch_t 1.0
+
+transform gl_slice(duration=GLITCH_FX_SECONDS, seed=0.0, *, new_widget=None, old_widget=None):
+    delay duration
+    new_widget
+    mesh True
+    shader "game.glitch_slice"
+    u_glitch_seed seed
+    u_glitch_t 0.0
+    linear duration u_glitch_t 1.0
+
+transform gl_roll(duration=GLITCH_FX_SECONDS, seed=0.0, *, new_widget=None, old_widget=None):
+    delay duration
+    new_widget
+    mesh True
+    shader "game.glitch_roll"
+    u_glitch_seed seed
+    u_glitch_t 0.0
+    linear duration u_glitch_t 1.0
+
+transform gl_block(duration=GLITCH_FX_SECONDS, seed=0.0, *, new_widget=None, old_widget=None):
+    delay duration
+    new_widget
+    mesh True
+    shader "game.glitch_block"
+    u_glitch_seed seed
+    u_glitch_t 0.0
+    linear duration u_glitch_t 1.0

@@ -59,7 +59,7 @@ translate english strings:
     new "Continue"
 
     # game/screens.rpy:530
-    old "读取存档"
+    old "读取数据"
     new "Load Game"
 
     # game/screens.rpy:533

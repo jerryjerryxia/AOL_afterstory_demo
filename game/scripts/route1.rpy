@@ -737,7 +737,7 @@ label route1_start:
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ## Extended大文本框开始 - accumulating large textbox
     ## 转场：灰屏
-    scene bg_grey_video with scene_soft
+    $ pink_to_grey_started = True
     large_narrator "仅此而已，仅此而已。"
     extend "\n她是治愈的灰，包容的灰。"
     extend "\n任何色彩倾泻其中，都只能归零的灰。"
@@ -1002,7 +1002,7 @@ label route1_start:
     wangshuang "因为欧按物昆咽——"
     ahe "阿...霜？"
     ## 王霜面部开始出现glitch
-    with fx_glitch
+    with glitch_fx()
     ## glitchy音效
     $ play_glitch()
     ## 抱胸站立，坏笑表情上蒙了glitch
@@ -1012,7 +1012,7 @@ label route1_start:
     ## 右手叉腰，左手食指竖起做讲解状，默认表情上蒙了glitch
     wangshuang "唵椅迩唵毋炆戊囮吔坳唔岙莪。"
     ## glitch消失
-    with fx_glitch
+    with glitch_fx()
     ahe "阿霜，你还好吗？"
     ## 抱胸站立，疑问表情
     wangshuang "嗯？怎么了？"
@@ -1021,7 +1021,7 @@ label route1_start:
     wangshuang "因为我看不见。"
     ahe "这样..."
     ## 王霜面部开始出现glitch
-    with fx_glitch
+    with glitch_fx()
     ## glitchy音效
     $ play_glitch()
     ## 尸首黑影闪过
@@ -1030,7 +1030,7 @@ label route1_start:
     wangshuang "一焱髻暨戊馹曳葳邑吖霭肮毐峪镍醪！"
     ahe "喂...阿霜你又——"
     ## glitch消失
-    with fx_glitch
+    with glitch_fx()
     ## 背手站立，得意表情
     wangshuang "哎，我也没说缺了头骨就不行啊。"
     wangshuang "既然你们这么想见面，那肯定得成全你嘛——你看，你的“作品”从各种意义上已经完成了。"

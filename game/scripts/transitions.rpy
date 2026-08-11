@@ -28,8 +28,35 @@ define scene_dissolve = Dissolve(0.8)
 define ripple_reveal = ImageDissolve("images/ui/fx/ripple_wipe.png", RIPPLE_DISSOLVE, ramplen=255)
 
 ## 戏剧性瞬间的特效转场（由舞台提示关键词触发，见 convert_script.py 的 SPECIAL_FX）
-define fx_glitch = hpunch    ## 故障 / glitch —— 横向震动
 define fx_shock = vpunch     ## 惊吓 / 冲击 —— 纵向震动
+
+## 故障 / glitch —— 五个变体随机挑一个。剧本侧（生成的 route .rpy）只认
+## `glitch_fx()` 这一个名字：既用在 【glitch】 类舞台提示的 `with glitch_fx()`，
+## 也由 play_glitch() 内部调用 —— 于是"每记 glitch 音效都配一记画面故障"是
+## 音效函数自己保证的，不依赖剧本在每处都记得写视觉标记。
+##
+## 五个变体本体（shader + transform）在 shaders.rpy 的"视觉 glitch 五连"一节，
+## 强度/时长也在那里调。这里只管"挑哪一个"。
+##
+## 名字重复 = 权重：三通道错位和块状损坏各占两份，抽中概率是其它三个的两倍。
+## 想改配比就增删名字，想让某个变体彻底不出现就把它删干净。
+define GLITCH_FX = [gl_rgb, gl_rgb, gl_block, gl_block, gl_stutter, gl_slice, gl_roll]
+
+init python:
+    _glitch_fx_last = [None]
+
+    def glitch_fx():
+        """随机挑一记视觉 glitch，返回一个可直接用于 `with` 的转场。
+
+        排除上一次用过的那个 —— 理由同 play_glitch 挑音频切片：王霜/尤里娅那一段
+        触发点挨得很近，纯随机免不了连抽同一个，那一下就会露馅。5 选 4 之后
+        每次都不一样。seed 再让同一个变体每次的花纹也不重样。
+
+        用 renpy.random（回滚安全），不用标准库 random。"""
+        pool = [fx for fx in GLITCH_FX if fx is not _glitch_fx_last[0]] or GLITCH_FX
+        fx = renpy.random.choice(pool)
+        _glitch_fx_last[0] = fx
+        return fx(seed=renpy.random.random() * 100.0)
 
 ## 电视机关机 —— CRT 断电：画面纵向塌成一条亮线，亮线横向收成一个光点，光点熄灭。
 ## 作用在整个 master 图层上（`show layer master at crt_shutdown`），所以塌陷的是

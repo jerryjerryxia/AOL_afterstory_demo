@@ -125,10 +125,6 @@ image bg_black_still = Transform("images/bg/black_screen_still.png", xysize=(192
 ##
 ## ↓ 调色就改这一个值。偏冷/偏紫往 #f0a0d0，偏肉粉往 #ffb0a8。
 define PINK_SCREEN_TINT = "#ffa3c4"
-image bg_pink_video = Transform(
-    Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
-          start_image="white", image="white"),
-    matrixcolor=TintMatrix(PINK_SCREEN_TINT))
 
 ## 灰屏（★临时版★）：同一招，但多乘一个 SaturationMatrix(0.0)。
 ## 多这一步是照着正文来的 ——「任何色彩倾泻其中，都只能归零的灰」：白屏视频里
@@ -138,10 +134,53 @@ image bg_pink_video = Transform(
 ##
 ## ↓ 调明暗就改这一个值。更亮往 #b2b2b2，更压抑往 #6e6e6e。
 define GREY_SCREEN_TINT = "#9a9a9a"
+
+## 两块屏幕的颜色矩阵写成同一个结构：TintMatrix(...) * SaturationMatrix(...)。
+## 粉红那层的 SaturationMatrix(1.0) 是恒等矩阵、对画面没有任何影响，存在的唯一
+## 理由是"结构相同"——Ren'Py 只在前后两个 matrixcolor 同类型、同乘法顺序时才
+## 逐参数插值；结构不同就直接在第一帧跳到终点（官方文档 Structural Similarity）。
+## 下面 bg_pink_video 的 10 秒褪色全靠这一点。
+define PINK_SCREEN_MATRIX = TintMatrix(PINK_SCREEN_TINT) * SaturationMatrix(1.0)
+define GREY_SCREEN_MATRIX = TintMatrix(GREY_SCREEN_TINT) * SaturationMatrix(0.0)
+
+## 粉红屏 → 灰屏：不是换背景，是同一块屏幕自己慢慢褪色。
+## 剧本里 【转场：灰屏】 那一行只表示"褪色开始"（转换器在那里发
+## `$ pink_to_grey_started = True`，见 convert_script.py 的 IN_PLACE_SCENES），
+## 之后 PINK_TO_GREY_SECONDS 秒里玩家照常点字推进，画面在背后自己走完。
+##
+## 为什么不用 `scene bg_grey_video with Dissolve(10)`：转场是阻塞的，玩家
+## 点第一下就会把它一次性拍到终点，而且这十秒里没法推文字。
+## 为什么不换成另一个 image：换 image = 换一个 Movie 实例 = 白屏视频从头重放，
+## 褪色刚起步就"啪"地跳一下残影，正好毁掉要的那份丝滑。
+## 所以只留粉红屏这一个 displayable，让它挂着 ATL 等信号：
+##   _pink_to_grey_gate 每帧问一次标志位 —— 没起跑就原地待命（返回 0 = 下一帧
+##   再问），起跑了返回 None 放行进 ease 褪色。（同 screens.rpy 的
+##   _wait_for_main_menu_exit：ATL 轮询状态变量是这个项目里通用的"等信号"写法。）
+## warper 用 ease 而不是 linear：起步和收尾都软，玩家察觉不到"开始变了"这一帧。
+##
+## 存档/读档：ATL 状态不进存档。褪色途中存档、读回来时画面回到粉红、标志位仍是
+## True，于是重跑一遍完整褪色 —— 比读出来卡在半路或直接是灰更好看，不值得为它
+## 记时间戳。
+define PINK_TO_GREY_SECONDS = 10.0
+default pink_to_grey_started = False
+
+init python:
+    def _pink_to_grey_gate(trans, st, at):
+        return None if pink_to_grey_started else 0
+
+image bg_pink_video:
+    Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
+          start_image="white", image="white")
+    matrixcolor PINK_SCREEN_MATRIX
+    function _pink_to_grey_gate
+    ease PINK_TO_GREY_SECONDS matrixcolor GREY_SCREEN_MATRIX
+
+## 纯灰屏：现在没有场景用它（灰屏是由粉红屏褪过去的，见上）。留着当"直接就是灰"
+## 的备用入口，也让褪色的终点长什么样有一处可直接看的定义。
 image bg_grey_video = Transform(
     Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
           start_image="white", image="white"),
-    matrixcolor=TintMatrix(GREY_SCREEN_TINT) * SaturationMatrix(0.0))
+    matrixcolor=GREY_SCREEN_MATRIX)
 
 ## 红屏（★临时版★）：同粉红屏的做法。取暗红而不是警报红，两个理由 ——
 ## 正文写的是"血液暗红"；而且这一段要挂着放二十几句旁白，一整屏高饱和亮红

@@ -809,9 +809,23 @@ style choice_button_text is default:
 ## 立刻从树里抽走）；transform_event 在 screen 重新求值时也不可靠。轮询稳。
 default _main_menu_starting = False
 
+## 玩家点的是"继续游戏"(True) 还是"开始游戏"(False)。两个按钮现在并列常驻，
+## 所以退场动画跑完时必须知道点的是哪个 —— 见 exit_main_menu_to_game()。
+default _main_menu_continue = False
+
 init python:
     def _wait_for_main_menu_exit(trans, st, at):
         return None if _main_menu_starting else 0
+
+    def start_main_menu_exit(continue_save):
+        """主菜单两颗进游戏按钮共用：记下点的是哪颗，然后起退场涟漪。
+
+        为什么不是 [SetVariable(...), SetVariable(...)]：SetVariable 会在变量
+        已经等于目标值时把按钮报成 selected —— "开始游戏"设的是 False，而
+        _main_menu_continue 平时就是 False，于是它常驻高亮成"选中"的样子。
+        Function 没有选中态，按钮才老老实实待在 idle。"""
+        renpy.store._main_menu_continue = continue_save
+        renpy.store._main_menu_starting = True
 
 ## ---------------------------------------------------------------------------
 ## 涟漪过场：点下"开始游戏"的瞬间，整个主菜单画面（背景+标题+按钮）开始荡漾，
@@ -954,14 +968,16 @@ screen main_menu():
             yalign 0.5
             spacing gui.navigation_spacing
 
-            ## 通关之后做的存档 → 显示"继续游戏"；否则显示"开始游戏"。
+            ## 两个按钮并列、位置固定："开始游戏"在上（从头开一周目），"继续游戏"
+            ## 在下。没有可续的存档时"继续游戏"**不消失、只置灰** —— 位置恒定，
+            ## 菜单不会因为存不存档而跳动，玩家也一眼知道那里有这么个功能。
             ## has_continuable_save() 比较 max(slot_mtime) 和 last_route_completion_time，
-            ## 通关后老存档自动失效；玩家新周目存档后又自动出 Continue。
-            if has_continuable_save():
-                textbutton _("继续游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting
-            else:
-                textbutton _("开始游戏") action SetVariable("_main_menu_starting", True) sensitive not _main_menu_starting
-            textbutton _("读取存档") action ShowMenu("load") sensitive not _main_menu_starting
+            ## 通关后老存档自动失效；玩家新周目存档后又自动可点。
+            ## 点的是哪个记在 _main_menu_continue 里 —— 退场涟漪跑完后
+            ## exit_main_menu_to_game() 照它走，不再靠"有没有存档"反推。
+            textbutton _("开始游戏") action Function(start_main_menu_exit, False) sensitive not _main_menu_starting
+            textbutton _("继续游戏") action Function(start_main_menu_exit, True) sensitive has_continuable_save() and not _main_menu_starting
+            textbutton _("读取数据") action ShowMenu("load") sensitive not _main_menu_starting
             textbutton _("音乐鉴赏") action ShowMenu("music_room") sensitive not _main_menu_starting
             textbutton _("设置") action ShowMenu("preferences") sensitive not _main_menu_starting
             textbutton _("关于") action ShowMenu("about") sensitive not _main_menu_starting
@@ -1136,15 +1152,16 @@ screen navigation():
         spacing gui.navigation_spacing
 
         if main_menu:
-            ## 跟主菜单按钮一致：通关之后有玩家"主动"做的存档就显示"继续游戏"，
-            ## 否则"开始游戏"。FileLoad 用 _continuable_slots 最近的 slot —
-            ## 玩家从这里进游戏的语义和主菜单 Continue 按钮相同。
+            ## 跟主菜单按钮一致：开始游戏在上、继续游戏在下，没存档时置灰不隐藏。
+            ## FileLoad 用 _continuable_slots 最近的 slot —— 玩家从这里进游戏的
+            ## 语义和主菜单那颗 Continue 相同。
+            textbutton _("开始游戏") action Start()
             if has_continuable_save():
                 $ _latest_continuable_slot = max(_continuable_slots(), key=lambda s: renpy.slot_mtime(s) or 0)
                 textbutton _("继续游戏") action FileLoad(_latest_continuable_slot, confirm=False)
             else:
-                textbutton _("开始游戏") action Start()
-            textbutton _("读取存档") action ShowMenu("load")
+                textbutton _("继续游戏") action NullAction() sensitive False
+            textbutton _("读取数据") action ShowMenu("load")
             textbutton _("音乐鉴赏") action ShowMenu("music_room")
         else:
             textbutton _("历史记录") action ShowMenu("history")
@@ -1175,6 +1192,8 @@ style navigation_button_text:
     idle_color gui.idle_color
     hover_color gui.hover_color
     selected_color gui.selected_color
+    ## 没存档时的"继续游戏"：灰掉但仍占位（见主菜单按钮那段注释）
+    insensitive_color gui.insensitive_color
 
 ################################################################################
 ## 存档/读档界面 - Save/Load Screens

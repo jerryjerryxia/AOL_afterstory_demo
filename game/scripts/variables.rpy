@@ -259,11 +259,17 @@ init python:
         排掉前一次之后每次都是 5 选 4，听感上就是每次都不一样。
 
         用 renpy.random 而不是标准库 random —— 前者是回滚安全的，玩家往回翻再前进
-        不会让引擎的随机状态和存档对不上。"""
+        不会让引擎的随机状态和存档对不上。
+
+        画面同时坏一下：随机挑一记视觉 glitch（glitch_fx()，见 transitions.rpy）
+        武装给下一次交互 —— 下一次交互就是紧跟着的那句台词，中间没有任何阻塞，
+        所以音画是同一瞬间起的。放在这里而不是让剧本每处再写一遍视觉标记：
+        "有 glitch 声就有 glitch 画面"是一条规则，规则只该写一处。"""
         pool = [c for c in GLITCH_CUTS if c != _glitch_last[0]] or GLITCH_CUTS
         cut = renpy.random.choice(pool)
         _glitch_last[0] = cut
         play_sfx("<from %s to %s>%s" % (cut[0], cut[1], GLITCH_SFX))
+        renpy.transition(glitch_fx())
 
     def play_ambient(path, channel="ambient", fadein=2.0, level=1.0, swell=0.0):
         """环境音铺底：在指定声道上循环播放（声道注册见 videos.rpy）。
@@ -342,10 +348,14 @@ init python:
         renpy.load(latest)
 
     def exit_main_menu_to_game():
-        """主菜单退场动画跑完后调用：通关后做的存档 → Continue；否则新开。
-        Continue 不武装 _intro_fade_pending（玩家不在序章首句），新开才武装。
-        和 screen 用同一个判断 (has_continuable_save)，避免按钮和动作不一致。"""
-        if has_continuable_save():
+        """主菜单退场动画跑完后调用：玩家点的是"继续游戏"就读档，"开始游戏"就新开。
+        两个按钮并列常驻，所以只能由 _main_menu_continue（按钮设的）决定，
+        不能再靠 has_continuable_save() 反推。
+        has_continuable_save() 仍复查一遍：按钮点下到这里隔着一段退场动画。
+        Continue 不武装 _intro_fade_pending（玩家不在序章首句），新开才武装。"""
+        continue_save = renpy.store._main_menu_continue
+        renpy.store._main_menu_continue = False
+        if continue_save and has_continuable_save():
             load_most_recent_save()
             return
         renpy.store._intro_fade_pending = True
