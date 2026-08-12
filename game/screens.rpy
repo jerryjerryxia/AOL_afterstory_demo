@@ -85,6 +85,137 @@ define gui.skip_ypos = 15
 define gui.unscrollable = "hide"
 
 ################################################################################
+## UI 套件 ——「深海终端」
+################################################################################
+## 设计前提：界面不是装东西的盒子，是这台正在进水的显示器本身。所以整套 UI 只有
+## 四个动作，每个界面都靠它们搭出来，不再各画各的框：
+##
+##   1) 竖脊（spine）——一条贯穿画面的竖线，所有导航项挂在它上面，选中项在脊上
+##      长出一个实心块。它是整套 UI 的"左边界"，也是页面之间不变的那根轴。
+##   2) 页眉三件套 —— 小号英文标签（kicker）+ 巨大中文标题 + 一条冲出屏幕右缘的
+##      粗横线。三者的字号差是 20 / 92 / —— 层级一眼就分得开。
+##   3) L 形角标 —— 面板不封边。四角各一个 L，其余留空。封闭的细边框看着像
+##      "系统弹窗"，角标看着像"取景框/信号框"，而且不会把画面切碎。
+##   4) 扫描线 —— 每块面板上盖一层 2px 间距的暗线（shader 画的，无素材）。
+##      这是把"CRT"从剧情演出（电视机关机、glitch）延伸到界面的那一步。
+##
+## ★字号阶梯★ 模块化比例 1.333（Perfect Fourth）。以前全界面只有 75 和 33 两级，
+## 导航/选项/数值/时间戳全是 33，所以看起来"一片平"。现在五级各司其职：
+define UI_T_META    = 20    ## 元信息：英文 kicker、时间戳、编号
+define UI_T_SMALL   = 26    ## 次要：说明、页码
+define UI_T_BODY    = 33    ## 正文/按钮（= 原 gui.interface_text_size）
+define UI_T_SUB     = 44    ## 小标题：弹窗里的那句问话
+define UI_T_DISPLAY = 92    ## 界面大标题（原来 75，不够"大到成为构图元素"）
+
+## 配色：取自主菜单那张海。底几乎不透光（面板要压得住底图），线是冷水蓝，
+## 强调色是浪尖那点亮青。
+define UI_FILL      = "#060f19ee"   ## 面板底：深海蓝
+define UI_FILL_SOFT = "#08131fc4"   ## 浮在画面上的小条
+define UI_LINE      = "#5c8ba8"     ## 结构线
+define UI_LINE_DIM  = "#5c8ba859"   ## 弱结构线
+define UI_SPINE     = "#5c8ba8a6"   ## 竖脊：比弱结构线实一档（它是整套 UI 的轴）
+define UI_ACCENT    = "#8fd0e8"     ## 强调：kicker、选中块、滑块
+define UI_ACCENT_DIM = "#8fd0e866"
+define UI_TEXT      = "#e8f4fa"     ## 界面主文字（偏冷的白，不用纯白）
+define UI_TEXT_DIM  = "#7e97a8"     ## 次要文字
+define UI_DANGER    = "#e8798a"     ## 危险操作
+
+define UI_RULE_W    = 5             ## 页眉粗线的厚度
+define UI_LINE_W    = 2             ## 普通线宽
+define UI_BRACKET   = 34            ## L 形角标的臂长
+define UI_SCAN_PITCH = 4.0          ## 扫描线周期（px）
+define UI_SCAN_ALPHA = 0.18         ## 扫描线深度
+
+## 版面锚点。整套界面只有这几条线，所有界面共用 —— 位置一致才叫"同一套 UI"。
+define UI_SPINE_X    = 60           ## 竖脊的 x：导航挂在它右边
+define UI_SPINE_W    = 5           ## 竖脊粗细。2px 在 1080p 上太细，看不见就等于没有
+define UI_HEAD_X     = 92           ## 页眉/内容的左对齐线（= 竖脊 + 32）
+define UI_HEAD_RULE_Y = 186         ## 页眉粗线的 y
+
+init python:
+    ## 扫描线：用 shader 画而不是贴图。u_model_size 是 Ren'Py 自带的 uniform
+    ## （当前这块显示物的像素尺寸），所以线距永远是屏幕上的 2px，
+    ## 不会因为面板大小不同而疏密不一 —— 贴图平铺做不到这一点。
+    renpy.register_shader("game.ui_scan",
+        variables="""
+            uniform float u_scan_pitch;
+            uniform float u_scan_alpha;
+            uniform vec2 u_model_size;
+        """,
+        fragment_300="""
+            float y = v_tex_coord.y * u_model_size.y;
+            float on = step(u_scan_pitch * 0.5, mod(y, u_scan_pitch));
+            // 预乘 alpha：纯黑线，只有 alpha 起作用
+            gl_FragColor = vec4(0.0, 0.0, 0.0, u_scan_alpha * on);
+        """)
+
+    def ui_scanlines(alpha=UI_SCAN_ALPHA, pitch=UI_SCAN_PITCH):
+        return Transform(Solid("#00000000"), mesh=True, shader="game.ui_scan",
+                         u_scan_pitch=pitch, u_scan_alpha=alpha)
+
+    def ui_track(color, h=10):
+        """滑块轨道：一条画在（更高的）命中矩形正中的细线。
+        Fixed 会撑满 bar 给的整块区域，里面那条 Solid 只占中间 h 像素 ——
+        于是"看起来的轨道"和"点得到的范围"可以不一样粗。"""
+        return Fixed(Transform(Solid(color), ysize=h, yalign=0.5))
+
+    def _bar(color, w=None, h=None, xalign=0.0, yalign=0.0):
+        """一条贴边的实色线：Solid 会填满给它的区域，只约束一个方向就成了线。"""
+        return Transform(Solid(color), xsize=w, ysize=h, xalign=xalign, yalign=yalign)
+
+    def ui_frame(fill=UI_FILL, bracket=UI_LINE, arm=UI_BRACKET, lw=UI_LINE_W,
+                 scan=UI_SCAN_ALPHA, spine=None, spine_w=4, top_rule=None,
+                 bot_rule=None, rule_w=UI_RULE_W):
+        """面板背景：底 + 扫描线 + 四角 L（+ 可选的左竖脊 / 顶粗线）。
+
+        ★不封边★ 只画四个角的 L。封闭细边框 = 系统弹窗；角标 = 取景框，
+        画面不会被切成一格一格，而且面板边缘可以和背景自然融在一起。
+        """
+        parts = [Solid(fill)]
+
+        if scan:
+            parts.append(ui_scanlines(scan))
+
+        if bracket and arm:
+            for xa in (0.0, 1.0):
+                for ya in (0.0, 1.0):
+                    parts.append(_bar(bracket, w=arm, h=lw, xalign=xa, yalign=ya))
+                    parts.append(_bar(bracket, w=lw, h=arm, xalign=xa, yalign=ya))
+
+        if spine:
+            parts.append(_bar(spine, w=spine_w, xalign=0.0))
+
+        if top_rule:
+            parts.append(_bar(top_rule, h=rule_w, yalign=0.0))
+
+        if bot_rule:
+            parts.append(_bar(bot_rule, h=rule_w, yalign=1.0))
+
+        return Fixed(*parts)
+
+## 弹窗出场：从中间横向拉开 + 淡入。信号带该是"接通"，不是"弹出来"。
+transform ui_band_in:
+    on show:
+        alpha 0.0
+        xzoom 0.94
+        easein 0.18 alpha 1.0 xzoom 1.0
+    on hide:
+        easeout 0.12 alpha 0.0
+
+## 页眉的三件套依次到位（kicker → 标题 → 粗线扫过去），错开 0.06s。
+transform ui_head_in(delay=0.0):
+    alpha 0.0
+    xoffset -18
+    pause delay
+    easein 0.28 alpha 1.0 xoffset 0
+
+transform ui_rule_in:
+    xzoom 0.0
+    xanchor 0.0
+    pause 0.16
+    easein 0.42 xzoom 1.0
+
+################################################################################
 ## 样式
 ################################################################################
 
@@ -959,13 +1090,17 @@ screen main_menu():
             else:
                 add "images/ui/titles/zh_title.png" zoom 0.30 xalign 0.5
 
+        ## 竖脊：和所有菜单界面同一根轴，主菜单也挂在它上面 —— 玩家从主菜单点进
+        ## 设置/存档时，左边这条线一直在原地，界面之间才像同一个东西。
+        add Solid(UI_SPINE) xpos UI_SPINE_X ypos 0 xysize (UI_SPINE_W, config.screen_height)
+
         ## 主菜单按钮。sensitive 在退场期间关掉所有按钮，避免误触发。
         ## （恢复阶梯退场：给各按钮加回 at menu_btn_anim(0.42/0.36/…)，
         ## 自上而下 0.42→0.12，stagger 0.06s。）
         vbox:
             style_prefix "navigation"
             xpos gui.navigation_xpos
-            yalign 0.5
+            ypos 392
             spacing gui.navigation_spacing
 
             ## 两个按钮并列、位置固定："开始游戏"在上（从头开一周目），"继续游戏"
@@ -1031,7 +1166,7 @@ style main_menu_button_text is gui_button_text:
 ## 游戏菜单基础框架 - Game Menu
 ################################################################################
 
-screen game_menu(title, scroll=None, yinitial=0.0):
+screen game_menu(title, kicker="", scroll=None, yinitial=0.0):
     style_prefix "game_menu"
 
     ## 背景：sea.png（3840x1240，3.10:1）。fit="contain" 按宽度铺满，
@@ -1077,13 +1212,37 @@ screen game_menu(title, scroll=None, yinitial=0.0):
                 else:
                     transclude
 
+    ## ── 竖脊：贯穿整屏的那根轴，导航项挂在上面（见 screen navigation）──────
+    add Solid(UI_SPINE) xpos UI_SPINE_X ypos 0 xysize (UI_SPINE_W, config.screen_height)
+
     use navigation
 
     textbutton _("返回"):
         style "return_button"
         action Return()
 
-    label title
+    ## ── 页眉三件套：小英文标签 / 巨大中文标题 / 冲出右缘的粗线 ────────────
+    ## 这一块每个界面都长一样，是整套 UI 的识别点。标题字号是正文的 2.8 倍，
+    ## kicker 只有 0.6 倍 —— 对比拉到这个程度，层级才不用靠颜色去解释。
+    vbox:
+        xpos UI_HEAD_X
+        ypos 44
+        spacing 0
+
+        if kicker:
+            text kicker style "screen_kicker" at ui_head_in(0.0)
+        text title style "screen_title" at ui_head_in(0.06)
+
+    ## 粗线：从标题左缘一直冲到屏幕右缘（不留右边距 = 画面被"划开"而不是"框住"）。
+    ## 左端 150px 是亮青的引头，其余是暗结构线，出场时从左往右扫过去。
+    fixed:
+        xpos UI_HEAD_X
+        ypos UI_HEAD_RULE_Y
+        xysize (config.screen_width - UI_HEAD_X, UI_RULE_W)
+        at ui_rule_in
+
+        add Solid(UI_LINE_DIM)
+        add Solid(UI_ACCENT) xysize (150, UI_RULE_W)
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
@@ -1103,8 +1262,22 @@ style return_button_text is navigation_button_text
 
 style game_menu_outer_frame:
     bottom_padding 45
-    top_padding 180
-    background Solid("#00000080")
+    top_padding 230
+    ## 整屏压暗 + 整屏扫描线：菜单是"关掉一半信号的画面"，不是画面上摆了几块板子。
+    ## 压到 c4（77%）是为了让海还看得见但完全不跟文字抢 —— 之前 aa 太亮，
+    ## 中间那片浪花底下的字要费劲才读得出。
+    background Fixed(Solid("#020a12c4"), ui_scanlines(0.12))
+
+## 页眉：kicker 小到只够读、拉开字距，像仪器上的印字；标题大到成为构图本身。
+style screen_kicker is default:
+    size UI_T_META
+    color UI_ACCENT
+    kerning 6.0
+
+style screen_title is default:
+    size UI_T_DISPLAY
+    color UI_TEXT
+    line_spacing -12
 
 style game_menu_navigation_frame:
     xsize 420
@@ -1134,9 +1307,9 @@ style game_menu_label_text:
     yalign 0.5
 
 style return_button:
-    xpos gui.navigation_xpos
+    xpos UI_SPINE_X
     yalign 1.0
-    yoffset -45
+    yoffset -60
 
 ################################################################################
 ## 导航菜单 - Navigation
@@ -1158,7 +1331,11 @@ screen navigation():
             textbutton _("开始游戏") action Start()
             if has_continuable_save():
                 $ _latest_continuable_slot = max(_continuable_slots(), key=lambda s: renpy.slot_mtime(s) or 0)
-                textbutton _("继续游戏") action FileLoad(_latest_continuable_slot, confirm=False)
+                ## ★slot=True★ 不能少：FileLoad 的 name 默认被当成"页内槽位号"，
+                ## 会和当前页拼成 "<页>-<name>"。我们给的是整槽名（"1-1"/"quick-3"），
+                ## 不加 slot=True 就会拼成 "1-1-1" 这种不存在的文件，动作于是自己
+                ## 报告 insensitive —— 表现就是主菜单里能点、进了任何菜单就变灰。
+                textbutton _("继续游戏") action FileLoad(_latest_continuable_slot, confirm=False, slot=True)
             else:
                 textbutton _("继续游戏") action NullAction() sensitive False
             textbutton _("读取数据") action ShowMenu("load")
@@ -1183,17 +1360,26 @@ screen navigation():
 style navigation_button is gui_button
 style navigation_button_text is gui_button_text
 
+## 导航项挂在竖脊上：选中项在脊上长出一段实心亮块，悬停时长出一段暗块。
+## 这是"当前在哪一页"的唯一标记 —— 比只把文字变白清楚得多，也不用额外图形。
 style navigation_button:
     size_group "navigation"
     background None
+    ## 悬停 = 从左往右滑出的蓝板（整套 UI 统一的悬停语言，见 shaders.rpy）。
+    ## 选中态（当前在哪一页）= 脊上一段更宽的亮块，比竖脊本身宽。
+    hover_background _bar(UI_LINE, w=UI_LINE_W)
+    selected_background _bar(UI_ACCENT, w=9)
+    selected_hover_background _bar(UI_ACCENT, w=9)
+    left_padding 30
+    ypadding 4
 
 style navigation_button_text:
-    size gui.interface_text_size
-    idle_color gui.idle_color
-    hover_color gui.hover_color
-    selected_color gui.selected_color
+    size UI_T_BODY
+    idle_color UI_TEXT_DIM
+    hover_color UI_TEXT
+    selected_color UI_ACCENT
     ## 没存档时的"继续游戏"：灰掉但仍占位（见主菜单按钮那段注释）
-    insensitive_color gui.insensitive_color
+    insensitive_color "#3c4a55"
 
 ################################################################################
 ## 存档/读档界面 - Save/Load Screens
@@ -1201,16 +1387,16 @@ style navigation_button_text:
 
 screen save():
     tag menu
-    use file_slots(_("存档"))
+    use file_slots(_("存档"), kicker="SAVE DATA")
 
 screen load():
     tag menu
-    use file_slots(_("读档"))
+    use file_slots(_("读档"), kicker="LOAD DATA")
 
-screen file_slots(title):
+screen file_slots(title, kicker=""):
     default page_name_value = FilePageNameInputValue(pattern=_("第 {} 页"), auto=_("自动存档"), quick=_("快速存档"))
 
-    use game_menu(title):
+    use game_menu(title, kicker=kicker):
         fixed:
             order_reverse True
 
@@ -1310,16 +1496,25 @@ style page_label:
     ypadding 5
 
 style page_label_text:
-    textalign 0.5
+    textalign 0.0
     layout "subtitle"
-    hover_color gui.hover_color
+    size UI_T_META
+    kerning 4.0
+    color UI_TEXT_DIM
+    hover_color UI_ACCENT
 
+## 页码：当前页套一块 chip —— 原来只靠文字颜色区分，扫一眼看不出在第几页。
 style page_button:
     background None
+    hover_background _bar(UI_LINE, h=UI_LINE_W, yalign=1.0)
+    selected_background _bar(UI_ACCENT, h=3, yalign=1.0)
+    padding (15, 4, 15, 4)
 
 style page_button_text:
-    idle_color gui.idle_color
-    hover_color gui.hover_color
+    size UI_T_SMALL
+    idle_color UI_TEXT_DIM
+    hover_color UI_TEXT
+    selected_color UI_ACCENT
 
 style slot_vbox:
     spacing 5
@@ -1328,38 +1523,48 @@ style slot_button:
     ## padding 归零：槽位的可视尺寸必须精确等于截图尺寸，否则又会出现留白。
     ## 背景只在空存档位（截图是透明的）时看得见。
     padding (0, 0, 0, 0)
-    background Solid("#1a1d26cc")
-    hover_background Solid("#2f3a4ccc")
+    background ui_frame(fill=UI_FILL_SOFT, bracket=UI_LINE_DIM, arm=26, scan=0.10)
+    ## ★foreground★：有存档时截图铺满整颗按钮、把 background 全挡住，
+    ## 于是悬停在有图的槽位上原本没有任何视觉反馈。foreground 画在内容**之上**，
+    ## 所以这一圈线和四角刻线永远看得见 —— 悬停时线提亮、刻线亮起来，
+    ## 就是"这一格被选中了"。
+    foreground ui_frame(fill="#00000000", bracket=UI_LINE_DIM, arm=26, scan=0.10)
+    hover_foreground ui_frame(fill="#00000000", bracket=UI_ACCENT, arm=44, lw=3,
+                              scan=0.0, spine=UI_ACCENT, spine_w=4)
     xsize gui.slot_button_width
     ysize gui.slot_button_height
 
 style slot_button_text:
-    idle_color gui.idle_color
-    hover_color gui.hover_color
+    idle_color UI_TEXT_DIM
+    hover_color UI_TEXT
 
 ## 截图底部的字幕条：压在图上，不占额外高度。
+## 底色跟面板同色系（不是纯黑），上沿一条细线把它和截图分开。
 style slot_caption is empty:
     xfill True
     yalign 1.0
-    background Solid("#000000b3")
+    background ui_frame(fill="#04101adb", bracket=None, scan=0.0,
+                        top_rule=UI_LINE_DIM, rule_w=UI_LINE_W)
     padding (12, 6, 12, 7)
 
 ## 继承 slot_button_text ⇒ 文字跟随按钮的 idle/hover 状态变色。
 style slot_time_text is slot_button_text:
-    size gui.slot_button_text_size
-    xalign gui.slot_button_text_xalign
+    size UI_T_META
+    xalign 0.0
+    kerning 2.0
     outlines []
 
 style slot_name_text is slot_button_text:
-    size gui.slot_button_text_size
-    xalign gui.slot_button_text_xalign
+    size UI_T_SMALL
+    xalign 0.0
     outlines []
 
 style slot_delete_button:
     xalign 0.5
-    background Solid("#552222")
-    hover_background Solid("#773333")
-    padding (15, 5, 15, 5)
+    background _bar(UI_DANGER + "66", w=3)
+    hover_background ui_frame(fill="#3a1218cc", bracket=None, scan=0.0,
+                              spine=UI_DANGER, spine_w=3)
+    padding (18, 5, 18, 5)
 
 style slot_delete_button_text:
     size 18
@@ -1373,7 +1578,7 @@ style slot_delete_button_text:
 screen preferences():
     tag menu
 
-    use game_menu(_("设置"), scroll="viewport"):
+    use game_menu(_("设置"), kicker="CONFIG", scroll="viewport"):
         vbox:
             hbox:
                 box_wrap True
@@ -1383,26 +1588,34 @@ screen preferences():
                 ## 的组合不可靠（rollback 没法穿过 extend 重新执行 say）。
                 ## 限制在主菜单切换，下一次 Start/Continue 之后看到的所有文字
                 ## 都是新语言渲染的，避免 in-place refresh 的所有边角情况。
+                ## 每组设置装进一块面板（pref_group）：原来所有选项平铺在同一片
+                ## 黑底上，只靠标题分组，扫一眼分不出哪几行是一组。
                 if main_menu:
-                    vbox:
-                        style_prefix "radio"
-                        label _("语言 / Language")
-                        textbutton "中文" action Language(None)
-                        textbutton "English" action Language("english")
+                    frame:
+                        style "pref_group"
+                        vbox:
+                            style_prefix "radio"
+                            label _("语言 / Language")
+                            textbutton "中文" action Language(None)
+                            textbutton "English" action Language("english")
 
                 if renpy.variant("pc") or renpy.variant("web"):
-                    vbox:
-                        style_prefix "radio"
-                        label _("显示模式")
-                        textbutton _("窗口") action Preference("display", "window")
-                        textbutton _("全屏") action Preference("display", "fullscreen")
+                    frame:
+                        style "pref_group"
+                        vbox:
+                            style_prefix "radio"
+                            label _("显示模式")
+                            textbutton _("窗口") action Preference("display", "window")
+                            textbutton _("全屏") action Preference("display", "fullscreen")
 
-                vbox:
-                    style_prefix "check"
-                    label _("跳过设置")
-                    textbutton _("未读文本") action Preference("skip", "toggle")
-                    textbutton _("选项后继续") action Preference("after choices", "toggle")
-                    textbutton _("过场后继续") action Preference("skip", "toggle")
+                frame:
+                    style "pref_group"
+                    vbox:
+                        style_prefix "check"
+                        label _("跳过设置")
+                        textbutton _("未读文本") action Preference("skip", "toggle")
+                        textbutton _("选项后继续") action Preference("after choices", "toggle")
+                        textbutton _("过场后继续") action Preference("skip", "toggle")
 
             null height 30
 
@@ -1410,50 +1623,47 @@ screen preferences():
                 style_prefix "slider"
                 box_wrap True
 
-                vbox:
-                    label _("文字速度")
+                frame:
+                    style "pref_group"
+                    vbox:
+                        label _("文字速度")
                     ## 文字速度滑块上限砍半：默认 range=200cps，从中点往上（~100cps+）
                     ## 肉眼已分不出快慢、纯属浪费行程。改成 range=100，最慢端（最小值）
                     ## 不变，最大值取原来的一半，整条滑块的有效分辨率翻倍。
-                    ## 注：逐句点击 {w} 是按 dtt 拆出的独立交互、逐段等点击，瞬显也照常
-                    ## 生效（见 ClickPauseCharacter），所以这里**不需要**限制最高速度。
-                    bar value Preference("text speed", range=100)
+                        ## 注：逐句点击 {w} 是按 dtt 拆出的独立交互、逐段等点击，瞬显也照常
+                        ## 生效（见 ClickPauseCharacter），所以这里**不需要**限制最高速度。
+                        bar value Preference("text speed", range=100)
 
-                    label _("自动前进时间")
-                    bar value Preference("auto-forward time")
+                        label _("自动前进时间")
+                        bar value Preference("auto-forward time")
 
-                vbox:
-                    if config.has_music:
-                        label _("音乐音量")
-                        hbox:
-                            bar value Preference("music volume")
+                frame:
+                    style "pref_group"
+                    vbox:
+                        if config.has_music:
+                            label _("音乐音量")
+                            hbox:
+                                bar value Preference("music volume")
 
-                    if config.has_sound:
-                        label _("音效音量")
-                        hbox:
-                            bar value Preference("sound volume")
+                        if config.has_sound:
+                            label _("音效音量")
+                            hbox:
+                                bar value Preference("sound volume")
 
-                            if config.sample_sound:
-                                textbutton _("测试") action Play("sound", config.sample_sound)
+                                if config.sample_sound:
+                                    textbutton _("测试") action Play("sound", config.sample_sound)
 
             null height 30
 
-            hbox:
-                style_prefix "pref"
-                box_wrap True
+            ## （"删除所有存档"只留在存档界面右上角一处 —— 设置里再放一份
+            ## 等于把同一个危险操作摆在两个地方，删存档不该是"设置项"。）
 
-                vbox:
-                    label _("存档管理")
-                    textbutton _("删除所有存档"):
-                        style "delete_saves_button"
-                        action Confirm(_("确定要删除所有存档吗？此操作无法撤销。"),
-                            yes=Function(delete_all_saves),
-                            no=None)
-
+## 危险操作按钮：同一套 chip，只把线和字换成暗红 —— 形状语言不变，颜色说话。
 style delete_saves_button is gui_button:
-    background Solid("#552222")
-    hover_background Solid("#773333")
-    padding (20, 10, 20, 10)
+    background _bar(UI_DANGER + "66", w=3)
+    hover_background ui_frame(fill="#3a1218cc", bracket=None, scan=0.0,
+                              spine=UI_DANGER, spine_w=3)
+    padding (24, 10, 24, 10)
 
 style delete_saves_button_text is gui_button_text:
     idle_color "#ffaaaa"
@@ -1482,12 +1692,24 @@ style slider_button is gui_button
 style slider_button_text is gui_button_text
 style slider_pref_vbox is pref_vbox
 
+## 设置里每一组的外框。刻线短一档（14）—— 组框比弹窗小，22 的刻线会几乎连成
+## 一整条边，那个"取景框缺口"的感觉就没了。
+style pref_group is empty:
+    background ui_frame(fill=UI_FILL_SOFT, bracket=UI_LINE_DIM, arm=24, scan=0.12)
+    padding (27, 12, 27, 21)
+    margin (0, 0, 18, 18)
+
 style pref_label:
     top_margin 15
     bottom_margin 3
 
 style pref_label_text:
     yalign 1.0
+    ## 组标题走 kicker 那一档：20px + 字距 + 亮青。和 33px 的选项差 1.65 倍，
+    ## 一眼能分出"这是标题"，不用再靠加粗或换颜色去解释。
+    color UI_ACCENT
+    size UI_T_META
+    kerning 4.0
 
 style pref_vbox:
     xsize 338
@@ -1497,39 +1719,56 @@ style radio_vbox:
 
 style radio_button:
     background None
+    hover_background _bar(UI_LINE, w=UI_LINE_W)
+    selected_background _bar(UI_ACCENT, w=4)
+    left_padding 26
+    ypadding 3
 
 style radio_button_text:
-    idle_color gui.idle_color
-    hover_color gui.hover_color
-    selected_color gui.selected_color
+    idle_color UI_TEXT_DIM
+    hover_color UI_TEXT
+    selected_color UI_ACCENT
 
 style check_vbox:
     spacing gui.pref_spacing
 
 style check_button:
     background None
+    hover_background _bar(UI_LINE, w=UI_LINE_W)
+    selected_background _bar(UI_ACCENT, w=4)
+    left_padding 26
+    ypadding 3
 
 style check_button_text:
-    idle_color gui.idle_color
-    hover_color gui.hover_color
-    selected_color gui.selected_color
+    idle_color UI_TEXT_DIM
+    hover_color UI_TEXT
+    selected_color UI_ACCENT
 
 ## 偏好设置滑动条本体。关键点：可调的 bar（value=Preference(...)）实际套用的是
 ## slider 样式（这里因 style_prefix "slider" 解析为 slider_slider），而不是下面那个
 ## bar 样式。本项目没有 slider 图片素材，默认 slider 整条不可见、ysize≈0，于是
 ## 文字速度 / 自动前进 / 音量 等滑块都无法点击或拖动。改用与 bar 一致的纯色绘制，
 ## 并加一个可见的白色滑块（thumb）方便拖动。
+## 配色跟着面板走：已填充段用强调水色，轨道用深海蓝，滑块是一小片亮水色。
+##
+## ★命中区必须盖住 thumb★ bar 的可拖动区域就是它的矩形。原来矩形只有 10px 高
+## （= 轨道的视觉高度），而 thumb 有 26px，露在矩形外面的那两截点了没反应 ——
+## 玩家去抓那根竖条，抓不动。现在矩形加高到 30px（比 thumb 还高），轨道改用
+## ui_track() 画成矩形里居中的一条细线：看起来还是细轨道，但整条带子都能点。
 style slider_slider:
     xsize 525
-    ysize 12
-    left_bar Solid("#ffffff")
-    right_bar Solid("#555555")
-    hover_left_bar Solid("#ffffff")
-    hover_right_bar Solid("#777777")
+    ysize 30
+    left_bar ui_track(UI_ACCENT)
+    right_bar ui_track("#12293c")
+    hover_left_bar ui_track("#c8f0ff")
+    hover_right_bar ui_track("#1b3d57")
     left_gutter 0
     right_gutter 0
-    thumb Solid("#ffffff", xsize=12, ysize=28)
-    thumb_offset 6
+    ## thumb 必须和 bar 等高：Ren'Py 横向 bar 把 thumb blit 到 (x, 0)（见 SDK
+    ## display/behavior.py 的 Bar.render），不是垂直居中 —— 26px 的 thumb 装进
+    ## 30px 的条里就会贴上沿、下面空 4px，看起来"没对齐"。等高就自然上下一样长。
+    thumb Solid("#d5ecf8", xsize=8, ysize=30)
+    thumb_offset 4
 
 style slider_button:
     background None
@@ -1549,11 +1788,11 @@ style slider_vbox:
 ## 右段=轨道（深灰），整条可点击/拖动，无需任何图片素材。
 style bar:
     xsize 500
-    ysize 12
-    left_bar Solid("#ffffff")
-    right_bar Solid("#555555")
-    hover_left_bar Solid("#ffffff")
-    hover_right_bar Solid("#777777")
+    ysize 30
+    left_bar ui_track(UI_ACCENT)
+    right_bar ui_track("#12293c")
+    hover_left_bar ui_track("#c8f0ff")
+    hover_right_bar ui_track("#1b3d57")
     left_gutter 0
     right_gutter 0
     thumb None
@@ -1567,7 +1806,7 @@ screen history():
 
     predict False
 
-    use game_menu(_("历史"), scroll="viewport", yinitial=1.0):
+    use game_menu(_("历史"), kicker="LOG", scroll="viewport", yinitial=1.0):
         style_prefix "history"
 
         ## 布局：每条记录"名字一行 + 正文若干行"竖排堆叠，条目自适应高度。
@@ -1580,7 +1819,12 @@ screen history():
             spacing 28
 
             for h in _history_list:
-                vbox:
+                ## 每条记录左侧一条竖线 —— 长长一列纯文字里，这条线让"一条记录
+                ## 从哪开始到哪结束"一眼可见，比加满整块底板轻得多。
+                frame:
+                    style "history_entry"
+
+                    has vbox
                     spacing 6
                     xfill True
 
@@ -1609,8 +1853,15 @@ style history_text is gui_text
 style history_label is gui_label
 style history_label_text is gui_label_text
 
+style history_entry is empty:
+    background Transform(Solid(UI_LINE_DIM), xsize=UI_LINE_W, xalign=0.0)
+    padding (24, 2, 0, 6)
+    xfill True
+
 style history_name_text:
     size 26
+    ## 说话人用强调色，和 26px 的正文拉开
+    color UI_ACCENT
 
 style history_text:
     size 26
@@ -1632,7 +1883,7 @@ screen music_room():
 
     ## 曲目列表从 scene_music 推导（见 get_music_room_tracks）；未解锁显示 ???。
     ## 曲子在玩家第一次听到时（set_scene_music → unlock_music）解锁。
-    use game_menu(_("音乐鉴赏"), scroll="viewport"):
+    use game_menu(_("音乐鉴赏"), kicker="SOUND TRACK", scroll="viewport"):
         style_prefix "music_room"
 
         vbox:
@@ -1660,12 +1911,18 @@ style music_room_button_text is gui_button_text
 
 style music_room_button:
     xsize 400
-    background Solid("#333333aa")
-    hover_background Solid("#555555aa")
-    padding (20, 10, 20, 10)
+    background _bar(UI_LINE_DIM, w=UI_LINE_W)
+    hover_background ui_frame(fill="#0d2233cc", bracket=None, scan=0.0,
+                              spine=UI_ACCENT, spine_w=4)
+    selected_background ui_frame(fill="#0d2233cc", bracket=None, scan=0.0,
+                                 spine=UI_ACCENT, spine_w=4)
+    padding (26, 10, 20, 10)
 
 style music_room_button_text:
-    xalign 0.5
+    xalign 0.0
+    size UI_T_BODY
+    idle_color UI_TEXT_DIM
+    hover_color UI_TEXT
 
 ################################################################################
 ## 关于界面 - About Screen
@@ -1674,7 +1931,7 @@ style music_room_button_text:
 screen about():
     tag menu
 
-    use game_menu(_("关于"), scroll="viewport"):
+    use game_menu(_("关于"), kicker="ABOUT", scroll="viewport"):
         style_prefix "about"
 
         vbox:
@@ -1703,51 +1960,75 @@ screen confirm(message, yes_action, no_action):
 
     style_prefix "confirm"
 
-    add Solid("#000000aa")
+    ## 遮罩：深海蓝压暗（不是纯黑，底下的画面要透出颜色），整屏再盖一层扫描线 ——
+    ## 弹窗出现的那一刻，整个画面都变成"信号"，而不是画面上贴了一张卡片。
+    add Solid("#02080fe0")
+    add ui_scanlines(0.10)
 
-    frame:
-        vbox:
-            xalign 0.5
-            yalign 0.5
-            spacing 45
+    ## ★不是居中的方框，是横贯整屏的一条信号带★
+    ## 居中方框是所有引擎的默认长相；一条切开整个画面、左侧带亮脊、上下压粗线的
+    ## 带子才是这个游戏的长相。文字靠左（和所有界面同一条对齐线 UI_HEAD_X），
+    ## 按钮甩到最右 —— 左读右做，视线走一条直线，不用在框里左右横跳。
+    frame at ui_band_in:
+        style "confirm_band"
 
-            label _(message):
-                style "confirm_prompt"
-                xalign 0.5
+        fixed:
+            xysize (config.screen_width, 246)
+
+            vbox:
+                xpos UI_HEAD_X
+                yalign 0.5
+                spacing 10
+
+                text _(message) style "confirm_prompt_text"
 
             hbox:
-                xalign 0.5
-                spacing 150
+                xalign 1.0
+                xoffset -100
+                yalign 0.5
+                spacing 24
 
-                textbutton _("确定") action yes_action
+                textbutton _("确定") action yes_action style "confirm_yes_button"
                 textbutton _("取消") action no_action
 
     key "game_menu" action no_action
 
-style confirm_frame is gui_frame
-style confirm_prompt is gui_prompt
-style confirm_prompt_text is gui_prompt_text
+style confirm_band is empty
+style confirm_prompt_text is default
 style confirm_button is gui_button
 style confirm_button_text is gui_button_text
+style confirm_yes_button is confirm_button
+style confirm_yes_button_text is confirm_button_text
 
-style confirm_frame:
-    background Solid("#333333ee")
-    padding (60, 60, 60, 60)
-    xalign 0.5
+style confirm_band:
+    xfill True
     yalign 0.5
+    background ui_frame(fill="#040d17f2", bracket=None, scan=0.16,
+                        spine=UI_ACCENT, spine_w=6,
+                        top_rule=UI_LINE, bot_rule=UI_LINE, rule_w=UI_LINE_W)
 
 style confirm_prompt_text:
-    textalign 0.5
-    layout "subtitle"
+    size UI_T_SUB
+    color UI_TEXT
 
+## 按钮不带任何常驻装饰：悬停反馈统一由"滑入的蓝色背景板"负责
+## （hover_lens，见 shaders.rpy）——那是整套 UI 唯一的悬停语言，
+## 这里再加一条脊就是两套信号打架。
 style confirm_button:
-    background Solid("#555555")
-    hover_background Solid("#777777")
-    padding (30, 10, 30, 10)
+    background None
+    hover_background _bar(UI_LINE, w=UI_LINE_W)
+    left_padding 26
+    right_padding 26
+    ypadding 12
 
 style confirm_button_text:
-    idle_color gui.idle_color
-    hover_color gui.hover_color
+    size UI_T_BODY
+    idle_color UI_TEXT_DIM
+    hover_color UI_TEXT
+
+style confirm_yes_button_text:
+    idle_color UI_TEXT
+    hover_color UI_TEXT
 
 ################################################################################
 ## 通知界面 - Notify Screen
@@ -1762,23 +2043,33 @@ screen notify(message):
 
     timer 3.25 action Hide('notify')
 
+## 通知从右边滑进来一点点。横向位移比单纯淡入更像"有条消息递进来"。
 transform notify_appear:
     on show:
-        alpha 0
-        linear 0.25 alpha 1.0
+        alpha 0.0
+        xoffset 18
+        easein 0.22 alpha 1.0 xoffset 0
     on hide:
-        linear 0.5 alpha 0.0
+        easeout 0.45 alpha 0.0 xoffset 12
 
 style notify_frame is empty
 style notify_text is gui_text
 
 style notify_frame:
+    ## 靠右上角。原来贴在左上角，和 game_menu 的大标题（"设置"/"存档"…）
+    ## 正好叠在一起 —— 删存档之类的提示会糊在标题上。右上角游戏内和菜单里都空着。
+    xalign 1.0
+    xoffset -30
     ypos gui.notify_ypos
-    background Solid("#333333cc")
-    padding (24, 8, 60, 8)
+    ## 悬浮在游戏画面上，所以底色取更透的一档、也不要四角刻线（太抢眼）；
+    ## 左侧一条强调竖条代替勾边，是"提示"而不是"对话框"。
+    background ui_frame(fill=UI_FILL_SOFT, bracket=None, scan=0.14,
+                        spine=UI_ACCENT, spine_w=4)
+    padding (30, 12, 42, 12)
 
 style notify_text:
-    size gui.notify_text_size
+    size UI_T_SMALL
+    color UI_TEXT
 
 ################################################################################
 ## 跳过指示器 - Skip Indicator
@@ -1811,12 +2102,21 @@ style skip_text is gui_text
 style skip_triangle is skip_text
 
 style skip_frame:
+    xpos 30                 ## 从左边缘让开一点，和通知在右上角对称
     ypos gui.skip_ypos
-    background Solid("#333333aa")
-    padding (24, 8, 30, 8)
+    ## 与通知同一套（同为浮在画面上的小条），强调竖条换成右侧箭头本身在闪，
+    ## 所以这里不加 accent，只留最弱的一圈线。
+    background ui_frame(fill=UI_FILL_SOFT, bracket=None, scan=0.14,
+                        spine=UI_LINE, spine_w=3)
+    padding (30, 10, 36, 10)
 
 style skip_text:
-    size gui.notify_text_size
+    size UI_T_SMALL
+    color UI_TEXT_DIM
+    kerning 2.0
+
+style skip_triangle:
+    color UI_ACCENT
 
 ################################################################################
 ## 周目标题界面 - Route Title Screen
