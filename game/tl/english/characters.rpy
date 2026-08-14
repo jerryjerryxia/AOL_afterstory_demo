@@ -27,16 +27,16 @@ translate english python:
     wangshuang.name = "Wang Shuang"
     wangshuang_unknown.name = "Wang Shuang (?)"
     ahe.name = "Kaku"
-    shishou.name = "Shishou"
+    shishou.name = "The Corpse"
 
     ## Supporting characters
     lurenjia.name = "Passerby A"
     lurenyi.name = "Passerby B"
     lurenbing.name = "Passerby C"
     lurending.name = "Passerby D"
-    jieluowa.name = "Jerowa"
+    jieluowa.name = "Jerowald"
     mijie.name = "Sister Mi"
-    youliya.name = "Yulia"
+    youliya.name = "Julia"
 
 translate english strings:
 

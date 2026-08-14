@@ -12,15 +12,15 @@ import os
 CHAR_NAMES_EN = {
     '王霜': 'Wang Shuang',
     '王霜（？）': 'Wang Shuang (?)',
-    '阿鹤': 'Ahe',
-    '尸首': 'Shishou',
+    '阿鹤': 'Kaku',
+    '尸首': 'The Corpse',
     '路人甲': 'Passerby A',
     '路人乙': 'Passerby B',
     '路人丙': 'Passerby C',
     '路人丁': 'Passerby D',
-    '杰罗瓦': 'Jerowa',
+    '杰罗瓦': 'Jerowald',
     '米姐': 'Sister Mi',
-    '尤里娅': 'Yulia',
+    '尤里娅': 'Julia',
 }
 
 # Character variable names in converter
@@ -534,6 +534,17 @@ def main():
         '在此处添加游戏介绍...\n': 'Game description goes here...\n',
         '制作人员：\n': 'Credits:\n',
         '- 策划：\n- 程序：\n- 美术：\n- 音乐：\n': '- Planning:\n- Programming:\n- Art:\n- Music:\n',
+        # Demo end card + filled credits (game/screens.rpy)
+        '感谢游玩本Demo！\n请务必在正作继续下潜~\n':
+            'Thanks for playing the demo!\nBe sure to keep diving with us in the full release~\n',
+        ('- 制作人：Jerrix\n- 剧本：Jerrix\n- 美术：Gara、Mermo\n'
+         '- 音乐：Kevin Qiyuan Wang, audionautix.com, FabienC@RustedMusicStudio\n'
+         '- 音效：Sirderf，soundscalpel.com，rrehl, chewiesmissus, gravitysound.studio\n'
+         '- 编辑：倪佼佼\n- 程序：Jerrix\n'):
+            ('- Producer: Jerrix\n- Script: Jerrix\n- Art: Gara, Mermo\n'
+             '- Music: Kevin Qiyuan Wang, audionautix.com, FabienC@RustedMusicStudio\n'
+             '- Sound: Sirderf, soundscalpel.com, rrehl, chewiesmissus, gravitysound.studio\n'
+             '- Editing: Ni Jiaojiao\n- Programming: Jerrix\n'),
         # Confirm
         '确定': 'OK',
         '取消': 'Cancel',

@@ -93,6 +93,9 @@ SFX_CUES = {
                      'fadein': 1.5, 'level': 0.6},
     '心跳音效': {'file': 'heartbeat_60', 'ambient': True, 'channel': 'ambient_pulse',
                  'fadein': 0.8, 'level': 0.6},
+    # 必须显式列出：'心跳音效' 是 '心跳音效停' 的子串，没有这条的话长度优先匹配会落到
+    # 上面那条，把心跳在 Demo 结尾又起一遍（而不是停掉）。
+    '心跳音效停': {'stop': True, 'channel': 'ambient_pulse'},
 
     # ---- 一次性 ----
     # 电视机关机 / 关闭：剧本两种写法都有，'电视机关' 一并覆盖。

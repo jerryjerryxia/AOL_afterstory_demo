@@ -253,3 +253,14 @@ translate english strings:
     old "结局"
     new "Ending"
 
+
+translate english strings:
+
+    # game/screens.rpy:1941
+    old "感谢游玩本Demo！\n请务必在正作继续下潜~\n"
+    new "Thanks for playing the demo!\nBe sure to keep diving with us in the full release~\n"
+
+    # game/screens.rpy:1944
+    old "- 制作人：Jerrix\n- 剧本：Jerrix\n- 美术：Gara、Mermo\n- 音乐：Kevin Qiyuan Wang, audionautix.com, FabienC@RustedMusicStudio\n- 音效：Sirderf，soundscalpel.com，rrehl, chewiesmissus, gravitysound.studio\n- 编辑：倪佼佼\n- 程序：Jerrix\n"
+    new "- Producer: Jerrix\n- Script: Jerrix\n- Art: Gara, Mermo\n- Music: Kevin Qiyuan Wang, audionautix.com, FabienC@RustedMusicStudio\n- Sound: Sirderf, soundscalpel.com, rrehl, chewiesmissus, gravitysound.studio\n- Editing: Ni Jiaojiao\n- Programming: Jerrix\n"
+

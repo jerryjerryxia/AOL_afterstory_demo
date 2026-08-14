@@ -10,7 +10,7 @@ translate english route1_prologue_6c95f221:
 translate english route1_prologue_23ac45cc:
 
     # extend "\n你感到心平气和，脑海里没有任何多余的问题，只是冷静地观察着你眼前唯一的光源。"
-    extend "\nYou felt calm and collected, without a second thought in your head. You mindlessly stared at the only source of light in front of you with a nonchalant gaze."
+    extend "\nYou felt calm and collected, without a second thought in your head, mindlessly staring at the only source of light in front of you with a nonchalant gaze."
 
 # game/scripts/prologue.rpy:29
 translate english route1_prologue_9ed104a4:
@@ -46,7 +46,7 @@ translate english route1_prologue_9fd42c7a:
 translate english route1_prologue_d2feb6ae:
 
     # extend "\n是当太阳还只是一团翩翩起舞的灰烬与气体时？"
-    extend "\nWhen the sun was just a ball of dancing gas and dust, maybe?"
+    extend "\nWhen the sun was just a orb of dancing gas and dust, maybe?"
 
 # game/scripts/prologue.rpy:39
 translate english route1_prologue_66b7ff9a:
@@ -58,7 +58,7 @@ translate english route1_prologue_66b7ff9a:
 translate english route1_prologue_d006a50b:
 
     # large_narrator "你只记得这个字眼。"
-    large_narrator "That's all you remember."
+    large_narrator "That's all you could remember."
 
 # game/scripts/prologue.rpy:43
 translate english route1_prologue_deec9908:
@@ -90,12 +90,6 @@ translate english route1_prologue_96cf2dfb:
     # extend "\n——但在此刻，‘一切’是精确的。"
     extend "\n——But at this moment, 'Everything' is quite precise."
 
-# game/scripts/prologue.rpy:50
-translate english route1_prologue_ebfd385d:
-
-    # extend "\n——无需争论。"
-    extend "\n——No need to argue."
-
 # game/scripts/prologue.rpy:51
 translate english route1_prologue_480b26e3:
 
@@ -114,47 +108,17 @@ translate english route1_prologue_9dd4596f:
     # extend "\n——完整是无需争论的。"
     extend "\n——Complete beings have no need for argument."
 
-# game/scripts/prologue.rpy:54
-translate english route1_prologue_4b0afd53:
-
-    # extend "\n——无言以对。"
-    extend "\n——Don't know what to say to that."
-
 # game/scripts/prologue.rpy:55
 translate english route1_prologue_6183a470:
 
     # extend "\n——不如顺便移开目光，看看别处。"
     extend "\n——Maybe you should turn away and look elsewhere."
 
-# game/scripts/prologue.rpy:56
-translate english route1_prologue_0b7e5202:
-
-    # extend "\n——无可奉告。"
-    extend "\n——I don't know about that."
-
 # game/scripts/prologue.rpy:57
 translate english route1_prologue_313dbcbb:
 
     # extend "\n——真是无聊啊你。"
     extend "\n——You're boring."
-
-# game/scripts/prologue.rpy:60
-translate english route1_prologue_2d79e5db:
-
-    # centered_large_narrator "…"
-    centered_large_narrator "…"
-
-# game/scripts/prologue.rpy:63
-translate english route1_prologue_9421bad8:
-
-    # centered_large_narrator "……"
-    centered_large_narrator "……"
-
-# game/scripts/prologue.rpy:66
-translate english route1_prologue_df9cc45d:
-
-    # centered_large_narrator "………"
-    centered_large_narrator "………"
 
 # game/scripts/prologue.rpy:69
 translate english route1_prologue_a691e6a6:
@@ -166,31 +130,13 @@ translate english route1_prologue_a691e6a6:
 translate english route1_prologue_a1985929:
 
     # extend "\n——我以为这种事对于现在的你来说易如反掌。"
-    extend "\n——I thought this kinda stuff was easy for you now, no?"
-
-# game/scripts/prologue.rpy:71
-translate english route1_prologue_923b9435:
-
-    # extend "\n——当然。只是一想到又要见到你那臭脸，我就下意识地多做了点心理准备。"
-    extend "\n——Of course, of course. It's just that I came extra mentally prepared, so that I can bear to look at your shit-face again."
+    extend "\n——I thought this kinda stuff is easy for you now, no?"
 
 # game/scripts/prologue.rpy:72
 translate english route1_prologue_d527c1e5:
 
     # extend "\n——心理准备？你？"
     extend "\n——You? Mentally prepared? For what?"
-
-# game/scripts/prologue.rpy:73
-translate english route1_prologue_cbda4b8b:
-
-    # extend "\n——毕竟做了“伤天害理”的事情。"
-    extend '\n——Well, you see, I\'m aware that I did something "outrageous".'
-
-# game/scripts/prologue.rpy:74
-translate english route1_prologue_b6b9563e:
-
-    # extend "\n——哦。歉意，你能感受到那种东西？"
-    extend "\n——Oh, so you are saying you can feel guilt? That's a thing for you now?"
 
 # game/scripts/prologue.rpy:75
 translate english route1_prologue_bf4233f7:
@@ -202,13 +148,7 @@ translate english route1_prologue_bf4233f7:
 translate english route1_prologue_cf1f310d:
 
     # extend "\n——看来你也挺无聊。"
-    extend "\n——Seems like you are bored, too."
-
-# game/scripts/prologue.rpy:77
-translate english route1_prologue_768b66e8:
-
-    # extend "\n——是咯。所以想不想出去溜达溜达？"
-    extend "\n——Yea, maybe. So, wanna head out?"
+    extend "\n——Seems like you are bored, too, huh."
 
 # game/scripts/prologue.rpy:78
 translate english route1_prologue_e561b331:
@@ -228,35 +168,11 @@ translate english route1_prologue_bc2f2ccc:
     # extend "\n——请自便吧。"
     extend "\n——Suit yourself."
 
-# game/scripts/prologue.rpy:83
-translate english route1_prologue_2d79e5db_1:
-
-    # centered_large_narrator "…"
-    centered_large_narrator "…"
-
-# game/scripts/prologue.rpy:86
-translate english route1_prologue_9421bad8_1:
-
-    # centered_large_narrator "……"
-    centered_large_narrator "……"
-
-# game/scripts/prologue.rpy:89
-translate english route1_prologue_df9cc45d_1:
-
-    # centered_large_narrator "………"
-    centered_large_narrator "………"
-
 # game/scripts/prologue.rpy:99
 translate english route1_prologue_3871d71c:
 
     # large_narrator "仿佛完成了一场亘古的潜行，你轻轻浮出水面。"
     large_narrator "As if surfacing from a deep dive that lasted centuries, you stuck your head out of the water."
-
-# game/scripts/prologue.rpy:100
-translate english route1_prologue_1e30ed85:
-
-    # extend "\n可眼前只有一片黑暗，比你所熟知的海底更加幽深。"
-    extend "\nBut there was only darkness in front of you, even darker than the deep ocean where you just came from."
 
 # game/scripts/prologue.rpy:101
 translate english route1_prologue_3ce6af83:
@@ -286,13 +202,13 @@ translate english route1_prologue_fd970fe4:
 translate english route1_prologue_7bef9810:
 
     # extend "\n在长久的漂浮中，你渐渐忘记了消逝的体温，忘记了静脉里潺潺流动的暗红血液，忘记了你究竟为什么来到这里。"
-    extend "\nYou started to lose track of your body temperature, your blood flow, and your reason for being."
+    extend "\nYou started to lose track of your fleeting body temperature, the dark blood streams in your veins, and your reason for being."
 
 # game/scripts/prologue.rpy:108
 translate english route1_prologue_53b31ee5:
 
     # extend "\n你忘记了呼吸。"
-    extend "\nYou started to lose track of your breathing."
+    extend "\nYou started to lose track of your breathes."
 
 # game/scripts/prologue.rpy:114
 translate english route1_prologue_d723988b:
@@ -306,29 +222,11 @@ translate english route1_prologue_39888884:
     # extend "\n本该是这样的。"
     extend "\nThat should have been the case."
 
-# game/scripts/prologue.rpy:116
-translate english route1_prologue_1c18d479:
-
-    # extend "\n但你累了，实在是太累了。长时间保持不动竟是一件如此令人疲惫的事。"
-    extend "\nBut you felt tired, way too fatigued. You had no idea that staying still for a long time could be this tiring."
-
-# game/scripts/prologue.rpy:117
-translate english route1_prologue_7792221f:
-
-    # extend "\n每一寸肌肉都从黑夜中啜饮势能，苦苦等待爆发的那一刻——终究不会到来的那一刻。"
-    extend "\nEvery thread of muscle was drinking in energy from the darkness, awaiting the moment to burst - the moment that would never arrive."
-
 # game/scripts/prologue.rpy:118
 translate english route1_prologue_a4c524ff:
 
     # extend "\n你在永恒的凝滞中被倦意填满。"
     extend "\nYou were filled by lethargy in this eternal stasis."
-
-# game/scripts/prologue.rpy:119
-translate english route1_prologue_754ba4da:
-
-    # extend "\n然而来者终归要到来——应你之邀而来。"
-    extend "\nBut the one who was coming would eventually arrive - as per your invitation."
 
 # game/scripts/prologue.rpy:120
 translate english route1_prologue_c203c7c0:
@@ -342,12 +240,6 @@ translate english route1_prologue_49a66727:
     # centered_large_narrator "逃避吧！"
     centered_large_narrator "Then run!"
 
-# game/scripts/prologue.rpy:126
-translate english route1_prologue_877061f0:
-
-    # large_narrator "虽然早就无路可逃，但移开目光就能解燃眉之急，如此便利之事又有什么推脱的借口？"
-    large_narrator "You knew that there was nowhere to run, but if looking away could help you avoid the immediate pain, there was no reason to turn down that offer."
-
 # game/scripts/prologue.rpy:127
 translate english route1_prologue_ba73ef04:
 
@@ -360,3 +252,117 @@ translate english route1_prologue_db0d72ae:
     # extend "\n假装一切都没有发生。"
     extend "\nAs if nothing ever happened."
 
+
+# game/scripts/prologue.rpy:49
+translate english route1_prologue_38336e07:
+
+    # extend "\n——这无需争论。"
+    extend "\n——No need to argue."
+
+# game/scripts/prologue.rpy:53
+translate english route1_prologue_0ea3b1c0:
+
+    # extend "\n——嗯，我无言以对。"
+    extend "\n——Hmm, I don't know what to say to that."
+
+# game/scripts/prologue.rpy:55
+translate english route1_prologue_1762c1f3:
+
+    # extend "\n——嗯，我无可奉告。"
+    extend "\n——Hmm, maybe you are right."
+
+# game/scripts/prologue.rpy:60
+translate english route1_prologue_526eac06:
+
+    # large_narrator "…"
+    large_narrator "…"
+
+# game/scripts/prologue.rpy:61
+translate english route1_prologue_aec08ceb:
+
+    # extend "\n……"
+    extend "\n……"
+
+# game/scripts/prologue.rpy:62
+translate english route1_prologue_4bfaa876:
+
+    # extend "\n………"
+    extend "\n………"
+
+# game/scripts/prologue.rpy:68
+translate english route1_prologue_2c1885a2:
+
+    # extend "\n——当然。只是一想到又要见到你那张臭脸，我就下意识地多做了点心理准备。"
+    extend "\n——Of course, of course. It's just that I came extra mentally prepared, so that I can bear to look at your resting bitch face again."
+
+# game/scripts/prologue.rpy:70
+translate english route1_prologue_fc76ed85:
+
+    # extend "\n——嗯，毕竟做了“伤天害理”的事情。"
+    extend '\n——Well, you see, I\'m aware that I did something "outrageous".'
+
+# game/scripts/prologue.rpy:71
+translate english route1_prologue_2cc2a05b:
+
+    # extend "\n——哦？歉意，你能感受到那种东西？"
+    extend "\n——Oh, so you are saying you can feel guilt? That's a thing for you now?"
+
+# game/scripts/prologue.rpy:74
+translate english route1_prologue_169e25cf:
+
+    # extend "\n——是咯，所以想不想出去溜达溜达？"
+    extend "\n——Yea, maybe. So, wanna head out?"
+
+# game/scripts/prologue.rpy:81
+translate english route1_prologue_526eac06_1:
+
+    # large_narrator "…"
+    large_narrator "…"
+
+# game/scripts/prologue.rpy:82
+translate english route1_prologue_aec08ceb_1:
+
+    # extend "\n……"
+    extend "\n……"
+
+# game/scripts/prologue.rpy:83
+translate english route1_prologue_4bfaa876_1:
+
+    # extend "\n………"
+    extend "\n………"
+
+# game/scripts/prologue.rpy:92
+translate english route1_prologue_fedbdac9:
+
+    # extend "\n可眼前只有黑暗，比你所熟知的海底更加幽深。"
+    extend "\nBut the only thing around you was darkness, darker than the deep ocean where you just came from."
+
+# game/scripts/prologue.rpy:105
+translate english route1_prologue_24bdded4:
+
+    # extend "\n但你累了，实在太累了。长时间保持不动竟是一件如此令人疲惫的事。"
+    extend "\nBut you felt tired, way too fatigued. You had no idea that staying still for a long time could be this tiring."
+
+# game/scripts/prologue.rpy:106
+translate english route1_prologue_792c4ad1:
+
+    # extend "\n所有肌肉与神经都在从黑夜中啜饮势能，苦苦等待爆发的那一刻。"
+    extend "\nEvery muscle and every nerve was drinking in energy from the darkness, awaiting the moment to burst."
+
+# game/scripts/prologue.rpy:107
+translate english route1_prologue_d5765adf:
+
+    # extend "\n只是那一刻永远不会到来。"
+    extend "\nYet that moment would never come."
+
+# game/scripts/prologue.rpy:111
+translate english route1_prologue_c6e8551c:
+
+    # large_narrator "然而来者终归要到来——应你之邀而来。"
+    large_narrator "But the one who was coming would eventually arrive - as per your invitation."
+
+# game/scripts/prologue.rpy:121
+translate english route1_prologue_ff51f24b:
+
+    # large_narrator "虽然早就无路可逃，但假若移开目光就能解燃眉之急，如此便利之事又有什么推脱的借口？"
+    large_narrator "You knew that there was nowhere to run, but if looking away could help you avoid the immediate pain for but a moment, there was no reason to turn down that offer."

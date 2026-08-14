@@ -1941,7 +1941,7 @@ screen about():
             text _("感谢游玩本Demo！\n请务必在正作继续下潜~\n")
 
             text _("制作人员：\n")
-            text _("- 制作人：Jerrix\n- 剧本：Jerrix\n- 美术：Gara、Mermo\n- 音乐：Kevin, audionautix.com, FabienC@RustedMusicStudio\n- 音效：Sirderf，soundscalpel.com，rrehl, chewiesmissus, gravitysound.studio\n- 编辑：倪佼佼\n- 程序：Jerrix\n")
+            text _("- 制作人：Jerrix\n- 剧本：Jerrix\n- 美术：Gara、Mermo\n- 音乐：Kevin Qiyuan Wang, audionautix.com, FabienC@RustedMusicStudio\n- 音效：Sirderf，soundscalpel.com，rrehl, chewiesmissus, gravitysound.studio\n- 编辑：倪佼佼\n- 程序：Jerrix\n")
 
 style about_label is gui_label
 style about_label_text is gui_label_text
@@ -2220,10 +2220,34 @@ style route_subtitle_text:
 ## 占满 1080 高的 94%。改字号或改正文长度都要重算这个数。
 define WALL_CHARS_PER_LINE = 36
 
+## 英文墙必须换一组参数，不是审美问题是硬约束：拉丁字母步进只有 0.472 em
+## （汉字是 1.0），同样字号填满同一块屏要 ~1155 个字 —— 而逐字颤动每个字都是
+## 一个独立 displayable，1056 个的时候正片就已经卡死（见 text_wall 里的注释）。
+## 唯一能压低 displayable 数的杠杆是字号：72px 下每行 48 字（正好 8 个 "sorry "，
+## 断行不切词）、10 行 × (72×1.3333+4) = 1000px，合计 480 个字 —— 和中文墙的
+## 540 同量级，渲染开销一样。改字号必须同时改这里。
+define WALL_CHARS_PER_LINE_EN = 48
+
 init python:
+    def wall_is_english():
+        """墙的排版按语言分档。用 preferences.language 而不是缓存变量：
+        玩家可以在游戏中途切语言，这个函数是渲染时才调用的。"""
+        return renpy.game.preferences.language == "english"
+
     def wall_wrap(s):
-        """按固定字数硬换行。墙的正文全是等宽汉字，所以按字数切就等于按宽度切。"""
-        n = WALL_CHARS_PER_LINE
+        """按固定字数硬换行。中文墙全是等宽汉字，按字数切就等于按宽度切；
+        英文墙的每行字数是按 "sorry " 整数倍选的，所以也不会把词切断。
+
+        ★必须在这里显式翻译★ 剧本里写的是 show screen text_wall(_("对不起…"))，
+        但 Ren'Py 的 _() 是运行时空操作（renpy/minstore.py：flags a string as
+        translatable, and returns it immediately），真正的翻译发生在 Text
+        displayable 显示这个字符串的时候 —— 而屏幕显示的不是 what 本身，是
+        "{wallshake}" + wall_wrap(what) + "{/wallshake}"：加了标签、塞了换行。
+        Ren'Py 拿那个拼接后的串去查表，自然查不到 old 条目，于是原样显示中文。
+        所以要在拼接与换行之前，自己把原串翻出来。
+        """
+        s = renpy.translation.translate_string(s)
+        n = WALL_CHARS_PER_LINE_EN if wall_is_english() else WALL_CHARS_PER_LINE
         return "\n".join(s[i:i + n] for i in range(0, len(s), n))
 
     def _wall_shake_tag(tag, argument, contents):
@@ -2242,7 +2266,9 @@ init python:
                         continue
                     new_list.append((
                         renpy.TEXT_DISPLAYABLE,
-                        At(Text(ch, style="wall_tremble_char"),
+                        At(Text(ch, style=("wall_tremble_char_en"
+                                           if wall_is_english()
+                                           else "wall_tremble_char")),
                            wall_tremble(wall_char_phase(n))),
                     ))
                     n += 1
@@ -2274,7 +2300,8 @@ screen text_wall(what):
             ## 每帧都在动的显示物 —— 这已经是这套渲染路径能扛的上限。试过复制成两份
             ## 做"对半分开"（1056 个），正片里直接卡死到没法看。
             ## 任何"把墙拆成 N 块各自动"的想法都会撞上同一堵墙，别再试。
-            text ("{wallshake}" + wall_wrap(what) + "{/wallshake}") style "text_wall_text"
+            text ("{wallshake}" + wall_wrap(what) + "{/wallshake}") style (
+                "text_wall_text_en" if wall_is_english() else "text_wall_text")
 
     ## 白闪盖在最上层
     add Solid("#ffffff") at wall_flash
@@ -2302,3 +2329,12 @@ style wall_tremble_char is default:
     size 48
     color "#c8c0bc"
     outlines [(2, "#000000", 0, 0)]
+
+## 英文档：只改字号，其余继承。理由见 WALL_CHARS_PER_LINE_EN 上方的注释。
+##   每行字数 = 48（8 × "sorry "），行数 = 1080 ÷ (72×1.3333+4) ≈ 10
+##   总字数   = 480，逐字 displayable 数与中文墙（540）同量级
+style text_wall_text_en is text_wall_text:
+    size 72
+
+style wall_tremble_char_en is wall_tremble_char:
+    size 72
