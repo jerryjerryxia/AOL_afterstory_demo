@@ -215,9 +215,9 @@ image dessert2_pout    = Transform("images/bg/expression_variations/dessert/dess
 image dessert3_default = Transform("images/bg/expression_variations/dessert/dessert3_default.png", xysize=(1920, 1080), fit="cover")
 image dessert3_excited = Transform("images/bg/expression_variations/dessert/dessert3_excited.png", xysize=(1920, 1080), fit="cover")
 image dessert3_pout    = Transform("images/bg/expression_variations/dessert/dessert3_pout.png",    xysize=(1920, 1080), fit="cover")
-## 虚空对视（overlay，透明立绘叠在 black 上）。共用 tag "void" → 表情用 show 互换。
-image void default   = Transform("images/bg/expression_variations/void/void_default.png",   xysize=(1920, 1080), fit="cover")
-image void surprised = Transform("images/bg/expression_variations/void/void_surprised.png", xysize=(1920, 1080), fit="cover")
+## 虚空对视：旧的 void_default/void_surprised 占位整图已弃用 —— 现在用
+## images/sprites/ 下的王霜立绘（sprites.rpy，转换器自动生成），由剧本里的
+## 【姿势，表情】 标记驱动。expression_variations/void/ 下的 png 可以删了。
 
 ################################################################################
 ## 资源替换说明

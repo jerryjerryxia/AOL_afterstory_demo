@@ -206,7 +206,7 @@ As if nothing ever happened.
 Wang Shuang: Welcome back, Kaku.
 阿鹤：嗯...那...倒不如去死...？
 Kaku: Mm...well...I'd rather just die...?
-王霜【背手站立，小吃惊表情】：哦？有趣的提议，为什么呢？
+王霜【背手站立，吃惊表情】：哦？有趣的提议，为什么呢？
 Wang Shuang: Oh? That's an interesting thought, tell me more.
 阿鹤：我...不好意思...我觉得我有点...
 Kaku: I...I'm sorry...I think I might be...
@@ -459,7 +459,7 @@ You wanted death. That would ease the pain. But you were awfully aware that deat
 
 【转场：白屏。就是白屏。】
 
-【Extended大文本框开始，不断句】
+【Extended大文本框开始，不分句】
 
 那声音又响了起来。
 The voice came again.
@@ -480,7 +480,7 @@ The voice came again.
 
 【Extended大文本框结束】
 
-【Extended大文本框开始，不断句】
+【Extended大文本框开始，不分句】
 
 ——去无人的深海。
 ——To the deep sea where no one dwells.
@@ -581,7 +581,7 @@ Wang Shuang: So why don't we drop the prejudice and have some mochi?
 阿鹤【默默吃一口】：...
 Kaku: ...
 王霜【手中出现无色透明多面体】：这就对了嘛，来都来了。
-Wang Shuang: That's more like it. Eat up. Be my guest. 
+Wang Shuang: That's more like it. Eat up. Be my guest.
 阿鹤：...
 Kaku: ...
 王霜：有件事你可能不知道，他们家团子是加了 KAS 才这么好吃的。
@@ -1317,8 +1317,8 @@ Maybe it came from a joy forced on you, so that you celebrated the freedom of a 
 
 【Extended文本框开始】
 
-灰色是零。你也是。
-Gray is zero. So are you.
+灰幕沉默。你也是。
+The gray veil is silent. So are you.
 所以还要保持呼吸么？
 So will you keep breathing?
 
@@ -1330,14 +1330,20 @@ A: Keep breathing.
 
 【Extended大文本框开始】
 
-仍要坚持？那就请继续忍耐吧。
-Still set on it? Then go on bearing it.
+那就请继续忍耐吧。
+Then go on bearing it.
 灰幕的蔓延永无止境，一如疼痛的叠加永无止境。
 The gray spreads without end, the way pain stacks without end.
-更多毒液渗入血管，血液沸腾，内脏在沸腾血液的浇灌下燃烧破裂，但你只能看见你执意选择的灰。
-More venom worked into your veins. Your blood boiled. Your organs cooked and split open under it. And still all you could see was the gray you had chosen.
-继续呼吸，因为你必须活下去，在无止境的灰幕里像你不存在的爱人那样活下去。
-Keep breathing, because you have to live - live on in the endless gray, the way your lover, who does not exist, lives on.
+更多毒液渗入血管，血液沸腾，内脏在沸腾血液的浇灌下燃烧破裂，但你只能感受到你执意选择的灰。
+More venom worked into your veins. Your blood boiled. Your organs cooked and split open under it. And still all you could feel was the gray you had chosen.
+痛觉与痛苦开始分离。在日复一日的感官撕扯中，你的体表逐渐只剩下介于触觉和冷感之间的微妙麻木。
+The sense of pain and suffering began to part ways. Day after day the tearing at your senses went on, until all that was left of your skin was a subtle numbness.
+但横膈膜仍在均匀地舒张。
+But your diaphragm kept up its even rhythm, contracting and relaxing.
+这就够了。
+That would be enough.
+这就...够了。
+That would...be enough.
 
 【Extended大文本框结束】
 
@@ -1357,7 +1363,21 @@ Keep breathing, because you have to live - live on in the endless gray, the way 
 
 B: 放弃。（madness+1）
 B: Give up.
+
 【呼吸ambient音效停止】
+
+【Extended大文本框开始】
+
+在长久的窒息中，你的肢体变得干瘪而暗哑，仿佛再薄一点就要与灰幕融为一体。
+Through the long suffocation your limbs turned shriveled and dull, as if one shade thinner they would melt into the gray.
+但即使是这样的肢体，也只能站起来，让身子暖起来，让肠胃蠕动起来。
+But even limbs like these could only stand up. Warm the body. Set your gut moving.
+让血液流淌起来，即使横膈膜早就停止了舒张。
+Set the blood flowing, even though the diaphragm had long since stopped.
+钟声。钟声。钟声。钟声。
+Bells. Bells. Bells. Bells.
+
+【Extended大文本框结束】
 
 【Extended大文本框开始】
 
@@ -1367,21 +1387,37 @@ The moment you let your breathing go, something far larger than you moved at the
 A thin voice reached your ear, strange yet familiar - your sickness is mine after all, my frail love.
 你听见那声音，就像听见了复活的钟声，虽然振聋发聩，却使你义无反顾地站了起来。
 You heard it the way you'd hear bells for the resurrection. Deafening. And it put you on your feet without a moment's argument.
+
+【Extended大文本框结束】
+
+【Extended大文本框开始】
+
 要去哪儿呢？
 Where to, then?
-总归要从粉红色雾气里走出去。
-Out of the pink haze, one way or another.
+要从粉红色的雾气里走出去？
+Out of the pink haze?
+完全进到灰幕里去？
+All the way into the gray veil?
 治病也罢，杀人也罢。
 To heal, or to kill.
-总要去些地方。
-Somewhere. Anywhere.
-在无际的灰幕中，你把灰色踩在脚下，开始仔细思考接下来的目的地。
-In the endless gray you put the gray under your feet and began to think, carefully, about where to go next.
+总要去些地方——
+Somewhere. Anywhere——
+
+【Extended大文本框结束】
+
+【Extended大文本框开始】
+
+再回过神来时，贯穿全身的疼痛已经退却了，你的肢体看起来健康而饱满。
+When you came to, the pain running through you had already receded. Your limbs looked healthy and full again.
+脑袋略有些刺痛，但你知道大脑皮层以内是不存在痛觉神经的，所以这痛觉想必与眼前的灰幕一样一触即碎。
+You felt a faint sting in your head - but you know there are no pain nerves inside the cortex, so that pain, like the gray veil before your eyes, would surely shatter at a touch.
+想到这里，你伸出手。
+With that thought, you reached out your hand.
 
 【Extended大文本框结束】
 
 【呼吸ambient音效停止】
-【水底泡泡上浮音效：Bubbles_10】
+【玻璃破碎音效】
 【转场：黑屏】
 【音乐停】
 
@@ -1402,28 +1438,28 @@ In the endless gray you put the gray under your feet and began to think, careful
 
 王霜【抱胸站立，无奈表情】：喂，到了没啊？
 Wang Shuang: Hey. Are we there yet?
-阿鹤：没。
+阿鹤：没有。
 Kaku: Nope.
 王霜【背手站立，面无表情】：那还要走多久？
 Wang Shuang: Then how much further?
 阿鹤：到不了了。
 Kaku: We're never getting there, it seems.
-王霜【背手站立，吃惊表情】：啊？
-Wang Shuang: Huh?
+王霜【背手站立，吃惊表情】：啊？我们已经走了好久了诶。
+Wang Shuang: Huh? But we've been walking for so damn long now.
 阿鹤：或者说我们早就到了，但找不到对的骨头。
 Kaku: Or we got here ages ago, and I just can't find the right bone.
 王霜【抱胸站立，无奈表情】：你就一定要拼出一副完整的骨架才满意么？
 Wang Shuang: You really need a whole skeleton before you're satisfied?
 阿鹤：不然好像我们也走不出这里。
 Kaku: Otherwise it doesn't look like we're walking out of here either.
-王霜：啊啊啊我当初就不该听你的鬼话和你一起来这里的！
-Wang Shuang: Aaargh, I should never have listened to your nonsense and come with you!
+王霜：啊...我当初就不该听你的鬼话和你一起来这里的...
+Wang Shuang: Ah...I should never have listened to your nonsense and come out here with you...
 阿鹤：不是挺好的么？像你这样整天坐办公室的，偶尔就需要走动走动。
 Kaku: Isn't this nice, though? Someone who sits at a desk all day needs to stretch their legs now and then.
-王霜【背手站立，吃惊表情】：就算要走路也别让我来沙漠里找骨头啊！
-Wang Shuang: Then take me for a walk, not bone-hunting in a desert!
-阿鹤：可明明就是你自己要跟来的。
-Kaku: But you're the one who wanted to tag along.
+王霜【背手站立，吃惊表情】：就算要走路也别让我来沙漠里找骨头啊...
+Wang Shuang: Then take me for a walk, not bone-hunting in a desert...
+阿鹤：明明就是你自己要跟来的。
+Kaku: You're the one who wanted to tag along.
 王霜【抱胸站立，无奈表情】：呃呃呃我究竟中了什么邪才把你——
 Wang Shuang: Ugh, ugh, ugh - what possessed me to ever take you...
 阿鹤：嗯？把我怎么？
@@ -1447,14 +1483,14 @@ Kaku: Tried it. The hip joint doesn't line up.
 Wang Shuang: There's another four or five over here. Tried them all?
 阿鹤：诶？你是从哪儿找来的？
 Kaku: Huh? Where did you get those?
-王霜【抱胸站立，得意表情】：来的时候遍地都是啊，眼前一眼望去还有七八根。
+王霜【抱胸站立，默认表情】：来的时候遍地都是啊，眼前一眼望去还有七八根。
 Wang Shuang: They were lying everywhere on the way in. I can see seven or eight more from where I'm standing.
 阿鹤：所以精神科的也得会认骨头？
 Kaku: So psychiatrists have to know their bones now?
 王霜【抱胸站立，坏笑表情】：骨科可是我的强项。
 Wang Shuang: Orthopedics happens to be my strong suit.
-阿鹤：好吧...
-Kaku: Alright...
+阿鹤：有什么东西不是你的强项的么...
+Kaku: Is there anything that isn't your strong suit...
 
 【Extended文本框开始】
 …
@@ -1464,12 +1500,12 @@ Kaku: Alright...
 
 阿鹤：对上了诶。
 Kaku: It fits.
-王霜【背手站立，默认表情】：所以呢？接下来要做什么？
-Wang Shuang: And? What now?
+王霜【背手站立，默认表情】：我找来的，当然对咯。所以呢？接下来要做什么？
+Wang Shuang: I found it, of course it fits. And? What now?
 阿鹤：头骨...
 Kaku: The skull...
-王霜【右手叉腰，左手食指竖起做讲解状，严肃表情】：吼，只剩头骨了么...阿鹤啊——
-Wang Shuang: Ohh, just the skull left, is it...Kaku——
+王霜【右手叉腰，左手食指竖起做讲解状，面无表情】：吼，只剩头骨了么...嗯...阿鹤啊——
+Wang Shuang: Ohh, just the skull left, is it...hm...Kaku——
 
 【场景音乐参考：Stranger_Files, Sweet_Regrets，Whispers in the Twilight】
 【音乐：route1_desert】
@@ -1478,58 +1514,54 @@ Wang Shuang: Ohh, just the skull left, is it...Kaku——
 Kaku: Hm?
 王霜：你知道自己在做什么，对吧？
 Wang Shuang: You know what you're doing. Right?
-阿鹤：当然知道。
-Kaku: Of course I know.
-王霜【背手站立，面无表情】：那是最没有意义的事情。
-Wang Shuang: It's the most meaningless thing there is.
-阿鹤：确实如此，毕竟这是这里唯一能做的事情。
-Kaku: It is. It's also the only thing there is to do here.
-王霜【抱胸站立，面无表情】：直接离开也可以，门就在那边。
-Wang Shuang: You could just leave. Door's right over there.
-阿鹤：哦，原来这里是有门的。
-Kaku: Oh. So there is a door.
-王霜：当然，只要我与你一同来，就有门。
-Wang Shuang: Of course. As long as I come with you, there's a door.
-阿鹤：嗯...所以你真的是阿霜吗？
-Kaku: Hmm...are you really Shuang?
-王霜【背手站立，默认表情】：当然啦，不然呢？
-Wang Shuang: Obviously. Who else would I be?
-阿鹤：阿霜，你在我不注意的时候，偷偷变成了某种神吗？
-Kaku: Shuang. Did you quietly turn into some kind of god while I wasn't looking?
-王霜【背手站立，吃惊表情】：神？什么神？连走路都走不动的神？
-Wang Shuang: A god? What god? One who can't even walk straight?
-阿鹤：阿霜，之前进入这个梦的时候，永远都是我一个人。为什么这次你也在这里？
-Kaku: Shuang, every other time I came into this dream I was alone. Why are you here this time?
-王霜【单手叉腰站立，默认表情】：因为我也能做同样的梦。
+阿鹤：拼一副骨架而已。
+Kaku: Just putting a skeleton together.
+王霜【背手站立，面无表情】：而已？你不会觉得光靠一副骨架就能把她带回来吧？
+Wang Shuang: Just? You don't actually think a skeleton alone will bring her back, do you?
+阿鹤：...!
+Kaku: ...!
+王霜【抱胸站立，面无表情】：与其尝试那种毫无意义的事情，直接离开也可以，门就在那边。
+Wang Shuang: Rather than waste yourself on something that meaningless, you could just leave. Door's right over there.
+阿鹤：可是...我还...
+Kaku: But...I still...
+王霜：你觉得执拗是一种美德么？
+Wang Shuang: Do you think stubbornness is a virtue?
+阿鹤：...我只是...
+Kaku: ...I just...
+王霜：嗯，尽管继续骗自己。
+Wang Shuang: Mm. Go on lying to yourself, then.
+阿鹤：...阿霜...之前这个梦里永远都只有我一个人...为什么这次你也在这里？
+Kaku: ...Shuang...every other time, I was the only one in this dream...why are you here this time?
+王霜【右手叉腰，左手食指竖起做讲解状，默认表情】：因为我也能做同样的梦。
 Wang Shuang: Because I can have the same dream.
-阿鹤：唔...
-Kaku: Hmm...
-王霜【背手站立，坏笑表情】：只不过我不会无聊到去拼骨头就是了。
-Wang Shuang: I'm just not bored enough to go assembling bones.
-阿鹤：可你为什么要做这个梦？
-Kaku: But why would you have this dream?
-王霜【背手站立，默认表情】：嗯...当然是因为后悔，否则人是不可能来到这里的。
-Wang Shuang: Hmm...regret, obviously. There's no other way in.
-阿鹤：还有能让你后悔的事？
-Kaku: There are things even you regret?
-王霜：当然。只要做了选择，就一定会后悔。
+阿鹤：可是...
+Kaku: But...
+王霜【背手站立，坏笑表情】：只不过我不会无聊到去尝试那种事情就是了。
+Wang Shuang: I'm just not bored enough to try anything like that.
+阿鹤：可你...为什么要做这个梦？
+Kaku: But you...why would you have this dream?
+王霜【背手站立，默认表情】：当然是因为后悔咯，否则人是不可能来到这里的。
+Wang Shuang: Regret, obviously. There's no other way in.
+阿鹤：还有...能让你后悔的事？
+Kaku: There are...things even you regret?
+王霜：当然。只要做过选择，就一定会后悔。
 Wang Shuang: Of course. Make a choice and regret is guaranteed.
 阿鹤：可如果你已经变成神了——
 Kaku: But if you've already turned into a god——
-王霜【抱胸站立，无奈表情】：你才变成神了！
-Wang Shuang: No your ass turned into a god!
+王霜【抱胸站立，无奈表情】：哈？你在说什么呢？
+Wang Shuang: Huh? What are you on about?
 阿鹤：好吧...
-Kaku: Alright fine...
-王霜【背手站立，面无表情】：你想，无论我们做了什么事，那都意味着在同一时空中的其他行为的可能性被完全抹杀了，不是么？所以从定义上来讲，活着就是一次超长的悔恨之旅。
+Kaku: Alright...
+王霜【背手站立，面无表情】：你想啊，无论我们做了什么事，那都意味着同一时空内其他行为的可能性被完全抹杀了，不是么？所以从定义上来讲，活着就是一场超长的悔恨之旅。
 Wang Shuang: Think about it - anything we do wipes out every other thing we could've done in that same slice of space time. So by definition, being alive is just one very long trip through regret.
-王霜：不过你也别觉得那是什么坏事。应该说，完全不需要后悔的认知架构才会出大问题，我之前专门做过这方面的研究。
-Wang Shuang: Don't take that for a bad thing, though. If anything it's the mind that never needs to regret that ends up in real trouble. I did a whole study on it once.
+王霜：不过你也别觉得那是什么坏事。应该说，完全不需要后悔的认知架构才真的要人命。我之前专门做过这方面的研究。
+Wang Shuang: Don't take that for a bad thing, though. If anything, it's the mind that never needs to regret that will actually kill you. I did a whole study on it once.
 阿鹤：什么研究？
 Kaku: What study?
-王霜【右手叉腰，左手食指竖起做讲解状，严肃表情】：‘全知全能的代价’。
+王霜【右手叉腰，左手食指竖起做讲解状，面无表情】：‘全知全能的代价’。
 Wang Shuang: 'The Price of Omniscience'.
-阿鹤：哈？那和后悔一点都不相关吧！
-Kaku: Huh? That's got nothing to do with regret!
+阿鹤：那和后悔一点都不相关吧...
+Kaku: That's got nothing to do with regret, though...
 王霜【抱胸站立，默认表情】：别急，听我讲完你就懂了。
 Wang Shuang: Patience. Hear me out and you'll get it.
 王霜【右手叉腰，左手食指竖起做讲解状，默认表情】：所谓‘全知全能’，虽然听着像是造物主才被允许拥有的力量，但事实上以今天的技术，想要在有限时空里模拟这一状态不算难。
@@ -1540,8 +1572,8 @@ Wang Shuang: Picture it. Our last fight with Jerowald - say you'd given up the m
 Wang Shuang: Now picture me simulating that 'memory' - the one that never happened - in full fidelity, turning it into data, and pouring it back into your head.
 王霜【右手叉腰，左手食指竖起做讲解状，默认表情】：加上你脑子里原本就存在的记忆，这时让你同时体验选择支两边的事件，那在这样的认知草拟完成后，你是不是就已经实现对于这段记忆的‘全知全能’了？
 Wang Shuang: Stack it on the memory already in there and you live both sides of the branch at once. Once that draft finishes, haven't you achieved 'omniscience' over that stretch of your life?
-阿鹤：可这人肯定会发现记忆存在冲突的吧。
-Kaku: But surely they'd notice the memories contradict each other.
+阿鹤：可那样的话，记忆肯定会和现实发生冲突的吧。
+Kaku: But then the memory would be bound to clash with reality.
 王霜【抱胸站立，面无表情】：当然，但假若两边的记忆，从肢体感官到事件次序，无不张弛有度地印在你脑海里，那对于一个不了解认知草拟的被试来说，该如何戳穿自己‘全知全能’的假象？
 Wang Shuang: Of course. But if both sets of memories are printed in with the exact same level of fidelity - every sensation perfectly real, every event in perfect order - how is a subject who's never heard of cognitive drafting supposed to puncture their own omniscience?
 阿鹤：必须要外人点破才行。
@@ -1550,17 +1582,17 @@ Kaku: Someone outside would have to say it.
 Wang Shuang: Yes, and no - even when an outsider points at the contradiction, how many people will throw out what they lived through and let somebody else's few words decide what they know?
 阿鹤：...
 Kaku: ...
-王霜【右手叉腰，左手食指竖起做讲解状，严肃表情】：我们的实验数据也指向这个方向——在草拟完成的三天内，所有被试都明确拒绝了外界干预，以不容置疑的姿态维持着选择支两边的草拟。
+王霜【右手叉腰，左手食指竖起做讲解状，面无表情】：我们的实验数据也指向这一点——在草拟完成的三天内，所有被试都明确拒绝了外界干预，以不容置疑的姿态维持着选择支两边的草拟。
 Wang Shuang: Our data said the same. Within three days of a cognitive draft finishing, every subject outright refused outside intervention and held both sides of the branch as beyond question.
-阿鹤：他们在自行草拟？
-Kaku: They were drafting on their own?
+阿鹤：他们...在自行草拟？
+Kaku: They...were drafting on their own?
 王霜：没错。我们人工植入的认知流并没有在结尾处安排收束性事件，而在我们灌进去的认知与现实发生冲突后，被试们全部选择了无视现实，并开始自行草拟选择支两边的后续内容。
 Wang Shuang: Exactly. The stream we implanted had no closing event, and once it collided with reality every subject ignored reality and started writing the rest of both branches themselves.
 王霜【抱胸站立，默认表情】：更有意思的是，所有被试在自行草拟的过程中多巴胺通路都在暴走，就仿佛这虚假的全知全能让他们——
 Wang Shuang: Better still, every one of them had their dopamine pathway going wild while they did it. As though the counterfeit omniscience had them...
 阿鹤：成瘾了。
 Kaku: Addicted.
-王霜【右手叉腰，左手食指竖起做讲解状，开心表情】：Bingo！我们用计算生成的认知数据让人染上了成瘾性的精神分裂，而这——
+王霜【右手叉腰，左手食指竖起做讲解状，得意表情】：Bingo！我们用计算生成的认知数据让人染上了成瘾性的精神分裂，而这——
 Wang Shuang: Bingo! We gave people an addictive schizophrenia out of computed cognition, and that...
 阿鹤：就是全知全能的代价？
 Kaku: ——is the price of omniscience?
@@ -1570,9 +1602,9 @@ Wang Shuang: Heheh. Don't get carried away, Kaku.
 Wang Shuang: The compute one person needs to run two threads at once...put it this way, it goes vertical almost immediately. And the earliest cognitive drafting all ran inside the subject's own head...
 阿鹤：...
 Kaku: ...
-王霜【抱胸站立，严肃表情】：嗯，第一批被试的脑子大多都烧了，物理意义上的。后来第二批还动用了医院的计算机集群，最后效果也没好多少就是...
+王霜【抱胸站立，面无表情】：嗯，第一批被试的脑子大多都烧了，物理意义上的。后来第二批还动用了医院的计算机集群，最后效果也没好多少就是...
 Wang Shuang: Get it? Most of the first cohort's brains burned out. Physically. The second cohort got the hospital's compute cluster and it barely helped...
-王霜【右手叉腰，左手按着胸口，无奈表情】：所以说能后悔是好事啊，能用如此低成本的认知模式来替代脑细胞被烧干，是一桩好买卖。
+王霜【抱胸站立，无奈表情】：所以说能后悔是好事啊，能用如此低成本的认知模式来替代脑细胞被烧干，是一桩好买卖。
 Wang Shuang: So regret is a gift! Being able to feel a sensation this cheap instead of having your brain cells cooked dry - that's a hell of a trade.
 阿鹤：那这个梦...
 Kaku: Then this dream...
@@ -1593,31 +1625,31 @@ Wang Shuang: Oh...haha...well. It went up in a hurry, and the first version coul
 阿鹤：...
 Kaku: ...
 王霜：...
-Wang Shuang: ...
+Kaku: ...
 阿鹤：这就是你后悔的事情？
 Kaku: Is this the thing you regret?
 王霜【抱胸站立，默认表情】：你觉得呢？
 Wang Shuang: What do you think?
 阿鹤：我怎么知道...
 Kaku: How would I know...
-王霜：嗯，那还是保持无知比较好，阿鹤。
-Wang Shuang: Mm. Then not knowing suits you better, Kaku.
+王霜：嗯，那还是保持无知比较好。
+Wang Shuang: Mm. Then not knowing suits you better.
 阿鹤：只要你心安理得就行...
 Kaku: As long as you can live with yourself...
 王霜【背手站立，面无表情】：...
-Wang Shuang: ...
+Kaku: ...
 阿鹤：所以这梦也是你那朴素过程的一部分？
 Kaku: So this dream is part of that plain process of yours, too?
 王霜【背手站立，默认表情】：那可不一样，现在能够来到这里的都是游离于朴素过程之外的异客。当他们离开这里时，我希望他们至少能明白自己为什么会这样游离。
 Wang Shuang: Not quite. Everyone who can still reach this place has come adrift from the plain process. When they leave, I'd like them to at least know why they drifted.
 阿鹤：唔，所以这也是你的实验的一部分，带课题的。
 Kaku: Hmm. So it's part of your experiment. With a question attached.
-王霜【右手叉腰，左手食指竖起做讲解状，严肃表情】：不不不，这只是一个治疗场所而已。不过对于你来说...哼哼。
+王霜【右手叉腰，左手食指竖起做讲解状，默认表情】：不不不，这只是一个治疗场所而已。不过对于你来说...哼哼。
 Wang Shuang: No, no, no. It's a place of treatment, nothing more. Though in your case...heh heh.
 阿鹤：怎么了？
 Kaku: What's wrong?
-王霜【右手叉腰，左手食指竖起做讲解状，默认表情】：没事，我来之前还在想你为什么还能来到这里。不过从你刚才手上一直在忙活的事情来看，这早就不是问题了。
-Wang Shuang: Nothing. On the way here I was still wondering how you could possibly still get in. Going by what your hands have been busy with, that stopped being a question just now.
+王霜【右手叉腰，左手食指竖起做讲解状，默认表情】：没事，我之前还在想，你为什么还能来到这里。不过从你刚才手上一直在忙活的事情来看，这早就不是问题了。
+Wang Shuang: Nothing. I'd been wondering how you could possibly still get in here. Going by what your hands have been busy with, that stopped being a question just now.
 阿鹤：可你说它没有意义。
 Kaku: But you said it was meaningless.
 王霜【背手站立，默认表情】：嗯，现在我也维持原判。
@@ -1632,10 +1664,16 @@ Kaku: Not really.
 Wang Shuang: Fine. It's not like we're short on time.
 阿鹤：...
 Kaku: ...
-王霜【单手叉腰站立，得意表情】：嗯...但是我站累了，所以让我来告诉你吧——你要找的头骨并不存在，所以就算一直这样找下去，你也永远不会被治愈。
-Wang Shuang: Hmm...my legs are tired though and I want to head back soon, so I'll just tell you - the skull you're looking for doesn't exist. Keep looking as long as you like. You will never be cured.
-阿鹤：啊？你怎么知道的？
-Kaku: Huh? How would you know that?
+王霜：...
+Kaku: ...
+阿鹤：...
+Kaku: ...
+王霜：...
+Kaku: ...
+王霜【右手叉腰，左手食指竖起做讲解状，得意表情】：嗯...但是我站累了，所以让我来告诉你吧——你要找的头骨并不存在，所以就算一直这样找下去，你也永远不会达到你的目的。
+Wang Shuang: Hmm...my legs are tired though, so let me just tell you - the skull you're looking for doesn't exist. Keep looking as long as you like. You will never get what you're after.
+阿鹤：啊...可是...你是怎么知道的？
+Kaku: Ah...but...how would you know that?
 王霜：喏——
 Wang Shuang: Here——
 
@@ -1664,14 +1702,14 @@ Wang Shuang: Onneeerhonnwoowennerryehaongoarh.
 
 阿鹤：阿霜，你还好吗？
 Kaku: Shuang, are you all right?
-王霜【抱胸站立，疑问表情】：嗯？怎么了？
+王霜【抱胸站立，默认表情】：嗯？怎么了？
 Wang Shuang: What's up?
 阿鹤：你刚才...当我没说。所以为什么头骨不存在？
 Kaku: Just now you...forget it. So why doesn't the skull exist?
 王霜【右手叉腰，左手食指竖起做讲解状，得意表情】：因为我看不见。
 Wang Shuang: Because I can't see it.
 阿鹤：啊？
-Kaku: Huh?
+Wang Shuang: Huh?
 
 【王霜面部开始出现glitch】
 【glitchy音效】
@@ -1684,10 +1722,10 @@ Kaku: Hey...Shuang, you're doing it ag——
 
 【glitch消失】
 
-王霜【背手站立，得意表情】：哎，我也没说缺了头骨就不行啊。
-Wang Shuang: Well. I never said it wouldn't work without the skull.
-王霜：既然你这么想她，那肯定得成全你嘛——你看，你的“作品”从各种意义上已经完成了。
-Wang Shuang: You miss her this badly, I have to see it through for you - look. Your "work" is finished, in every sense of the word.
+王霜【右手叉腰，左手食指竖起做讲解状，得意表情】：哎，话又说回来，我也没说过缺了头骨就不行啊。
+Wang Shuang: Well, then again - I never did say it wouldn't work without the skull.
+王霜：既然你这么想见她，那肯定得成全你嘛——你看，你的“作品”啊，从各种意义上已经完成了。
+Wang Shuang: You want to see her this badly, so of course I have to see it through for you - look. That "work" of yours is finished, in every sense of the word.
 阿鹤：什——
 Kaku: Wha——
 
@@ -1722,15 +1760,15 @@ Julia: Oh, it certainly isn't right——.
 阿鹤：尤里娅，尤里娅？
 Kaku: Julia, Julia?
 【glitchy音效】
-王霜【抱胸站立，疑问表情上蒙了glitch】：飒炟曠莩皎靸礚睫覅是否解释你的诨涤？
+王霜【抱胸站立，默认表情上蒙了glitch】：飒炟曠莩皎靸礚睫覅是否解释你的诨涤？
 Wang Shuang: Saadaakwangfuujyaosaakerjyefei - care to account for your muddlement?
 阿鹤：啊...你们...你们...等等...
 Kaku: Ah...you two...you two...wait...
 
 【尤里娅出现】
 
-尤里娅【一般态坏笑】：嗯...没什么好等的，只是撕碎了几百个长得和我一样的东西就承受不住了？这可不是我认识的阿鹤呢。
-Julia: Mmmm...There is nothing to wait for. You tore apart a few hundred things wearing my face and that's already too much for you? That isn't the Kaku I knew.
+尤里娅【一般态坏笑】：嗯...有什么好等的？只是撕碎了几百个长得和我一样的东西就承受不住了？这可不是我认识的阿鹤呢。
+Julia: Mmmm...what is there to wait for? You tore apart a few hundred things wearing my face and that's already too much for you? That isn't the Kaku I knew.
 阿鹤：呃...啊...可是...可是...
 Kaku: Uh...ah...but...but...
 尤里娅【一般态邪恶表情1】：但那对你来说根本不重要吧，毕竟都是最后关头了，无论怎样都不能输给一群杰罗瓦控制的假人嘛！尤其那些东西只是长得和我一样而已，根本不需要任何同情。
@@ -1794,11 +1832,11 @@ Kaku: Stay away from me!!!
 
 阿鹤：这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的！
 Kaku: None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real None of this is real!
-王霜【背手站立，疑问表情】：阿鹤？
+王霜【背手站立，默认表情】：阿鹤？
 Wang Shuang: Kaku?
 阿鹤：啊——！你为什么还在这里！
 Kaku: Agh——! Why are you still here!
-王霜【抱胸站立，得意表情】：我当然在啦，她也还在——
+王霜【抱胸站立，坏笑表情】：我当然在啦，她也还在——
 Wang Shuang: Of course I'm here. So is she——
 尸首：哈喽~
 The Corpse: Hello~
@@ -1814,7 +1852,7 @@ Kaku: Ah...keep breathing...keep breathing...keep breathing...keep breathing...
 The Corpse: Hello.
 阿鹤：...
 Kaku: ...
-王霜【背手站立，得意表情】：这就跑不动了？
+王霜【背手站立，默认表情】：这就跑不动了？
 Wang Shuang: Out of legs already?
 阿鹤：...不要...过来...
 Kaku: ...Don't...come closer...
@@ -1828,11 +1866,11 @@ Kaku: I...have to...get out...of here!
 Wang Shuang: Kaku. Sit down and think it through. All that work putting her together, and now she's actually up and walking you can't stand to look at her?
 阿鹤：这不是我想要的...
 Kaku: This isn't what I wanted...
-王霜【背手站立，疑问表情】：只因为她身子不完整？
+王霜【背手站立，坏笑表情】：只因为她身子不完整？
 Wang Shuang: All because the body's incomplete?
 阿鹤：这不是我想要的！
 Kaku: This isn't what I wanted!
-王霜【单手叉腰站立，得意表情】：那就把头埋进沙子里啊，那样你就什么都不用看了。
+王霜【右手叉腰，左手食指竖起做讲解状，得意表情】：那就把头埋进沙子里啊，那样你就什么都不用看了。
 Wang Shuang: Then put your head in the sand. That way you don't have to look at anything.
 阿鹤：呃...啊——对不起——
 Kaku: Ugh...ah——I'm sorry——
@@ -2042,7 +2080,7 @@ Darkness.
 【心跳音效停】
 【转场：黑屏，但是里面盖着王霜微笑的幽灵】
 
-【Extended大文本框开始】
+【Extended大文本框开始，不分句】
 ——但你也不能就这样一走了之。
 ——But you can't simply walk away either.
 ——你早就明白这一点了。

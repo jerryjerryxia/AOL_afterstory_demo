@@ -1,6 +1,4 @@
-﻿# TODO: Translation updated at 2026-06-20 00:04
-
-# game/scripts/prologue.rpy:27
+﻿# game/scripts/prologue.rpy:27
 translate english route1_prologue_6c95f221:
 
     # large_narrator "一颗无色透明的多面体在无垠黑暗中幽幽地闪着冷光。"

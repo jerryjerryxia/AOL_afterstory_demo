@@ -253,8 +253,11 @@ SCENE_EXPRESSIONS = {
     '虚空对视': {
         'model': 'overlay',
         'continue_bg': True,   # 黑屏视频从浮潜连续过来，不重新 scene，只淡入立绘
-        'default': 'void default',
-        'map': {'默认': 'void default', '小吃惊': 'void surprised'},
+        # 进场直接淡入第一句话的立绘姿势（旧的 void_default 占位整图已弃用）。
+        # 此后的表情/姿势切换全部由剧本里的 【姿势，表情】 立绘标记驱动，
+        # 所以这里不需要 map（仅表情的差分标记在这个场景里已不存在）。
+        'default': 'ws backhand default at ws_close',
+        'map': {},
     },
     '夏日对视': {
         'model': 'full',
@@ -289,6 +292,224 @@ SCENE_EXPRESSIONS = {
 # 当前所处的表情场景（转场时更新）。决定 角色【表情】 切到哪张差分；
 # 非表情场景（如甜品店对视4-8）置为该场景名、map 取不到 → 表情退化成注释。
 _CURRENT_EXPR_SCENE = None
+
+################################################################################
+## 立绘（王霜全身立绘，game/images/sprites/）
+##
+## 剧本标记形状是区分的唯一依据：
+##   王霜【<姿势>，<表情>表情】          → 立绘 show（本节）
+##   王霜【<表情>】（无顿号）           → 场景表情差分（SCENE_EXPRESSIONS，整图/overlay）
+## 姿势本身可以含顿号（右手叉腰，左手食指竖起做讲解状），所以从**最后一个**顿号拆。
+## 表情段可带后缀「上蒙了glitch」→ 切到预生成的 glitch 动画帧（见 glitch/ 目录，
+## 用 generate_glitch_art.py 从原图生成，命名 <原名>_glitch<seed>.png）。
+##
+## 素材与 .rpy 定义都由转换器自动管理：扫描 sprites/ 目录建索引，并生成
+## game/images/sprites/sprites.rpy（image 定义 + 摆位 transform）。加新姿势/表情
+## = 按 <姿势>(<表情>.png 命名丢进对应文件夹后重跑转换器，代码零改动。
+## 剧本要的表情没有对应素材时回退到该姿势的默认表情并打 WARNING（不静默）。
+################################################################################
+
+# 姿势关键词 -> Ren'Py 属性名。文件夹/文件名里含关键词即归入该姿势
+# （单手叉腰站立、右手叉腰左手按胸口 都落到 叉腰 —— 现有素材里最近的姿势）。
+SPRITE_POSE_ATTRS = {'背手': 'backhand', '抱胸': 'crossed', '叉腰': 'akimbo'}
+
+# 表情 -> Ren'Py 属性名。剧本用到但素材还没画的表情也先列上（严肃/开心/疑问），
+# 素材补上后无需改代码，重跑转换器即可。
+SPRITE_EXPR_ATTRS = {
+    '默认': 'default', '面无表情': 'blank', '吃惊': 'shocked',
+    '坏笑': 'smirk', '无奈': 'wry', '得意': 'proud',
+    '严肃': 'stern', '开心': 'happy', '疑问': 'puzzled',
+}
+
+SPRITE_GLITCH_SUFFIX = '上蒙了glitch'
+
+# 立绘摆位：场景名 -> transform 名（定义在生成的 sprites.rpy 里）。
+# 目前所有场景统一半身近景（第一人称对视感，参考 DDLC 的莫妮卡）——
+# 全身远景试过，人物太小没有压迫感。以后某场景要不同摆位，在这里加映射即可。
+SPRITE_SCENE_AT = {}
+SPRITE_DEFAULT_AT = 'ws_close'
+
+# 摆位参数（写进生成的 sprites.rpy；改这里 + 重跑转换器即可调）。原图 2299x3824。
+WS_CLOSE_ZOOM = 0.52      # 半身近景：头到腰约占满全屏
+WS_CLOSE_YPOS = -50       # 近景往上提一点，让头顶留白自然
+WS_GLITCH_FRAME = 0.12    # glitch 动画每帧时长（秒），3 帧循环
+
+
+def _build_sprite_index():
+    """扫描 game/images/sprites/ 建立立绘索引。
+    返回 (base, glitch)：
+      base   = {(姿势key, 表情): 'images/sprites/...png'}
+      glitch = {(姿势key, 表情): [帧路径, ...]}（按 seed 排序）
+    文件名约定：<姿势>(<表情>.png（全/半角括号、带不带闭括号都认），
+    glitch 帧为 <原名>_glitch<seed>.png。"""
+    base, glitch = {}, {}
+    game_dir = os.path.join(BASE_DIR, 'game')
+    root = os.path.join(game_dir, 'images', 'sprites')
+    for dirpath, dirnames, filenames in os.walk(root):
+        for fn in filenames:
+            if not fn.lower().endswith('.png'):
+                continue
+            stem = fn[:-4]
+            gm = re.match(r'^(.*)_glitch(\d+)$', stem)
+            is_glitch = bool(gm)
+            if gm:
+                stem = gm.group(1)
+            norm = stem.replace('（', '(').rstrip('）)')
+            if '(' not in norm:
+                continue
+            pose_part, expr = norm.split('(', 1)
+            pose = next((k for k in SPRITE_POSE_ATTRS if k in pose_part), None)
+            if pose is None:
+                continue
+            rel = os.path.relpath(os.path.join(dirpath, fn), game_dir)
+            rel = rel.replace(os.sep, '/')
+            if is_glitch:
+                glitch.setdefault((pose, expr), []).append(rel)
+            else:
+                base[(pose, expr)] = rel
+    for frames in glitch.values():
+        frames.sort()
+    return base, glitch
+
+
+SPRITE_INDEX, SPRITE_GLITCH_INDEX = _build_sprite_index()
+
+# 已经告警过的缺素材组合，避免同一条 WARNING 刷屏。
+_SPRITE_WARNED = set()
+
+# 最近一次 show 的立绘 (pose, expr, is_glitch)。给 【glitch消失】 用：剧本在那一刻
+# 就要 glitch 停（下一条立绘标记可能隔着几句别人的台词），所以要知道当前立绘是谁、
+# 才能就地切回它的无 glitch 版。转场时清掉（scene 会把立绘一起清掉）。
+_LAST_SPRITE = None
+
+
+def parse_sprite_marker(marker):
+    """【<姿势>，<表情>表情[上蒙了glitch]】 → (姿势key, 表情, glitch) 或 None。
+    None = 这不是立绘标记（交回场景表情差分/舞台提示注释的老路）。"""
+    if '，' not in marker:
+        return None
+    pose_part, expr_part = marker.rsplit('，', 1)
+    is_glitch = expr_part.endswith(SPRITE_GLITCH_SUFFIX)
+    if is_glitch:
+        expr_part = expr_part[:-len(SPRITE_GLITCH_SUFFIX)]
+    if not expr_part.endswith('表情'):
+        return None
+    # 「面无表情」整体就是表情名；其余去掉「表情」后缀（默认表情→默认）。
+    expr = expr_part if expr_part == '面无表情' else expr_part[:-len('表情')]
+    pose = next((k for k in SPRITE_POSE_ATTRS if k in pose_part), None)
+    if pose is None:
+        key = ('pose', marker)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 立绘标记姿势无法识别：【{marker}】——退化为注释")
+        return None
+    return pose, expr, is_glitch
+
+
+def emit_sprite_change(marker, indent):
+    """立绘标记 → show 语句。非立绘标记或完全无素材可用时返回 None。
+    过渡与表情差分一致：只溶解 master 层，对话框/文字不闪。"""
+    parsed = parse_sprite_marker(marker)
+    if parsed is None:
+        return None
+    pose, expr, want_glitch = parsed
+    use_expr = expr
+    if (pose, use_expr) not in SPRITE_INDEX:
+        if (pose, '默认') not in SPRITE_INDEX:
+            key = ('none', pose)
+            if key not in _SPRITE_WARNED:
+                _SPRITE_WARNED.add(key)
+                print(f"WARNING: 立绘姿势 '{pose}' 没有任何素材——【{marker}】退化为注释")
+            return None
+        key = ('expr', pose, expr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 立绘缺素材：{pose}·{expr} —— 回退到 {pose}·默认")
+        use_expr = '默认'
+    is_glitch = want_glitch
+    if is_glitch and (pose, use_expr) not in SPRITE_GLITCH_INDEX:
+        key = ('glitch', pose, use_expr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 立绘缺 glitch 帧：{pose}·{use_expr}"
+                  f"（用 generate_glitch_art.py 生成到 sprites/glitch/）—— 先用无 glitch 版")
+        is_glitch = False
+    expr_attr = SPRITE_EXPR_ATTRS.get(use_expr)
+    if expr_attr is None:
+        key = ('attr', use_expr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 表情 '{use_expr}' 不在 SPRITE_EXPR_ATTRS，"
+                  f"补上映射后重跑——【{marker}】退化为注释")
+        return None
+    img = f"ws {SPRITE_POSE_ATTRS[pose]} {expr_attr}"
+    if is_glitch:
+        img += "_glitch"   # glitch 并进表情属性名，避免 show 属性残留粘连
+    at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
+    global _LAST_SPRITE
+    _LAST_SPRITE = (pose, use_expr, is_glitch)
+    return (f'{indent}## 立绘：{marker}\n'
+            f'{indent}show {img} at {at}\n'
+            f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+
+
+def emit_sprite_unglitch(indent):
+    """【glitch消失】：当前立绘若是 glitch 版，就地切回同姿势同表情的干净版。
+    不能等下一条立绘标记 —— 中间可能隔着几句别人的台词，剧本要 glitch 即刻停。
+    当前没有立绘或本来就没 glitch 时返回 None（只发画面特效那条老路）。"""
+    global _LAST_SPRITE
+    if not _LAST_SPRITE or not _LAST_SPRITE[2]:
+        return None
+    pose, expr, _ = _LAST_SPRITE
+    _LAST_SPRITE = (pose, expr, False)
+    img = f"ws {SPRITE_POSE_ATTRS[pose]} {SPRITE_EXPR_ATTRS[expr]}"
+    at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
+    return (f'{indent}show {img} at {at}\n'
+            f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+
+
+def generate_sprites_rpy():
+    """按扫描到的素材生成 game/images/sprites/sprites.rpy：
+    image 定义（tag=ws，属性=姿势+表情；glitch 为 <表情>_glitch 循环动画）
+    + 两个摆位 transform。缩放/摆位不烘进 image，统一由 at transform 做，
+    这样 glitch 动画帧不用逐帧包 Transform。"""
+    out = [
+        '## AUTO-GENERATED by convert_script.py — 不要手改，重跑转换器会覆盖。',
+        '## 王霜立绘：素材在本目录下按 <姿势>(<表情>.png 命名，扫描自动注册。',
+        '## 摆位参数改 convert_script.py 里的 WS_* 常量。',
+        '',
+    ]
+    for (pose, expr), rel in sorted(SPRITE_INDEX.items()):
+        expr_attr = SPRITE_EXPR_ATTRS.get(expr)
+        if expr_attr is None:
+            print(f"WARNING: 素材 {rel} 的表情 '{expr}' 不在 SPRITE_EXPR_ATTRS，未注册")
+            continue
+        out.append(f'image ws {SPRITE_POSE_ATTRS[pose]} {expr_attr} = "{rel}"')
+    for (pose, expr), frames in sorted(SPRITE_GLITCH_INDEX.items()):
+        expr_attr = SPRITE_EXPR_ATTRS.get(expr)
+        if expr_attr is None:
+            continue
+        out.append('')
+        out.append(f'image ws {SPRITE_POSE_ATTRS[pose]} {expr_attr}_glitch:')
+        for rel in frames:
+            out.append(f'    "{rel}"')
+            out.append(f'    {WS_GLITCH_FRAME}')
+        out.append('    repeat')
+    out += [
+        '',
+        '## 半身近景（第一人称对视感）：头到腰占满屏，底部裁掉，水平居中。',
+        'transform ws_close:',
+        '    xalign 0.5',
+        '    yanchor 0.0',
+        f'    ypos {WS_CLOSE_YPOS}',
+        f'    zoom {WS_CLOSE_ZOOM}',
+        '',
+    ]
+    path = os.path.join(BASE_DIR, 'game', 'images', 'sprites', 'sprites.rpy')
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(out))
+    print(f"sprites.rpy generated: {len(SPRITE_INDEX)} base sprites, "
+          f"{len(SPRITE_GLITCH_INDEX)} glitch animations")
 
 def escape_quotes(text):
     """Escape straight double quotes for Ren'Py"""
@@ -619,7 +840,8 @@ def emit_char_dialogue(char_var, dialogue, indent, comment=None):
 def _emit_scene(out, indent, scene_name, bg_image, transition):
     """发出 scene 行，并更新当前表情场景。overlay 表情场景额外把透明立绘默认
     表情叠上去（scene <bg> + show <default> + with，三者同一个过渡一起淡入）。"""
-    global _CURRENT_EXPR_SCENE
+    global _CURRENT_EXPR_SCENE, _LAST_SPRITE
+    _LAST_SPRITE = None   # scene 语句会清掉所有 show，立绘追踪一起清
     # 就地转场：不发 scene，只发一行扳机（见 IN_PLACE_SCENES）。画面上还是同一个
     # displayable，转场由它自己的 ATL 在后台走完，不阻塞、不吃点击。
     if scene_name in IN_PLACE_SCENES:
@@ -662,13 +884,18 @@ def _emit_scene(out, indent, scene_name, bg_image, transition):
     _CURRENT_EXPR_SCENE = scene_name
 
 def emit_expression_change(action, indent):
-    """角色【表情】 → 切换差分。当前场景没有该表情（或非表情场景）返回 None，
-    交还给调用方按普通"舞台提示注释"处理（道具/第一人称提示等）。
+    """角色【…】 标记的统一入口（普通行与 Extended 块内共用）：
+    1. 【姿势，表情】（含顿号）→ 立绘 show（emit_sprite_change）；
+    2. 【表情】 → 场景表情差分（SCENE_EXPRESSIONS）；
+    3. 都不是 → 返回 None，调用方按普通"舞台提示注释"处理。
     full 场景用 scene 换整图；overlay 场景用 show 换透明立绘（共用 tag）。
 
     过渡只作用于 master 层（renpy.transition(..., layer="master")），不碰 screens 层
     的对话框/文字 —— 这样换表情时背景平滑溶解，但对话框和当前那句文字全程不消失、
     不闪烁（不能用 `with`，那是全屏过渡，会把对话框和文字一起淡掉）。"""
+    sprite = emit_sprite_change(action, indent)
+    if sprite is not None:
+        return sprite
     cfg = SCENE_EXPRESSIONS.get(_CURRENT_EXPR_SCENE)
     if not cfg:
         return None
@@ -968,6 +1195,14 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     stage_match = re.match(r'^【(.+?)】$', line)
     if stage_match:
         text = stage_match.group(1)
+        # 【glitch消失】：除了画面特效，还要把当前 glitch 立绘就地切回干净版 ——
+        # 剧本要 glitch 即刻停，不能挂到下一条立绘标记（中间隔着别人的台词）。
+        if 'glitch消失' in text:
+            out = f"{indent}## {text}\n{indent}with glitch_fx()"
+            unglitch = emit_sprite_unglitch(indent)
+            if unglitch:
+                out += '\n' + unglitch
+            return out
         if '音效' not in text:
             for keyword, fx in SPECIAL_FX:
                 if keyword in text:
@@ -1924,6 +2159,9 @@ def main():
     print(f"Demo boundaries:")
     print(f"  Prologue: lines 1-{prologue_end}")
     print(f"  Route 1: lines {route1_start+1}-{len(lines)}")
+
+    # 立绘 image 定义 + 摆位 transform（按 sprites/ 目录扫描结果生成）
+    generate_sprites_rpy()
 
     # Prologue
     prologue = insert_sfx_waits(convert_prologue(lines, 0, prologue_end))

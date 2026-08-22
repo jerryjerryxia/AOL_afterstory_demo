@@ -2423,12 +2423,6 @@ translate english route1_start_8a908264:
     # extend "\n也许那源自一种强加于你的欢欣，使你由衷地庆祝一个陌生灵魂的自由。"
     extend "\nMaybe it came from a joy forced on you, so that you celebrated the freedom of a soul you had never met."
 
-# game/scripts/route1.rpy:767
-translate english route1_start_9d6bc38d:
-
-    # "灰色是零。你也是。"
-    "Gray is zero. So are you."
-
 # game/scripts/route1.rpy:768
 translate english route1_start_5be8d979:
 
@@ -2441,29 +2435,11 @@ translate english route1_start_11fdb519_4:
     # extend "" nointeract
     extend "" nointeract
 
-# game/scripts/route1.rpy:777
-translate english route1_start_8ce3de64:
-
-    # large_narrator "仍要坚持？那就请继续忍耐吧。"
-    large_narrator "Still set on it? Then go on bearing it."
-
 # game/scripts/route1.rpy:778
 translate english route1_start_d44c4c77:
 
     # extend "\n灰幕的蔓延永无止境，一如疼痛的叠加永无止境。"
     extend "\nThe gray spreads without end, the way pain stacks without end."
-
-# game/scripts/route1.rpy:779
-translate english route1_start_b7b723a3:
-
-    # extend "\n更多毒液渗入血管，血液沸腾，内脏在沸腾血液的浇灌下燃烧破裂，但你只能看见你执意选择的灰。"
-    extend "\nMore venom worked into your veins. Your blood boiled. Your organs cooked and split open under it. And still all you could see was the gray you had chosen."
-
-# game/scripts/route1.rpy:780
-translate english route1_start_0e7ba945:
-
-    # extend "\n继续呼吸，因为你必须活下去，在无止境的灰幕里像你不存在的爱人那样活下去。"
-    extend "\nKeep breathing, because you have to live - live on in the endless gray, the way your lover, who does not exist, lives on."
 
 # game/scripts/route1.rpy:795
 translate english route1_start_a188787c:
@@ -2501,35 +2477,11 @@ translate english route1_start_701d0332:
     # extend "\n你听见那声音，就像听见了复活的钟声，虽然振聋发聩，却使你义无反顾地站了起来。"
     extend "\nYou heard it the way you'd hear bells for the resurrection. Deafening. And it put you on your feet without a moment's argument."
 
-# game/scripts/route1.rpy:807
-translate english route1_start_47c34890:
-
-    # extend "\n要去哪儿呢？"
-    extend "\nWhere to, then?"
-
-# game/scripts/route1.rpy:808
-translate english route1_start_88b88abe:
-
-    # extend "\n总归要从粉红色雾气里走出去。"
-    extend "\nOut of the pink haze, one way or another."
-
 # game/scripts/route1.rpy:809
 translate english route1_start_860e0360:
 
     # extend "\n治病也罢，杀人也罢。"
     extend "\nTo heal, or to kill."
-
-# game/scripts/route1.rpy:810
-translate english route1_start_8101523f:
-
-    # extend "\n总要去些地方。"
-    extend "\nSomewhere. Anywhere."
-
-# game/scripts/route1.rpy:811
-translate english route1_start_71b6726d:
-
-    # extend "\n在无际的灰幕中，你把灰色踩在脚下，开始仔细思考接下来的目的地。"
-    extend "\nIn the endless gray you put the gray under your feet and began to think, carefully, about where to go next."
 
 # game/scripts/route1.rpy:824
 translate english route1_start_a188787c_1:
@@ -2555,12 +2507,6 @@ translate english route1_start_f44c0403:
     # wangshuang "喂，到了没啊？"
     wangshuang "Hey. Are we there yet?"
 
-# game/scripts/route1.rpy:839
-translate english route1_start_9aa5bb18:
-
-    # ahe "没。"
-    ahe "Nope."
-
 # game/scripts/route1.rpy:841
 translate english route1_start_daa1f00d:
 
@@ -2572,12 +2518,6 @@ translate english route1_start_5d21a0ca:
 
     # ahe "到不了了。"
     ahe "We're never getting there, it seems."
-
-# game/scripts/route1.rpy:844
-translate english route1_start_7973ae70:
-
-    # wangshuang "啊？"
-    wangshuang "Huh?"
 
 # game/scripts/route1.rpy:845
 translate english route1_start_63164949:
@@ -2597,29 +2537,11 @@ translate english route1_start_64d333b3:
     # ahe "不然好像我们也走不出这里。"
     ahe "Otherwise it doesn't look like we're walking out of here either."
 
-# game/scripts/route1.rpy:849
-translate english route1_start_319ff0cc:
-
-    # wangshuang "啊啊啊我当初就不该听你的鬼话和你一起来这里的！"
-    wangshuang "Aaargh, I should never have listened to your nonsense and come with you!"
-
 # game/scripts/route1.rpy:850
 translate english route1_start_4ed35234:
 
     # ahe "不是挺好的么？像你这样整天坐办公室的，偶尔就需要走动走动。"
     ahe "Isn't this nice, though? Someone who sits at a desk all day needs to stretch their legs now and then."
-
-# game/scripts/route1.rpy:852
-translate english route1_start_78b9fbce:
-
-    # wangshuang "就算要走路也别让我来沙漠里找骨头啊！"
-    wangshuang "Then take me for a walk, not bone-hunting in a desert!"
-
-# game/scripts/route1.rpy:853
-translate english route1_start_622a6038:
-
-    # ahe "可明明就是你自己要跟来的。"
-    ahe "But you're the one who wanted to tag along."
 
 # game/scripts/route1.rpy:855
 translate english route1_start_23e2ffdf:
@@ -2735,23 +2657,11 @@ translate english route1_start_f812c9f6:
     # ahe "对上了诶。"
     ahe "It fits."
 
-# game/scripts/route1.rpy:883
-translate english route1_start_edd4035c:
-
-    # wangshuang "所以呢？接下来要做什么？"
-    wangshuang "And? What now?"
-
 # game/scripts/route1.rpy:884
 translate english route1_start_aa7c26c9:
 
     # ahe "头骨..."
     ahe "The skull..."
-
-# game/scripts/route1.rpy:886
-translate english route1_start_e5210880:
-
-    # wangshuang "吼，只剩头骨了么...阿鹤啊——"
-    wangshuang "Ohh, just the skull left, is it...Kaku——"
 
 # game/scripts/route1.rpy:889
 translate english route1_start_ebe9dafb:
@@ -2765,143 +2675,17 @@ translate english route1_start_5ed01e72:
     # wangshuang "你知道自己在做什么，对吧？"
     wangshuang "You know what you're doing. Right?"
 
-# game/scripts/route1.rpy:891
-translate english route1_start_27a54071:
-
-    # ahe "当然知道。"
-    ahe "Of course I know."
-
-# game/scripts/route1.rpy:893
-translate english route1_start_c1a5b321:
-
-    # wangshuang "那是最没有意义的事情。"
-    wangshuang "It's the most meaningless thing there is."
-
-# game/scripts/route1.rpy:894
-translate english route1_start_d6434177:
-
-    # ahe "确实如此，毕竟这是这里唯一能做的事情。"
-    ahe "It is. It's also the only thing there is to do here."
-
-# game/scripts/route1.rpy:896
-translate english route1_start_4370d8ec:
-
-    # wangshuang "直接离开也可以，门就在那边。"
-    wangshuang "You could just leave. Door's right over there."
-
-# game/scripts/route1.rpy:897
-translate english route1_start_36f3fe3a:
-
-    # ahe "哦，原来这里是有门的。"
-    ahe "Oh. So there is a door."
-
-# game/scripts/route1.rpy:898
-translate english route1_start_8c26a814:
-
-    # wangshuang "当然，只要我与你一同来，就有门。"
-    wangshuang "Of course. As long as I come with you, there's a door."
-
-# game/scripts/route1.rpy:899
-translate english route1_start_5628fc93:
-
-    # ahe "嗯...所以你真的是阿霜吗？"
-    ahe "Hmm...are you really Shuang?"
-
-# game/scripts/route1.rpy:901
-translate english route1_start_da46d390:
-
-    # wangshuang "当然啦，不然呢？"
-    wangshuang "Obviously. Who else would I be?"
-
-# game/scripts/route1.rpy:902
-translate english route1_start_7ab8955a:
-
-    # ahe "阿霜，你在我不注意的时候，偷偷变成了某种神吗？"
-    ahe "Shuang. Did you quietly turn into some kind of god while I wasn't looking?"
-
-# game/scripts/route1.rpy:904
-translate english route1_start_bc0e965e:
-
-    # wangshuang "神？什么神？连走路都走不动的神？"
-    wangshuang "A god? What god? One who can't even walk straight?"
-
-# game/scripts/route1.rpy:905
-translate english route1_start_ebf846c8:
-
-    # ahe "阿霜，之前进入这个梦的时候，永远都是我一个人。为什么这次你也在这里？"
-    ahe "Shuang, every other time I came into this dream I was alone. Why are you here this time?"
-
 # game/scripts/route1.rpy:907
 translate english route1_start_e1c4c49b:
 
     # wangshuang "因为我也能做同样的梦。"
     wangshuang "Because I can have the same dream."
 
-# game/scripts/route1.rpy:908
-translate english route1_start_9b7cbbe4_1:
-
-    # ahe "唔..."
-    ahe "Hmm..."
-
-# game/scripts/route1.rpy:910
-translate english route1_start_000c33a2:
-
-    # wangshuang "只不过我不会无聊到去拼骨头就是了。"
-    wangshuang "I'm just not bored enough to go assembling bones."
-
-# game/scripts/route1.rpy:911
-translate english route1_start_547fed20:
-
-    # ahe "可你为什么要做这个梦？"
-    ahe "But why would you have this dream?"
-
-# game/scripts/route1.rpy:913
-translate english route1_start_7b566610:
-
-    # wangshuang "嗯...当然是因为后悔，否则人是不可能来到这里的。"
-    wangshuang "Hmm...regret, obviously. There's no other way in."
-
-# game/scripts/route1.rpy:914
-translate english route1_start_bc62aa56:
-
-    # ahe "还有能让你后悔的事？"
-    ahe "There are things even you regret?"
-
-# game/scripts/route1.rpy:915
-translate english route1_start_f7ac67d4:
-
-    # wangshuang "当然。只要做了选择，就一定会后悔。"
-    wangshuang "Of course. Make a choice and regret is guaranteed."
-
 # game/scripts/route1.rpy:916
 translate english route1_start_4c70fa63:
 
     # ahe "可如果你已经变成神了——"
     ahe "But if you've already turned into a god——"
-
-# game/scripts/route1.rpy:918
-translate english route1_start_352fda25:
-
-    # wangshuang "你才变成神了！"
-    wangshuang "No your ass turned into a god!"
-
-# game/scripts/route1.rpy:919
-translate english route1_start_f653fb42_1:
-
-    # ahe "好吧..."
-    ahe "Alright fine..."
-
-# game/scripts/route1.rpy:921
-translate english route1_start_3806c7c5:
-
-    # wangshuang "你想，无论我们做了什么事，那都意味着在同一时空中的其他行为的可能性被完全抹杀了，不是么？所以从定义上来讲，活着就是一次超长的悔恨之旅。"
-    wangshuang "Think about it - anything we do wipes out every other thing we could've done in that same slice of space time. So by definition, being alive is just one very long trip through regret."
-
-# game/scripts/route1.rpy:922
-translate english route1_start_14bd3085:
-
-    # wangshuang "不过你也别觉得那是什么坏事。应该说，完全不需要后悔的认知架构才会出大问题，我之前专门做过这方面的研究。"
-    wangshuang "Don't take that for a bad thing, though. If anything it's the mind that never needs to regret that ends up in real trouble. I did a whole study on it once."
 
 # game/scripts/route1.rpy:923
 translate english route1_start_69163cb1:
@@ -2914,12 +2698,6 @@ translate english route1_start_91ad9a82:
 
     # wangshuang "‘全知全能的代价’。"
     wangshuang "'The Price of Omniscience'."
-
-# game/scripts/route1.rpy:926
-translate english route1_start_85642400:
-
-    # ahe "哈？那和后悔一点都不相关吧！"
-    ahe "Huh? That's got nothing to do with regret!"
 
 # game/scripts/route1.rpy:928
 translate english route1_start_75fd9c26:
@@ -2951,12 +2729,6 @@ translate english route1_start_f9ec6764:
     # wangshuang "加上你脑子里原本就存在的记忆，这时让你同时体验选择支两边的事件，那在这样的认知草拟完成后，你是不是就已经实现对于这段记忆的‘全知全能’了？"
     wangshuang "Stack it on the memory already in there and you live both sides of the branch at once. Once that draft finishes, haven't you achieved 'omniscience' over that stretch of your life?"
 
-# game/scripts/route1.rpy:937
-translate english route1_start_87987c0a:
-
-    # ahe "可这人肯定会发现记忆存在冲突的吧。"
-    ahe "But surely they'd notice the memories contradict each other."
-
 # game/scripts/route1.rpy:939
 translate english route1_start_3c943f31:
 
@@ -2980,18 +2752,6 @@ translate english route1_start_eb7e9e7f_9:
 
     # ahe "..."
     ahe "..."
-
-# game/scripts/route1.rpy:945
-translate english route1_start_d57aeef4:
-
-    # wangshuang "我们的实验数据也指向这个方向——在草拟完成的三天内，所有被试都明确拒绝了外界干预，以不容置疑的姿态维持着选择支两边的草拟。"
-    wangshuang "Our data said the same. Within three days of a cognitive draft finishing, every subject outright refused outside intervention and held both sides of the branch as beyond question."
-
-# game/scripts/route1.rpy:946
-translate english route1_start_47f2a568:
-
-    # ahe "他们在自行草拟？"
-    ahe "They were drafting on their own?"
 
 # game/scripts/route1.rpy:947
 translate english route1_start_e82ac697:
@@ -3119,12 +2879,6 @@ translate english route1_start_ef1072a0:
     # ahe "我怎么知道..."
     ahe "How would I know..."
 
-# game/scripts/route1.rpy:981
-translate english route1_start_e28b8a06:
-
-    # wangshuang "嗯，那还是保持无知比较好，阿鹤。"
-    wangshuang "Mm. Then not knowing suits you better, Kaku."
-
 # game/scripts/route1.rpy:982
 translate english route1_start_6fa4f504:
 
@@ -3167,12 +2921,6 @@ translate english route1_start_60a0bac3:
     # ahe "怎么了？"
     ahe "What's wrong?"
 
-# game/scripts/route1.rpy:993
-translate english route1_start_38ecb9e5:
-
-    # wangshuang "没事，我来之前还在想你为什么还能来到这里。不过从你刚才手上一直在忙活的事情来看，这早就不是问题了。"
-    wangshuang "Nothing. On the way here I was still wondering how you could possibly still get in. Going by what your hands have been busy with, that stopped being a question just now."
-
 # game/scripts/route1.rpy:994
 translate english route1_start_55c84232:
 
@@ -3214,18 +2962,6 @@ translate english route1_start_eb7e9e7f_13:
 
     # ahe "..."
     ahe "..."
-
-# game/scripts/route1.rpy:1005
-translate english route1_start_cb5e4a4a:
-
-    # wangshuang "嗯...但是我站累了，所以让我来告诉你吧——你要找的头骨并不存在，所以就算一直这样找下去，你也永远不会被治愈。"
-    wangshuang "Hmm...my legs are tired though and I want to head back soon, so I'll just tell you - the skull you're looking for doesn't exist. Keep looking as long as you like. You will never be cured."
-
-# game/scripts/route1.rpy:1006
-translate english route1_start_88eb3589:
-
-    # ahe "啊？你怎么知道的？"
-    ahe "Huh? How would you know that?"
 
 # game/scripts/route1.rpy:1007
 translate english route1_start_72c04788:
@@ -3305,18 +3041,6 @@ translate english route1_start_aa4055ab:
     # ahe "喂...阿霜你又——"
     ahe "Hey...Shuang, you're doing it ag——"
 
-# game/scripts/route1.rpy:1047
-translate english route1_start_ef51fc51:
-
-    # wangshuang "哎，我也没说缺了头骨就不行啊。"
-    wangshuang "Well. I never said it wouldn't work without the skull."
-
-# game/scripts/route1.rpy:1048
-translate english route1_start_db6b1df1:
-
-    # wangshuang "既然你这么想她，那肯定得成全你嘛——你看，你的“作品”从各种意义上已经完成了。"
-    wangshuang 'You miss her this badly, I have to see it through for you - look. Your "work" is finished, in every sense of the word.'
-
 # game/scripts/route1.rpy:1049
 translate english route1_start_1450de86:
 
@@ -3394,12 +3118,6 @@ translate english route1_start_b16d67d5:
 
     # ahe "啊...你们...你们...等等..."
     ahe "Ah...you two...you two...wait..."
-
-# game/scripts/route1.rpy:1079
-translate english route1_start_c54206e1:
-
-    # youliya "嗯...没什么好等的，只是撕碎了几百个长得和我一样的东西就承受不住了？这可不是我认识的阿鹤呢。"
-    youliya "Mmmm...There is nothing to wait for. You tore apart a few hundred things wearing my face and that's already too much for you? That isn't the Kaku I knew."
 
 # game/scripts/route1.rpy:1080
 translate english route1_start_62578411:
@@ -4032,3 +3750,357 @@ translate english strings:
     # game/scripts/route1.rpy:1219
     old "对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起对不起"
     new "sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry sorry"
+
+# game/scripts/route1.rpy:787
+translate english route1_start_fa070f05:
+
+    # "灰幕沉默。你也是。"
+    "The gray veil is silent. So are you."
+
+# game/scripts/route1.rpy:797
+translate english route1_start_19106f3c:
+
+    # large_narrator "那就请继续忍耐吧。"
+    large_narrator "Then go on bearing it."
+
+# game/scripts/route1.rpy:799
+translate english route1_start_9a6e271a:
+
+    # extend "\n更多毒液渗入血管，血液沸腾，内脏在沸腾血液的浇灌下燃烧破裂，但你只能感受到你执意选择的灰。"
+    extend "\nMore venom worked into your veins. Your blood boiled. Your organs cooked and split open under it. And still all you could feel was the gray you had chosen."
+
+# game/scripts/route1.rpy:800
+translate english route1_start_e37e99c5:
+
+    # extend "\n痛觉与痛苦开始分离。在日复一日的感官撕扯中，你的体表逐渐只剩下介于触觉和冷感之间的微妙麻木。"
+    extend "
+The sense of pain and suffering began to part ways. Day after day the tearing at your senses went on, until all that was left of your skin was a subtle numbness."
+
+# game/scripts/route1.rpy:801
+translate english route1_start_1695a129:
+
+    # extend "\n但横膈膜仍在均匀地舒张。"
+    extend "
+But your diaphragm kept up its even rhythm, contracting and relaxing."
+
+# game/scripts/route1.rpy:802
+translate english route1_start_0ddb33aa:
+
+    # extend "\n这就够了。"
+    extend "\nThat would be enough."
+
+# game/scripts/route1.rpy:803
+translate english route1_start_fb258285:
+
+    # extend "\n这就...够了。"
+    extend "\nThat would...be enough."
+
+# game/scripts/route1.rpy:827
+translate english route1_start_89f7e521:
+
+    # large_narrator "在长久的窒息中，你的肢体变得干瘪而暗哑，仿佛再薄一点就要与灰幕融为一体。"
+    large_narrator "Through the long suffocation your limbs turned shriveled and dull, as if one shade thinner they would melt into the gray."
+
+# game/scripts/route1.rpy:828
+translate english route1_start_07fb886e:
+
+    # extend "\n但即使是这样的肢体，也只能站起来，让身子暖起来，让肠胃蠕动起来。"
+    extend "
+But even limbs like these could only stand up. Warm the body. Set your gut moving."
+
+# game/scripts/route1.rpy:829
+translate english route1_start_c0f979f9:
+
+    # extend "\n让血液流淌起来，即使横膈膜早就停止了舒张。"
+    extend "\nSet the blood flowing, even though the diaphragm had long since stopped."
+
+# game/scripts/route1.rpy:830
+translate english route1_start_01ac57d8:
+
+    # extend "\n钟声。钟声。钟声。钟声。"
+    extend "\nBells. Bells. Bells. Bells."
+
+# game/scripts/route1.rpy:838
+translate english route1_start_e6b82187:
+
+    # large_narrator "要去哪儿呢？"
+    large_narrator "Where to, then?"
+
+# game/scripts/route1.rpy:839
+translate english route1_start_6a7026d5:
+
+    # extend "\n要从粉红色的雾气里走出去？"
+    extend "\nOut of the pink haze?"
+
+# game/scripts/route1.rpy:840
+translate english route1_start_c192f8be:
+
+    # extend "\n完全进到灰幕里去？"
+    extend "
+All the way into the gray veil?"
+
+# game/scripts/route1.rpy:842
+translate english route1_start_c38db0e3:
+
+    # extend "\n总要去些地方——"
+    extend "\nSomewhere. Anywhere——"
+
+# game/scripts/route1.rpy:845
+translate english route1_start_c022efa9:
+
+    # large_narrator "再回过神来时，贯穿全身的疼痛已经退却了，你的肢体看起来健康而饱满。"
+    large_narrator "When you came to, the pain running through you had already receded. Your limbs looked healthy and full again."
+
+# game/scripts/route1.rpy:846
+translate english route1_start_22d7474a:
+
+    # extend "\n脑袋略有些刺痛，但你知道大脑皮层以内是不存在痛觉神经的，所以这痛觉想必与眼前的灰幕一样一触即碎。"
+    extend "
+You felt a faint sting in your head - but you know there are no pain nerves inside the cortex, so that pain, like the gray veil before your eyes, would surely shatter at a touch."
+
+# game/scripts/route1.rpy:847
+translate english route1_start_00f32cf9:
+
+    # extend "\n想到这里，你伸出手。"
+    extend "\nWith that thought, you reached out your hand."
+
+# game/scripts/route1.rpy:875
+translate english route1_start_f779c237:
+
+    # ahe "没有。"
+    ahe "Nope."
+
+# game/scripts/route1.rpy:884
+translate english route1_start_f9415e6c:
+
+    # wangshuang "啊？我们已经走了好久了诶。"
+    wangshuang "Huh? But we've been walking for so damn long now."
+
+# game/scripts/route1.rpy:891
+translate english route1_start_f1d4c02c:
+
+    # wangshuang "啊...我当初就不该听你的鬼话和你一起来这里的..."
+    wangshuang "Ah...I should never have listened to your nonsense and come out here with you..."
+
+# game/scripts/route1.rpy:896
+translate english route1_start_c9838527:
+
+    # wangshuang "就算要走路也别让我来沙漠里找骨头啊..."
+    wangshuang "Then take me for a walk, not bone-hunting in a desert..."
+
+# game/scripts/route1.rpy:897
+translate english route1_start_eaf88df3:
+
+    # ahe "明明就是你自己要跟来的。"
+    ahe "You're the one who wanted to tag along."
+
+# game/scripts/route1.rpy:929
+translate english route1_start_dbadd95c:
+
+    # ahe "有什么东西不是你的强项的么..."
+    ahe "Is there anything that isn't your strong suit..."
+
+# game/scripts/route1.rpy:939
+translate english route1_start_0ee4c0a8:
+
+    # wangshuang "我找来的，当然对咯。所以呢？接下来要做什么？"
+    wangshuang "I found it, of course it fits. And? What now?"
+
+# game/scripts/route1.rpy:944
+translate english route1_start_f4bf0f36:
+
+    # wangshuang "吼，只剩头骨了么...嗯...阿鹤啊——"
+    wangshuang "Ohh, just the skull left, is it...hm...Kaku——"
+
+# game/scripts/route1.rpy:949
+translate english route1_start_4c85897d:
+
+    # ahe "拼一副骨架而已。"
+    ahe "Just putting a skeleton together."
+
+# game/scripts/route1.rpy:953
+translate english route1_start_32037ded:
+
+    # wangshuang "而已？你不会觉得光靠一副骨架就能把她带回来吧？"
+    wangshuang "Just? You don't actually think a skeleton alone will bring her back, do you?"
+
+# game/scripts/route1.rpy:954
+translate english route1_start_6e9f5326:
+
+    # ahe "...!"
+    ahe "...!"
+
+# game/scripts/route1.rpy:958
+translate english route1_start_420b63f2:
+
+    # wangshuang "与其尝试那种毫无意义的事情，直接离开也可以，门就在那边。"
+    wangshuang "Rather than waste yourself on something that meaningless, you could just leave. Door's right over there."
+
+# game/scripts/route1.rpy:959
+translate english route1_start_ad677033:
+
+    # ahe "可是...我还..."
+    ahe "But...I still..."
+
+# game/scripts/route1.rpy:960
+translate english route1_start_c6080164:
+
+    # wangshuang "你觉得执拗是一种美德么？"
+    wangshuang "Do you think stubbornness is a virtue?"
+
+# game/scripts/route1.rpy:961
+translate english route1_start_0c3b58aa:
+
+    # ahe "...我只是..."
+    ahe "...I just..."
+
+# game/scripts/route1.rpy:962
+translate english route1_start_513e285a:
+
+    # wangshuang "嗯，尽管继续骗自己。"
+    wangshuang "Mm. Go on lying to yourself, then."
+
+# game/scripts/route1.rpy:963
+translate english route1_start_2c0c33f2:
+
+    # ahe "...阿霜...之前这个梦里永远都只有我一个人...为什么这次你也在这里？"
+    ahe "...Shuang...every other time, I was the only one in this dream...why are you here this time?"
+
+# game/scripts/route1.rpy:968
+translate english route1_start_d6513a50:
+
+    # ahe "可是..."
+    ahe "But..."
+
+# game/scripts/route1.rpy:972
+translate english route1_start_0a2c6bfd:
+
+    # wangshuang "只不过我不会无聊到去尝试那种事情就是了。"
+    wangshuang "I'm just not bored enough to try anything like that."
+
+# game/scripts/route1.rpy:973
+translate english route1_start_52cbb666:
+
+    # ahe "可你...为什么要做这个梦？"
+    ahe "But you...why would you have this dream?"
+
+# game/scripts/route1.rpy:977
+translate english route1_start_ba75c434:
+
+    # wangshuang "当然是因为后悔咯，否则人是不可能来到这里的。"
+    wangshuang "Regret, obviously. There's no other way in."
+
+# game/scripts/route1.rpy:978
+translate english route1_start_6fd316a2:
+
+    # ahe "还有...能让你后悔的事？"
+    ahe "There are...things even you regret?"
+
+# game/scripts/route1.rpy:979
+translate english route1_start_b3a3c993:
+
+    # wangshuang "当然。只要做过选择，就一定会后悔。"
+    wangshuang "Of course. Make a choice and regret is guaranteed."
+
+# game/scripts/route1.rpy:984
+translate english route1_start_1b17f138:
+
+    # wangshuang "哈？你在说什么呢？"
+    wangshuang "Huh? What are you on about?"
+
+# game/scripts/route1.rpy:989
+translate english route1_start_942e76b5:
+
+    # wangshuang "你想啊，无论我们做了什么事，那都意味着同一时空内其他行为的可能性被完全抹杀了，不是么？所以从定义上来讲，活着就是一场超长的悔恨之旅。"
+    wangshuang "Think about it - anything we do wipes out every other thing we could've done in that same slice of space time. So by definition, being alive is just one very long trip through regret."
+
+# game/scripts/route1.rpy:990
+translate english route1_start_e7f3a698:
+
+    # wangshuang "不过你也别觉得那是什么坏事。应该说，完全不需要后悔的认知架构才真的要人命。我之前专门做过这方面的研究。"
+    wangshuang "Don't take that for a bad thing, though. If anything, it's the mind that never needs to regret that will actually kill you. I did a whole study on it once."
+
+# game/scripts/route1.rpy:996
+translate english route1_start_84a10fe7:
+
+    # ahe "那和后悔一点都不相关吧..."
+    ahe "That's got nothing to do with regret, though..."
+
+# game/scripts/route1.rpy:1017
+translate english route1_start_908f1c38:
+
+    # ahe "可那样的话，记忆肯定会和现实发生冲突的吧。"
+    ahe "But then the memory would be bound to clash with reality."
+
+# game/scripts/route1.rpy:1031
+translate english route1_start_aaf61756:
+
+    # wangshuang "我们的实验数据也指向这一点——在草拟完成的三天内，所有被试都明确拒绝了外界干预，以不容置疑的姿态维持着选择支两边的草拟。"
+    wangshuang "Our data said the same. Within three days of a cognitive draft finishing, every subject outright refused outside intervention and held both sides of the branch as beyond question."
+
+# game/scripts/route1.rpy:1032
+translate english route1_start_ded1770e:
+
+    # ahe "他们...在自行草拟？"
+    ahe "They...were drafting on their own?"
+
+# game/scripts/route1.rpy:1083
+translate english route1_start_4f557b8b:
+
+    # wangshuang "嗯，那还是保持无知比较好。"
+    wangshuang "Mm. Then not knowing suits you better."
+
+# game/scripts/route1.rpy:1103
+translate english route1_start_106be968:
+
+    # wangshuang "没事，我之前还在想，你为什么还能来到这里。不过从你刚才手上一直在忙活的事情来看，这早就不是问题了。"
+    wangshuang "Nothing. I'd been wondering how you could possibly still get in here. Going by what your hands have been busy with, that stopped being a question just now."
+
+# game/scripts/route1.rpy:1120
+translate english route1_start_8b7d246b_2:
+
+    # wangshuang "..."
+    wangshuang "..."
+
+# game/scripts/route1.rpy:1122
+translate english route1_start_8b7d246b_3:
+
+    # wangshuang "..."
+    wangshuang "..."
+
+# game/scripts/route1.rpy:1126
+translate english route1_start_c581def3:
+
+    # wangshuang "嗯...但是我站累了，所以让我来告诉你吧——你要找的头骨并不存在，所以就算一直这样找下去，你也永远不会达到你的目的。"
+    wangshuang "Hmm...my legs are tired though, so let me just tell you - the skull you're looking for doesn't exist. Keep looking as long as you like. You will never get what you're after."
+
+# game/scripts/route1.rpy:1127
+translate english route1_start_00404476:
+
+    # ahe "啊...可是...你是怎么知道的？"
+    ahe "Ah...but...how would you know that?"
+
+# game/scripts/route1.rpy:1186
+translate english route1_start_aa7c1bb8:
+
+    # wangshuang "哎，话又说回来，我也没说过缺了头骨就不行啊。"
+    wangshuang "Well, then again - I never did say it wouldn't work without the skull."
+
+# game/scripts/route1.rpy:1187
+translate english route1_start_f0811f67:
+
+    # wangshuang "既然你这么想见她，那肯定得成全你嘛——你看，你的“作品”啊，从各种意义上已经完成了。"
+    wangshuang "You want to see her this badly, so of course I have to see it through for you - look. That \"work\" of yours is finished, in every sense of the word."
+
+# game/scripts/route1.rpy:1220
+translate english route1_start_57b38db3:
+
+    # youliya "嗯...有什么好等的？只是撕碎了几百个长得和我一样的东西就承受不住了？这可不是我认识的阿鹤呢。"
+    youliya "Mmmm...what is there to wait for? You tore apart a few hundred things wearing my face and that's already too much for you? That isn't the Kaku I knew."
+
+# game/scripts/route1.rpy:1283
+translate english route1_start_eb7e9e7f_17:
+
+    # ahe "..."
+    ahe "..."
+

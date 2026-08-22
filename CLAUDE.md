@@ -22,6 +22,7 @@
 
 ```
 王霜：Character dialogue
+王霜【背手站立，默认表情】：Dialogue + sprite（姿势，表情 → show 立绘；仅【表情】则走场景差分，不动立绘）
 阿鹤：Another character
 Plain text is narration
 【Stage direction → becomes comment】
