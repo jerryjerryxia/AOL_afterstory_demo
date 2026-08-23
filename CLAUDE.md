@@ -29,6 +29,7 @@ Plain text is narration
 A: Choice A text
 B: Choice B text（madness+1）
 【选项分线到此结束】
+Extended大文本框内可嵌套选项（问询段）：A： 开新菜单，B/C/D： 是兄弟选项，每个菜单以自己的【选项分线到此结束】收束（嵌套先收）；出选项时 window hide 藏箱，选完后玩家所选以「——选项文本」与首条响应并成一次点击回显进框，正文继续 extend 堆在同一个框里。选项标记【选择该选项会在展示下列文字后重新展示本次选择】= 循环回本菜单（生成 _extmenu_N label——必须下划线开头，否则重置翻译 ID 基底）
 【展示一周目分屏"Title"】
 【Bad End 1：Ending name】
 ```

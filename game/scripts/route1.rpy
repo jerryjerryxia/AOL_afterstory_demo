@@ -32,7 +32,7 @@ label route1_start:
     show ws crossed default at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，从之前的病史来看，你总是在这两个状态之间来回反复，但现在你是什么感觉呢？"
-    ahe "..."
+    ahe "…"
     ## 立绘：抱胸站立，无奈表情
     show ws crossed wry at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -99,7 +99,7 @@ label route1_start:
     wangshuang "这是你的心理咨询。你是来访者，而我是咨询师。假如你连这种基本前提都不愿接受的话，你来这里又是为什么？"
     ahe "可我确实想不起来啊...所以...我该怎样才能好起来？"
     wangshuang "修补本就完整的东西，那自然是做不到的。"
-    ahe "..."
+    ahe "…"
     ## 表情：面无表情
     scene summergaze_blank
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -195,13 +195,13 @@ label route1_start:
     show screen op_lock(2)
     wangshuang "盯——"
     hide screen op_lock
-    ahe "..."
+    ahe "…"
     show screen op_lock(2)
     wangshuang "盯——"
     hide screen op_lock
-    ahe "..."
+    ahe "…"
     wangshuang "噗——"
-    ahe "..."
+    ahe "…"
     ## 表情：大笑
     scene summergaze_laugh
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -343,7 +343,7 @@ label route1_start:
     wangshuang "彼此彼此咯，毕竟我们都只是遵循着强烈的愿望，尝试了一直以来想要尝试的事情。"
     ahe "...区别在于我不需要人陪葬。"
     wangshuang "不，区别在于我做到了，而你没有。"
-    ahe "..."
+    ahe "…"
     ## 表情：默认
     scene dessert1_default
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -354,7 +354,7 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我闭嘴了又有什么用？难道你那苍白的“理想”就不需要人来陪葬了？"
     wangshuang "你为了{i}尤里娅{/i}那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
-    ahe "..."
+    ahe "…"
     ## 转场：甜品店对视2
     scene bg_dessertgaze2 with scene_dissolve
     ## 表情：默认
@@ -362,10 +362,10 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "所以不如放下成见，吃点团子，如何？"
     ## 默默吃一口
-    ahe "..."
+    ahe "…"
     ## 手中出现无色透明多面体
     wangshuang "这就对了嘛，来都来了。"
-    ahe "..."
+    ahe "…"
     wangshuang "有件事你可能不知道，他们家团子是加了 {i}KAS{/i} 才这么好吃的。"
     ahe "诶？所以之后我会上瘾？"
     wangshuang "也许。"
@@ -606,18 +606,16 @@ label route1_start:
     extend "\n周身空间在微颤中继续碎裂，而你则带着某种同样脆弱的信念静坐原地，任凭倦意侵蚀你脑海中残存的意识。"
     extend "\n{size=-10}只需要她带你离开这里...这样就够了...{/size}"
     extend "\n{size=-10}只需要她...这样...就够了...{/size}"
-    extend "\n..."
-    extend "\n......"
-    extend "\n........."
+    extend "\n…"
+    extend "\n……"
+    extend "\n………"
     extend "\n就够了..."
     extend "\n即便如此，王霜依旧没有回来。"
     ## Extended大文本框结束
-    ## 转场：黑屏
-    scene bg_black_video with scene_soft
-    ## 剥落完成后，黑屏
     ## 水底泡泡上浮音效：Bubbles_10
     $ play_sfx("audio/sfx/bubbles/Bubbles_10.wav")
     ## 音效完成后再执行转场
+    $ wait_sfx()
     ## 转场：粉红屏
     scene bg_pink_video with scene_soft
     $ stash_music_pos()
@@ -632,7 +630,7 @@ label route1_start:
     ## Extended文本框开始 - accumulating textbox
     ahe "阿霜？"
     extend "\n有人吗？"
-    extend "\n..."
+    extend "\n…"
     ## Extended文本框结束
     ## 场景音乐参考：https://audionautix.com/Music/DeepSpace.mp3 (Jason Shaw)
     $ set_scene_music("route1_deepspace")
@@ -677,12 +675,70 @@ label route1_start:
     $ no_click_split = True
     large_narrator "——录入中——录入中——"
     extend "\n——接下来将对生体失窃案的犯罪嫌疑人进行问询。"
-    extend "\n——请问，您的躯体在过去的二十四小时内，经历过死亡、认知紊乱等重大人身安全隐患吗？"
-    extend "\n——..."
+    extend "\n——请问，您在过去的二十四小时内，是否经历过严重肉体伤害、认知紊乱、大量出血、死亡等重大健康隐患？"
+    extend "\n——…"
+    label _extmenu_1:
+        window hide Dissolve(.25)
+        menu:
+            "有":
+                $ _intro_fade_pending = True
+                extend "\n——有\n——请详细描述该经历的过程。请注意，您没有权利保持沉默。"
+                window hide Dissolve(.25)
+                menu:
+                    "王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。":
+                        $ _intro_fade_pending = True
+                        extend "\n——王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
+                        window hide Dissolve(.25)
+                        menu:
+                            "一般般...":
+                                $ _intro_fade_pending = True
+                                extend "\n——一般般...\n——您的回答已被记录。"
+                            "恶心死了！":
+                                $ _intro_fade_pending = True
+                                extend "\n——恶心死了！\n——预料之外呢，阿鹤先生。"
+                            "可爱！":
+                                $ _intro_fade_pending = True
+                                extend "\n——可爱！\n——很好。"
+                    "吃过 KAS 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。":
+                        $ _intro_fade_pending = True
+                        extend "\n——吃过 {i}KAS{/i} 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。\n——请问您还记得剂量吗？"
+                        window hide Dissolve(.25)
+                        menu:
+                            "不记得，王霜给的。":
+                                $ _intro_fade_pending = True
+                                extend "\n——不记得，王霜给的。\n——您的回答已被记录。"
+                            "三百八十二点三毫克，误差在零点四毫克之内。":
+                                $ _intro_fade_pending = True
+                                extend "\n——三百八十二点三毫克，误差在零点四毫克之内。\n——如果您无法如实作答，请不要胡乱编造答案。"
+                            "我他妈脑子要是这么好使我还在你这儿跟你讲相声？":
+                                $ _intro_fade_pending = True
+                                extend "\n——我他妈脑子要是这么好使我还在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
+                    "尤里娅，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我...":
+                        $ _intro_fade_pending = True
+                        extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
+                        window hide Dissolve(.25)
+                        menu:
+                            "闭嘴...":
+                                $ _intro_fade_pending = True
+                                extend "\n——闭嘴...\n——您的回答已被记录。"
+                            "我们是同事关系。":
+                                $ _intro_fade_pending = True
+                                extend "\n——我们是同事关系。\n——根据我们的调查，这属于不实信息。"
+                            "死了。还有什么要问的么？":
+                                $ _intro_fade_pending = True
+                                extend "\n——死了。还有什么要问的么？\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
+                    "沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。":
+                        $ _intro_fade_pending = True
+                        extend "\n——沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
+            "没有":
+                $ _intro_fade_pending = True
+                extend "\n——没有\n——检测到您提供了不实信息，请再次作答。"
+                ## 重新展示本次选择
+                jump _extmenu_1
     extend "\n——请问，您盗窃本公司的生体产品，是出于自主意愿，还是有他人指使？"
-    extend "\n——..."
+    extend "\n——…"
     extend "\n——本公司将本着公平、公正、公开的原则，为具有高度危险性的犯罪嫌疑人实施前脑叶白质切除术 ，请问您有异议吗？"
-    extend "\n——..."
+    extend "\n——…"
     extend "\n——感谢您的配合。"
     extend "\n——录入完毕——"
     $ no_click_split = False
@@ -815,9 +871,9 @@ label route1_start:
             scene bg_black_video with scene_soft
             ## Extended大文本框开始 - 大文本框分句
             $ wait_sfx()
-            large_narrator "..."
-            extend "\n......"
-            extend "\n........"
+            large_narrator "…"
+            extend "\n……"
+            extend "\n………"
             ## Extended大文本框结束
         "放弃。":
             $ madness += 1
@@ -855,9 +911,9 @@ label route1_start:
             $ current_music_scene = None
             stop music fadeout 3.0
             ## Extended大文本框开始 - 大文本框分句
-            large_narrator "..."
-            extend "\n......"
-            extend "\n........."
+            large_narrator "…"
+            extend "\n……"
+            extend "\n………"
             ## Extended大文本框结束
 
     ## 沙漠长风音效
@@ -905,9 +961,9 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "没事，别在意。"
     ## Extended文本框开始 - accumulating textbox
-    "..."
-    extend "\n......"
-    extend "\n........."
+    "…"
+    extend "\n……"
+    extend "\n………"
     ## Extended文本框结束
     ahe "嗯...大腿骨明明应该是最容易找到的才对..."
     ## 立绘：背手站立，默认表情
@@ -1024,7 +1080,7 @@ label route1_start:
     show ws akimbo default at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "对，但不全对——即使有外人指出矛盾，又有多少人愿意摒弃自己的“切身体验”，转而允许他人的只言片语来定夺自己的认知？"
-    ahe "..."
+    ahe "…"
     ## 立绘：右手叉腰，左手食指竖起做讲解状，面无表情
     show ws akimbo blank at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -1046,7 +1102,7 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嘿嘿，别兴奋过头了，阿鹤。"
     wangshuang "一个人双线程草拟时需要的算力...这么说吧，会在草拟开始后的短时间内爆炸增长，而最初的草拟全是在被试脑内执行的...。"
-    ahe "..."
+    ahe "…"
     ## 立绘：抱胸站立，面无表情
     show ws crossed blank at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -1072,8 +1128,8 @@ label route1_start:
     $ stash_music_pos()
     $ current_music_scene = None
     stop music fadeout 3.0
-    ahe "..."
-    wangshuang "..."
+    ahe "…"
+    wangshuang "…"
     ahe "这就是你后悔的事情？"
     ## 立绘：抱胸站立，默认表情
     show ws crossed default at ws_close
@@ -1085,7 +1141,7 @@ label route1_start:
     ## 立绘：背手站立，面无表情
     show ws backhand blank at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "..."
+    wangshuang "…"
     ahe "所以这梦也是你那朴素过程的一部分？"
     ## 立绘：背手站立，默认表情
     show ws backhand default at ws_close
@@ -1106,7 +1162,7 @@ label route1_start:
     show ws backhand default at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，现在我也维持原判。"
-    ahe "..."
+    ahe "…"
     ## 立绘：抱胸站立，坏笑表情
     show ws crossed smirk at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -1116,10 +1172,10 @@ label route1_start:
     show ws backhand default at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "行吧。毕竟我们有得是时间。"
-    ahe "..."
-    wangshuang "..."
-    ahe "..."
-    wangshuang "..."
+    ahe "…"
+    wangshuang "…"
+    ahe "…"
+    wangshuang "…"
     ## 立绘：右手叉腰，左手食指竖起做讲解状，得意表情
     show ws akimbo proud at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -1222,14 +1278,14 @@ label route1_start:
     ## 一般态邪恶表情1
     youliya "但那对你来说根本不重要吧，毕竟都是最后关头了，无论怎样都不能输给一群杰罗瓦控制的假人嘛！尤其那些东西只是长得和我一样而已，根本不需要任何同情。"
     youliya "只要你“看到”那些东西不是“我”，自然就可以随手杀掉了——一切都顺理成章，无可厚非，对吧？"
-    ahe "..."
+    ahe "…"
     ## 一般态默认
     youliya "可是阿鹤，你知道吗？所有复制体的感官都会回流到我的身体。"
     ahe "{i}尤里娅{/i}...这不是——"
     youliya "每根断掉的骨头、每滴流出来的血、每副碎掉的内脏——虽然对我来说这些痛苦并不真实，可那体验还是让我记忆犹新啊，每一次死掉。"
     ## 一般态坏笑glitch
     youliya "死掉诶...那就是你口中的“无法重复的深邃体验”吧。能连续体验那么多次，我是不是该...感谢你呢？"
-    ahe "..."
+    ahe "…"
     ## 一般态默认
     youliya "那么作为你的谢礼，让我来告诉你一点浅显的事实吧。"
     ## 一般态坏笑
@@ -1280,7 +1336,7 @@ label route1_start:
     ## 重新开始跑动sequence
     ahe "啊...保持呼吸...保持呼吸...保持呼吸...保持呼吸..."
     shishou "你好。"
-    ahe "..."
+    ahe "…"
     ## 立绘：背手站立，默认表情
     show ws backhand default at ws_close
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -1440,9 +1496,9 @@ label route1_start:
     scene bg_black_still with scene_soft
     ## Extended大文本框开始 - accumulating large textbox
     $ wait_sfx()
-    large_narrator "..."
-    extend "\n......"
-    extend "\n........."
+    large_narrator "…"
+    extend "\n……"
+    extend "\n………"
     ## Extended大文本框结束
     ## 转场：黑屏
     scene bg_black_video with scene_soft

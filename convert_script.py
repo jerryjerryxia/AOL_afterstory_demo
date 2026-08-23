@@ -542,9 +542,26 @@ def apply_small_text(text):
     after = text[idx + len(marker):]
     return before + '{size=-10}' + after + '{/size}'
 
+def normalize_dots_line(text):
+    """整行只有 ASCII 点（3 个以上）的省略号行 → 全角 …（每 3 点折 1 个，四舍五入）。
+    像素字体里 ASCII 点是底线细点、全角 … 是中线方点，两种写法混用时后者明显更粗；
+    统一成全角（粗）。只动"整行都是点"的行 —— 句中的 ... 是口吃/迟疑，保持原样。"""
+    # extend 传进来的文本带字面 \n 前缀（两个字符：反斜杠 + n），剥掉再判断
+    prefix, body = '', text
+    if body.startswith('\\n'):
+        prefix, body = '\\n', body[2:]
+    # 允许问询段的 "——..."（破折号引出的沉默拍点）一并归一
+    m = re.fullmatch(r'(——)?(\.{3,})', body.strip())
+    if not m:
+        return text
+    dashes = m.group(1) or ''
+    n = len(m.group(2))
+    return prefix + dashes + '…' * max(1, int(round(n / 3.0)))
+
 def transform_display_text(text):
     """所有可见正文（对话/旁白/选项/extend）共用的行内文字变换。
     顺序：先 小字 再 斜体（斜体可嵌套进小字里，互不干扰）。"""
+    text = normalize_dots_line(text)
     text = apply_small_text(text)
     text = italicize_proper_nouns(text)
     return text
@@ -922,7 +939,8 @@ def emit_transition_lines(output, indent, scene_name, scene_desc):
         transition = 'scene_soft'
     _emit_scene(output, indent, scene_name, bg_image, transition)
 
-def emit_extended_segments(collected, output, indent, large=False, centered=False):
+def emit_extended_segments(collected, output, indent, large=False, centered=False,
+                           continued=False):
     """Extended文本框（大/小）：保留源换行（point 2）。每个源行 = 一句 say/extend，
     整句**干净文本**——标点的「逐句点击」改由运行时 {w} 处理（见 screens.rpy 的
     add_click_pauses）。这样翻译 ID 与源行 1:1 稳定，以后改分句逻辑再也不会冲掉翻译。
@@ -936,8 +954,11 @@ def emit_extended_segments(collected, output, indent, large=False, centered=Fals
       走 large_narrator（大文本框屏幕），否则普通 narrator。
     """
     # centered：居中Extended 文本框 —— 累积句子走 centered_say 屏幕、屏幕正中显示。
+    # continued=True：接续上一段累积（首行直接 extend，不另起 say）——
+    # 嵌套选项的分支正文要接在菜单前的同一个框里，靠它续上。返回值 = 结束时
+    # 是否处于"已开头"状态，供调用方跨菜单继续接。
     narr = 'centered_narrator ' if centered else ('large_narrator ' if large else '')
-    first_emitted = False   # 本段落是否已经发出开头 say
+    first_emitted = continued   # 本段落是否已经发出开头 say
 
     def emit_piece(speaker, text, lead_newline):
         nonlocal first_emitted
@@ -982,6 +1003,183 @@ def emit_extended_segments(collected, output, indent, large=False, centered=Fals
             # 新源行的第一段（且非段落开头）才需要前导 \n；被震动拆出的后半段
             # （pidx>0）不加 \n，仍在同一视觉行。
             emit_piece(speaker, part, first_emitted and pidx == 0)
+
+    return first_emitted
+
+################################################################################
+## Extended 块内的嵌套选项
+##
+## 剧本形如（见 demo_script.txt 「——录入中——」问询段）：
+##     ——正文若干
+##     A：选项文本
+##     ——选完后的正文（继续堆在同一个大文本框里）
+##     A：嵌套菜单的选项...
+##         ...
+##     【选项分线到此结束】       ← 收束最内层菜单
+##     B：兄弟选项
+##     【选项分线到此结束】       ← 收束外层菜单
+##     ——后续正文
+##
+## 文法不看缩进，只看两条规则：A： 开一个新菜单；B/C/D： 是当前菜单的下一个
+## 兄弟选项（同时结束上一个选项的正文）。每个菜单以自己的 【选项分线到此结束】
+## 收束，嵌套的先收、外层的后收 —— 因此结构无歧义（缩进仅为剧本可读性）。
+##
+## 生成物：Ren'Py 原生嵌套 menu；标题用本项目惯用的 `extend ""` 保住文本框；
+## 分支内正文全部 extend 续进同一个框（跨菜单不清屏）。选项标记
+## 【选择该选项会在展示下列文字后重新展示本次选择】 → 菜单包进局部 label，
+## 该分支末尾 jump 回去（正文照常累积后重新弹出同一个菜单）。
+################################################################################
+
+# 选项行：字母 + 可选【标记】 + 冒号 + 文本。只认 A-D，避免误伤普通正文。
+_CHOICE_IN_BLOCK_RE = re.compile(r'^([A-D])\s*((?:【[^】]*】)*)\s*[：:]\s*(.*)$')
+
+# 生成的循环菜单 label 全局计数（.extmenu_N 是当前 route label 的局部标签）。
+_EXT_MENU_COUNTER = [0]
+
+_CHOICE_LOOP_MARK = '重新展示本次选择'
+
+
+def _parse_block_choice(line):
+    """Extended 块内的选项行 → dict(letter, text, loop, madness)，非选项行返回 None。"""
+    m = _CHOICE_IN_BLOCK_RE.match(line)
+    if not m:
+        return None
+    letter, mods, text = m.group(1), m.group(2), m.group(3).strip()
+    loop = _CHOICE_LOOP_MARK in mods
+    # 标记也可能写在文本尾部（与顶层选项的 【游戏继续】 风格一致）
+    if _CHOICE_LOOP_MARK in text:
+        loop = True
+        text = re.sub(r'【[^】]*%s[^】]*】' % _CHOICE_LOOP_MARK, '', text).strip()
+    madness = 0
+    mm = re.search(r'[（(]madness\s*\+\s*(\d+)[）)]', text)
+    if mm:
+        madness = int(mm.group(1))
+        text = re.sub(r'[（(]madness\s*\+\s*\d+[）)]', '', text).strip()
+    return {'letter': letter, 'text': text, 'loop': loop, 'madness': madness}
+
+
+def _build_choice_tree(items):
+    """把含选项的条目序列组成树：返回顶层序列，元素为普通条目或
+    ('__menu__', [(opt_dict, body_seq), ...])。"""
+    def parse_seq(i):
+        seq = []
+        while i < len(items):
+            kind = items[i][0]
+            if kind == '__converge__':
+                return seq, i              # 交给所属菜单消费
+            if kind == '__choice__':
+                if items[i][1]['letter'] == 'A':
+                    menu, i = parse_menu(i)
+                    seq.append(('__menu__', menu))
+                    continue
+                return seq, i              # 兄弟选项：当前正文结束
+            seq.append(items[i])
+            i += 1
+        return seq, i
+
+    def parse_menu(i):
+        options = []
+        expected = 'A'
+        while (i < len(items) and items[i][0] == '__choice__'
+               and items[i][1]['letter'] == expected):
+            opt = items[i][1]
+            body, i = parse_seq(i + 1)
+            options.append((opt, body))
+            expected = chr(ord(expected) + 1)
+        if i < len(items) and items[i][0] == '__converge__':
+            i += 1
+        else:
+            print("WARNING: Extended 块内嵌套选项缺少 【选项分线到此结束】，"
+                  "已按当前收集到的选项收束")
+        return options, i
+
+    seq, i = parse_seq(0)
+    while i < len(items):
+        kind = items[i][0]
+        if kind == '__converge__':
+            print("WARNING: Extended 块内出现多余的 【选项分线到此结束】，已忽略")
+            i += 1
+        elif kind == '__choice__':
+            print(f"WARNING: 选项 {items[i][1]['letter']}： 前面没有对应的 A： 开头，"
+                  "该行按丢弃处理")
+            i += 1
+        else:
+            more, i = parse_seq(i)
+            seq.extend(more)
+    return seq
+
+
+def emit_extended_choice_block(collected, output, indent, large=False, centered=False):
+    """含选项的 Extended 块总入口：组树 → 递归生成。"""
+    seq = _build_choice_tree(collected)
+    _emit_choice_seq(seq, output, indent, large, centered, started=False)
+
+
+def _emit_choice_seq(seq, output, indent, large, centered, started):
+    """按序生成：普通条目交给 emit_extended_segments（带续接状态），
+    菜单递归生成。返回结束时的续接状态。"""
+    run = []
+    for item in seq:
+        if item[0] == '__menu__':
+            if run:
+                started = emit_extended_segments(run, output, indent, large=large,
+                                                 centered=centered, continued=started)
+                run = []
+            if not started:
+                print("WARNING: Extended 块内的菜单前没有任何正文，"
+                      "菜单标题的 extend 将无 say 可接")
+            started = _emit_block_menu(item[1], output, indent, large, centered)
+        else:
+            run.append(item)
+    if run:
+        started = emit_extended_segments(run, output, indent, large=large,
+                                         centered=centered, continued=started)
+    return started
+
+
+def _emit_block_menu(options, output, indent, large, centered):
+    """生成一个（可嵌套的）菜单。带循环选项时把 menu 包进局部 label，
+    循环分支末尾 jump 回来重新弹出。返回 True（菜单不清框，续接状态保持）。"""
+    _EXT_MENU_COUNTER[0] += 1
+    n = _EXT_MENU_COUNTER[0]
+    has_loop = any(opt['loop'] for opt, _ in options)
+    menu_indent = indent
+    if has_loop:
+        # ★label 必须以下划线开头★ —— 普通 label（含 .local）会重置翻译上下文，
+        # 让它之后所有对话的翻译 ID 换基底，孤儿化整段既有英文翻译；
+        # 下划线开头的 label 不参与翻译 ID（call...from _xxx 同理），因此安全。
+        output.append(f'{indent}label _extmenu_{n}:')
+        menu_indent = indent + '    '
+    # 出选项时把大文本框整个藏起来（无标题菜单 + window hide 溶解），选项走普通
+    # 的屏幕居中样式 —— 堆了多行的框和选项文字必然打架，躲位置治不了本。
+    # 选完后：window show 溶解回大文本框 → 先把玩家的选择以 "——选项文本" 回显
+    # 进框，再继续该分支的正文。溶解让文字↔选项的来回切换不生硬。
+    output.append(f'{menu_indent}window hide Dissolve(.25)')
+    output.append(f'{menu_indent}menu:')
+    for opt, body in options:
+        output.append(f'{menu_indent}    "{escape_quotes(opt["text"])}":')
+        inner = menu_indent + '        '
+        if opt['madness']:
+            output.append(f'{inner}$ madness += {opt["madness"]}')
+        # 不发 window show —— 它会经 empty_window 用默认 narrator 的 say 屏幕垫场，
+        # 把底部渐变 scrim 闪出来（"选完下半屏黑一下"）。改为置 _intro_fade_pending，
+        # 让大文本框自己的 say_intro_fade 在重新挂载的这一次淡入（机制见 screens.rpy）。
+        output.append(f'{inner}$ _intro_fade_pending = True')
+        # 回显玩家的选择（——选项文本）。与分支第一条正文并进同一条 extend
+        # （中间字面 \n 换行），一次点击同时看到回显和响应，不多耗一次点击。
+        # 第一条不是纯正文时（如直接嵌套菜单）回显才单独成句。
+        echo = '——' + opt['text']
+        body = list(body)
+        if body and body[0][0] is None:
+            body[0] = (None, echo + chr(92) + 'n' + body[0][1])
+        else:
+            output.append(f'{inner}extend {format_dialogue(chr(92) + "n" + echo)}')
+        _emit_choice_seq(body, output, inner, large, centered, started=True)
+        if opt['loop']:
+            output.append(f'{inner}## 重新展示本次选择')
+            output.append(f'{inner}jump _extmenu_{n}')
+    return True
+
 
 def convert_content_line(line, indent="    ", use_large_textbox=False):
     """Convert a single content line to Ren'Py format"""
@@ -1040,6 +1238,13 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         return (f'{indent}## 音乐开始 fade out\n'
                 f'{indent}$ current_music_scene = None\n'
                 f'{indent}stop music fadeout 4.0')
+
+    # 【音效完成后再执行转场】：显式阻塞到当前音效播完，再放行后面的语句。
+    # 默认规则是"音效与转场同帧触发、只在下一句正文前补等待"（见 insert_sfx_waits），
+    # 这个标记用于剧本要求"声音先演完、画面再动"的地方。必须在下面的 音效 cue
+    # 分支之前判断 —— 它同样含"音效"两个字，会被那条正则误吞成纯注释。
+    if re.match(r'^【音效(?:完成|播完)后.*】$', line):
+        return f'{indent}## {line.strip("【】")}\n{indent}$ wait_sfx()'
 
     # Sound-effect markers 【…音效：filename】 -> one-shot on the sound channel.
     # Convention: the marker names the clip explicitly (base name, no extension)
@@ -1345,6 +1550,16 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
         if marker_end in line:
             break
 
+        # 嵌套选项（Extended 块内，见 emit_extended_choice_block）：
+        # 汇合标记必须先于下面通用的【】跳过截获，否则会被静默吃掉。
+        if is_convergence(line):
+            collected.append(('__converge__', None))
+            continue
+        block_choice = _parse_block_choice(line)
+        if block_choice:
+            collected.append(('__choice__', block_choice))
+            continue
+
         # Check for scene transition markers - these need to be output before dialogue continues
         transition_match = re.match(r'^【转场[：:](.+?)】$', line)
         if transition_match:
@@ -1407,7 +1622,16 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
 
     # Extended 文本框（大/小）现在统一走同一段落、按标点逐次点击的分句逻辑。
     # 大文本框只是旁白用 large_narrator、屏幕用 large_say，分句规则完全一致。
-    emit_extended_segments(collected, output, indent, large=use_large, centered=centered)
+    # 块内含选项行时走嵌套菜单路径（正文跨菜单续在同一个框里）。
+    if any(k == '__choice__' for k, _ in collected):
+        emit_extended_choice_block(collected, output, indent,
+                                   large=use_large, centered=centered)
+    else:
+        stray = [it for it in collected if it[0] == '__converge__']
+        if stray:
+            print("WARNING: Extended 块内有 【选项分线到此结束】 但没有选项行，已忽略")
+        collected = [it for it in collected if it[0] != '__converge__']
+        emit_extended_segments(collected, output, indent, large=use_large, centered=centered)
     return output, i
 
 

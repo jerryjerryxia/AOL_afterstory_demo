@@ -355,6 +355,39 @@ init python:
         def __call__(self, what, *args, **kwargs):
             return super(ClickPauseCharacter, self).__call__(add_click_pauses(what), *args, **kwargs)
 
+    ## 大文本框行数封顶。问询段的循环选项（"没有"→重新作答）会反复 extend 同一行，
+    ## 不设限的话堆积文字迟早溢出到屏幕外。机制：Ren'Py 的 extend 在拼接前会调用
+    ## 角色的 do_extend()，且拼接源是 store._last_say_what —— 在这里做行数预算：
+    ## 已堆内容 + 新块 预计超过 LARGE_BOX_MAX_LINES 视觉行时，清空累积，本次
+    ## extend 就"新开一箱"只显示新块。对所有 large_narrator 的 extend 生效
+    ## （含转换器静态生成的长块），其他文本框不受影响。
+    LARGE_BOX_MAX_LINES = 10       # 箱内可用高 640px ÷ 行高约 56px ≈ 11，留 1 行余量
+    LARGE_BOX_CHARS_PER_LINE = 38  # 可用宽 1360px ÷ 汉字约 36px，保守取整；半角按半字计
+
+    import re as _box_re
+    _BOX_TAG_RE = _box_re.compile(r'\{[^}]*\}')
+
+    def _box_visual_lines(text):
+        """估算一段文本在大文本框里占多少视觉行（含自动折行）。半字为计数单位。"""
+        if not text:
+            return 0
+        text = _BOX_TAG_RE.sub('', text)
+        total = 0
+        for seg in text.split('\n'):
+            halves = sum(1 if ord(c) < 0x2E80 else 2 for c in seg)
+            total += max(1, -(-halves // (LARGE_BOX_CHARS_PER_LINE * 2)))
+        return total
+
+    class CappedBoxCharacter(ClickPauseCharacter):
+        def do_extend(self):
+            super(CappedBoxCharacter, self).do_extend()
+            prev = store._last_say_what or ""
+            new = (store._last_raw_what or "").lstrip('\n')
+            if _box_visual_lines(prev) + _box_visual_lines(new) > LARGE_BOX_MAX_LINES:
+                store._last_say_what = ""
+                ## 去掉新块的前导换行，否则新箱第一行是空行
+                store._last_raw_what = new
+
 screen say(who, what):
     style_prefix "say"
 
@@ -903,9 +936,23 @@ style quick_toggle_text:
 screen choice(items):
     style_prefix "choice"
 
+    ## 两种菜单两种锚点：普通菜单带着对话框出现（menu: extend ""），选项组
+    ## 停在对话框上方的既定位置（405）；大文本框菜单先 window hide、单独展示，
+    ## 此时画面上没有任何 say 屏幕 —— 选项组改为整组垂直居中（540），
+    ## 否则多个折行长选项会顶到画面顶端。
+    default alone = (renpy.get_screen("say") is None
+                     and renpy.get_screen("large_say") is None)
+
     vbox:
+        at _choice_fadein
+        ypos (540 if alone else 405)
         for i in items:
             textbutton i.caption action i.action
+
+## 选项组浮现：配合大文本框菜单的 window hide/show 溶解，避免文字↔选项切换生硬。
+transform _choice_fadein:
+    alpha 0.0
+    easein 0.3 alpha 1.0
 
 style choice_vbox is vbox
 style choice_button is button
@@ -920,10 +967,17 @@ style choice_vbox:
 style choice_button is default:
     ## 纯文字选项：去掉深灰按钮底框，只保留少量内边距作为点击区域
     padding (40, 12, 40, 12)
+    ## 长选项限宽：整个按钮占屏幕中心约 50%（960px），超出的文字折到下一行
+    ## （问询段的长选项），不再贴到屏幕边缘。
+    ## 注意不给按钮 xalign —— 选项在组内保持左缘对齐（"算了/接受"这类短选项
+    ## 逐个居中会左缘参差，看起来像没对齐），整组居中由 choice_vbox 负责。
+    xmaximum 960
 
 style choice_button_text is default:
     xalign 0.5
     size gui.choice_button_text_size
+    ## 960 按钮宽 − 左右各 40 内边距；折行后的续行与首行左对齐
+    xmaximum 880
     ## 加粗 + 与正文一致的黑色描边/阴影（gui.text_outlines），不再依赖按钮底框
     bold True
     outlines gui.text_outlines

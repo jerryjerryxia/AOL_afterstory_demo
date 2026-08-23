@@ -23,12 +23,6 @@ translate english route1_start_11fdb519:
     # extend "" nointeract
     extend "" nointeract
 
-# game/scripts/route1.rpy:30
-translate english route1_start_eb7e9e7f:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:33
 translate english route1_start_d8d2f624:
 
@@ -112,12 +106,6 @@ translate english route1_start_1a6abbda:
 
     # wangshuang "修补本就完整的东西，那自然是做不到的。"
     wangshuang "I don't think it's possible to fix something that's not broken."
-
-# game/scripts/route1.rpy:74
-translate english route1_start_eb7e9e7f_1:
-
-    # ahe "..."
-    ahe "..."
 
 # game/scripts/route1.rpy:75
 translate english route1_start_3052b110:
@@ -239,35 +227,17 @@ translate english route1_start_331af723:
     # wangshuang "盯——"
     wangshuang "Stare——"
 
-# game/scripts/route1.rpy:130
-translate english route1_start_eb7e9e7f_2:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:132
 translate english route1_start_331af723_1:
 
     # wangshuang "盯——"
     wangshuang "Stare——"
 
-# game/scripts/route1.rpy:134
-translate english route1_start_eb7e9e7f_3:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:135
 translate english route1_start_0b39a62c:
 
     # wangshuang "噗——"
     wangshuang "Ha——"
-
-# game/scripts/route1.rpy:136
-translate english route1_start_eb7e9e7f_4:
-
-    # ahe "..."
-    ahe "..."
 
 # game/scripts/route1.rpy:138
 translate english route1_start_40f40856:
@@ -497,12 +467,6 @@ translate english route1_start_a54167b0:
     # wangshuang "不，区别在于我做到了，而你没有。"
     wangshuang "The real difference is, I got what I wanted, and you didn't."
 
-# game/scripts/route1.rpy:229
-translate english route1_start_eb7e9e7f_5:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:231
 translate english route1_start_f893d273:
 
@@ -527,35 +491,17 @@ translate english route1_start_5d1b749f:
     # wangshuang "你为了{i}尤里娅{/i}那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
     wangshuang "How many bones did you break for that little girl Yulia? Kaku, my man, there is no need to quibble. We are accomplices in destroying the PL District no matter how you look at it."
 
-# game/scripts/route1.rpy:236
-translate english route1_start_eb7e9e7f_6:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:242
 translate english route1_start_de45be2d:
 
     # wangshuang "所以不如放下成见，吃点团子，如何？"
     wangshuang "So why don't we drop the prejudice and have some mochi?"
 
-# game/scripts/route1.rpy:244
-translate english route1_start_eb7e9e7f_7:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:246
 translate english route1_start_fc8adc2c:
 
     # wangshuang "这就对了嘛，来都来了。"
     wangshuang "That's more like it. Eat up. Be my guest."
-
-# game/scripts/route1.rpy:247
-translate english route1_start_eb7e9e7f_8:
-
-    # ahe "..."
-    ahe "..."
 
 # game/scripts/route1.rpy:250
 translate english route1_start_9ca6b8c7:
@@ -1166,24 +1112,6 @@ translate english route1_start_4c9642e4:
 
     # extend "\n{size=-10}只需要她...这样...就够了...{/size}"
     extend "\n{size=-10}As long as she...that...will be enough{/size}"
-
-# game/scripts/route1.rpy:591
-translate english route1_start_6e6f6c85:
-
-    # extend "\n..."
-    extend "\n..."
-
-# game/scripts/route1.rpy:592
-translate english route1_start_da3c1f6f:
-
-    # extend "\n......"
-    extend "\n......"
-
-# game/scripts/route1.rpy:593
-translate english route1_start_7be8ae8d:
-
-    # extend "\n........."
-    extend "\n........."
 
 # game/scripts/route1.rpy:594
 translate english route1_start_9412c00c:
@@ -1859,12 +1787,6 @@ translate english route1_start_a972da5a:
     # extend "\n有人吗？"
     extend "\nAnyone?"
 
-# game/scripts/route1.rpy:615
-translate english route1_start_6e6f6c85_1:
-
-    # extend "\n..."
-    extend "\n..."
-
 # game/scripts/route1.rpy:620
 translate english route1_start_a9169992:
 
@@ -1991,41 +1913,17 @@ translate english route1_start_8e73382f:
     # extend "\n——接下来将对生体失窃案的犯罪嫌疑人进行问询。"
     extend "\n——The suspect in the biologics theft case will now be interrogated."
 
-# game/scripts/route1.rpy:660
-translate english route1_start_c80aec7f:
-
-    # extend "\n——请问，您的躯体在过去的二十四小时内，经历过死亡、认知紊乱等重大人身安全隐患吗？"
-    extend "\n——Please state: in the past twenty-four hours, has your body undergone death, cognitive disruption, or any other major health hazards?"
-
-# game/scripts/route1.rpy:661
-translate english route1_start_ea087b32:
-
-    # extend "\n——..."
-    extend "\n——..."
-
 # game/scripts/route1.rpy:662
 translate english route1_start_6fcf277d:
 
     # extend "\n——请问，您盗窃本公司的生体产品，是出于自主意愿，还是有他人指使？"
     extend "\n——Please state: was your theft of the company's biologic product an act of your own volition, or were you instructed by another party?"
 
-# game/scripts/route1.rpy:663
-translate english route1_start_ea087b32_1:
-
-    # extend "\n——..."
-    extend "\n——..."
-
 # game/scripts/route1.rpy:664
 translate english route1_start_1e743f66:
 
     # extend "\n——本公司将本着公平、公正、公开的原则，为具有高度危险性的犯罪嫌疑人实施前脑叶白质切除术 ，请问您有异议吗？"
     extend "\n——In accordance with the principles of fairness, impartiality and transparency, the company will perform a prefrontal lobotomy on suspects deemed highly dangerous. Do you have any objection?"
-
-# game/scripts/route1.rpy:665
-translate english route1_start_ea087b32_2:
-
-    # extend "\n——..."
-    extend "\n——..."
 
 # game/scripts/route1.rpy:666
 translate english route1_start_d4d3c3bf:
@@ -2441,24 +2339,6 @@ translate english route1_start_d44c4c77:
     # extend "\n灰幕的蔓延永无止境，一如疼痛的叠加永无止境。"
     extend "\nThe gray spreads without end, the way pain stacks without end."
 
-# game/scripts/route1.rpy:795
-translate english route1_start_a188787c:
-
-    # large_narrator "..."
-    large_narrator "..."
-
-# game/scripts/route1.rpy:796
-translate english route1_start_da3c1f6f_1:
-
-    # extend "\n......"
-    extend "\n......"
-
-# game/scripts/route1.rpy:797
-translate english route1_start_2dc4c2bd:
-
-    # extend "\n........"
-    extend "\n........"
-
 # game/scripts/route1.rpy:804
 translate english route1_start_54b8975a:
 
@@ -2482,24 +2362,6 @@ translate english route1_start_860e0360:
 
     # extend "\n治病也罢，杀人也罢。"
     extend "\nTo heal, or to kill."
-
-# game/scripts/route1.rpy:824
-translate english route1_start_a188787c_1:
-
-    # large_narrator "..."
-    large_narrator "..."
-
-# game/scripts/route1.rpy:825
-translate english route1_start_da3c1f6f_2:
-
-    # extend "\n......"
-    extend "\n......"
-
-# game/scripts/route1.rpy:826
-translate english route1_start_7be8ae8d_1:
-
-    # extend "\n........."
-    extend "\n........."
 
 # game/scripts/route1.rpy:838
 translate english route1_start_f44c0403:
@@ -2560,24 +2422,6 @@ translate english route1_start_27510d70:
 
     # wangshuang "没事，别在意。"
     wangshuang "Nothing. Never mind."
-
-# game/scripts/route1.rpy:860
-translate english route1_start_a20cefa7:
-
-    # "..."
-    "..."
-
-# game/scripts/route1.rpy:861
-translate english route1_start_da3c1f6f_3:
-
-    # extend "\n......"
-    extend "\n......"
-
-# game/scripts/route1.rpy:862
-translate english route1_start_7be8ae8d_2:
-
-    # extend "\n........."
-    extend "\n........."
 
 # game/scripts/route1.rpy:864
 translate english route1_start_1732a216:
@@ -2747,12 +2591,6 @@ translate english route1_start_51c7fef1:
     # wangshuang "对，但不全对——即使有外人指出矛盾，又有多少人愿意摒弃自己的“切身体验”，转而允许他人的只言片语来定夺自己的认知？"
     wangshuang "Yes, and no - even when an outsider points at the contradiction, how many people will throw out what they lived through and let somebody else's few words decide what they know?"
 
-# game/scripts/route1.rpy:943
-translate english route1_start_eb7e9e7f_9:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:947
 translate english route1_start_e82ac697:
 
@@ -2794,12 +2632,6 @@ translate english route1_start_88379bd5:
 
     # wangshuang "一个人双线程草拟时需要的算力...这么说吧，会在草拟开始后的短时间内爆炸增长，而最初的草拟全是在被试脑内执行的...。"
     wangshuang "The compute one person needs to run two threads at once...put it this way, it goes vertical almost immediately. And the earliest cognitive drafting all ran inside the subject's own head..."
-
-# game/scripts/route1.rpy:957
-translate english route1_start_eb7e9e7f_10:
-
-    # ahe "..."
-    ahe "..."
 
 # game/scripts/route1.rpy:959
 translate english route1_start_a0fa0dec:
@@ -2849,18 +2681,6 @@ translate english route1_start_f7636976:
     # wangshuang "哦...哈哈...这个嘛，毕竟当时搭得比较匆忙，这个梦境第一版的认知收束任务只能单线程地跑，慢得不行的同时还会很吃资源，所以就算开放了也救不了太多人...哈哈..."
     wangshuang "Oh...haha...well. It went up in a hurry, and the first version could only run convergence single-threaded. Painfully slow, ate resources, so even open it couldn't save many people...haha..."
 
-# game/scripts/route1.rpy:975
-translate english route1_start_eb7e9e7f_11:
-
-    # ahe "..."
-    ahe "..."
-
-# game/scripts/route1.rpy:976
-translate english route1_start_8b7d246b:
-
-    # wangshuang "..."
-    wangshuang "..."
-
 # game/scripts/route1.rpy:977
 translate english route1_start_b74baca5:
 
@@ -2884,12 +2704,6 @@ translate english route1_start_6fa4f504:
 
     # ahe "只要你心安理得就行..."
     ahe "As long as you can live with yourself..."
-
-# game/scripts/route1.rpy:984
-translate english route1_start_8b7d246b_1:
-
-    # wangshuang "..."
-    wangshuang "..."
 
 # game/scripts/route1.rpy:985
 translate english route1_start_11193390:
@@ -2933,12 +2747,6 @@ translate english route1_start_bb533a62:
     # wangshuang "嗯，现在我也维持原判。"
     wangshuang "Yea. And I stand by it."
 
-# game/scripts/route1.rpy:997
-translate english route1_start_eb7e9e7f_12:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:999
 translate english route1_start_614976e7:
 
@@ -2956,12 +2764,6 @@ translate english route1_start_572348a0:
 
     # wangshuang "行吧。毕竟我们有得是时间。"
     wangshuang "Fine. It's not like we're short on time."
-
-# game/scripts/route1.rpy:1003
-translate english route1_start_eb7e9e7f_13:
-
-    # ahe "..."
-    ahe "..."
 
 # game/scripts/route1.rpy:1007
 translate english route1_start_72c04788:
@@ -3137,12 +2939,6 @@ translate english route1_start_e11e13bb:
     # youliya "只要你“看到”那些东西不是“我”，自然就可以随手杀掉了——一切都顺理成章，无可厚非，对吧？"
     youliya "Once you 'see' that they aren't 'me', killing them costs you nothing - everything tracks, perfectly reasonable, right?"
 
-# game/scripts/route1.rpy:1084
-translate english route1_start_eb7e9e7f_14:
-
-    # ahe "..."
-    ahe "..."
-
 # game/scripts/route1.rpy:1086
 translate english route1_start_8f65a428:
 
@@ -3166,12 +2962,6 @@ translate english route1_start_94e4e86f:
 
     # youliya "死掉诶...那就是你口中的“无法重复的深邃体验”吧。能连续体验那么多次，我是不是该...感谢你呢？"
     youliya "Dying. That must be what you call the 'profound experience that can never be repeated'. I got it over and over. Shouldn't I...thank you for that?"
-
-# game/scripts/route1.rpy:1091
-translate english route1_start_eb7e9e7f_15:
-
-    # ahe "..."
-    ahe "..."
 
 # game/scripts/route1.rpy:1093
 translate english route1_start_ce7b97cd:
@@ -3310,12 +3100,6 @@ translate english route1_start_9d8e3ab3:
 
     # shishou "你好。"
     shishou "Hello."
-
-# game/scripts/route1.rpy:1136
-translate english route1_start_eb7e9e7f_16:
-
-    # ahe "..."
-    ahe "..."
 
 # game/scripts/route1.rpy:1138
 translate english route1_start_d3154b0c:
@@ -3719,24 +3503,6 @@ translate english route1_start_b597496b:
     # extend "\n——不如再次伸出手去，撕——"
     extend "\n——Why not reach out one more time, and tear——"
 
-# game/scripts/route1.rpy:1286
-translate english route1_start_a188787c_2:
-
-    # large_narrator "..."
-    large_narrator "..."
-
-# game/scripts/route1.rpy:1287
-translate english route1_start_da3c1f6f_4:
-
-    # extend "\n......"
-    extend "\n......"
-
-# game/scripts/route1.rpy:1288
-translate english route1_start_7be8ae8d_3:
-
-    # extend "\n........."
-    extend "\n........."
-
 translate english strings:
 
     # game/scripts/route1.rpy:774
@@ -4056,18 +3822,6 @@ translate english route1_start_106be968:
     # wangshuang "没事，我之前还在想，你为什么还能来到这里。不过从你刚才手上一直在忙活的事情来看，这早就不是问题了。"
     wangshuang "Nothing. I'd been wondering how you could possibly still get in here. Going by what your hands have been busy with, that stopped being a question just now."
 
-# game/scripts/route1.rpy:1120
-translate english route1_start_8b7d246b_2:
-
-    # wangshuang "..."
-    wangshuang "..."
-
-# game/scripts/route1.rpy:1122
-translate english route1_start_8b7d246b_3:
-
-    # wangshuang "..."
-    wangshuang "..."
-
 # game/scripts/route1.rpy:1126
 translate english route1_start_c581def3:
 
@@ -4098,9 +3852,408 @@ translate english route1_start_57b38db3:
     # youliya "嗯...有什么好等的？只是撕碎了几百个长得和我一样的东西就承受不住了？这可不是我认识的阿鹤呢。"
     youliya "Mmmm...what is there to wait for? You tore apart a few hundred things wearing my face and that's already too much for you? That isn't the Kaku I knew."
 
-# game/scripts/route1.rpy:1283
-translate english route1_start_eb7e9e7f_17:
+# game/scripts/route1.rpy:35
+translate english route1_start_b0af192a:
 
-    # ahe "..."
-    ahe "..."
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:102
+translate english route1_start_b0af192a_1:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:198
+translate english route1_start_b0af192a_2:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:202
+translate english route1_start_b0af192a_3:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:204
+translate english route1_start_b0af192a_4:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:346
+translate english route1_start_b0af192a_5:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:357
+translate english route1_start_b0af192a_6:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:365
+translate english route1_start_b0af192a_7:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:368
+translate english route1_start_b0af192a_8:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:609
+translate english route1_start_d4742c1e:
+
+    # extend "\n…"
+    extend "\n…"
+
+# game/scripts/route1.rpy:633
+translate english route1_start_d4742c1e_1:
+
+    # extend "\n…"
+    extend "\n…"
+
+# game/scripts/route1.rpy:678
+translate english route1_start_2b3452d8:
+
+    # extend "\n——请问，您在过去的二十四小时内，是否经历过严重肉体伤害、认知紊乱、大量出血、死亡等重大健康隐患？"
+    extend "\n——请问，您在过去的二十四小时内，是否经历过严重肉体伤害、认知紊乱、大量出血、死亡等重大健康隐患？"
+
+# game/scripts/route1.rpy:679
+translate english route1_start_a5823c22:
+
+    # extend "\n——…"
+    extend "\n——…"
+
+# game/scripts/route1.rpy:769
+translate english route1_start_a5823c22_1:
+
+    # extend "\n——…"
+    extend "\n——…"
+
+# game/scripts/route1.rpy:771
+translate english route1_start_a5823c22_2:
+
+    # extend "\n——…"
+    extend "\n——…"
+
+# game/scripts/route1.rpy:904
+translate english route1_start_526eac06:
+
+    # large_narrator "…"
+    large_narrator "…"
+
+# game/scripts/route1.rpy:905
+translate english route1_start_aec08ceb_2:
+
+    # extend "\n……"
+    extend "\n……"
+
+# game/scripts/route1.rpy:906
+translate english route1_start_4bfaa876_2:
+
+    # extend "\n………"
+    extend "\n………"
+
+# game/scripts/route1.rpy:944
+translate english route1_start_526eac06_1:
+
+    # large_narrator "…"
+    large_narrator "…"
+
+# game/scripts/route1.rpy:945
+translate english route1_start_aec08ceb_3:
+
+    # extend "\n……"
+    extend "\n……"
+
+# game/scripts/route1.rpy:946
+translate english route1_start_4bfaa876_3:
+
+    # extend "\n………"
+    extend "\n………"
+
+# game/scripts/route1.rpy:995
+translate english route1_start_aec08ceb_4:
+
+    # extend "\n……"
+    extend "\n……"
+
+# game/scripts/route1.rpy:996
+translate english route1_start_4bfaa876_4:
+
+    # extend "\n………"
+    extend "\n………"
+
+# game/scripts/route1.rpy:1017
+translate english route1_start_ce617998_2:
+
+    # "…"
+    "…"
+
+# game/scripts/route1.rpy:1018
+translate english route1_start_aec08ceb_5:
+
+    # extend "\n……"
+    extend "\n……"
+
+# game/scripts/route1.rpy:1019
+translate english route1_start_4bfaa876_5:
+
+    # extend "\n………"
+    extend "\n………"
+
+# game/scripts/route1.rpy:1113
+translate english route1_start_b0af192a_9:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1135
+translate english route1_start_b0af192a_10:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1161
+translate english route1_start_b0af192a_11:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1162
+translate english route1_start_a92885d4:
+
+    # wangshuang "…"
+    wangshuang "…"
+
+# game/scripts/route1.rpy:1174
+translate english route1_start_a92885d4_1:
+
+    # wangshuang "…"
+    wangshuang "…"
+
+# game/scripts/route1.rpy:1195
+translate english route1_start_b0af192a_12:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1205
+translate english route1_start_b0af192a_13:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1206
+translate english route1_start_a92885d4_2:
+
+    # wangshuang "…"
+    wangshuang "…"
+
+# game/scripts/route1.rpy:1207
+translate english route1_start_b0af192a_14:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1208
+translate english route1_start_a92885d4_3:
+
+    # wangshuang "…"
+    wangshuang "…"
+
+# game/scripts/route1.rpy:1311
+translate english route1_start_b0af192a_15:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1318
+translate english route1_start_b0af192a_16:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1369
+translate english route1_start_b0af192a_17:
+
+    # ahe "…"
+    ahe "…"
+
+# game/scripts/route1.rpy:1529
+translate english route1_start_526eac06_2:
+
+    # large_narrator "…"
+    large_narrator "…"
+
+# game/scripts/route1.rpy:1530
+translate english route1_start_aec08ceb_6:
+
+    # extend "\n……"
+    extend "\n……"
+
+# game/scripts/route1.rpy:1531
+translate english route1_start_4bfaa876_6:
+
+    # extend "\n………"
+    extend "\n………"
+
+translate english strings:
+
+    # game/scripts/route1.rpy:683
+    old "有"
+    new "有"
+
+    # game/scripts/route1.rpy:690
+    old "王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。"
+    new "王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。"
+
+    # game/scripts/route1.rpy:697
+    old "一般般..."
+    new "一般般..."
+
+    # game/scripts/route1.rpy:702
+    old "恶心死了！"
+    new "恶心死了！"
+
+    # game/scripts/route1.rpy:707
+    old "可爱！"
+    new "可爱！"
+
+    # game/scripts/route1.rpy:712
+    old "吃过 KAS 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。"
+    new "吃过 KAS 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。"
+
+    # game/scripts/route1.rpy:719
+    old "不记得，王霜给的。"
+    new "不记得，王霜给的。"
+
+    # game/scripts/route1.rpy:724
+    old "三百八十二点三毫克，误差在零点四毫克之内。"
+    new "三百八十二点三毫克，误差在零点四毫克之内。"
+
+    # game/scripts/route1.rpy:729
+    old "我他妈脑子要是这么好使我还在你这儿跟你讲相声？"
+    new "我他妈脑子要是这么好使我还在你这儿跟你讲相声？"
+
+    # game/scripts/route1.rpy:734
+    old "尤里娅，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我..."
+    new "尤里娅，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我..."
+
+    # game/scripts/route1.rpy:741
+    old "闭嘴..."
+    new "闭嘴..."
+
+    # game/scripts/route1.rpy:746
+    old "我们是同事关系。"
+    new "我们是同事关系。"
+
+    # game/scripts/route1.rpy:751
+    old "死了。还有什么要问的么？"
+    new "死了。还有什么要问的么？"
+
+    # game/scripts/route1.rpy:756
+    old "沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。"
+    new "沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。"
+
+    # game/scripts/route1.rpy:761
+    old "没有"
+    new "没有"
+
+
+# game/scripts/route1.rpy:685
+translate english route1_start_71871645:
+
+    # extend "\n——有\n——请详细描述该经历的过程。请注意，您没有权利保持沉默。"
+    extend "\n——有\n——请详细描述该经历的过程。请注意，您没有权利保持沉默。"
+
+# game/scripts/route1.rpy:690
+translate english route1_start_13baf32a:
+
+    # extend "\n——王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
+    extend "\n——王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
+
+# game/scripts/route1.rpy:695
+translate english route1_start_c5e0b9ba:
+
+    # extend "\n——一般般...\n——您的回答已被记录。"
+    extend "\n——一般般...\n——您的回答已被记录。"
+
+# game/scripts/route1.rpy:698
+translate english route1_start_2d4ab236:
+
+    # extend "\n——恶心死了！\n——预料之外呢，阿鹤先生。"
+    extend "\n——恶心死了！\n——预料之外呢，阿鹤先生。"
+
+# game/scripts/route1.rpy:701
+translate english route1_start_439ed967:
+
+    # extend "\n——可爱！\n——很好。"
+    extend "\n——可爱！\n——很好。"
+
+# game/scripts/route1.rpy:704
+translate english route1_start_6886a837:
+
+    # extend "\n——吃过 {i}KAS{/i} 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。\n——请问您还记得剂量吗？"
+    extend "\n——吃过 {i}KAS{/i} 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。\n——请问您还记得剂量吗？"
+
+# game/scripts/route1.rpy:709
+translate english route1_start_578315f3:
+
+    # extend "\n——不记得，王霜给的。\n——您的回答已被记录。"
+    extend "\n——不记得，王霜给的。\n——您的回答已被记录。"
+
+# game/scripts/route1.rpy:712
+translate english route1_start_69a1b2e4:
+
+    # extend "\n——三百八十二点三毫克，误差在零点四毫克之内。\n——如果您无法如实作答，请不要胡乱编造答案。"
+    extend "\n——三百八十二点三毫克，误差在零点四毫克之内。\n——如果您无法如实作答，请不要胡乱编造答案。"
+
+# game/scripts/route1.rpy:715
+translate english route1_start_ebed31d5:
+
+    # extend "\n——我他妈脑子要是这么好使我还在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
+    extend "\n——我他妈脑子要是这么好使我还在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
+
+# game/scripts/route1.rpy:718
+translate english route1_start_aea8ac43:
+
+    # extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
+    extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
+
+# game/scripts/route1.rpy:723
+translate english route1_start_835fb870:
+
+    # extend "\n——闭嘴...\n——您的回答已被记录。"
+    extend "\n——闭嘴...\n——您的回答已被记录。"
+
+# game/scripts/route1.rpy:726
+translate english route1_start_f3c3fcde:
+
+    # extend "\n——我们是同事关系。\n——根据我们的调查，这属于不实信息。"
+    extend "\n——我们是同事关系。\n——根据我们的调查，这属于不实信息。"
+
+# game/scripts/route1.rpy:729
+translate english route1_start_79cf8080:
+
+    # extend "\n——死了。还有什么要问的么？\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
+    extend "\n——死了。还有什么要问的么？\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
+
+# game/scripts/route1.rpy:732
+translate english route1_start_2322b0ac:
+
+    # extend "\n——沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
+    extend "\n——沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
+
+# game/scripts/route1.rpy:735
+translate english route1_start_e930bf55:
+
+    # extend "\n——没有\n——检测到您提供了不实信息，请再次作答。"
+    extend "\n——没有\n——检测到您提供了不实信息，请再次作答。"
 
