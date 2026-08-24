@@ -960,20 +960,31 @@ def emit_extended_segments(collected, output, indent, large=False, centered=Fals
     narr = 'centered_narrator ' if centered else ('large_narrator ' if large else '')
     first_emitted = continued   # 本段落是否已经发出开头 say
 
-    def emit_piece(speaker, text, lead_newline):
+    def emit_piece(speaker, text, lead_newline, raw=False):
         nonlocal first_emitted
         if lead_newline:
             text = chr(92) + 'n' + text
+        # raw=True：text 已是最终 Ren'Py 字符串内容（含 [var!t] 插值），
+        # 不能走 format_dialogue（它会把 [ 转义成 [[，杀掉插值）。
+        rendered = f'"{text}"' if raw else format_dialogue(text)
         if not first_emitted:
             if speaker:
-                output.append(f'{indent}{speaker} {format_dialogue(text)}')
+                output.append(f'{indent}{speaker} {rendered}')
             else:
-                output.append(f'{indent}{narr}{format_dialogue(text)}')
+                output.append(f'{indent}{narr}{rendered}')
             first_emitted = True
         else:
-            output.append(f'{indent}extend {format_dialogue(text)}')
+            output.append(f'{indent}extend {rendered}')
 
     for speaker, text in collected:
+        if speaker == '__eval__':
+            # 问询段逻辑判断行（如 精神状态：平稳【仅平稳>1】/…）：原文条件表进注释，
+            # 显示行换成运行时插值 —— 每类只展示 interro_evaluate() 算出的唯一结论。
+            category, original = text
+            output.append(f'{indent}## {original}')
+            emit_piece(None, f'{category}：[{_EVAL_VAR_MAP[category]}!t]',
+                       first_emitted, raw=True)
+            continue
         if speaker == '__expr__':
             # 块内表情切换：master 层溶解，对话框/文字不动（见 emit_expression_change）。
             expr_line = emit_expression_change(text, indent)
@@ -1030,8 +1041,37 @@ def emit_extended_segments(collected, output, indent, large=False, centered=Fals
 ## 该分支末尾 jump 回去（正文照常累积后重新弹出同一个菜单）。
 ################################################################################
 
-# 选项行：字母 + 可选【标记】 + 冒号 + 文本。只认 A-D，避免误伤普通正文。
-_CHOICE_IN_BLOCK_RE = re.compile(r'^([A-D])\s*((?:【[^】]*】)*)\s*[：:]\s*(.*)$')
+# 选项行：字母 + 可选【标记】 + 冒号 + 文本。只认 A-E，避免误伤普通正文。
+_CHOICE_IN_BLOCK_RE = re.compile(r'^([A-E])\s*((?:【[^】]*】)*)\s*[：:]\s*(.*)$')
+
+# 问询段数值标记 → variables.rpy 里的计数变量。疯狂 ≠ madness：疯狂只在问询
+# 桥段内生效（interro_reset() 清零），madness 是全局值，两者互不相干。
+_INTERRO_STAT_MAP = {
+    '平稳': 'interro_calm',
+    '疯狂': 'interro_insane',
+    '对抗': 'interro_hostile',
+    '幻觉': 'interro_halluc',
+    '死亡': 'interro_death',
+}
+_INTERRO_STAT_RE = re.compile(r'(平稳|疯狂|对抗|幻觉|死亡)\s*\+\s*(\d+)')
+
+_ONCE_MARK = '只加一次'
+
+# 条件出现标记：引用另一个选项的文本前缀（尾部省略号在解析时剥掉）。
+_COND_SEEN_RE = re.compile(r'本选项仅在观看过[“"](.+?)[”"]后出现')
+
+# 本次 Extended 块里被条件标记引用的选项前缀（emit_extended_choice_block 填充；
+# 被引用的选项被选中时生成 interro_seen.add(前缀)）。
+_COND_SEEN_PREFIXES = set()
+
+# 问询段逻辑判断行：类别 → 运行时结果变量（interro_evaluate() 填充，见 variables.rpy）。
+# say 里用 [var!t] 插值 —— !t 让插进来的中文结论走运行时翻译。
+_EVAL_VAR_MAP = {
+    '精神状态': 'interro_mental',
+    '人格特质': 'interro_trait',
+    '污染进程': 'interro_pollution',
+    '建议执行': 'interro_verdict',
+}
 
 # 生成的循环菜单 label 全局计数（.extmenu_N 是当前 route label 的局部标签）。
 _EXT_MENU_COUNTER = [0]
@@ -1040,7 +1080,8 @@ _CHOICE_LOOP_MARK = '重新展示本次选择'
 
 
 def _parse_block_choice(line):
-    """Extended 块内的选项行 → dict(letter, text, loop, madness)，非选项行返回 None。"""
+    """Extended 块内的选项行 → dict(letter, text, loop, madness, stats, once,
+    cond_seen)，非选项行返回 None。"""
     m = _CHOICE_IN_BLOCK_RE.match(line)
     if not m:
         return None
@@ -1055,7 +1096,16 @@ def _parse_block_choice(line):
     if mm:
         madness = int(mm.group(1))
         text = re.sub(r'[（(]madness\s*\+\s*\d+[）)]', '', text).strip()
-    return {'letter': letter, 'text': text, 'loop': loop, 'madness': madness}
+    # 问询段数值标记只从【】标记里解析（文本正文里出现这些字眼不受影响）。
+    stats = [(_INTERRO_STAT_MAP[name], int(n))
+             for name, n in _INTERRO_STAT_RE.findall(mods)]
+    once = _ONCE_MARK in mods
+    cond_seen = None
+    cm = _COND_SEEN_RE.search(mods)
+    if cm:
+        cond_seen = cm.group(1).rstrip('.…。')
+    return {'letter': letter, 'text': text, 'loop': loop, 'madness': madness,
+            'stats': stats, 'once': once, 'cond_seen': cond_seen}
 
 
 def _build_choice_tree(items):
@@ -1109,9 +1159,21 @@ def _build_choice_tree(items):
     return seq
 
 
+def _collect_cond_prefixes(seq, acc):
+    """递归收集树里所有被 【仅在观看过X后出现】 引用的前缀。"""
+    for item in seq:
+        if item[0] == '__menu__':
+            for opt, body in item[1]:
+                if opt.get('cond_seen'):
+                    acc.add(opt['cond_seen'])
+                _collect_cond_prefixes(body, acc)
+
+
 def emit_extended_choice_block(collected, output, indent, large=False, centered=False):
     """含选项的 Extended 块总入口：组树 → 递归生成。"""
     seq = _build_choice_tree(collected)
+    _COND_SEEN_PREFIXES.clear()
+    _collect_cond_prefixes(seq, _COND_SEEN_PREFIXES)
     _emit_choice_seq(seq, output, indent, large, centered, started=False)
 
 
@@ -1157,10 +1219,29 @@ def _emit_block_menu(options, output, indent, large, centered):
     output.append(f'{menu_indent}window hide Dissolve(.25)')
     output.append(f'{menu_indent}menu:')
     for opt, body in options:
-        output.append(f'{menu_indent}    "{escape_quotes(opt["text"])}":')
+        # 条件出现：仅在被引用选项已看过（选过）时出现。
+        cond = ''
+        if opt.get('cond_seen'):
+            cond = f' if "{opt["cond_seen"]}" in interro_seen'
+        output.append(f'{menu_indent}    "{escape_quotes(opt["text"])}"{cond}:')
         inner = menu_indent + '        '
         if opt['madness']:
             output.append(f'{inner}$ madness += {opt["madness"]}')
+        # 问询段数值：只加一次的选项包进 interro_once 守卫（id = 菜单号+字母）。
+        if opt.get('stats'):
+            if opt.get('once'):
+                once_id = f'm{n}{opt["letter"]}'
+                output.append(f'{inner}if "{once_id}" not in interro_once:')
+                for var, amt in opt['stats']:
+                    output.append(f'{inner}    $ {var} += {amt}')
+                output.append(f'{inner}    $ interro_once.add("{once_id}")')
+            else:
+                for var, amt in opt['stats']:
+                    output.append(f'{inner}$ {var} += {amt}')
+        # 被条件标记引用的选项：选中即记录（供后续菜单的条件项判断）。
+        for prefix in sorted(_COND_SEEN_PREFIXES):
+            if opt['text'].startswith(prefix):
+                output.append(f'{inner}$ interro_seen.add("{prefix}")')
         # 不发 window show —— 它会经 empty_window 用默认 narrator 的 say 屏幕垫场，
         # 把底部渐变 scrim 闪出来（"选完下半屏黑一下"）。改为置 _intro_fade_pending，
         # 让大文本框自己的 say_intro_fade 在重新挂载的这一次淡入（机制见 screens.rpy）。
@@ -1560,6 +1641,14 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
             collected.append(('__choice__', block_choice))
             continue
 
+        # 问询段逻辑判断行（精神状态/人格特质/污染进程/建议执行：…【条件】…）：
+        # 原文是"罗列全部候选+条件"的规则表，运行时每类只展示一个结论 ——
+        # 收成 __eval__，emit 阶段换成 [interro_*!t] 插值（见 emit_extended_segments）。
+        eval_match = re.match(r'^(精神状态|人格特质|污染进程|建议执行)：', line)
+        if eval_match and '【' in line:
+            collected.append(('__eval__', (eval_match.group(1), line)))
+            continue
+
         # Check for scene transition markers - these need to be output before dialogue continues
         transition_match = re.match(r'^【转场[：:](.+?)】$', line)
         if transition_match:
@@ -1619,6 +1708,15 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
 
     output = []
     indent = "    "
+
+    # 问询段数值：块内含带数值标记的选项 → 桥段开头先清零全部 interro 计数
+    # （疯狂 ≠ madness：疯狂只在本桥段内生效）。
+    if any(k == '__choice__' and (v['stats'] or v['once'] or v['cond_seen'])
+           for k, v in collected):
+        output.append(f'{indent}$ interro_reset()')
+    # 逻辑判断块：先算出四项唯一结论，再让 __eval__ 行插值展示。
+    if any(k == '__eval__' for k, _ in collected):
+        output.append(f'{indent}$ interro_evaluate()')
 
     # Extended 文本框（大/小）现在统一走同一段落、按标点逐次点击的分句逻辑。
     # 大文本框只是旁白用 large_narrator、屏幕用 large_say，分句规则完全一致。

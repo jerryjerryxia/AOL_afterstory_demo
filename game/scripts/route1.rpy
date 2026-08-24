@@ -673,6 +673,7 @@ label route1_start:
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ## Extended大文本框开始 - accumulating large textbox（不分句）
     $ no_click_split = True
+    $ interro_reset()
     large_narrator "——录入中——录入中——"
     extend "\n——接下来将对生体失窃案的犯罪嫌疑人进行问询。"
     extend "\n——请问，您在过去的二十四小时内，是否经历过严重肉体伤害、认知紊乱、大量出血、死亡等重大健康隐患？"
@@ -682,66 +683,300 @@ label route1_start:
         menu:
             "有":
                 $ _intro_fade_pending = True
-                extend "\n——有\n——请详细描述该经历的过程。请注意，您没有权利保持沉默。"
+                extend "\n——有\n——请详细交代该经历的过程。"
+                extend "\n——请注意，您没有权利保持沉默。"
                 window hide Dissolve(.25)
                 menu:
-                    "王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。":
+                    "王霜把三根冰凿子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。":
+                        $ interro_insane += 1
+                        $ interro_seen.add("王霜把三根冰凿子打进我的眼窝之后")
                         $ _intro_fade_pending = True
-                        extend "\n——王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
+                        extend "\n——王霜把三根冰凿子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
                         window hide Dissolve(.25)
                         menu:
                             "一般般...":
+                                $ interro_calm += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——一般般...\n——您的回答已被记录。"
                             "恶心死了！":
+                                $ interro_death += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——恶心死了！\n——预料之外呢，阿鹤先生。"
                             "可爱！":
+                                $ interro_insane += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——可爱！\n——很好。"
-                    "吃过 KAS 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。":
+                    "吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。":
+                        $ interro_halluc += 1
                         $ _intro_fade_pending = True
-                        extend "\n——吃过 {i}KAS{/i} 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。\n——请问您还记得剂量吗？"
+                        extend "\n——吃过 {i}KAS{/i} 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。\n——请问您还记得剂量吗？"
                         window hide Dissolve(.25)
                         menu:
                             "不记得，王霜给的。":
+                                $ interro_calm += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——不记得，王霜给的。\n——您的回答已被记录。"
                             "三百八十二点三毫克，误差在零点四毫克之内。":
+                                $ interro_halluc += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——三百八十二点三毫克，误差在零点四毫克之内。\n——如果您无法如实作答，请不要胡乱编造答案。"
-                            "我他妈脑子要是这么好使我还在你这儿跟你讲相声？":
+                            "我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？":
+                                $ interro_hostile += 1
                                 $ _intro_fade_pending = True
-                                extend "\n——我他妈脑子要是这么好使我还在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
-                    "尤里娅，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我...":
+                                extend "\n——我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
+                    "尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...":
+                        $ interro_death += 1
                         $ _intro_fade_pending = True
-                        extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
+                        extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
                         window hide Dissolve(.25)
                         menu:
                             "闭嘴...":
+                                $ interro_hostile += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——闭嘴...\n——您的回答已被记录。"
-                            "我们是同事关系。":
+                            "我们是同事关系，正处于一段禁断的办公室恋情之中。":
+                                $ interro_halluc += 1
                                 $ _intro_fade_pending = True
-                                extend "\n——我们是同事关系。\n——根据我们的调查，这属于不实信息。"
+                                extend "\n——我们是同事关系，正处于一段禁断的办公室恋情之中。\n——根据我们的调查，这属于不实信息。"
                             "死了。还有什么要问的么？":
+                                $ interro_death += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——死了。还有什么要问的么？\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
-                    "沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。":
+                    "沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。":
+                        $ interro_calm += 1
                         $ _intro_fade_pending = True
-                        extend "\n——沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
+                        extend "\n——沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
+                        extend "\n——以及为什么您对“不朽”的定义是以天为单位的..."
             "没有":
+                if "m1B" not in interro_once:
+                    $ interro_calm += 1
+                    $ interro_once.add("m1B")
                 $ _intro_fade_pending = True
                 extend "\n——没有\n——检测到您提供了不实信息，请再次作答。"
                 ## 重新展示本次选择
                 jump _extmenu_1
     extend "\n——请问，您盗窃本公司的生体产品，是出于自主意愿，还是有他人指使？"
     extend "\n——…"
-    extend "\n——本公司将本着公平、公正、公开的原则，为具有高度危险性的犯罪嫌疑人实施前脑叶白质切除术 ，请问您有异议吗？"
+    window hide Dissolve(.25)
+    menu:
+        "是自愿的":
+            $ _intro_fade_pending = True
+            extend "\n——是自愿的\n——请详细交代您的动机。"
+            extend "\n——请注意，您没有权利保持沉默。"
+            window hide Dissolve(.25)
+            menu:
+                "她属于我，仅此而已。":
+                    $ interro_halluc += 1
+                    $ _intro_fade_pending = True
+                    extend "\n——她属于我，仅此而已。\n——请问您是如何得出这一结论的呢？"
+                    window hide Dissolve(.25)
+                    menu:
+                        "她亲口告诉我的。":
+                            $ interro_halluc += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——她亲口告诉我的。\n——很不幸，当事人的语料库中并没有检索出类似的消息呢，阿鹤先生。"
+                        "但凡正常人的脑子都能得出这一结论的吧...":
+                            $ interro_hostile += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——但凡正常人的脑子都能得出这一结论的吧...\n——我恐怕有坏消息要告诉您，阿鹤先生。"
+                        "因为可爱！":
+                            $ interro_insane += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——因为可爱！\n——明白了。"
+                "她说想去外面看看。":
+                    $ interro_calm += 1
+                    $ _intro_fade_pending = True
+                    extend "\n——她说想去外面看看。\n——请问您还记得她是在怎样的场合下告知您这个想法的吗？"
+                    window hide Dissolve(.25)
+                    menu:
+                        "不记得，王霜告诉我的。":
+                            $ interro_calm += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——不记得，王霜告诉我的。\n——请不要随意相信他人传播的不实信息啊，阿鹤先生..."
+                        "在她死前。":
+                            $ interro_death += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——在她死前。\n——您的回答已被记录。"
+                        "能麻烦您别再问这种刁钻的记忆力考题了么？":
+                            $ interro_hostile += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——能麻烦您别再问这种刁钻的记忆力考题了么？\n——您没有权力质疑问题的合理性，阿鹤先生，请如实作答。"
+                "零件啊！零件不够用了，王霜说零件不够用了，那就只好自己出来找了咯。":
+                    $ interro_insane += 1
+                    $ _intro_fade_pending = True
+                    extend "\n——零件啊！零件不够用了，王霜说零件不够用了，那就只好自己出来找了咯。\n——请确认您对于这个回答的严肃性。"
+                    window hide Dissolve(.25)
+                    menu:
+                        "非常严肃非常认真非常一丝不苟非常——":
+                            $ interro_insane += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——非常严肃非常认真非常一丝不苟非常——\n——请立刻停止无意义的胡言乱语，阿鹤先生。"
+                        "不如去问问王霜，看看她怎么说。":
+                            $ interro_calm += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——不如去问问王霜，看看她怎么说。\n——这不是需要您操心的问题。"
+                        "确认了。然后呢？":
+                            $ interro_hostile += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——确认了。然后呢？\n——明白。您的回答已被记录。"
+                "血...":
+                    $ interro_death += 1
+                    $ _intro_fade_pending = True
+                    extend "\n——血...\n——请展开聊聊"
+                    window hide Dissolve(.25)
+                    menu:
+                        "无可奉告。":
+                            $ interro_calm += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——无可奉告。\n——如果您坚持沉默，我们将保留采取强制措施的可能性，还请您多多理解。"
+                        "只有足够的血我们才能继续生存下去，你明白吗？这是基本常识吧，我亲爱的朋友，那么请问你愿意捐献——":
+                            $ interro_insane += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——只有足够的血我们才能继续生存下去，你明白吗？这是基本常识吧，我亲爱的朋友，那么请问你愿意捐献——\n——问询对象出现了严重的精神状态波动，立即停止问询，启用code purple——"
+                        "杀了她，就能见到血。有什么很难理解的地方吗？":
+                            $ interro_death += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——杀了她，就能见到血。有什么很难理解的地方吗？\n——您的回答已被记录。"
+        "受人指使":
+            $ _intro_fade_pending = True
+            extend "\n——受人指使\n——请交代该第三方的身份。"
+            extend "\n——请注意，您没有权利保持沉默。"
+            window hide Dissolve(.25)
+            menu:
+                "是尤里娅。":
+                    $ interro_halluc += 1
+                    $ _intro_fade_pending = True
+                    extend "\n——是{i}尤里娅{/i}。\n——请详细交代她的动机。"
+                    window hide Dissolve(.25)
+                    menu:
+                        "她想要消失，仅此而已。":
+                            $ interro_calm += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——她想要消失，仅此而已。\n——这恐怕是您的一厢情愿，阿鹤先生。"
+                            extend "\n——悉听尊便。"
+                        "因为可爱！":
+                            $ interro_insane += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——因为可爱！\n——请停止无谓的胡言乱语，阿鹤先生。"
+                            extend "\n——喂喂喂，质疑{i}尤里娅{/i}可爱的人可都没什么好下场啊，你可要想清楚了。"
+                            extend "\n——...让我们继续吧..."
+                        "她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！":
+                            $ interro_halluc += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！\n——阿鹤先生精神分裂分析报告呢？需要重新评估么..."
+                "是王霜。":
+                    $ interro_calm += 1
+                    $ _intro_fade_pending = True
+                    extend "\n——是王霜。\n——请详细交代她的动机。"
+                    window hide Dissolve(.25)
+                    menu:
+                        "不清楚，她只是告诉我要这么做而已。":
+                            $ interro_calm += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——不清楚，她只是告诉我要这么做而已。\n——阿鹤先生...没有检测到不实信息么...无妨，那我们继续..."
+                        "那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！":
+                            $ interro_insane += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！\n——..."
+                            extend "\n——怎么了？惊讶地说不出话来了么？也好，那就在她残酷的圣光中继续颤抖吧！"
+                        "用来研究。":
+                            $ interro_hostile += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——用来研究。\n——请详细交代她的研究课题和目的。"
+                            extend "\n——你们还是自己去问她吧。"
+                "是米特拉布。":
+                    $ interro_hostile += 1
+                    $ _intro_fade_pending = True
+                    extend "\n——是米特拉布。\n——请详细交代该组织的动机。"
+                    window hide Dissolve(.25)
+                    menu:
+                        "你去问他们的老板啊，店面离你们这么近，跑来问我是做什么？":
+                            $ interro_calm += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——你去问他们的老板啊，店面离你们这么近，跑来问我是做什么？\n——请注意您的立场，阿鹤先生。"
+                            extend "\n——假如你真的觉得我脑子里有你们想要的信息，打开我的脑子不就行了，为什么要在这儿浪费时间？"
+                            extend "\n——…"
+                        "米姐喜欢看生体喝醉的样子，她觉得那很性感。":
+                            $ interro_halluc += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——米姐喜欢看生体喝醉的样子，她觉得那很性感。\n——醉态确实是本公司生体产品最新推出的性能优化点之一，非常高兴这一优化受到了用户的喜爱。我们将择机上门送上我们的感谢。"
+                        "她是来调查你们的，准备好人财两空吧，资本主义的走狗们。":
+                            $ interro_hostile += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——她是来调查你们的，准备好人财两空吧，资本主义的走狗们。\n——请提供浅显事实之外的信息。"
+                            extend "\n——你们连这都知道了，还有什么事情不是浅显事实的..."
+                            extend "\n——无妨，让我们继续吧。"
+                "死人...是死人...":
+                    $ interro_death += 1
+                    $ _intro_fade_pending = True
+                    extend "\n——死人...是死人...\n——阿鹤先生，请不要顾左右而言他。"
+                    window hide Dissolve(.25)
+                    menu:
+                        "他们已经到门口了...还不去迎接么？":
+                            $ interro_death += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——他们已经到门口了...还不去迎接么？\n——阿鹤先生，我们没有时间听您的胡言乱语，如果您已经打定主意——"
+                            ## glitch音效
+                            $ play_glitch()
+                            ## 转场：黑屏
+                            scene bg_black_video with scene_soft
+                        "你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么...":
+                            $ interro_insane += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么...\n——这与我们讨论的话题无关，阿鹤先生，请注意——"
+                            ## glitch音效
+                            $ play_glitch()
+                            ## 转场：红屏
+                            scene bg_red_video with scene_soft
+                        "血...是血...等你们也能看到那景象...一切就太迟了...太迟了...":
+                            $ interro_halluc += 1
+                            $ _intro_fade_pending = True
+                            extend "\n——血...是血...等你们也能看到那景象...一切就太迟了...太迟了...\n——无妨，那就让我们继续吧。"
+    extend "\n——本公司将本着公平、公正、公开的原则，保留为具有高度危险性的犯罪嫌疑人实施脑前叶白质切除术的可能性 ，请问您有异议吗？"
     extend "\n——…"
-    extend "\n——感谢您的配合。"
+    window hide Dissolve(.25)
+    menu:
+        "随便吧。":
+            $ interro_calm += 1
+            $ _intro_fade_pending = True
+            extend "\n——随便吧。\n——感谢您的配合。"
+            extend "\n——如有必要，我们保证将以最人道的方式对您进行无害化处理。"
+            extend "\n——请耐心等待审议结果。"
+        "有。":
+            $ interro_hostile += 1
+            $ _intro_fade_pending = True
+            extend "\n——有。\n——阿鹤先生，请注意您此刻没有反对的权利。"
+            extend "\n——如有必要，我们保证将以最人道的方式对您进行无害化处理。"
+            extend "\n——在此期间，请您不要尝试阻挠我们的工作人员的日常工作，耐心等待审议结果。"
+        "都已经做过一遍了，看来你们还挺闲得慌？" if "王霜把三根冰凿子打进我的眼窝之后" in interro_seen:
+            $ interro_insane += 1
+            $ _intro_fade_pending = True
+            extend "\n——都已经做过一遍了，看来你们还挺闲得慌？\n——为了确保您的无害化，我们将对您进行核磁共振检查，在那之前请确保您体内没有任何金属制品。"
+            extend "\n——如果您有佩戴心脏起搏器、植入式除颤器等设备，请自行移除。"
+            extend "\n——您的核磁共振检查将在三十分钟后开始。"
+        "顺便杀了我如何？":
+            $ interro_death += 1
+            $ _intro_fade_pending = True
+            extend "\n——顺便杀了我如何？\n——这恐怕暂时是不可能的，阿鹤先生。"
+        "如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。":
+            $ interro_halluc += 1
+            $ _intro_fade_pending = True
+            extend "\n——如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。\n——末日是会来临的，阿鹤先生，请放心吧。"
+    extend "\n——感谢您的配合，针对您的综合处置措施将在明天的问询之后对外公开，请静候佳音。"
     extend "\n——录入完毕——"
     $ no_click_split = False
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    $ interro_evaluate()
+    large_narrator "更新了对于犯罪嫌疑人的心理评估和综合处置措施："
+    ## 精神状态：平稳【仅平稳>1】/疯狂【仅疯狂>1】/分裂【平稳和疯狂皆>1】/检测失败【前三选项皆不成立时】
+    extend "\n精神状态：[interro_mental!t]"
+    ## 人格特质：冷静【对抗<=1】/对抗【对抗>1】
+    extend "\n人格特质：[interro_trait!t]"
+    ## 污染进程：幻觉【仅幻觉>1】/死亡【仅死亡>1】/幻灭【幻觉和死亡皆>1】/无污染【前三选项皆不成立时】
+    extend "\n污染进程：[interro_pollution!t]"
+    ## 建议执行：记忆消除并释放【平稳/检测失败 × 冷静 × 无污染/幻觉/死亡 】，记忆消除和无限期监禁【疯狂 × 冷静 × 幻觉/死亡/幻灭/无污染，以及 平稳/检测失败 · 冷静 · 幻灭】，脑白质切除、记忆消除并释放【平稳/检测失败 × 对抗 × 无污染/幻觉/死亡，疯狂·对抗·无污染，分裂 × 冷静/对抗 × 无污染】，脑白质切除、记忆消除并无限期监禁【疯狂 × 对抗 × 幻觉/死亡/幻灭，平稳/检测失败 × 对抗 × 幻灭，分裂 × 冷静/对抗 × 幻觉/死亡/幻灭】
+    extend "\n建议执行：[interro_verdict!t]"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "凝胶柔软。"

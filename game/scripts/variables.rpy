@@ -73,6 +73,87 @@ default madness = 0
 ## 关键选择记录
 default choice_flags = {}
 
+################################################################################
+## 问询段数值追踪
+##
+## 与全局 madness 完全独立：这五个计数只在问询桥段（「——录入中——」Extended 块）
+## 内累积，由 interro_reset() 在桥段开头清零；madness 在桥段外照常生效。
+## 剧本里的选项标记 【疯狂+1】【平稳+1】【死亡+1】【幻觉+1】【对抗+1】 由转换器
+## 映射到这五个变量（见 convert_script.py 的 _INTERRO_STAT_MAP）。
+################################################################################
+
+default interro_calm = 0      # 平稳
+default interro_insane = 0    # 疯狂
+default interro_hostile = 0   # 对抗
+default interro_halluc = 0    # 幻觉
+default interro_death = 0     # 死亡
+## 【只加一次】守卫：记录已经加过分的循环选项 id（"m{菜单号}{字母}"）。
+default interro_once = set()
+## 已看过的选项文本前缀：供 【本选项仅在观看过“X...”后出现】 条件用。
+default interro_seen = set()
+## 评估结果（interro_evaluate() 填充；say 里用 [interro_mental!t] 插值 + 运行时翻译）。
+default interro_mental = ""
+default interro_trait = ""
+default interro_pollution = ""
+default interro_verdict = ""
+
+init python:
+    def interro_reset():
+        """问询桥段开头清零全部问询计数（桥段外不生效，与 madness 无关）。"""
+        store.interro_calm = 0
+        store.interro_insane = 0
+        store.interro_hostile = 0
+        store.interro_halluc = 0
+        store.interro_death = 0
+        store.interro_once = set()
+        store.interro_seen = set()
+
+    def interro_evaluate():
+        """按剧本的条件表把五个计数折算成四项唯一结论。
+        规则原文见 demo_script.txt「更新了对于犯罪嫌疑人的心理评估」一节：
+        - 精神状态：平稳【仅平稳>1】/疯狂【仅疯狂>1】/分裂【皆>1】/检测失败【皆<=1】
+        - 人格特质：冷静【对抗<=1】/对抗【对抗>1】
+        - 污染进程：幻觉【仅幻觉>1】/死亡【仅死亡>1】/幻灭【皆>1】/无污染【皆<=1】
+        - 建议执行：脑白质切除 = 对抗或分裂一票即中；监禁与释放的划分逐行核对过原表
+          （32 种组合完备且不重叠，穷举验证过）。"""
+        calm2, insane2 = store.interro_calm > 1, store.interro_insane > 1
+        if calm2 and insane2:
+            mental = __("分裂")
+        elif calm2:
+            mental = __("平稳")
+        elif insane2:
+            mental = __("疯狂")
+        else:
+            mental = __("检测失败")
+        trait = __("对抗") if store.interro_hostile > 1 else __("冷静")
+        h2, d2 = store.interro_halluc > 1, store.interro_death > 1
+        if h2 and d2:
+            poll = __("幻灭")
+        elif h2:
+            poll = __("幻觉")
+        elif d2:
+            poll = __("死亡")
+        else:
+            poll = __("无污染")
+        ## 脑白质切除：对抗人格或分裂精神一票即中。
+        lobotomy = (trait == "对抗") or (mental == "分裂")
+        ## 释放/监禁：按原表——疯狂仅在「对抗×无污染」时释放；分裂看是否无污染；
+        ## 平稳/检测失败除幻灭外都释放。
+        if mental == "疯狂":
+            release = (trait == "对抗" and poll == "无污染")
+        elif mental == "分裂":
+            release = (poll == "无污染")
+        else:
+            release = (poll != "幻灭")
+        if lobotomy:
+            verdict = __("脑白质切除、记忆消除并释放") if release else __("脑白质切除、记忆消除并无限期监禁")
+        else:
+            verdict = __("记忆消除并释放") if release else __("记忆消除和无限期监禁")
+        store.interro_mental = mental
+        store.interro_trait = trait
+        store.interro_pollution = poll
+        store.interro_verdict = verdict
+
 ## 当前场景音乐 ID（由 set_scene_music 设置；after_load 用它恢复音乐）
 default current_music_scene = None
 
