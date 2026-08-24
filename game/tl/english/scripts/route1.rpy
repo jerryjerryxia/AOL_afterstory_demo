@@ -1,4 +1,4 @@
-﻿
+
 # game/scripts/route1.rpy:16
 translate english route1_start_cc8a16cc:
 
@@ -489,7 +489,7 @@ translate english route1_start_5ba9680b:
 translate english route1_start_5d1b749f:
 
     # wangshuang "你为了{i}尤里娅{/i}那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
-    wangshuang "How many bones did you break for that little girl Yulia? Kaku, my man, there is no need to quibble. We are accomplices in destroying the PL District no matter how you look at it."
+    wangshuang "How many bones did you break for that little girl {i}Julia{/i}? Kaku, my man, there is no need to quibble. We are accomplices in destroying the PL District no matter how you look at it."
 
 # game/scripts/route1.rpy:242
 translate english route1_start_de45be2d:
@@ -1588,6 +1588,7 @@ translate english route1_start_13f6870a:
     # wangshuang "然后脑子里就只剩一个念头：“我操这下不得了了要被外界存在的压强挤碎了快他妈跑”，然后据说，我就开始往窗户外面跳...？也不知道是被谁拉住的，是你吗？应该不是，你应该拽不住我。"
     wangshuang 'And I was like "Holy fucking shit this crap is absolutely going out of control I\'m getting squeezed to death by the pressure of this thing that I don\'t comprehend I must get the fuck out ASAP", and...'
     wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
+    wangshuang "I heard I was trying to jump out of the window? Did you grab me? Were you there? Nah you probably couldn't grab me in time."
 
 # game/scripts/route1.rpy:382
 translate english route1_start_7b6d9dbf:
@@ -1918,18 +1919,6 @@ translate english route1_start_6fcf277d:
 
     # extend "\n——请问，您盗窃本公司的生体产品，是出于自主意愿，还是有他人指使？"
     extend "\n——Please state: was your theft of the company's biologic product an act of your own volition, or were you instructed by another party?"
-
-# game/scripts/route1.rpy:664
-translate english route1_start_1e743f66:
-
-    # extend "\n——本公司将本着公平、公正、公开的原则，为具有高度危险性的犯罪嫌疑人实施前脑叶白质切除术 ，请问您有异议吗？"
-    extend "\n——In accordance with the principles of fairness, impartiality and transparency, the company will perform a prefrontal lobotomy on suspects deemed highly dangerous. Do you have any objection?"
-
-# game/scripts/route1.rpy:666
-translate english route1_start_d4d3c3bf:
-
-    # extend "\n——感谢您的配合。"
-    extend "\n——Thank you for your cooperation."
 
 # game/scripts/route1.rpy:667
 translate english route1_start_8ff0de9f:
@@ -2475,7 +2464,7 @@ translate english route1_start_f63fbb9c:
 translate english route1_start_f653fb42:
 
     # ahe "好吧..."
-    ahe "Alright fine..."
+    ahe "Alright..."
 
 # game/scripts/route1.rpy:877
 translate english route1_start_ce617998_1:
@@ -2559,7 +2548,7 @@ translate english route1_start_8c66042b:
 translate english route1_start_71340cf0:
 
     # wangshuang "试想，假若在我们与杰罗瓦的最后一战里，你在见到他放出的{i}尤里娅{/i}的那一刻们就放弃了抵抗，会怎么样？一切就结束了对吧？"
-    wangshuang "Picture it. Our last fight with Jerowald - say you'd given up the moment you saw the Julias he let loose. It's all over, right?"
+    wangshuang "Picture it. Our last fight with Jerowald - say you'd given up the moment you saw the {i}Julia{/i}s he let loose. It's all over, right?"
 
 # game/scripts/route1.rpy:934
 translate english route1_start_c3524eba:
@@ -3844,7 +3833,7 @@ translate english route1_start_aa7c1bb8:
 translate english route1_start_f0811f67:
 
     # wangshuang "既然你这么想见她，那肯定得成全你嘛——你看，你的“作品”啊，从各种意义上已经完成了。"
-    wangshuang "You want to see her this badly, so of course I have to see it through for you - look. That \"work\" of yours is finished, in every sense of the word."
+    wangshuang 'You want to see her this badly, so of course I have to see it through for you - look. That "work" of yours is finished, in every sense of the word.'
 
 # game/scripts/route1.rpy:1220
 translate english route1_start_57b38db3:
@@ -3922,7 +3911,7 @@ translate english route1_start_d4742c1e_1:
 translate english route1_start_2b3452d8:
 
     # extend "\n——请问，您在过去的二十四小时内，是否经历过严重肉体伤害、认知紊乱、大量出血、死亡等重大健康隐患？"
-    extend "\n——请问，您在过去的二十四小时内，是否经历过严重肉体伤害、认知紊乱、大量出血、死亡等重大健康隐患？"
+    extend "\n——Please state: in the past twenty-four hours, have you experienced severe physical injury, cognitive disruption, major blood loss, death, or any other significant health hazards?"
 
 # game/scripts/route1.rpy:679
 translate english route1_start_a5823c22:
@@ -4108,7 +4097,7 @@ translate english strings:
 
     # game/scripts/route1.rpy:683
     old "有"
-    new "有"
+    new "Yes"
 
     # game/scripts/route1.rpy:690
     old "王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。"
@@ -4116,15 +4105,15 @@ translate english strings:
 
     # game/scripts/route1.rpy:697
     old "一般般..."
-    new "一般般..."
+    new "It was okay..."
 
     # game/scripts/route1.rpy:702
     old "恶心死了！"
-    new "恶心死了！"
+    new "Disgusting!"
 
     # game/scripts/route1.rpy:707
     old "可爱！"
-    new "可爱！"
+    new "Cute!"
 
     # game/scripts/route1.rpy:712
     old "吃过 KAS 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。"
@@ -4132,11 +4121,11 @@ translate english strings:
 
     # game/scripts/route1.rpy:719
     old "不记得，王霜给的。"
-    new "不记得，王霜给的。"
+    new "I don't. Wang Shuang gave it to me."
 
     # game/scripts/route1.rpy:724
     old "三百八十二点三毫克，误差在零点四毫克之内。"
-    new "三百八十二点三毫克，误差在零点四毫克之内。"
+    new "Three hundred eighty-two point three milligrams, accurate to within zero point four."
 
     # game/scripts/route1.rpy:729
     old "我他妈脑子要是这么好使我还在你这儿跟你讲相声？"
@@ -4148,7 +4137,7 @@ translate english strings:
 
     # game/scripts/route1.rpy:741
     old "闭嘴..."
-    new "闭嘴..."
+    new "Shut up..."
 
     # game/scripts/route1.rpy:746
     old "我们是同事关系。"
@@ -4156,7 +4145,7 @@ translate english strings:
 
     # game/scripts/route1.rpy:751
     old "死了。还有什么要问的么？"
-    new "死了。还有什么要问的么？"
+    new "Dead. Anything else you want to ask?"
 
     # game/scripts/route1.rpy:756
     old "沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。"
@@ -4164,96 +4153,665 @@ translate english strings:
 
     # game/scripts/route1.rpy:761
     old "没有"
-    new "没有"
-
-
-# game/scripts/route1.rpy:685
-translate english route1_start_71871645:
-
-    # extend "\n——有\n——请详细描述该经历的过程。请注意，您没有权利保持沉默。"
-    extend "\n——有\n——请详细描述该经历的过程。请注意，您没有权利保持沉默。"
-
-# game/scripts/route1.rpy:690
-translate english route1_start_13baf32a:
-
-    # extend "\n——王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
-    extend "\n——王霜把三根冰凿子打进我的眼窝，然后她让我帮她做同样的事。透过骨头就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
+    new "No"
 
 # game/scripts/route1.rpy:695
 translate english route1_start_c5e0b9ba:
 
     # extend "\n——一般般...\n——您的回答已被记录。"
-    extend "\n——一般般...\n——您的回答已被记录。"
+    extend "\n——It was okay...\n——Your answer has been recorded."
 
 # game/scripts/route1.rpy:698
 translate english route1_start_2d4ab236:
 
     # extend "\n——恶心死了！\n——预料之外呢，阿鹤先生。"
-    extend "\n——恶心死了！\n——预料之外呢，阿鹤先生。"
+    extend "\n——Disgusting!\n——How unexpected, Mr. Kaku."
 
 # game/scripts/route1.rpy:701
 translate english route1_start_439ed967:
 
     # extend "\n——可爱！\n——很好。"
-    extend "\n——可爱！\n——很好。"
-
-# game/scripts/route1.rpy:704
-translate english route1_start_6886a837:
-
-    # extend "\n——吃过 {i}KAS{/i} 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。\n——请问您还记得剂量吗？"
-    extend "\n——吃过 {i}KAS{/i} 之后我拉着身边不知道是谁跳出了窗户。飞得不够高反而不容易死，毕竟是保守选项。\n——请问您还记得剂量吗？"
+    extend "\n——Cute!\n——Very good."
 
 # game/scripts/route1.rpy:709
 translate english route1_start_578315f3:
 
     # extend "\n——不记得，王霜给的。\n——您的回答已被记录。"
-    extend "\n——不记得，王霜给的。\n——您的回答已被记录。"
+    extend "\n——I don't. Wang Shuang gave it to me.\n——Your answer has been recorded."
 
 # game/scripts/route1.rpy:712
 translate english route1_start_69a1b2e4:
 
     # extend "\n——三百八十二点三毫克，误差在零点四毫克之内。\n——如果您无法如实作答，请不要胡乱编造答案。"
-    extend "\n——三百八十二点三毫克，误差在零点四毫克之内。\n——如果您无法如实作答，请不要胡乱编造答案。"
-
-# game/scripts/route1.rpy:715
-translate english route1_start_ebed31d5:
-
-    # extend "\n——我他妈脑子要是这么好使我还在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
-    extend "\n——我他妈脑子要是这么好使我还在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
-
-# game/scripts/route1.rpy:718
-translate english route1_start_aea8ac43:
-
-    # extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
-    extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇拼不出她的声带——她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
+    extend "\n——Three hundred eighty-two point three milligrams, accurate to within zero point four.\n——If you are unable to answer truthfully, please do not fabricate an answer."
 
 # game/scripts/route1.rpy:723
 translate english route1_start_835fb870:
 
     # extend "\n——闭嘴...\n——您的回答已被记录。"
-    extend "\n——闭嘴...\n——您的回答已被记录。"
-
-# game/scripts/route1.rpy:726
-translate english route1_start_f3c3fcde:
-
-    # extend "\n——我们是同事关系。\n——根据我们的调查，这属于不实信息。"
-    extend "\n——我们是同事关系。\n——根据我们的调查，这属于不实信息。"
+    extend "\n——Shut up...\n——Your answer has been recorded."
 
 # game/scripts/route1.rpy:729
 translate english route1_start_79cf8080:
 
     # extend "\n——死了。还有什么要问的么？\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
-    extend "\n——死了。还有什么要问的么？\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
-
-# game/scripts/route1.rpy:732
-translate english route1_start_2322b0ac:
-
-    # extend "\n——沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
-    extend "\n——沙滩上可以用盐雕出永远不会毁坏的雕像哦。海风会让它变得坚硬，直到落日涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
+    extend "\n——Dead. Anything else you want to ask?\n——Please try to provide information beyond the plain facts, Mr. Kaku."
 
 # game/scripts/route1.rpy:735
 translate english route1_start_e930bf55:
 
     # extend "\n——没有\n——检测到您提供了不实信息，请再次作答。"
-    extend "\n——没有\n——检测到您提供了不实信息，请再次作答。"
+    extend "\n——No\n——False information detected. Please answer again."
+
+# TODO: Translation updated at 2026-08-24 03:24
+
+# game/scripts/route1.rpy:686
+translate english route1_start_b67fc344:
+
+    # extend "\n——有\n——请详细交代该经历的过程。"
+    extend "\n——Yes\n——Please give a detailed account of the experience."
+
+# game/scripts/route1.rpy:687
+translate english route1_start_889daff9:
+
+    # extend "\n——请注意，您没有权利保持沉默。"
+    extend "\n——Please be advised: you do not have the right to remain silent."
+
+# game/scripts/route1.rpy:694
+translate english route1_start_c863b6f3:
+
+    # extend "\n——王霜把三根冰凿子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
+    extend "\n——After Wang Shuang drove three ice picks into my eye sockets, she had me do the same to her. Once you get through the bone you'll know...it's soft. Like fresh tofu.\n——Did you find it cute?"
+
+# game/scripts/route1.rpy:712
+translate english route1_start_8ac865ee:
+
+    # extend "\n——吃过 {i}KAS{/i} 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。\n——请问您还记得剂量吗？"
+    extend "\n——After taking {i}KAS{/i} I grabbed whoever was next to me and leapt straight out the window. Just didn't fly high enough—makes it harder to die, actually. First time and all, so I went with the conservative option.\n——Do you recall the dosage?"
+
+# game/scripts/route1.rpy:726
+translate english route1_start_6195e01c:
+
+    # extend "\n——我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
+    extend "\n——If my fucking brain worked that well, would I have time to sit here doing crosstalk with you?\n——Your brain is indeed very important, Mr. Kaku."
+
+# game/scripts/route1.rpy:730
+translate english route1_start_f6677a28:
+
+    # extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
+    extend "\n——{i}Julia{/i}—she's gone from here for good. A windpipe and a pair of lips don't add up to her voice——she...she lied to me...\n——Please state your relationship with Ms. {i}Julia{/i}——"
+
+# game/scripts/route1.rpy:740
+translate english route1_start_3e9aaab9:
+
+    # extend "\n——我们是同事关系，正处于一段禁断的办公室恋情之中。\n——根据我们的调查，这属于不实信息。"
+    extend "\n——We're colleagues, currently in the middle of a forbidden office romance.\n——According to our investigation, this is false information."
+
+# game/scripts/route1.rpy:748
+translate english route1_start_46502242:
+
+    # extend "\n——沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
+    extend "\n——On the beach you can carve statues out of salt that never rot. The sea wind hardens them like stone—right up until the next high tide.\n——Please refrain from providing information irrelevant to this interrogation, Mr. Kaku."
+
+# game/scripts/route1.rpy:749
+translate english route1_start_5b715a45:
+
+    # extend "\n——以及为什么您对“不朽”的定义是以天为单位的..."
+    extend '\n——Also, why is your definition of “never” measured in days...'
+
+# game/scripts/route1.rpy:764
+translate english route1_start_87a42d43:
+
+    # extend "\n——是自愿的\n——请详细交代您的动机。"
+    extend "\n——Of my own volition\n——Please give a detailed account of your motive."
+
+# game/scripts/route1.rpy:765
+translate english route1_start_889daff9_1:
+
+    # extend "\n——请注意，您没有权利保持沉默。"
+    extend "\n——Please be advised: you do not have the right to remain silent."
+
+# game/scripts/route1.rpy:771
+translate english route1_start_fe25c309:
+
+    # extend "\n——她属于我，仅此而已。\n——请问您是如何得出这一结论的呢？"
+    extend "\n——She belongs to me. That's all.\n——And how did you arrive at this conclusion?"
+
+# game/scripts/route1.rpy:777
+translate english route1_start_20a4b40e:
+
+    # extend "\n——她亲口告诉我的。\n——很不幸，当事人的语料库中并没有检索出类似的消息呢，阿鹤先生。"
+    extend "\n——She told me so herself.\n——Unfortunately, no such statement could be retrieved from the party's corpus, Mr. Kaku."
+
+# game/scripts/route1.rpy:781
+translate english route1_start_8ffc1c69:
+
+    # extend "\n——但凡正常人的脑子都能得出这一结论的吧...\n——我恐怕有坏消息要告诉您，阿鹤先生。"
+    extend "\n——Any brain in working order would reach the same conclusion...\n——I'm afraid I have bad news for you, Mr. Kaku."
+
+# game/scripts/route1.rpy:785
+translate english route1_start_8aa9e81d:
+
+    # extend "\n——因为可爱！\n——明白了。"
+    extend "\n——Because she's cute!\n——Understood."
+
+# game/scripts/route1.rpy:789
+translate english route1_start_963cf494:
+
+    # extend "\n——她说想去外面看看。\n——请问您还记得她是在怎样的场合下告知您这个想法的吗？"
+    extend "\n——She said she wanted to see the outside.\n——Do you recall the occasion on which she told you this?"
+
+# game/scripts/route1.rpy:795
+translate english route1_start_ad8a5152:
+
+    # extend "\n——不记得，王霜告诉我的。\n——请不要随意相信他人传播的不实信息啊，阿鹤先生..."
+    extend "\n——I don't. Wang Shuang told me.\n——Please do not casually believe false information spread by others, Mr. Kaku..."
+
+# game/scripts/route1.rpy:799
+translate english route1_start_3de43b10:
+
+    # extend "\n——在她死前。\n——您的回答已被记录。"
+    extend "\n——Before she died.\n——Your answer has been recorded."
+
+# game/scripts/route1.rpy:803
+translate english route1_start_40994db6:
+
+    # extend "\n——能麻烦您别再问这种刁钻的记忆力考题了么？\n——您没有权力质疑问题的合理性，阿鹤先生，请如实作答。"
+    extend "\n——Would you mind not quizzing my memory with these gotcha questions?\n——You do not have the authority to question the validity of our questions, Mr. Kaku. Please answer truthfully."
+
+# game/scripts/route1.rpy:807
+translate english route1_start_7b83c91a:
+
+    # extend "\n——零件啊！零件不够用了，王霜说零件不够用了，那就只好自己出来找了咯。\n——请确认您对于这个回答的严肃性。"
+    extend "\n——Parts! We ran out of parts. Wang Shuang said we ran out of parts, so I had to go out and find some myself.\n——Please confirm the seriousness of this answer."
+
+# game/scripts/route1.rpy:813
+translate english route1_start_38a77765:
+
+    # extend "\n——非常严肃非常认真非常一丝不苟非常——\n——请立刻停止无意义的胡言乱语，阿鹤先生。"
+    extend "\n——Very serious very earnest very meticulous very——\n——Please cease this meaningless babbling at once, Mr. Kaku."
+
+# game/scripts/route1.rpy:817
+translate english route1_start_f39e68e3:
+
+    # extend "\n——不如去问问王霜，看看她怎么说。\n——这不是需要您操心的问题。"
+    extend "\n——Why not ask Wang Shuang and see what she says.\n——That is not your concern."
+
+# game/scripts/route1.rpy:821
+translate english route1_start_f88d838a:
+
+    # extend "\n——确认了。然后呢？\n——明白。您的回答已被记录。"
+    extend "\n——Confirmed. Now what?\n——Understood. Your answer has been recorded."
+
+# game/scripts/route1.rpy:825
+translate english route1_start_e212e0b8:
+
+    # extend "\n——血...\n——请展开聊聊"
+    extend "\n——Blood...\n——Please elaborate"
+
+# game/scripts/route1.rpy:831
+translate english route1_start_e676cb4d:
+
+    # extend "\n——无可奉告。\n——如果您坚持沉默，我们将保留采取强制措施的可能性，还请您多多理解。"
+    extend "\n——No comment.\n——If you insist on silence, we reserve the option of coercive measures. We appreciate your understanding."
+
+# game/scripts/route1.rpy:835
+translate english route1_start_f703e2df:
+
+    # extend "\n——只有足够的血我们才能继续生存下去，你明白吗？这是基本常识吧，我亲爱的朋友，那么请问你愿意捐献——\n——问询对象出现了严重的精神状态波动，立即停止问询，启用code purple——"
+    extend "\n——Only with enough blood can we go on living, don't you see? That's common knowledge, my dear friend. So tell me, would you care to donate——\n——Subject exhibiting severe psychological instability. Terminate interrogation immediately. Initiating code purple——"
+
+# game/scripts/route1.rpy:839
+translate english route1_start_9d15d294:
+
+    # extend "\n——杀了她，就能见到血。有什么很难理解的地方吗？\n——您的回答已被记录。"
+    extend "\n——Kill her, and you get to see blood. What's so hard to understand?\n——Your answer has been recorded."
+
+# game/scripts/route1.rpy:842
+translate english route1_start_b9902010:
+
+    # extend "\n——受人指使\n——请交代该第三方的身份。"
+    extend "\n——I was instructed\n——Please identify this third party."
+
+# game/scripts/route1.rpy:843
+translate english route1_start_889daff9_2:
+
+    # extend "\n——请注意，您没有权利保持沉默。"
+    extend "\n——Please be advised: you do not have the right to remain silent."
+
+# game/scripts/route1.rpy:849
+translate english route1_start_31f1ceab:
+
+    # extend "\n——是{i}尤里娅{/i}。\n——请详细交代她的动机。"
+    extend "\n——It was {i}Julia{/i}.\n——Please give a detailed account of her motive."
+
+# game/scripts/route1.rpy:855
+translate english route1_start_1e618f38:
+
+    # extend "\n——她想要消失，仅此而已。\n——这恐怕是您的一厢情愿，阿鹤先生。"
+    extend "\n——She wanted to disappear. That's all.\n——I'm afraid that is your wishful thinking, Mr. Kaku."
+
+# game/scripts/route1.rpy:856
+translate english route1_start_84c07833:
+
+    # extend "\n——悉听尊便。"
+    extend "\n——As you wish."
+
+# game/scripts/route1.rpy:860
+translate english route1_start_8b547e3d:
+
+    # extend "\n——因为可爱！\n——请停止无谓的胡言乱语，阿鹤先生。"
+    extend "\n——Because she's cute!\n——Please cease this pointless babbling, Mr. Kaku."
+
+# game/scripts/route1.rpy:861
+translate english route1_start_86fb6cfc:
+
+    # extend "\n——喂喂喂，质疑{i}尤里娅{/i}可爱的人可都没什么好下场啊，你可要想清楚了。"
+    extend "\n——Hey, hey, hey. People who question {i}Julia{/i}'s cuteness don't tend to end well. You'd better think this through."
+
+# game/scripts/route1.rpy:862
+translate english route1_start_807447fe:
+
+    # extend "\n——...让我们继续吧..."
+    extend "\n——...Let us continue..."
+
+# game/scripts/route1.rpy:866
+translate english route1_start_30a787f6:
+
+    # extend "\n——她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！\n——阿鹤先生精神分裂分析报告呢？需要重新评估么..."
+    extend "\n——She wanted the whole PL District gone. You people don't even know that much? Sloppy intelligence work. Hilarious!\n——Where is Mr. Kaku's schizophrenia analysis report? Does it need re-evaluation..."
+
+# game/scripts/route1.rpy:870
+translate english route1_start_bba988f4:
+
+    # extend "\n——是王霜。\n——请详细交代她的动机。"
+    extend "\n——It was Wang Shuang.\n——Please give a detailed account of her motive."
+
+# game/scripts/route1.rpy:876
+translate english route1_start_5eefcdc3:
+
+    # extend "\n——不清楚，她只是告诉我要这么做而已。\n——阿鹤先生...没有检测到不实信息么...无妨，那我们继续..."
+    extend "\n——No idea. She just told me to do it.\n——Mr. Kaku...no false information detected...? Very well, let us continue..."
+
+# game/scripts/route1.rpy:880
+translate english route1_start_1c335bd6:
+
+    # extend "\n——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！\n——..."
+    extend "\n——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！\n——..."
+
+# game/scripts/route1.rpy:881
+translate english route1_start_382aae55:
+
+    # extend "\n——怎么了？惊讶地说不出话来了么？也好，那就在她残酷的圣光中继续颤抖吧！"
+    extend "\n——What's wrong? Struck speechless? Fine. Keep trembling in her cruel and holy light!"
+
+# game/scripts/route1.rpy:885
+translate english route1_start_39aed6a5:
+
+    # extend "\n——用来研究。\n——请详细交代她的研究课题和目的。"
+    extend "\n——For research.\n——Please give a detailed account of her research subject and aims."
+
+# game/scripts/route1.rpy:886
+translate english route1_start_501c0778:
+
+    # extend "\n——你们还是自己去问她吧。"
+    extend "\n——Go ask her yourselves."
+
+# game/scripts/route1.rpy:890
+translate english route1_start_032db412:
+
+    # extend "\n——是米特拉布。\n——请详细交代该组织的动机。"
+    extend "\n——It was Mitrab.\n——Please give a detailed account of the organization's motive."
+
+# game/scripts/route1.rpy:896
+translate english route1_start_e8e1b2c3:
+
+    # extend "\n——你去问他们的老板啊，店面离你们这么近，跑来问我是做什么？\n——请注意您的立场，阿鹤先生。"
+    extend "\n——Go ask their boss. The place is right around the corner from you—why come asking me?\n——Please mind your position, Mr. Kaku."
+
+# game/scripts/route1.rpy:897
+translate english route1_start_8d399bad:
+
+    # extend "\n——假如你真的觉得我脑子里有你们想要的信息，打开我的脑子不就行了，为什么要在这儿浪费时间？"
+    extend "\n——If you really think the information you want is in my head, just crack it open. Why waste time here?"
+
+# game/scripts/route1.rpy:902
+translate english route1_start_94df26db:
+
+    # extend "\n——米姐喜欢看生体喝醉的样子，她觉得那很性感。\n——醉态确实是本公司生体产品最新推出的性能优化点之一，非常高兴这一优化受到了用户的喜爱。我们将择机上门送上我们的感谢。"
+    extend "\n——Sister Mi likes watching biologics get drunk. She finds it sexy.\n——Drunkenness is indeed among the latest performance optimizations of our biologic products. We are delighted this optimization has found favor with users. We will call on her in due course to convey our gratitude."
+
+# game/scripts/route1.rpy:906
+translate english route1_start_44cfc4bb:
+
+    # extend "\n——她是来调查你们的，准备好人财两空吧，资本主义的走狗们。\n——请提供浅显事实之外的信息。"
+    extend "\n——She's investigating you. Get ready to lose everything, you capitalist running dogs.\n——Please provide information beyond the obvious facts."
+
+# game/scripts/route1.rpy:907
+translate english route1_start_63f747f2:
+
+    # extend "\n——你们连这都知道了，还有什么事情不是浅显事实的..."
+    extend "\n——If you already know even that, what's left that isn't an obvious fact..."
+
+# game/scripts/route1.rpy:908
+translate english route1_start_7b852e01:
+
+    # extend "\n——无妨，让我们继续吧。"
+    extend "\n——No matter. Let us continue."
+
+# game/scripts/route1.rpy:912
+translate english route1_start_135ed784:
+
+    # extend "\n——死人...是死人...\n——阿鹤先生，请不要顾左右而言他。"
+    extend "\n——The dead...it was the dead...\n——Mr. Kaku, please do not deflect."
+
+# game/scripts/route1.rpy:918
+translate english route1_start_40f41099:
+
+    # extend "\n——他们已经到门口了...还不去迎接么？\n——阿鹤先生，我们没有时间听您的胡言乱语，如果您已经打定主意——"
+    extend "\n——They're already at the door...aren't you going to greet them?\n——Mr. Kaku, we have no time for your ravings. If you have made up your mind——"
+
+# game/scripts/route1.rpy:926
+translate english route1_start_d3b30116:
+
+    # extend "\n——你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么...\n——这与我们讨论的话题无关，阿鹤先生，请注意——"
+    extend "\n——Did you know...with a delicate enough touch, even the ossicles can be fractured...want to know how...\n——That is irrelevant to our discussion, Mr. Kaku. Please mind——"
+
+# game/scripts/route1.rpy:934
+translate english route1_start_b053f639:
+
+    # extend "\n——血...是血...等你们也能看到那景象...一切就太迟了...太迟了...\n——无妨，那就让我们继续吧。"
+    extend "\n——Blood...it's blood...by the time you see it too...it'll be too late...far too late...\n——No matter. Then let us continue."
+
+# game/scripts/route1.rpy:935
+translate english route1_start_6170e745:
+
+    # extend "\n——本公司将本着公平、公正、公开的原则，保留为具有高度危险性的犯罪嫌疑人实施脑前叶白质切除术的可能性 ，请问您有异议吗？"
+    extend "\n——In accordance with the principles of fairness, impartiality and transparency, the company reserves the option of performing a prefrontal lobotomy on suspects deemed highly dangerous. Do you have any objection?"
+
+# game/scripts/route1.rpy:936
+translate english route1_start_a5823c22_3:
+
+    # extend "\n——…"
+    extend "\n——…"
+
+# game/scripts/route1.rpy:942
+translate english route1_start_56f31999:
+
+    # extend "\n——随便吧。\n——感谢您的配合。"
+    extend "\n——Whatever.\n——Thank you for your cooperation."
+
+# game/scripts/route1.rpy:943
+translate english route1_start_5e85cae6:
+
+    # extend "\n——如有必要，我们保证将以最人道的方式对您进行无害化处理。"
+    extend "\n——Should it prove necessary, we guarantee your neutralization will be carried out in the most humane manner possible."
+
+# game/scripts/route1.rpy:944
+translate english route1_start_7ffa7977:
+
+    # extend "\n——请耐心等待审议结果。"
+    extend "\n——Please await the results of deliberation."
+
+# game/scripts/route1.rpy:948
+translate english route1_start_701640d2:
+
+    # extend "\n——有。\n——阿鹤先生，请注意您此刻没有反对的权利。"
+    extend "\n——I do.\n——Mr. Kaku, please be advised that you do not, at present, have the right to object."
+
+# game/scripts/route1.rpy:949
+translate english route1_start_5e85cae6_1:
+
+    # extend "\n——如有必要，我们保证将以最人道的方式对您进行无害化处理。"
+    extend "\n——Should it prove necessary, we guarantee your neutralization will be carried out in the most humane manner possible."
+
+# game/scripts/route1.rpy:950
+translate english route1_start_53cb37fa:
+
+    # extend "\n——在此期间，请您不要尝试阻挠我们的工作人员的日常工作，耐心等待审议结果。"
+    extend "\n——In the meantime, please do not attempt to obstruct our staff in their duties, and await the results of deliberation."
+
+# game/scripts/route1.rpy:954
+translate english route1_start_63159621:
+
+    # extend "\n——都已经做过一遍了，看来你们还挺闲得慌？\n——为了确保您的无害化，我们将对您进行核磁共振检查，在那之前请确保您体内没有任何金属制品。"
+    extend "\n——You've already done it once. That bored, are you?\n——To ensure your neutralization, you will undergo an MRI examination. Before then, please ensure there are no metal objects inside your body."
+
+# game/scripts/route1.rpy:955
+translate english route1_start_7900dcfb:
+
+    # extend "\n——如果您有佩戴心脏起搏器、植入式除颤器等设备，请自行移除。"
+    extend "\n——If you are fitted with a pacemaker, implantable defibrillator, or similar device, please remove it yourself."
+
+# game/scripts/route1.rpy:956
+translate english route1_start_cd7e6e4b:
+
+    # extend "\n——您的核磁共振检查将在三十分钟后开始。"
+    extend "\n——Your MRI examination will begin in thirty minutes."
+
+# game/scripts/route1.rpy:960
+translate english route1_start_9ce5e036:
+
+    # extend "\n——顺便杀了我如何？\n——这恐怕暂时是不可能的，阿鹤先生。"
+    extend "\n——While you're at it, why not kill me?\n——I'm afraid that is not possible at this time, Mr. Kaku."
+
+# game/scripts/route1.rpy:964
+translate english route1_start_795f4fbd:
+
+    # extend "\n——如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。\n——末日是会来临的，阿鹤先生，请放心吧。"
+    extend "\n——If sacrificing a piece of my brain will delay the end of the world, be my guest.\n——The end of the world will come, Mr. Kaku. Rest assured."
+
+# game/scripts/route1.rpy:965
+translate english route1_start_0df080de:
+
+    # extend "\n——感谢您的配合，针对您的综合处置措施将在明天的问询之后对外公开，请静候佳音。"
+    extend "\n——Thank you for your cooperation. The comprehensive measures concerning your case will be made public after tomorrow's interrogation. Please await the good news."
+
+# game/scripts/route1.rpy:971
+translate english route1_start_9d289da3:
+
+    # large_narrator "更新了对于犯罪嫌疑人的心理评估和综合处置措施："
+    large_narrator "Updated the suspect's psychological assessment and comprehensive measures:"
+
+# game/scripts/route1.rpy:973
+translate english route1_start_ef05f58c:
+
+    # extend "\n精神状态：[interro_mental!t]"
+    extend "\nMental State: [interro_mental!t]"
+
+# game/scripts/route1.rpy:975
+translate english route1_start_92e48971:
+
+    # extend "\n人格特质：[interro_trait!t]"
+    extend "\nPersonality Trait: [interro_trait!t]"
+
+# game/scripts/route1.rpy:977
+translate english route1_start_50fbc9c9:
+
+    # extend "\n污染进程：[interro_pollution!t]"
+    extend "\nContamination Progress: [interro_pollution!t]"
+
+# game/scripts/route1.rpy:979
+translate english route1_start_2097b421:
+
+    # extend "\n建议执行：[interro_verdict!t]"
+    extend "\nRecommended Action: [interro_verdict!t]"
+
+translate english strings:
+
+    # game/scripts/route1.rpy:690
+    old "王霜把三根冰凿子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。"
+    new "After Wang Shuang drove three ice picks into my eye sockets, she had me do the same to her. Once you get through the bone you'll know...it's soft. Like fresh tofu."
+
+    # game/scripts/route1.rpy:709
+    old "吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。"
+    new "After taking KAS I grabbed whoever was next to me and leapt straight out the window. Just didn't fly high enough—makes it harder to die, actually. First time and all, so I went with the conservative option."
+
+    # game/scripts/route1.rpy:723
+    old "我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？"
+    new "If my fucking brain worked that well, would I have time to sit here doing crosstalk with you?"
+
+    # game/scripts/route1.rpy:727
+    old "尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我..."
+    new "Julia—she's gone from here for good. A windpipe and a pair of lips don't add up to her voice——she...she lied to me..."
+
+    # game/scripts/route1.rpy:737
+    old "我们是同事关系，正处于一段禁断的办公室恋情之中。"
+    new "We're colleagues, currently in the middle of a forbidden office romance."
+
+    # game/scripts/route1.rpy:745
+    old "沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。"
+    new "On the beach you can carve statues out of salt that never rot. The sea wind hardens them like stone—right up until the next high tide."
+
+    # game/scripts/route1.rpy:762
+    old "是自愿的"
+    new "Of my own volition"
+
+    # game/scripts/route1.rpy:768
+    old "她属于我，仅此而已。"
+    new "She belongs to me. That's all."
+
+    # game/scripts/route1.rpy:774
+    old "她亲口告诉我的。"
+    new "She told me so herself."
+
+    # game/scripts/route1.rpy:778
+    old "但凡正常人的脑子都能得出这一结论的吧..."
+    new "Any brain in working order would reach the same conclusion..."
+
+    # game/scripts/route1.rpy:782
+    old "因为可爱！"
+    new "Because she's cute!"
+
+    # game/scripts/route1.rpy:786
+    old "她说想去外面看看。"
+    new "She said she wanted to see the outside."
+
+    # game/scripts/route1.rpy:792
+    old "不记得，王霜告诉我的。"
+    new "I don't. Wang Shuang told me."
+
+    # game/scripts/route1.rpy:796
+    old "在她死前。"
+    new "Before she died."
+
+    # game/scripts/route1.rpy:800
+    old "能麻烦您别再问这种刁钻的记忆力考题了么？"
+    new "Would you mind not quizzing my memory with these gotcha questions?"
+
+    # game/scripts/route1.rpy:804
+    old "零件啊！零件不够用了，王霜说零件不够用了，那就只好自己出来找了咯。"
+    new "Parts! We ran out of parts. Wang Shuang said we ran out of parts, so I had to go out and find some myself."
+
+    # game/scripts/route1.rpy:810
+    old "非常严肃非常认真非常一丝不苟非常——"
+    new "Very serious very earnest very meticulous very——"
+
+    # game/scripts/route1.rpy:814
+    old "不如去问问王霜，看看她怎么说。"
+    new "Why not ask Wang Shuang and see what she says."
+
+    # game/scripts/route1.rpy:818
+    old "确认了。然后呢？"
+    new "Confirmed. Now what?"
+
+    # game/scripts/route1.rpy:822
+    old "血..."
+    new "Blood..."
+
+    # game/scripts/route1.rpy:828
+    old "无可奉告。"
+    new "No comment."
+
+    # game/scripts/route1.rpy:832
+    old "只有足够的血我们才能继续生存下去，你明白吗？这是基本常识吧，我亲爱的朋友，那么请问你愿意捐献——"
+    new "Only with enough blood can we go on living, don't you see? That's common knowledge, my dear friend. So tell me, would you care to donate——"
+
+    # game/scripts/route1.rpy:836
+    old "杀了她，就能见到血。有什么很难理解的地方吗？"
+    new "Kill her, and you get to see blood. What's so hard to understand?"
+
+    # game/scripts/route1.rpy:840
+    old "受人指使"
+    new "I was instructed"
+
+    # game/scripts/route1.rpy:846
+    old "是尤里娅。"
+    new "It was Julia."
+
+    # game/scripts/route1.rpy:852
+    old "她想要消失，仅此而已。"
+    new "She wanted to disappear. That's all."
+
+    # game/scripts/route1.rpy:863
+    old "她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！"
+    new "She wanted the whole PL District gone. You people don't even know that much? Sloppy intelligence work. Hilarious!"
+
+    # game/scripts/route1.rpy:867
+    old "是王霜。"
+    new "It was Wang Shuang."
+
+    # game/scripts/route1.rpy:873
+    old "不清楚，她只是告诉我要这么做而已。"
+    new "No idea. She just told me to do it."
+
+    # game/scripts/route1.rpy:877
+    old "那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！"
+    new "She is the goddess who brought the PL District its destruction and rebirth! What right do you lowly sacks of flesh have to know her designs?!"
+
+    # game/scripts/route1.rpy:882
+    old "用来研究。"
+    new "For research."
+
+    # game/scripts/route1.rpy:887
+    old "是米特拉布。"
+    new "It was Mitrab."
+
+    # game/scripts/route1.rpy:893
+    old "你去问他们的老板啊，店面离你们这么近，跑来问我是做什么？"
+    new "Go ask their boss. The place is right around the corner from you—why come asking me?"
+
+    # game/scripts/route1.rpy:899
+    old "米姐喜欢看生体喝醉的样子，她觉得那很性感。"
+    new "Sister Mi likes watching biologics get drunk. She finds it sexy."
+
+    # game/scripts/route1.rpy:903
+    old "她是来调查你们的，准备好人财两空吧，资本主义的走狗们。"
+    new "She's investigating you. Get ready to lose everything, you capitalist running dogs."
+
+    # game/scripts/route1.rpy:909
+    old "死人...是死人..."
+    new "The dead...it was the dead..."
+
+    # game/scripts/route1.rpy:915
+    old "他们已经到门口了...还不去迎接么？"
+    new "They're already at the door...aren't you going to greet them?"
+
+    # game/scripts/route1.rpy:923
+    old "你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么..."
+    new "Did you know...with a delicate enough touch, even the ossicles can be fractured...want to know how..."
+
+    # game/scripts/route1.rpy:931
+    old "血...是血...等你们也能看到那景象...一切就太迟了...太迟了..."
+    new "Blood...it's blood...by the time you see it too...it'll be too late...far too late..."
+
+    # game/scripts/route1.rpy:939
+    old "随便吧。"
+    new "Whatever."
+
+    # game/scripts/route1.rpy:945
+    old "有。"
+    new "I do."
+
+    # game/scripts/route1.rpy:951
+    old "都已经做过一遍了，看来你们还挺闲得慌？"
+    new "You've already done it once. That bored, are you?"
+
+    # game/scripts/route1.rpy:957
+    old "顺便杀了我如何？"
+    new "While you're at it, why not kill me?"
+
+    # game/scripts/route1.rpy:961
+    old "如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。"
+    new "If sacrificing a piece of my brain will delay the end of the world, be my guest."
 

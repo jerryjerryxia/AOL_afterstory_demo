@@ -1113,19 +1113,328 @@ Please do not suffocate inside the hide of a warm-blooded animal.
 ——RECORDING——RECORDING——
 ——接下来将对生体失窃案的犯罪嫌疑人进行问询。
 ——The suspect in the biologics theft case will now be interrogated.
-——请问，您的躯体在过去的二十四小时内，经历过死亡、认知紊乱等重大人身安全隐患吗？
-——Please state: in the past twenty-four hours, has your body undergone death, cognitive disruption, or any other major health hazards?
+——请问，您在过去的二十四小时内，是否经历过严重肉体伤害、认知紊乱、大量出血、死亡等重大健康隐患？
+——Please state: in the past twenty-four hours, have you experienced severe physical injury, cognitive disruption, major blood loss, death, or any other significant health hazards?
 ——...
+A：有
+A: Yes
+
+——请详细交代该经历的过程。
+——Please give a detailed account of the experience.
+——请注意，您没有权利保持沉默。
+——Please be advised: you do not have the right to remain silent.
+	A【疯狂+1】：王霜把三根冰凿子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。
+	A: After Wang Shuang drove three ice picks into my eye sockets, she had me do the same to her. Once you get through the bone you'll know...it's soft. Like fresh tofu.
+	——觉得可爱吗？
+	——Did you find it cute?
+		A【平稳+1】：一般般...
+		A: It was okay...
+		——您的回答已被记录。
+		——Your answer has been recorded.
+		B【死亡+1】：恶心死了！
+		B: Disgusting!
+		——预料之外呢，阿鹤先生。
+		——How unexpected, Mr. Kaku.
+		C【疯狂+1】：可爱！
+		C: Cute!
+		——很好。
+		——Very good.
+		
+		【选项分线到此结束】
+
+	B【幻觉+1】：吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。
+	B: After taking KAS I grabbed whoever was next to me and leapt straight out the window. Just didn't fly high enough—makes it harder to die, actually. First time and all, so I went with the conservative option.
+	——请问您还记得剂量吗？
+	——Do you recall the dosage?
+		A【平稳+1】：不记得，王霜给的。
+		A: I don't. Wang Shuang gave it to me.
+		——您的回答已被记录。
+		——Your answer has been recorded.
+		B【幻觉+1】：三百八十二点三毫克，误差在零点四毫克之内。
+		B: Three hundred eighty-two point three milligrams, accurate to within zero point four.
+		——如果您无法如实作答，请不要胡乱编造答案。
+		——If you are unable to answer truthfully, please do not fabricate an answer.
+		C【对抗+1】：我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？
+		C: If my fucking brain worked that well, would I have time to sit here doing crosstalk with you?
+		——您的脑子确实非常重要，阿鹤先生。
+		——Your brain is indeed very important, Mr. Kaku.
+		【选项分线到此结束】
+
+	C【死亡+1】：尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...
+	C: Julia—she's gone from here for good. A windpipe and a pair of lips don't add up to her voice——she...she lied to me...
+	——请问您与尤里娅女士——
+	——Please state your relationship with Ms. Julia——
+		A【对抗+1】：闭嘴...
+		A: Shut up...
+		——您的回答已被记录。
+		——Your answer has been recorded.
+		B【幻觉+1】：我们是同事关系，正处于一段禁断的办公室恋情之中。
+		B: We're colleagues, currently in the middle of a forbidden office romance.
+		——根据我们的调查，这属于不实信息。
+		——According to our investigation, this is false information.
+		C【死亡+1】：死了。还有什么要问的么？
+		C: Dead. Anything else you want to ask?
+		——请尝试提供朴素事实以外的信息，阿鹤先生。
+		——Please try to provide information beyond the plain facts, Mr. Kaku.
+		【选项分线到此结束】
+
+	D【平稳+1】：沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。
+	D: On the beach you can carve statues out of salt that never rot. The sea wind hardens them like stone—right up until the next high tide.
+	——请不要提供与本次问询无关的信息，阿鹤先生。
+	——Please refrain from providing information irrelevant to this interrogation, Mr. Kaku.
+	——以及为什么您对“不朽”的定义是以天为单位的...
+	——Also, why is your definition of “never” measured in days...
+
+	【选项分线到此结束】
+B【选择该选项会在展示下列文字后重新展示本次选择，平稳+1，只加一次】：没有
+B: No
+——检测到您提供了不实信息，请再次作答。
+——False information detected. Please answer again.
+
+【选项分线到此结束】
 ——请问，您盗窃本公司的生体产品，是出于自主意愿，还是有他人指使？
 ——Please state: was your theft of the company's biologic product an act of your own volition, or were you instructed by another party?
 ——...
-——本公司将本着公平、公正、公开的原则，为具有高度危险性的犯罪嫌疑人实施前脑叶白质切除术 ，请问您有异议吗？
-——In accordance with the principles of fairness, impartiality and transparency, the company will perform a prefrontal lobotomy on suspects deemed highly dangerous. Do you have any objection?
+A：是自愿的
+A: Of my own volition
+
+——请详细交代您的动机。
+——Please give a detailed account of your motive.
+——请注意，您没有权利保持沉默。
+——Please be advised: you do not have the right to remain silent.
+	A【幻觉+1】：她属于我，仅此而已。
+	A: She belongs to me. That's all.
+	——请问您是如何得出这一结论的呢？
+	——And how did you arrive at this conclusion?
+		A【幻觉+1】：她亲口告诉我的。
+		A: She told me so herself.
+		——很不幸，当事人的语料库中并没有检索出类似的消息呢，阿鹤先生。
+		——Unfortunately, no such statement could be retrieved from the party's corpus, Mr. Kaku.
+		B【对抗+1】：但凡正常人的脑子都能得出这一结论的吧...
+		B: Any brain in working order would reach the same conclusion...
+		——我恐怕有坏消息要告诉您，阿鹤先生。
+		——I'm afraid I have bad news for you, Mr. Kaku.
+		C【疯狂+1】：因为可爱！
+		C: Because she's cute!
+		——明白了。
+		——Understood.
+		
+		【选项分线到此结束】
+
+	B【平稳+1】：她说想去外面看看。
+	B: She said she wanted to see the outside.
+	——请问您还记得她是在怎样的场合下告知您这个想法的吗？
+	——Do you recall the occasion on which she told you this?
+		A【平稳+1】：不记得，王霜告诉我的。
+		A: I don't. Wang Shuang told me.
+		——请不要随意相信他人传播的不实信息啊，阿鹤先生...
+		——Please do not casually believe false information spread by others, Mr. Kaku...
+		B【死亡+1】：在她死前。
+		B: Before she died.
+		——您的回答已被记录。
+		——Your answer has been recorded.
+		C【对抗+1】：能麻烦您别再问这种刁钻的记忆力考题了么？
+		C: Would you mind not quizzing my memory with these gotcha questions?
+		——您没有权力质疑问题的合理性，阿鹤先生，请如实作答。
+		——You do not have the authority to question the validity of our questions, Mr. Kaku. Please answer truthfully.
+		【选项分线到此结束】
+
+	C【疯狂+1】：零件啊！零件不够用了，王霜说零件不够用了，那就只好自己出来找了咯。
+	C: Parts! We ran out of parts. Wang Shuang said we ran out of parts, so I had to go out and find some myself.
+	——请确认您对于这个回答的严肃性。
+	——Please confirm the seriousness of this answer.
+		A【疯狂+1】：非常严肃非常认真非常一丝不苟非常——
+		A: Very serious very earnest very meticulous very——
+		——请立刻停止无意义的胡言乱语，阿鹤先生。
+		——Please cease this meaningless babbling at once, Mr. Kaku.
+		B【平稳+1】：不如去问问王霜，看看她怎么说。
+		B: Why not ask Wang Shuang and see what she says.
+		——这不是需要您操心的问题。
+		——That is not your concern.
+		C【对抗+1】：确认了。然后呢？
+		C: Confirmed. Now what?
+		——明白。您的回答已被记录。
+		——Understood. Your answer has been recorded.
+		【选项分线到此结束】
+
+	D【死亡+1】：血...
+	D: Blood...
+	——请展开聊聊
+	——Please elaborate
+		A【平稳+1】：无可奉告。
+		A: No comment.
+		——如果您坚持沉默，我们将保留采取强制措施的可能性，还请您多多理解。
+		——If you insist on silence, we reserve the option of coercive measures. We appreciate your understanding.
+		B【疯狂+1】：只有足够的血我们才能继续生存下去，你明白吗？这是基本常识吧，我亲爱的朋友，那么请问你愿意捐献——
+		B: Only with enough blood can we go on living, don't you see? That's common knowledge, my dear friend. So tell me, would you care to donate——
+		——问询对象出现了严重的精神状态波动，立即停止问询，启用code purple——
+		——Subject exhibiting severe psychological instability. Terminate interrogation immediately. Initiating code purple——
+		C【死亡+1】：杀了她，就能见到血。有什么很难理解的地方吗？
+		C: Kill her, and you get to see blood. What's so hard to understand?
+		——您的回答已被记录。
+		——Your answer has been recorded.
+		【选项分线到此结束】
+
+	【选项分线到此结束】
+
+B：受人指使
+B: I was instructed
+——请交代该第三方的身份。
+——Please identify this third party.
+——请注意，您没有权利保持沉默。
+——Please be advised: you do not have the right to remain silent.
+
+	A【幻觉+1】：是尤里娅。
+	A: It was Julia.
+	——请详细交代她的动机。
+	——Please give a detailed account of her motive.
+		A【平稳+1】：她想要消失，仅此而已。
+		A: She wanted to disappear. That's all.
+		——这恐怕是您的一厢情愿，阿鹤先生。
+		——I'm afraid that is your wishful thinking, Mr. Kaku.
+		——悉听尊便。
+		——As you wish.
+		B【疯狂+1】：因为可爱！
+		B: Because she's cute!
+		——请停止无谓的胡言乱语，阿鹤先生。
+		——Please cease this pointless babbling, Mr. Kaku.
+		——喂喂喂，质疑尤里娅可爱的人可都没什么好下场啊，你可要想清楚了。
+		——Hey, hey, hey. People who question Julia's cuteness don't tend to end well. You'd better think this through.
+		——...让我们继续吧...
+		——...Let us continue...
+		C【幻觉+1】：她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！
+		C: She wanted the whole PL District gone. You people don't even know that much? Sloppy intelligence work. Hilarious!
+		——阿鹤先生精神分裂分析报告呢？需要重新评估么...
+		——Where is Mr. Kaku's schizophrenia analysis report? Does it need re-evaluation...
+		
+		【选项分线到此结束】
+
+	B【平稳+1】：是王霜。
+	B: It was Wang Shuang.
+	——请详细交代她的动机。
+	——Please give a detailed account of her motive.
+		A【平稳+1】：不清楚，她只是告诉我要这么做而已。
+		A: No idea. She just told me to do it.
+		——阿鹤先生...没有检测到不实信息么...无妨，那我们继续...
+		——Mr. Kaku...no false information detected...? Very well, let us continue...
+		B【疯狂+1】：那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！
+		B: She is the goddess who brought the PL District its destruction and rebirth! What right do you lowly sacks of flesh have to know her designs?!
+		——...
+		——怎么了？惊讶地说不出话来了么？也好，那就在她残酷的圣光中继续颤抖吧！
+		——What's wrong? Struck speechless? Fine. Keep trembling in her cruel and holy light!
+		C【对抗+1】：用来研究。
+		C: For research.
+		——请详细交代她的研究课题和目的。
+		——Please give a detailed account of her research subject and aims.
+		——你们还是自己去问她吧。
+		——Go ask her yourselves.
+		【选项分线到此结束】
+
+	C【对抗+1】：是米特拉布。
+	C: It was Mitrab.
+	——请详细交代该组织的动机。
+	——Please give a detailed account of the organization's motive.
+		A【平稳+1】：你去问他们的老板啊，店面离你们这么近，跑来问我是做什么？
+		A: Go ask their boss. The place is right around the corner from you—why come asking me?
+		——请注意您的立场，阿鹤先生。
+		——Please mind your position, Mr. Kaku.
+		——假如你真的觉得我脑子里有你们想要的信息，打开我的脑子不就行了，为什么要在这儿浪费时间？
+		——If you really think the information you want is in my head, just crack it open. Why waste time here?
+		——...
+		B【幻觉+1】：米姐喜欢看生体喝醉的样子，她觉得那很性感。
+		B: Sister Mi likes watching biologics get drunk. She finds it sexy.
+		——醉态确实是本公司生体产品最新推出的性能优化点之一，非常高兴这一优化受到了用户的喜爱。我们将择机上门送上我们的感谢。
+		——Drunkenness is indeed among the latest performance optimizations of our biologic products. We are delighted this optimization has found favor with users. We will call on her in due course to convey our gratitude.
+		C【对抗+1】：她是来调查你们的，准备好人财两空吧，资本主义的走狗们。
+		C: She's investigating you. Get ready to lose everything, you capitalist running dogs.
+		——请提供浅显事实之外的信息。
+		——Please provide information beyond the obvious facts.
+		——你们连这都知道了，还有什么事情不是浅显事实的...
+		——If you already know even that, what's left that isn't an obvious fact...
+		——无妨，让我们继续吧。
+		——No matter. Let us continue.
+		【选项分线到此结束】
+
+	D【死亡+1】：死人...是死人...
+	D: The dead...it was the dead...
+	——阿鹤先生，请不要顾左右而言他。
+	——Mr. Kaku, please do not deflect.
+		A【死亡+1】：他们已经到门口了...还不去迎接么？
+		A: They're already at the door...aren't you going to greet them?
+		——阿鹤先生，我们没有时间听您的胡言乱语，如果您已经打定主意——
+		——Mr. Kaku, we have no time for your ravings. If you have made up your mind——
+		【glitch音效】
+		【转场：黑屏】
+		B【疯狂+1】：你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么...
+		B: Did you know...with a delicate enough touch, even the ossicles can be fractured...want to know how...
+		——这与我们讨论的话题无关，阿鹤先生，请注意——
+		——That is irrelevant to our discussion, Mr. Kaku. Please mind——
+		【glitch音效】
+		【转场：红屏】
+		C【幻觉+1】：血...是血...等你们也能看到那景象...一切就太迟了...太迟了...
+		C: Blood...it's blood...by the time you see it too...it'll be too late...far too late...
+		——无妨，那就让我们继续吧。
+		——No matter. Then let us continue.
+		【选项分线到此结束】
+
+	【选项分线到此结束】
+
+【选项分线到此结束】
+
+——本公司将本着公平、公正、公开的原则，保留为具有高度危险性的犯罪嫌疑人实施脑前叶白质切除术的可能性 ，请问您有异议吗？
+——In accordance with the principles of fairness, impartiality and transparency, the company reserves the option of performing a prefrontal lobotomy on suspects deemed highly dangerous. Do you have any objection?
 ——...
+A【平稳+1】：随便吧。
+A: Whatever.
 ——感谢您的配合。
 ——Thank you for your cooperation.
+——如有必要，我们保证将以最人道的方式对您进行无害化处理。
+——Should it prove necessary, we guarantee your neutralization will be carried out in the most humane manner possible.
+——请耐心等待审议结果。
+——Please await the results of deliberation.
+B【对抗+1】：有。
+B: I do.
+——阿鹤先生，请注意您此刻没有反对的权利。
+——Mr. Kaku, please be advised that you do not, at present, have the right to object.
+——如有必要，我们保证将以最人道的方式对您进行无害化处理。
+——Should it prove necessary, we guarantee your neutralization will be carried out in the most humane manner possible.
+——在此期间，请您不要尝试阻挠我们的工作人员的日常工作，耐心等待审议结果。
+——In the meantime, please do not attempt to obstruct our staff in their duties, and await the results of deliberation.
+C【本选项仅在观看过“王霜把三根冰凿子打进我的眼窝之后...”后出现，疯狂+1】：都已经做过一遍了，看来你们还挺闲得慌？
+C: You've already done it once. That bored, are you?
+——为了确保您的无害化，我们将对您进行核磁共振检查，在那之前请确保您体内没有任何金属制品。
+——To ensure your neutralization, you will undergo an MRI examination. Before then, please ensure there are no metal objects inside your body.
+——如果您有佩戴心脏起搏器、植入式除颤器等设备，请自行移除。
+——If you are fitted with a pacemaker, implantable defibrillator, or similar device, please remove it yourself.
+——您的核磁共振检查将在三十分钟后开始。
+——Your MRI examination will begin in thirty minutes.
+D【死亡+1】：顺便杀了我如何？
+D: While you're at it, why not kill me?
+——这恐怕暂时是不可能的，阿鹤先生。
+——I'm afraid that is not possible at this time, Mr. Kaku.
+E【幻觉+1】：如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。
+E: If sacrificing a piece of my brain will delay the end of the world, be my guest.
+——末日是会来临的，阿鹤先生，请放心吧。
+——The end of the world will come, Mr. Kaku. Rest assured.
+
+【选项分线到此结束】
+
+——感谢您的配合，针对您的综合处置措施将在明天的问询之后对外公开，请静候佳音。
+——Thank you for your cooperation. The comprehensive measures concerning your case will be made public after tomorrow's interrogation. Please await the good news.
 ——录入完毕——
 ——RECORDING COMPLETE——
+
+【Extended大文本框结束】
+
+【Extended大文本框开始】
+
+更新了对于犯罪嫌疑人的心理评估和综合处置措施：
+Updated the suspect's psychological assessment and comprehensive measures:
+精神状态：平稳【仅平稳>1】/疯狂【仅疯狂>1】/分裂【平稳和疯狂皆>1】/检测失败【前三选项皆不成立时】
+人格特质：冷静【对抗<=1】/对抗【对抗>1】
+污染进程：幻觉【仅幻觉>1】/死亡【仅死亡>1】/幻灭【幻觉和死亡皆>1】/无污染【前三选项皆不成立时】
+建议执行：记忆消除并释放【平稳/检测失败 × 冷静 × 无污染/幻觉/死亡 】，记忆消除和无限期监禁【疯狂 × 冷静 × 幻觉/死亡/幻灭/无污染，以及 平稳/检测失败 · 冷静 · 幻灭】，脑白质切除、记忆消除并释放【平稳/检测失败 × 对抗 × 无污染/幻觉/死亡，疯狂·对抗·无污染，分裂 × 冷静/对抗 × 无污染】，脑白质切除、记忆消除并无限期监禁【疯狂 × 对抗 × 幻觉/死亡/幻灭，平稳/检测失败 × 对抗 × 幻灭，分裂 × 冷静/对抗 × 幻觉/死亡/幻灭】
+【评估结论四行为运行时插值；英文见 fill_translations.py 的 INTERRO_LABELS】
 
 【Extended大文本框结束】
 

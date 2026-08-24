@@ -58,8 +58,13 @@ def is_stage_direction(line):
 
 
 def is_choice_line(line):
-    """Check if line is a choice marker A:/B:/C:"""
-    return bool(re.match(r'^[ABC][：:]\s*.+$', line))
+    """Check if line is a choice marker A:–E:, with optional 【…】 tags before
+    the colon (问询段 options like A【疯狂+1】：… / B【…只加一次】：…)."""
+    return bool(re.match(r'^[A-E]\s*(?:【[^】]*】)*\s*[：:]\s*.+$', line))
+
+
+# Strip the choice prefix (letter + optional 【…】 tags + colon) from a choice line.
+_CHOICE_PREFIX_RE = re.compile(r'^[A-E]\s*(?:【[^】]*】)*\s*[：:]\s*')
 
 
 def is_section_header(line):
@@ -153,16 +158,16 @@ def parse_bilingual_script(filepath):
         if is_section_header(line):
             continue
 
-        # Parse choice lines (A:/B:/C:) - extract Chinese text, check for English next
+        # Parse choice lines (A:–E:) - extract Chinese text, check for English next
         if is_choice_line(line):
-            # Strip prefix (A:/B:) and suffix （madness+1） etc.
-            choice_text = re.sub(r'^[ABC][：:]\s*', '', line)
+            # Strip prefix (letter + optional 【…】 tags) and suffix （madness+1） etc.
+            choice_text = _CHOICE_PREFIX_RE.sub('', line)
             choice_text = re.sub(r'[（(]madness\s*\+?\s*\d+[）)]', '', choice_text).strip()
             # Check if next line is English choice translation
             if i < len(lines):
                 next_line = lines[i].strip()
                 if is_choice_line(next_line):
-                    eng_choice = re.sub(r'^[ABC][：:]\s*', '', next_line).strip()
+                    eng_choice = _CHOICE_PREFIX_RE.sub('', next_line).strip()
                     choice_translations[choice_text] = eng_choice
                     i += 1
             continue
@@ -361,9 +366,15 @@ def fill_dialogue_translation(filepath, translations, standalone_lines=None, sou
                 if not is_extend and speaker_prefix.strip():
                     last_speaker = speaker_prefix
 
-                # Look up translation
-                if lookup_text in translations:
-                    eng_parts = translations[lookup_text]
+                # Look up translation. 直接命中不了时，试分段命中：问询段的
+                # 「——选项回显\n——首条响应」被转换器并成了一条 extend（中间是
+                # 字面 \n），逐段查表后重新拼回去。
+                eng_parts = translations.get(lookup_text)
+                if eng_parts is None and '\\n' in lookup_text:
+                    segs = lookup_text.split('\\n')
+                    if all(s in translations for s in segs):
+                        eng_parts = ['\\n'.join(translations[s][0] for s in segs)]
+                if eng_parts is not None:
 
                     # Determine the speaker prefix to use
                     if is_extend and lookup_text in standalone_lines:
@@ -450,6 +461,66 @@ def fill_string_translations(filepath, string_translations):
     return changes
 
 
+# 转换器会给正文里的专有名词加 {i}…{/i}（见 convert_script.py PROPER_NOUNS），
+# 但 demo_script_eng.txt 里两边都是素文本 —— 查表键必须匹配转换后的文本。
+# 这里为每个含专有名词的条目补一份「斜体键 → 斜体值」，中英各自斜体化。
+_PROPER_NOUN_PAIRS = [('尤里娅', 'Julia'), ('KAS', 'KAS')]
+
+
+def _italicize(text, nouns):
+    for noun in nouns:
+        if noun in text and '{i}' + noun + '{/i}' not in text:
+            text = text.replace(noun, '{i}' + noun + '{/i}')
+    return text
+
+
+def augment_translations(translations, choice_translations):
+    """派生条目：
+    1. 问询段回显：转换器把玩家所选以「——选项文本」回显进框（可与响应并成一条
+       extend）——为每个选项合成 '——中文' → '——英文' 条目，供分段命中。
+    2. 斜体键：正文里的 尤里娅/KAS 会被转换器包成 {i}…{/i}，为含名词的条目补
+       斜体化的键值对（英文侧对应 Julia/KAS 同样斜体）。
+    3. 问询段逻辑判断行：say 文本是 [interro_*!t] 插值（不来自 eng 剧本），
+       在这里直接给出译文。
+    """
+    for cn, en in choice_translations.items():
+        translations.setdefault('——' + cn, ['——' + en])
+    cn_nouns = [p[0] for p in _PROPER_NOUN_PAIRS]
+    en_nouns = [p[1] for p in _PROPER_NOUN_PAIRS]
+    for cn, parts in list(translations.items()):
+        cn2 = _italicize(cn, cn_nouns)
+        if cn2 != cn and cn2 not in translations:
+            translations[cn2] = [_italicize(p, en_nouns) for p in parts]
+    translations.setdefault('精神状态：[interro_mental!t]',
+                            ['Mental State: [interro_mental!t]'])
+    translations.setdefault('人格特质：[interro_trait!t]',
+                            ['Personality Trait: [interro_trait!t]'])
+    translations.setdefault('污染进程：[interro_pollution!t]',
+                            ['Contamination Progress: [interro_pollution!t]'])
+    translations.setdefault('建议执行：[interro_verdict!t]',
+                            ['Recommended Action: [interro_verdict!t]'])
+
+
+# 问询段评估结论（variables.rpy interro_evaluate() 里的 __() 字符串）——
+# 运行时经 [var!t] 翻译，字符串翻译条目在 tl 的 strings 块里。
+INTERRO_LABELS = {
+    '平稳': 'Stable',
+    '疯狂': 'Deranged',
+    '分裂': 'Divided',
+    '检测失败': 'Detection Failed',
+    '冷静': 'Composed',
+    '对抗': 'Adversarial',
+    '幻觉': 'Hallucination',
+    '死亡': 'Death',
+    '幻灭': 'Disillusion',
+    '无污染': 'Uncontaminated',
+    '记忆消除并释放': 'Memory erasure and release',
+    '记忆消除和无限期监禁': 'Memory erasure and indefinite detention',
+    '脑白质切除、记忆消除并释放': 'Lobotomy, memory erasure and release',
+    '脑白质切除、记忆消除并无限期监禁': 'Lobotomy, memory erasure and indefinite detention',
+}
+
+
 def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     eng_script = os.path.join(base_dir, 'demo_script_eng.txt')
@@ -458,6 +529,7 @@ def main():
     # Step 1: Parse bilingual script
     print("Parsing bilingual script...")
     translations, standalone_lines, choice_translations = parse_bilingual_script(eng_script)
+    augment_translations(translations, choice_translations)
     print(f"  Found {len(translations)} Chinese->English mappings")
     print(f"  Found {len(choice_translations)} choice translations")
     if standalone_lines:
@@ -550,6 +622,8 @@ def main():
         '取消': 'Cancel',
         # Skip indicator
         '快进中': 'Skipping',
+        # 文字墙（screens.rpy text_wall）
+        '对不起…': "I'm sorry…",
     }
 
     # Fill screens.rpy
@@ -563,6 +637,15 @@ def main():
     if os.path.exists(route1_path):
         changes = fill_string_translations(route1_path, choice_translations)
         print(f"  route1.rpy choices: {changes} strings translated")
+
+    # Fill 问询段评估结论 string stubs（__() 字符串的 old/new 块；stub 落在哪个
+    # tl 文件取决于 Ren'Py 生成器，这里对可能的落点都过一遍，没有条目就是 0）。
+    for rel in ['scripts/variables.rpy', 'scripts/route1.rpy', 'screens.rpy', 'common.rpy']:
+        p = os.path.join(tl_dir, rel)
+        if os.path.exists(p):
+            changes = fill_string_translations(p, INTERRO_LABELS)
+            if changes:
+                print(f"  {rel}: {changes} interro labels translated")
 
     print("\nTranslation fill complete!")
 
