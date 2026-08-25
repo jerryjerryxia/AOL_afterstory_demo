@@ -162,6 +162,28 @@ def glitch(path, seed=0, strength=1.0):
     return np.clip(rgb, 0.0, 1.0), np.clip(a, 0.0, 1.0)
 
 
+def apply_patches(rgb_g, a_g, path, n, rng):
+    """局部 glitch（--patches N）：只在 N 个随机小矩形带里保留 glitch 结果，
+    其余像素还原成原图。用于"偶发小范围抽搐"的软 glitch 素材（店员立绘）——
+    整帧全身撕裂对复制体太夸张。矩形带限制在立绘不透明区域的包围盒内，
+    高 30~110px、宽为立绘宽度的三到七成，随机落点。"""
+    rgb_o, a_o = _load_premultiplied(path)
+    h, w = a_o.shape
+    rows = np.where(a_o.max(axis=1) > 0.05)[0]
+    cols = np.where(a_o.max(axis=0) > 0.05)[0]
+    y0b, y1b = (int(rows[0]), int(rows[-1])) if len(rows) else (0, h)
+    x0b, x1b = (int(cols[0]), int(cols[-1])) if len(cols) else (0, w)
+    mask = np.zeros((h, w), dtype=bool)
+    for _ in range(n):
+        bh = int(rng.integers(30, 110))
+        y0 = int(rng.integers(y0b, max(y0b + 1, y1b - bh)))
+        bw = max(1, int((x1b - x0b) * rng.uniform(0.3, 0.7)))
+        x0 = int(rng.integers(x0b, max(x0b + 1, x1b - bw)))
+        mask[y0:y0 + bh, x0:x0 + bw] = True
+    m3 = mask[..., None]
+    return np.where(m3, rgb_g, rgb_o), np.where(mask, a_g, a_o)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -171,16 +193,23 @@ def main():
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--strength", type=float, default=1.0)
     ap.add_argument("--variants", type=int, default=1)
+    ap.add_argument("--patches", type=int, default=0,
+                    help="只在 N 个随机小矩形带里保留 glitch、其余还原原图"
+                         "（软 glitch，输出命名 _glitchsoft<seed>）")
     args = ap.parse_args()
 
     base = os.path.splitext(os.path.basename(args.input))[0]
+    suffix = "glitchsoft" if args.patches else "glitch"
 
     for i in range(args.variants):
         seed = args.seed + i
         rgb, a = glitch(args.input, seed=seed, strength=args.strength)
+        if args.patches:
+            rng = np.random.default_rng(seed + 1000)   # 落点独立于 glitch 内部随机流
+            rgb, a = apply_patches(rgb, a, args.input, args.patches, rng)
         if args.variants > 1 or os.path.isdir(args.out):
             os.makedirs(args.out, exist_ok=True)
-            out = os.path.join(args.out, "%s_glitch%d.png" % (base, seed))
+            out = os.path.join(args.out, "%s_%s%d.png" % (base, suffix, seed))
         else:
             out = args.out
         _save_unpremultiplied(rgb, a, out)

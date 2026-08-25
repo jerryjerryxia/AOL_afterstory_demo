@@ -150,6 +150,8 @@ SCENE_BG_MAP = {
     '甜品店对视2': 'bg_dessertgaze2',
     '甜品店对视3': 'bg_dessertgaze3',
     '甜品店对视4': 'bg_dessertgaze4',
+    # 瘾：幻视高潮的转场卡（甜品店被瘾扭曲的样子，对视4→5 之间）。
+    '瘾': 'bg_addiction',
     '甜品店对视5': 'bg_dessertgaze5',
     '甜品店对视6': 'bg_dessertgaze6',
     '甜品店对视6.51': 'bg_dessertgaze6_51',
@@ -167,6 +169,10 @@ IN_PLACE_SCENES = {
     '灰屏': '$ pink_to_grey_started = True',
 }
 
+# 转场完成后停住等玩家点击的场景：画面单独作为一拍展示（藏起文本框），
+# 点一下才继续出后面的文字。用于「瘾」这类整屏揭示卡。
+SCENE_CLICK_HOLD = {'瘾'}
+
 # Scenes that should NOT emit the default fade-through-black transition.
 # Used when the same background is already visible (e.g., main menu's video
 # bg carries into the prologue's first scene), so a black-fade would break
@@ -183,6 +189,8 @@ NO_TRANSITION_SCENES = set()
 # so it should use the standard fade-through-black from whatever preceded it.
 CROSS_DISSOLVE_SCENES = {
     '甜品店对视2',
+    # 瘾：幻视段内的揭示卡，溶解保持迷幻的连续感（黑场会打断药劲）。
+    '瘾',
     '甜品店对视3',
     '甜品店对视4',
     '甜品店对视5',
@@ -256,7 +264,7 @@ SCENE_EXPRESSIONS = {
         # 进场直接淡入第一句话的立绘姿势（旧的 void_default 占位整图已弃用）。
         # 此后的表情/姿势切换全部由剧本里的 【姿势，表情】 立绘标记驱动，
         # 所以这里不需要 map（仅表情的差分标记在这个场景里已不存在）。
-        'default': 'ws backhand default at ws_close',
+        'default': 'ws backhand default at ws_mid',
         'map': {},
     },
     '夏日对视': {
@@ -313,6 +321,19 @@ _CURRENT_EXPR_SCENE = None
 # （单手叉腰站立、右手叉腰左手按胸口 都落到 叉腰 —— 现有素材里最近的姿势）。
 SPRITE_POSE_ATTRS = {'背手': 'backhand', '抱胸': 'crossed', '叉腰': 'akimbo'}
 
+# 姿势别名：剧本里的简称 -> 素材姿势关键词。「讲解站立」是
+# 「右手叉腰，左手食指竖起做讲解状」的新简称，素材就是叉腰那套。
+# 只作用于剧本标记的解析，素材扫描（文件名）不经过这里。
+SPRITE_POSE_ALIASES = {'讲解': '叉腰'}
+
+
+def match_pose_keyword(pose_part):
+    """姿势文本 -> SPRITE_POSE_ATTRS 的姿势 key（含别名解析），认不出返回 None。"""
+    pose = next((k for k in SPRITE_POSE_ATTRS if k in pose_part), None)
+    if pose is None:
+        pose = next((v for k, v in SPRITE_POSE_ALIASES.items() if k in pose_part), None)
+    return pose
+
 # 表情 -> Ren'Py 属性名。剧本用到但素材还没画的表情也先列上（严肃/开心/疑问），
 # 素材补上后无需改代码，重跑转换器即可。
 SPRITE_EXPR_ATTRS = {
@@ -324,9 +345,10 @@ SPRITE_EXPR_ATTRS = {
 SPRITE_GLITCH_SUFFIX = '上蒙了glitch'
 
 # 立绘摆位：场景名 -> transform 名（定义在生成的 sprites.rpy 里）。
-# 目前所有场景统一半身近景（第一人称对视感，参考 DDLC 的莫妮卡）——
-# 全身远景试过，人物太小没有压迫感。以后某场景要不同摆位，在这里加映射即可。
-SPRITE_SCENE_AT = {}
+# 默认半身近景（第一人称对视感，参考 DDLC 的莫妮卡）——全身远景试过，
+# 人物太小没有压迫感。某场景要不同摆位，在这里加映射即可。
+# 沙漠桥段与虚空对视：缩到与店员立绘一致的大小（ws_mid 中景）。
+SPRITE_SCENE_AT = {'银白色沙漠': 'ws_mid', '虚空对视': 'ws_mid'}
 SPRITE_DEFAULT_AT = 'ws_close'
 
 # 摆位参数（写进生成的 sprites.rpy；改这里 + 重跑转换器即可调）。原图 2299x3824。
@@ -334,15 +356,41 @@ WS_CLOSE_ZOOM = 0.52      # 半身近景：头到腰约占满全屏
 WS_CLOSE_YPOS = -50       # 近景往上提一点，让头顶留白自然
 WS_GLITCH_FRAME = 0.12    # glitch 动画每帧时长（秒），3 帧循环
 
+# 店员（王霜复制体，甜品店段）摆位参数。素材与主立绘同一套，缩小放在两侧：
+# 店员1 右侧正立，店员2 左侧从天花板倒吊（rotate 180）。
+WS_CLERK_ZOOM = 0.42
+WS_CLERK1_XPOS = 0.88     # 右侧（中心点的横向位置，屏幕比例）
+WS_CLERK1_YPOS = 120      # 头顶离屏幕上沿的距离（px）
+WS_CLERK2_XPOS = 0.12     # 左侧
+# 倒吊时头部下沿的位置（px，越大垂得越低）。取 1080 - WS_CLERK1_YPOS：
+# 两人同一动作时（如 都是讲解站立），左上店员2 和右下店员1 露出的身体量
+# 一致，占据对称的空间。
+WS_CLERK2_YPOS = 960
+CLERK_MOVE_SECONDS = 0.7  # 入/退场垂直平移时长
+CLERK_TRAVEL = 1100       # 垂直平移距离（px，足够整个移出屏幕）
+
+# 店员 glitch 软化（_glitchsoft 动画）：绝大部分时间是干净立绘，每隔
+# 2~3 秒（随机三选一）闪两下故障帧。持续循环的 _glitch 版对复制体太夸张。
+WS_CLERK_GLITCH_PAUSES = (1.8, 2.4, 3.0)   # 干净帧停留时长候选
+WS_CLERK_GLITCH_FLASH = 0.07               # 每帧故障闪现时长
+WS_CLERK_GLITCH_GAP = 0.08                 # 两下故障之间的干净间隙
+
+# 中景主立绘摆位（ws_mid，沙漠桥段/虚空对视）：大小与店员一致。
+WS_MID_YPOS = 120
+
 
 def _build_sprite_index():
     """扫描 game/images/sprites/ 建立立绘索引。
-    返回 (base, glitch)：
+    返回 (base, glitch, soft)：
       base   = {(姿势key, 表情): 'images/sprites/...png'}
-      glitch = {(姿势key, 表情): [帧路径, ...]}（按 seed 排序）
+      glitch = {(姿势key, 表情): [帧路径, ...]}（按 seed 排序，全身 glitch）
+      soft   = 同 glitch，但为 _glitchsoft 帧（局部小范围 glitch，店员用，
+               generate_glitch_art.py --patches 生成）
     文件名约定：<姿势>(<表情>.png（全/半角括号、带不带闭括号都认），
-    glitch 帧为 <原名>_glitch<seed>.png。"""
-    base, glitch = {}, {}
+    glitch 帧为 <原名>_glitch<seed>.png，软帧为 <原名>_glitchsoft<seed>.png。
+    ★_glitchsoft 必须先于 _glitch 判断——后者的正则要求 glitch 后直接跟数字，
+    软帧不满足，会掉进 base 索引变成一个不存在的"表情"。"""
+    base, glitch, soft = {}, {}, {}
     game_dir = os.path.join(BASE_DIR, 'game')
     root = os.path.join(game_dir, 'images', 'sprites')
     for dirpath, dirnames, filenames in os.walk(root):
@@ -350,10 +398,13 @@ def _build_sprite_index():
             if not fn.lower().endswith('.png'):
                 continue
             stem = fn[:-4]
+            sink = base
+            sm = re.match(r'^(.*)_glitchsoft(\d+)$', stem)
             gm = re.match(r'^(.*)_glitch(\d+)$', stem)
-            is_glitch = bool(gm)
-            if gm:
-                stem = gm.group(1)
+            if sm:
+                stem, sink = sm.group(1), soft
+            elif gm:
+                stem, sink = gm.group(1), glitch
             norm = stem.replace('（', '(').rstrip('）)')
             if '(' not in norm:
                 continue
@@ -363,16 +414,17 @@ def _build_sprite_index():
                 continue
             rel = os.path.relpath(os.path.join(dirpath, fn), game_dir)
             rel = rel.replace(os.sep, '/')
-            if is_glitch:
-                glitch.setdefault((pose, expr), []).append(rel)
-            else:
+            if sink is base:
                 base[(pose, expr)] = rel
-    for frames in glitch.values():
-        frames.sort()
-    return base, glitch
+            else:
+                sink.setdefault((pose, expr), []).append(rel)
+    for idx in (glitch, soft):
+        for frames in idx.values():
+            frames.sort()
+    return base, glitch, soft
 
 
-SPRITE_INDEX, SPRITE_GLITCH_INDEX = _build_sprite_index()
+SPRITE_INDEX, SPRITE_GLITCH_INDEX, SPRITE_GLITCHSOFT_INDEX = _build_sprite_index()
 
 # 已经告警过的缺素材组合，避免同一条 WARNING 刷屏。
 _SPRITE_WARNED = set()
@@ -396,7 +448,7 @@ def parse_sprite_marker(marker):
         return None
     # 「面无表情」整体就是表情名；其余去掉「表情」后缀（默认表情→默认）。
     expr = expr_part if expr_part == '面无表情' else expr_part[:-len('表情')]
-    pose = next((k for k in SPRITE_POSE_ATTRS if k in pose_part), None)
+    pose = match_pose_keyword(pose_part)
     if pose is None:
         key = ('pose', marker)
         if key not in _SPRITE_WARNED:
@@ -406,6 +458,33 @@ def parse_sprite_marker(marker):
     return pose, expr, is_glitch
 
 
+def _resolve_sprite_attrs(pose, expr):
+    """(姿势key, 表情) → (image 名, 实际使用的表情)；缺素材时回退到该姿势默认表情
+    并告警，完全无素材可用返回 None。主立绘和店员立绘共用（同一套素材）。"""
+    use_expr = expr
+    if (pose, use_expr) not in SPRITE_INDEX:
+        if (pose, '默认') not in SPRITE_INDEX:
+            key = ('none', pose)
+            if key not in _SPRITE_WARNED:
+                _SPRITE_WARNED.add(key)
+                print(f"WARNING: 立绘姿势 '{pose}' 没有任何素材——退化为注释")
+            return None
+        key = ('expr', pose, expr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 立绘缺素材：{pose}·{expr} —— 回退到 {pose}·默认")
+        use_expr = '默认'
+    expr_attr = SPRITE_EXPR_ATTRS.get(use_expr)
+    if expr_attr is None:
+        key = ('attr', use_expr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 表情 '{use_expr}' 不在 SPRITE_EXPR_ATTRS，"
+                  f"补上映射后重跑——退化为注释")
+        return None
+    return f"ws {SPRITE_POSE_ATTRS[pose]} {expr_attr}", use_expr
+
+
 def emit_sprite_change(marker, indent):
     """立绘标记 → show 语句。非立绘标记或完全无素材可用时返回 None。
     过渡与表情差分一致：只溶解 master 层，对话框/文字不闪。"""
@@ -413,19 +492,10 @@ def emit_sprite_change(marker, indent):
     if parsed is None:
         return None
     pose, expr, want_glitch = parsed
-    use_expr = expr
-    if (pose, use_expr) not in SPRITE_INDEX:
-        if (pose, '默认') not in SPRITE_INDEX:
-            key = ('none', pose)
-            if key not in _SPRITE_WARNED:
-                _SPRITE_WARNED.add(key)
-                print(f"WARNING: 立绘姿势 '{pose}' 没有任何素材——【{marker}】退化为注释")
-            return None
-        key = ('expr', pose, expr)
-        if key not in _SPRITE_WARNED:
-            _SPRITE_WARNED.add(key)
-            print(f"WARNING: 立绘缺素材：{pose}·{expr} —— 回退到 {pose}·默认")
-        use_expr = '默认'
+    resolved = _resolve_sprite_attrs(pose, expr)
+    if resolved is None:
+        return None
+    img, use_expr = resolved
     is_glitch = want_glitch
     if is_glitch and (pose, use_expr) not in SPRITE_GLITCH_INDEX:
         key = ('glitch', pose, use_expr)
@@ -434,15 +504,6 @@ def emit_sprite_change(marker, indent):
             print(f"WARNING: 立绘缺 glitch 帧：{pose}·{use_expr}"
                   f"（用 generate_glitch_art.py 生成到 sprites/glitch/）—— 先用无 glitch 版")
         is_glitch = False
-    expr_attr = SPRITE_EXPR_ATTRS.get(use_expr)
-    if expr_attr is None:
-        key = ('attr', use_expr)
-        if key not in _SPRITE_WARNED:
-            _SPRITE_WARNED.add(key)
-            print(f"WARNING: 表情 '{use_expr}' 不在 SPRITE_EXPR_ATTRS，"
-                  f"补上映射后重跑——【{marker}】退化为注释")
-        return None
-    img = f"ws {SPRITE_POSE_ATTRS[pose]} {expr_attr}"
     if is_glitch:
         img += "_glitch"   # glitch 并进表情属性名，避免 show 属性残留粘连
     at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
@@ -466,6 +527,166 @@ def emit_sprite_unglitch(indent):
     at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
     return (f'{indent}show {img} at {at}\n'
             f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+
+
+################################################################################
+## 店员（王霜复制体）：甜品店段的两个店员，与主立绘同素材、不同摆位（see 摆位
+## 常量 WS_CLERK_*）。剧本标记：
+##   【店员入场】/【店员2入场】          → 仅注释；下一句该店员台词时自动入场
+##   【店员N进场，<姿势>，<表情>】       → 立即 show（带入场动画）
+##   【店员N退场】                        → 垂直平移出屏幕（非阻塞；移出即不可见，
+##                                          不发 hide——下次 show / scene 自然接管）
+##   王霜（店员N）【<姿势>，<表情>】：…   → show / 换差分（未在场时自动入场）
+##   王霜（店员N）【<表情>】：…           → 只换表情，姿势沿用上次
+##   王霜【…三人集体<表情>】：…           → 主立绘（场景差分）+ 在场店员一起换表情
+## 转场（scene 语句）会清掉店员立绘；有店员在场时 _emit_scene 先发垂直平移退场
+## 动画再转场（剧本：「退场的形式是垂直平移出屏幕」）。
+################################################################################
+
+_CLERK_CFG = {
+    # 入场都是垂直滑入（与各自退场方向相反）：店员1 从屏幕下方升上来，
+    # 店员2 从天花板倒吊降下（「从屏幕左边天花板倒立下来」）。
+    # ★enter/exit 都是**内联了静态摆位的完整 transform**，每次 show 的 at 列表
+    # 永远只有一个元素。不能写成 `at 摆位, 动画` 组合：替换 at 列表时 Ren'Py 从
+    # 列表尾部对齐取状态，外层动画 transform 会继承摆位的 rotate/zoom 状态、
+    # 内层摆位又套一遍 —— rotate 叠成 360（倒吊转正）、zoom 平方（立绘缩小）。
+    'clerk1': {'tag': 'ws_clerk1', 'at': 'ws_clerk_right',
+               'enter': 'ws_clerk_right_enter',
+               'exit': 'ws_clerk_right_exit', 'pose': '背手'},
+    'clerk2': {'tag': 'ws_clerk2', 'at': 'ws_clerk_ceiling',
+               'enter': 'ws_clerk_ceiling_enter',
+               'exit': 'ws_clerk_ceiling_exit', 'pose': '抱胸'},
+}
+
+# clerk id -> {'pose', 'expr', 'visible'}。姿势/表情跨退场记忆（【店员2入场】后
+# 只标【默认】的台词沿用上次姿势）。convert 每次全量重跑，转换开头清空。
+_CLERK_STATE = {}
+
+
+def _clerk_id(name):
+    """店员/店员1 → clerk1，店员2 → clerk2（剧本两种写法都有）。"""
+    return 'clerk2' if '店员2' in name else 'clerk1'
+
+
+def _clerk_state(clerk):
+    return _CLERK_STATE.setdefault(
+        clerk, {'pose': _CLERK_CFG[clerk]['pose'], 'expr': '默认', 'visible': False})
+
+
+def emit_clerk_show(clerk, indent, pose=None, expr=None):
+    """店员 show/换差分。未在场时自动入场（店员2 走天花板降下动画，店员1 溶解）。
+    素材缺失时返回 None（调用方退化为注释）。"""
+    st = _clerk_state(clerk)
+    pose = pose or st['pose']
+    expr = expr or st['expr']
+    resolved = _clerk_img(pose, expr)
+    if resolved is None:
+        return None
+    img, use_expr = resolved
+    cfg = _CLERK_CFG[clerk]
+    entering = not st['visible']
+    st.update(pose=pose, expr=use_expr, visible=True, enter_pending=None)
+    if entering and cfg['enter']:
+        # 入场动画名记下来：若同一交互内紧跟整图表情差分（scene 会清立绘，
+        # _clerk_reshow_lines 要补发），补发沿用入场 transform 重新起播 ——
+        # 同帧重启视觉上等于继续，否则动画会被基础摆位瞬移掉。
+        # 这个窗口只到下一句 say 为止（_clerk_close_enter_window），
+        # 不然后面几拍的表情差分补发会让入场动画重播一遍。
+        st['enter_pending'] = cfg['enter']
+        return f'{indent}show {img} as {cfg["tag"]} at {cfg["enter"]}'
+    return (f'{indent}show {img} as {cfg["tag"]} at {cfg["at"]}\n'
+            f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+
+
+def emit_clerk_exit(clerk, indent):
+    """店员退场：垂直平移出屏幕（非阻塞 ATL）。未在场返回 None。"""
+    st = _CLERK_STATE.get(clerk)
+    if not st or not st['visible']:
+        return None
+    resolved = _clerk_img(st['pose'], st['expr'])
+    st['visible'] = False
+    if resolved is None:
+        return None
+    cfg = _CLERK_CFG[clerk]
+    return f'{indent}show {resolved[0]} as {cfg["tag"]} at {cfg["exit"]}'
+
+
+def _clerk_img(pose, expr):
+    """店员立绘用**软 glitch** 动画版（复制体=偶发信号抽搐：平时干净，每隔
+    2~3 秒闪两下故障帧，见 _glitchsoft 生成）。缺 glitch 帧时回退干净版并告警
+    （用 generate_glitch_art.py 补）。"""
+    resolved = _resolve_sprite_attrs(pose, expr)
+    if resolved is None:
+        return None
+    img, use_expr = resolved
+    if (pose, use_expr) in SPRITE_GLITCH_INDEX:
+        img += '_glitchsoft'
+    else:
+        key = ('clerk_glitch', pose, use_expr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 店员立绘缺 glitch 帧：{pose}·{use_expr}"
+                  f"（generate_glitch_art.py 生成到 sprites/glitch/）—— 先用干净版")
+    return img, use_expr
+
+
+def _clerk_close_enter_window(indent_unused=None):
+    """一句 say 发出后调用：「同一交互内补发沿用入场动画」的窗口关闭。
+    say 就是一次交互边界 —— 之后的表情差分补发若再沿用入场 transform，
+    入场动画会凭空重播一遍（如 集体坏笑 让店员2 又降一次）。"""
+    for st in _CLERK_STATE.values():
+        st['enter_pending'] = None
+
+
+def _clerk_reshow_lines(indent):
+    """在场店员的原样 show 行（scene 换整图差分后补发，让店员不被 scene 清掉）。
+    刚入场还没被点过的店员沿用入场动画 transform（见 emit_clerk_show），用一次即清。"""
+    lines = []
+    for clerk in sorted(_CLERK_STATE):
+        st = _CLERK_STATE[clerk]
+        if not st['visible']:
+            continue
+        resolved = _clerk_img(st['pose'], st['expr'])
+        if resolved:
+            cfg = _CLERK_CFG[clerk]
+            at = st.get('enter_pending') or cfg['at']
+            st['enter_pending'] = None
+            lines.append(f'{indent}show {resolved[0]} as {cfg["tag"]} at {at}')
+    return lines
+
+
+def emit_collective_expr(expr, indent):
+    """【…三人集体<表情>】：主立绘走场景表情差分 + 在场店员一起换表情，
+    共用同一次 master 层溶解。当前场景没有该差分时主立绘跳过（只换店员）。"""
+    lines = [f'{indent}## 三人集体{expr}']
+    cfg = SCENE_EXPRESSIONS.get(_CURRENT_EXPR_SCENE)
+    img = cfg['map'].get(expr) if cfg else None
+    if img:
+        verb = 'show' if cfg['model'] == 'overlay' else 'scene'
+        lines.append(f'{indent}{verb} {img}')
+    else:
+        print(f"WARNING: 三人集体{expr}：场景 {_CURRENT_EXPR_SCENE} 没有 '{expr}' 差分，"
+              "主立绘保持不变（只换店员）")
+    for clerk in sorted(_CLERK_STATE):
+        st = _CLERK_STATE[clerk]
+        if not st['visible']:
+            continue
+        # 当前姿势没有这个表情的素材时，先试该店员的本命姿势（如 讲解站立 没有
+        # 坏笑素材，店员2 回到 抱胸·坏笑）——集体表情的重点是表情，不是姿势。
+        pose = st['pose']
+        if (pose, expr) not in SPRITE_INDEX and \
+                (_CLERK_CFG[clerk]['pose'], expr) in SPRITE_INDEX:
+            pose = _CLERK_CFG[clerk]['pose']
+        resolved = _clerk_img(pose, expr)
+        if resolved:
+            ccfg = _CLERK_CFG[clerk]
+            # 同一交互内刚入场：沿用入场动画 transform（见 reshow）
+            at = st.get('enter_pending') or ccfg['at']
+            st['enter_pending'] = None
+            lines.append(f'{indent}show {resolved[0]} as {ccfg["tag"]} at {at}')
+            st.update(pose=pose, expr=resolved[1])
+    lines.append(f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+    return '\n'.join(lines)
 
 
 def generate_sprites_rpy():
@@ -495,6 +716,38 @@ def generate_sprites_rpy():
             out.append(f'    "{rel}"')
             out.append(f'    {WS_GLITCH_FRAME}')
         out.append('    repeat')
+    # 软 glitch（店员用）：干净立绘挂着，每隔 2~3 秒随机闪两下故障帧。
+    # 闪帧优先用 _glitchsoft 局部帧（只有几个小范围出故障，--patches 生成）；
+    # 没有软帧的组合回退全身 glitch 帧并告警。持续循环的 _glitch 是
+    # "信号完全失稳"的主立绘演出，复制体只要偶发的小范围抽搐。
+    for (pose, expr), frames in sorted(SPRITE_GLITCH_INDEX.items()):
+        expr_attr = SPRITE_EXPR_ATTRS.get(expr)
+        clean = SPRITE_INDEX.get((pose, expr))
+        if expr_attr is None or clean is None:
+            continue
+        soft = SPRITE_GLITCHSOFT_INDEX.get((pose, expr))
+        if soft:
+            frames = soft
+        else:
+            print(f"WARNING: {pose}·{expr} 没有 _glitchsoft 局部帧"
+                  f"（generate_glitch_art.py --patches 3 生成到 glitch_soft/）"
+                  f"—— 软 glitch 先用全身帧")
+        f1 = frames[0]
+        f2 = frames[1] if len(frames) > 1 else frames[0]
+        out.append('')
+        out.append(f'image ws {SPRITE_POSE_ATTRS[pose]} {expr_attr}_glitchsoft:')
+        out.append('    block:')
+        out.append(f'        "{clean}"')
+        for p in WS_CLERK_GLITCH_PAUSES:
+            out.append('        choice:')
+            out.append(f'            pause {p}')
+        out.append(f'        "{f1}"')
+        out.append(f'        {WS_CLERK_GLITCH_FLASH}')
+        out.append(f'        "{clean}"')
+        out.append(f'        {WS_CLERK_GLITCH_GAP}')
+        out.append(f'        "{f2}"')
+        out.append(f'        {WS_CLERK_GLITCH_FLASH}')
+        out.append('        repeat')
     out += [
         '',
         '## 半身近景（第一人称对视感）：头到腰占满屏，底部裁掉，水平居中。',
@@ -503,6 +756,57 @@ def generate_sprites_rpy():
         '    yanchor 0.0',
         f'    ypos {WS_CLOSE_YPOS}',
         f'    zoom {WS_CLOSE_ZOOM}',
+        '',
+        '## 中景（沙漠桥段/虚空对视）：大小与店员立绘一致。',
+        'transform ws_mid:',
+        '    xalign 0.5',
+        '    yanchor 0.0',
+        f'    ypos {WS_MID_YPOS}',
+        f'    zoom {WS_CLERK_ZOOM}',
+        '',
+    ]
+    # 店员摆位。入/退场是**内联静态摆位的完整 transform**——每次 show 的 at
+    # 列表只有一个元素。不能拆成 `at 摆位, 动画`：替换 at 列表时 Ren'Py 从尾部
+    # 对齐取状态，动画 transform 会继承摆位的 rotate/zoom、内层又套一遍 ——
+    # rotate 叠成 360（倒吊转正）、zoom 平方（缩小），就是当初的退场 bug。
+    clerk1_static = [
+        '    xanchor 0.5',
+        f'    xpos {WS_CLERK1_XPOS}',
+        '    yanchor 0.0',
+        f'    ypos {WS_CLERK1_YPOS}',
+        f'    zoom {WS_CLERK_ZOOM}',
+    ]
+    clerk2_static = [
+        '    rotate 180',
+        '    xanchor 0.5',
+        f'    xpos {WS_CLERK2_XPOS}',
+        '    yanchor 1.0',
+        f'    ypos {WS_CLERK2_YPOS}',
+        f'    zoom {WS_CLERK_ZOOM}',
+    ]
+    out += ['## 店员（王霜复制体，甜品店段）：右侧正立。',
+            'transform ws_clerk_right:'] + clerk1_static + [
+        '',
+        '## 店员1入场：从屏幕下方升上来（非阻塞，与店员2 的降下对称）。',
+        'transform ws_clerk_right_enter:'] + clerk1_static + [
+        f'    yoffset {CLERK_TRAVEL}',
+        f'    ease {CLERK_MOVE_SECONDS} yoffset 0',
+        '',
+        '## 店员1退场：垂直平移沉出画面（非阻塞）。',
+        'transform ws_clerk_right_exit:'] + clerk1_static + [
+        f'    ease {CLERK_MOVE_SECONDS} yoffset {CLERK_TRAVEL}',
+        '',
+        '## 店员2：左侧从天花板倒吊（rotate 180，底边=头部下沿）。',
+        'transform ws_clerk_ceiling:'] + clerk2_static + [
+        '',
+        '## 店员2入场：从天花板上方倒吊降下（非阻塞）。',
+        'transform ws_clerk_ceiling_enter:'] + clerk2_static + [
+        f'    yoffset {-CLERK_TRAVEL}',
+        f'    ease {CLERK_MOVE_SECONDS} yoffset 0',
+        '',
+        '## 店员2退场：垂直平移收回天花板（非阻塞）。',
+        'transform ws_clerk_ceiling_exit:'] + clerk2_static + [
+        f'    ease {CLERK_MOVE_SECONDS} yoffset {-CLERK_TRAVEL}',
         '',
     ]
     path = os.path.join(BASE_DIR, 'game', 'images', 'sprites', 'sprites.rpy')
@@ -518,6 +822,29 @@ def escape_quotes(text):
 def has_curly_quotes(text):
     """Check if text contains curly double quotes"""
     return '"' in text or '"' in text
+
+# 角色名 -> characters.rpy 里的 Character 变量。此前在三处各抄一份，加新角色
+# 时漏改任何一处都会静默退化成旁白 —— 收敛成单一来源。
+CHAR_VAR_MAP = {
+    '王霜': 'wangshuang',
+    '王霜（？）': 'wangshuang_unknown',
+    # 店员 = 王霜复制体（甜品店段），台词归各自的 Character、立绘走店员系统。
+    '王霜（店员）': 'wangshuang_clerk',
+    '王霜（店员2）': 'wangshuang_clerk2',
+    '阿鹤': 'ahe',
+    '尸首': 'shishou',
+    '路人甲': 'lurenjia',
+    '路人乙': 'lurenyi',
+    '路人丙': 'lurenbing',
+    '路人丁': 'lurending',
+    '杰罗瓦': 'jieluowa',
+    '米姐': 'mijie',
+    '尤里娅': 'youliya',
+}
+
+# 长名优先，避免 王霜（店员2） 被 王霜 截胡。
+CHAR_PATTERN = '|'.join(
+    re.escape(name) for name in sorted(CHAR_VAR_MAP, key=len, reverse=True))
 
 # 专有名词列表（point 7）：这些字眼在正文中出现时用 {i}斜体{/i} 强调。
 # 在 demo_script.txt 里直接以普通文字书写，由转换器负责加斜体标签——
@@ -558,9 +885,79 @@ def normalize_dots_line(text):
     n = len(m.group(2))
     return prefix + dashes + '…' * max(1, int(round(n / 3.0)))
 
+# 行内注释（名词浮窗）：正文里 概念【注释：解释文字】 → 概念变成带下划线的
+# 可点击链接（{a=gloss:id}），点击后屏幕右侧滑出抽屉展示解释（见
+# game/scripts/glossary_ui.rpy；词典数据生成到 glossary.rpy）。
+#
+# 概念的边界没法从中文里自动切出来（"出现冒充者综合征"会连动词一起抓），
+# 所以和 PROPER_NOUNS 一样在这里列出所有被注释的术语——标记前的文字以哪个
+# 术语结尾，链接就套在哪个术语上。加新注释 = 把术语加进这个列表。
+# 找不到术语时的兜底：标记紧跟在破折号/省略号后（如 "柔软而光滑的——【注释：
+# 想都别想】"）就把那串标点作为链接锚点；再不行取末尾的连续文字并告警。
+ANNOTATION_TERMS = ['逝乐园', '冒充者综合征', '脑血屏障', '脑前叶白质切除术', '杰罗瓦']
+
+_ANNOT_RE = re.compile(r'【注释：\s*(.*?)\s*】')
+
+# 收集到的注释：[(gid, 术语, 解释)]。main() 末尾写进 glossary.rpy。
+_GLOSSARY = []
+
+
+def apply_annotations(text):
+    """把 术语【注释：解释】 替换成 {a=gloss:gN}术语{/a}，解释收进 _GLOSSARY。"""
+    while True:
+        m = _ANNOT_RE.search(text)
+        if not m:
+            break
+        before, body = text[:m.start()], m.group(1)
+        term = next((t for t in sorted(ANNOTATION_TERMS, key=len, reverse=True)
+                     if before.endswith(t)), None)
+        if term is None:
+            pm = re.search(r'([—…]+)$', before)
+            wm = re.search(r'([0-9A-Za-z一-鿿]+)$', before)
+            if pm:
+                term = pm.group(1)
+            elif wm:
+                term = wm.group(1)
+                print(f"WARNING: 注释术语不在 ANNOTATION_TERMS：按末尾连续文字"
+                      f"『{term}』整段加链接——若范围不对，把正确术语加进列表后重跑")
+            else:
+                print(f"WARNING: 注释【注释：{body[:20]}…】前找不到可加链接的文字，"
+                      "该注释被丢弃")
+                text = before + text[m.end():]
+                continue
+        gid = 'g%d' % (len(_GLOSSARY) + 1)
+        _GLOSSARY.append((gid, term, body))
+        text = (before[:-len(term)]
+                + '{a=gloss:%s}%s{/a}' % (gid, term)
+                + text[m.end():])
+    return text
+
+
+def generate_glossary_rpy():
+    """把收集到的注释写成 game/scripts/glossary.rpy（词典数据）。
+    _() 标记让术语和解释进入翻译抽取；抽屉屏幕显示时再运行时翻译。"""
+    def esc(s):
+        return s.replace('\\', '\\\\').replace('"', '\\"')
+    out = [
+        '## AUTO-GENERATED by convert_script.py — 不要手改，重跑转换器会覆盖。',
+        '## 行内注释词典：剧本 【注释：…】 标记收集而来，UI 见 glossary_ui.rpy。',
+        'define GLOSSARY = {',
+    ]
+    for gid, term, body in _GLOSSARY:
+        out.append('    "%s": (_("%s"), _("%s")),' % (gid, esc(term), esc(body)))
+    out.append('}')
+    out.append('')
+    path = os.path.join(BASE_DIR, 'game', 'scripts', 'glossary.rpy')
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(out))
+    print(f"glossary.rpy generated: {len(_GLOSSARY)} annotations")
+
+
 def transform_display_text(text):
     """所有可见正文（对话/旁白/选项/extend）共用的行内文字变换。
-    顺序：先 小字 再 斜体（斜体可嵌套进小字里，互不干扰）。"""
+    顺序：先注释链接（标记还在原文里才找得到术语边界），再 小字，再 斜体
+    （斜体可嵌套进小字里，互不干扰）。"""
+    text = apply_annotations(text)
     text = normalize_dots_line(text)
     text = apply_small_text(text)
     text = italicize_proper_nouns(text)
@@ -833,25 +1230,61 @@ def emit_rightpage_block(lines, start_i, end_line, indent="    "):
 
     return out, i
 
+def emit_char_dialogue_inline(char_var, dialogue, indent):
+    """角色台词，支持**行内**立绘/表情标记（台词说到一半换立绘）：
+        王霜【讲解站立，默认表情】：不不不…。【讲解站立，得意表情】不过对于你来说…
+    在标记处把台词拆成 say + extend，标记变成两段之间的立绘切换 —— 玩家点一下，
+    立绘换掉、后半句接在同一个框里。认不出的行内【…】保持字面原样（老行为）。"""
+    parts = re.split(r'(【[^】]+】)', dialogue)
+    if len(parts) == 1:
+        return emit_char_dialogue(char_var, dialogue, indent)
+    out = []
+    cur = ''
+    said = False
+
+    def flush():
+        nonlocal cur, said
+        text = cur.strip()
+        cur = ''
+        if not text:
+            return
+        if said:
+            out.append(f'{indent}extend {format_dialogue(text)}')
+        else:
+            out.append(emit_char_dialogue(char_var, text, indent))
+            said = True
+
+    for part in parts:
+        if part.startswith('【') and part.endswith('】'):
+            change = emit_expression_change(part[1:-1], indent)
+            if change is None:
+                cur += part          # 不是立绘/表情标记：保持字面（{shake} 等同理）
+            else:
+                flush()
+                out.append(change)
+        else:
+            cur += part
+    flush()
+    return '\n'.join(out) if out else emit_char_dialogue(char_var, dialogue, indent)
+
+
 def emit_char_dialogue(char_var, dialogue, indent, comment=None):
     """生成一行角色对话，处理 【锁定操作Ns】（point 5）。
 
-    带锁定时：先 show 一个 modal 的 op_lock 屏幕（zorder 高、吃掉所有点击）N 秒，
-    再正常说这句话——文本框照常显示且保持可见，但玩家在 N 秒内无法点击前进。
-    op_lock 到点自动隐藏。（不用 {nw}+硬暂停：那会让文本框在暂停期间消失。）
+    带锁定时：说话前设置 say_allow_dismiss 的挂钟死线（见 variables.rpy 的
+    op_lock_start）——N 秒内点击被静默丢弃、无法推进，到点自动放行。
+    ★不再用 op_lock 屏幕★：它的 timer Hide 会在台词中途 restart_interaction、
+    把打字机 st 清零，解锁瞬间文字重打闪烁（"盯——"的 glitch）。
+    （也不用 {nw}+硬暂停：那会让文本框在暂停期间消失。）
     """
     cleaned, lock = extract_lock(dialogue)
+    _clerk_close_enter_window()   # say = 交互边界，关闭入场动画的沿用窗口
     out = []
     if comment:
         out.append(f'{indent}## {comment}')
     if lock:
-        out.append(f'{indent}show screen op_lock({lock})')
-        out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
-        # 一旦推进过这句（等满 N 秒、或 ctrl 快进），立刻收掉锁，避免 op_lock
-        # 残留到后面几句继续吃点击。
-        out.append(f'{indent}hide screen op_lock')
-    else:
-        out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
+        out.append(f'{indent}$ op_lock_start({lock})')
+    out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
     return '\n'.join(out)
 
 def _emit_scene(out, indent, scene_name, bg_image, transition):
@@ -859,6 +1292,14 @@ def _emit_scene(out, indent, scene_name, bg_image, transition):
     表情叠上去（scene <bg> + show <default> + with，三者同一个过渡一起淡入）。"""
     global _CURRENT_EXPR_SCENE, _LAST_SPRITE
     _LAST_SPRITE = None   # scene 语句会清掉所有 show，立绘追踪一起清
+    # 有店员在场：先发垂直平移退场动画，pause 等动画走完再转场
+    # （剧本：「店员和店员2退场，退场的形式是垂直平移出屏幕」）。
+    clerk_exits = [e for e in (emit_clerk_exit(c, indent) for c in sorted(_CLERK_STATE))
+                   if e]
+    if clerk_exits:
+        out.append(f'{indent}## 店员退场（垂直平移出屏幕）')
+        out.extend(clerk_exits)
+        out.append(f'{indent}pause {CLERK_MOVE_SECONDS + 0.05}')
     # 就地转场：不发 scene，只发一行扳机（见 IN_PLACE_SCENES）。画面上还是同一个
     # displayable，转场由它自己的 ATL 在后台走完，不阻塞、不吃点击。
     if scene_name in IN_PLACE_SCENES:
@@ -898,6 +1339,11 @@ def _emit_scene(out, indent, scene_name, bg_image, transition):
             out.append(f'{indent}with {transition}')
     else:
         out.append(f'{indent}scene {bg_image} with {transition}')
+    # 揭示卡场景：转场演完后藏文本框、等一次点击，画面自己占一拍。
+    if scene_name in SCENE_CLICK_HOLD:
+        out.append(f'{indent}## 画面单独一拍：点击后才继续出字')
+        out.append(f'{indent}window hide')
+        out.append(f'{indent}pause')
     _CURRENT_EXPR_SCENE = scene_name
 
 def emit_expression_change(action, indent):
@@ -920,9 +1366,13 @@ def emit_expression_change(action, indent):
     if not img:
         return None
     verb = 'show' if cfg['model'] == 'overlay' else 'scene'
-    return (f'{indent}## 表情：{action}\n'
-            f'{indent}{verb} {img}\n'
-            f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+    lines = [f'{indent}## 表情：{action}', f'{indent}{verb} {img}']
+    # 整图差分是 scene 语句，会顺带清掉店员立绘 —— 在场店员同一帧补发回去
+    # （同一交互内重新 show，画面上店员全程不消失）。
+    if verb == 'scene':
+        lines.extend(_clerk_reshow_lines(indent))
+    lines.append(f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+    return '\n'.join(lines)
 
 def emit_transition_lines(output, indent, scene_name, scene_desc):
     """把一个场景转场写进 output（供 Extended 累积块内部复用）。
@@ -1054,6 +1504,14 @@ _INTERRO_STAT_MAP = {
     '死亡': 'interro_death',
 }
 _INTERRO_STAT_RE = re.compile(r'(平稳|疯狂|对抗|幻觉|死亡)\s*\+\s*(\d+)')
+
+# 计数变量 -> 风味字母（选项 hover 上色/诊断书同套颜色，见 variables.rpy 的
+# INTERRO_FLAVOR_COLORS）。带数值的问询选项经 menu 参数 interro=(id, 风味)
+# 传给选项屏；第 2 轮起、历轮选过的选项 hover 按此上色。
+_INTERRO_FLAVOR = {
+    'interro_calm': 'c', 'interro_insane': 'i', 'interro_hostile': 'h',
+    'interro_halluc': 'u', 'interro_death': 'd',
+}
 
 _ONCE_MARK = '只加一次'
 
@@ -1223,8 +1681,15 @@ def _emit_block_menu(options, output, indent, large, centered):
         cond = ''
         if opt.get('cond_seen'):
             cond = f' if "{opt["cond_seen"]}" in interro_seen'
-        output.append(f'{menu_indent}    "{escape_quotes(opt["text"])}"{cond}:')
+        # 带数值的选项：menu 参数捎上 (id, 风味)，第 2 轮起已选项 hover 上色。
+        oid = f'm{n}{opt["letter"]}'
+        flavor = (_INTERRO_FLAVOR.get(opt['stats'][0][0])
+                  if opt.get('stats') else None)
+        args = f' (interro=("{oid}", "{flavor}"))' if flavor else ''
+        output.append(f'{menu_indent}    "{escape_quotes(opt["text"])}"{args}{cond}:')
         inner = menu_indent + '        '
+        if flavor:
+            output.append(f'{inner}$ interro_picked.add("{oid}")')
         if opt['madness']:
             output.append(f'{inner}$ madness += {opt["madness"]}')
         # 问询段数值：只加一次的选项包进 interro_once 守卫（id = 菜单号+字母）。
@@ -1475,6 +1940,25 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     if re.match(r'^【True End[：:：]?(.*)】$', line) or line.strip() == '【True End】':
         return f"{indent}## True End\n{indent}$ unlock_ending(\"true_end\")\n{indent}return"
 
+    # 店员入/退场独立标记（见 _CLERK_CFG 上方的说明）。必须先于通用舞台提示注释。
+    clerk_marker = re.match(r'^【(店员\d?)\s*(入场|进场|退场)(?:[，,](.+))?】$', line)
+    if clerk_marker:
+        name, action, rest = clerk_marker.groups()
+        clerk = _clerk_id(name)
+        head = f'{indent}## {line.strip("【】")}'
+        if action == '退场':
+            code = emit_clerk_exit(clerk, indent)
+            return head + ('\n' + code if code else '')
+        if rest:
+            # 【店员N进场，<姿势>，<表情>】：带姿势的立即入场
+            parsed = parse_sprite_marker(rest.strip())
+            if parsed:
+                code = emit_clerk_show(clerk, indent, pose=parsed[0], expr=parsed[1])
+                return head + ('\n' + code if code else '')
+            print(f"WARNING: 店员进场标记无法解析姿势/表情：{line} —— 仅注释")
+        # 无姿势的【店员入场】：仅注释，下一句该店员台词时自动入场
+        return head
+
     # Stage direction (standalone) -> comment, plus an FX transition when
     # the cue is a genuine visual dramatic beat. Audio cues (音效) are
     # comment-only - a sound effect should not shake the screen.
@@ -1495,24 +1979,9 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
                     return f"{indent}## {text}\n{indent}with {fx}"
         return f"{indent}## {text}"
 
-    # Character name to variable mapping
-    char_var_map = {
-        '王霜': 'wangshuang',
-        '王霜（？）': 'wangshuang_unknown',
-        '阿鹤': 'ahe',
-        '尸首': 'shishou',
-        '路人甲': 'lurenjia',
-        '路人乙': 'lurenyi',
-        '路人丙': 'lurenbing',
-        '路人丁': 'lurending',
-        '杰罗瓦': 'jieluowa',
-        '米姐': 'mijie',
-        '尤里娅': 'youliya',
-    }
-
-    # Build regex pattern from character names (longer names first to avoid partial matches)
-    char_names = sorted(char_var_map.keys(), key=len, reverse=True)
-    char_pattern = '|'.join(re.escape(name) for name in char_names)
+    # Character name to variable mapping（单一来源见模块级 CHAR_VAR_MAP）
+    char_var_map = CHAR_VAR_MAP
+    char_pattern = CHAR_PATTERN
 
     # Character dialogue with one or more leading 【…】 markers（表情 / 小字 / 道具提示）。
     # 一句可带多个 marker，如 王霜【小声嘀咕】【小字】：…（既切表情又缩小字体）。
@@ -1521,15 +1990,39 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         char_name = char_action_match.group(1)
         dialogue = char_action_match.group(3).strip()
         char_var = char_var_map[char_name]
+        is_clerk = '店员' in char_name
         pre = []   # 表情切换 / 注释，放在台词前
         for m in re.findall(r'【(.+?)】', char_action_match.group(2)):
             if m == '小字':
                 # 把 【小字】 放回台词开头，交给 apply_small_text 缩小到行尾。
                 dialogue = '【小字】' + dialogue
                 continue
+            if is_clerk:
+                # 店员台词的标记：立绘归店员系统（as tag 独立于主立绘）。
+                parsed = parse_sprite_marker(m)
+                if parsed:
+                    code = emit_clerk_show(_clerk_id(char_name), indent,
+                                           pose=parsed[0], expr=parsed[1])
+                elif m == '面无表情' or m in SPRITE_EXPR_ATTRS:
+                    # 仅【表情】：姿势沿用上次（如 王霜（店员2）【默认】）
+                    code = emit_clerk_show(_clerk_id(char_name), indent, expr=m)
+                else:
+                    code = None   # 位置说明（出现在屏幕右边 等）→ 注释
+                pre.append(code if code else f'{indent}## {m}')
+                continue
+            coll = re.search(r'三人集体(.+)$', m)
+            if coll:
+                # 【本人和店员、店员2，三人集体<表情>】：主立绘 + 在场店员齐换
+                pre.append(emit_collective_expr(coll.group(1).strip(), indent))
+                continue
             swap = emit_expression_change(m, indent)   # 已知表情 → master 层溶解切差分
             pre.append(swap if swap else f'{indent}## {m}')  # 否则当舞台提示注释
-        return '\n'.join(pre + [emit_char_dialogue(char_var, dialogue, indent)])
+        # 店员开口但立绘还没上（标记都不含姿势/表情时）：按记忆的姿势自动入场
+        if is_clerk and not _clerk_state(_clerk_id(char_name))['visible']:
+            code = emit_clerk_show(_clerk_id(char_name), indent)
+            if code:
+                pre.append(code)
+        return '\n'.join(pre + [emit_char_dialogue_inline(char_var, dialogue, indent)])
 
     # Character dialogue (simple)
     char_match = re.match(rf'^({char_pattern})[：:](.*)$', line)
@@ -1537,13 +2030,20 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         char_name = char_match.group(1)
         dialogue = char_match.group(2).strip()
         char_var = char_var_map[char_name]
-        return emit_char_dialogue(char_var, dialogue, indent)
+        pre = []
+        # 店员开口但立绘还没上：自动入场（姿势/表情沿用上次）。
+        if '店员' in char_name and not _clerk_state(_clerk_id(char_name))['visible']:
+            code = emit_clerk_show(_clerk_id(char_name), indent)
+            if code:
+                pre.append(code)
+        return '\n'.join(pre + [emit_char_dialogue_inline(char_var, dialogue, indent)])
 
     # Section headers
     if re.match(r'^[一二三四五六七八九十]+周目', line):
         return f"\n## {line}\n"
 
     # Narrative text - choose narrator based on mode
+    _clerk_close_enter_window()   # 旁白同样是交互边界（见 emit_char_dialogue）
     if use_large_textbox:
         return f'{indent}large_narrator {format_dialogue(line)}'
     return f'{indent}{format_dialogue(line)}'
@@ -1600,22 +2100,9 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
     centered=True：居中累积框（centered_say），用于 demo 结尾谢幕卡等。
     Returns (output_lines, new_index)
     """
-    # Character name to variable mapping (must match convert_content_line)
-    char_var_map = {
-        '王霜': 'wangshuang',
-        '王霜（？）': 'wangshuang_unknown',
-        '阿鹤': 'ahe',
-        '尸首': 'shishou',
-        '路人甲': 'lurenjia',
-        '路人乙': 'lurenyi',
-        '路人丙': 'lurenbing',
-        '路人丁': 'lurending',
-        '杰罗瓦': 'jieluowa',
-        '米姐': 'mijie',
-        '尤里娅': 'youliya',
-    }
-    char_names = sorted(char_var_map.keys(), key=len, reverse=True)
-    char_pattern = '|'.join(re.escape(name) for name in char_names)
+    # Character name to variable mapping（单一来源见模块级 CHAR_VAR_MAP）
+    char_var_map = CHAR_VAR_MAP
+    char_pattern = CHAR_PATTERN
 
     collected = []
     i = start_i
@@ -1644,8 +2131,9 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
         # 问询段逻辑判断行（精神状态/人格特质/污染进程/建议执行：…【条件】…）：
         # 原文是"罗列全部候选+条件"的规则表，运行时每类只展示一个结论 ——
         # 收成 __eval__，emit 阶段换成 [interro_*!t] 插值（见 emit_extended_segments）。
+        # 条件表新版用全角圆括号（稳定（仅平稳>1）/…），旧版用【】——两种都认。
         eval_match = re.match(r'^(精神状态|人格特质|污染进程|建议执行)：', line)
-        if eval_match and '【' in line:
+        if eval_match and ('【' in line or '（' in line):
             collected.append(('__eval__', (eval_match.group(1), line)))
             continue
 
@@ -1790,22 +2278,9 @@ def process_choice_content(content_lines, indent="            "):
             centered_box = '居中' in line
             label = '居中Extended文本框' if centered_box else 'Extended文本框'
             output.append(f"{indent}## {label}开始 - {'centered ' if centered_box else ''}accumulating textbox")
-            # Character name to variable mapping
-            char_var_map = {
-                '王霜': 'wangshuang',
-                '王霜（？）': 'wangshuang_unknown',
-                '阿鹤': 'ahe',
-                '尸首': 'shishou',
-                '路人甲': 'lurenjia',
-                '路人乙': 'lurenyi',
-                '路人丙': 'lurenbing',
-                '路人丁': 'lurending',
-                '杰罗瓦': 'jieluowa',
-                '米姐': 'mijie',
-                '尤里娅': 'youliya',
-            }
-            char_names = sorted(char_var_map.keys(), key=len, reverse=True)
-            char_pattern = '|'.join(re.escape(name) for name in char_names)
+            # Character name to variable mapping（单一来源见模块级 CHAR_VAR_MAP）
+            char_var_map = CHAR_VAR_MAP
+            char_pattern = CHAR_PATTERN
 
             # 收集块内所有行，再交给 emit_extended_segments 做"同段落标点分句"
             # （point 4/6）；行内 【屏幕震动】保留在对话里由分句逻辑处理。
@@ -1935,6 +2410,40 @@ def hoist_ambient_cues(lines):
     return out
 
 
+def _collect_jail_sections(lines, start_i, end_line):
+    """监禁循环块探测：从 start_i 起若块内含【如果…无限期监禁…】条件标记，
+    收集整块并按 【监禁marker…】/【释放marker…】/【监禁2marker…】 分段，
+    返回 (条件标记原文, {'jail':…, 'free':…, 'jail2':…}, 新下标)；
+    不是监禁块返回 None（不消费任何行，走普通累积框老路）。"""
+    block = []
+    i = start_i
+    while i < end_line and i < len(lines):
+        ln = lines[i].strip()
+        i += 1
+        if 'Extended文本框结束' in ln:
+            break
+        if ln:
+            block.append(ln)
+    cond = next((b for b in block if re.match(r'^【如果.*无限期监禁.*】$', b)), None)
+    if cond is None:
+        return None
+    sections = {'jail': [], 'free': [], 'jail2': []}
+    cur = None
+    for b in block:
+        if b is cond:
+            continue
+        m = re.match(r'^【(监禁2|监禁|释放)marker[^】]*】$', b)
+        if m:
+            cur = {'监禁': 'jail', '释放': 'free', '监禁2': 'jail2'}[m.group(1)]
+            continue
+        if b.startswith('【') and b.endswith('】'):
+            continue
+        if cur is None:
+            cur = 'jail'   # 旧格式（无 marker）：全部当监禁段
+        sections[cur].append(b)
+    return cond, sections, i
+
+
 def convert_route(lines, start_line, end_line, label_name, route_num):
     """Convert a route section with proper branching"""
     output = []
@@ -1947,6 +2456,10 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
     choice_counter = 0
     last_dialogue = None  # Track the last dialogue line for menu caption
     use_large_textbox = False  # Track large textbox mode
+    # 最近一个含嵌套选项的 Extended 块在 output 里的起始下标。问询段的监禁循环
+    # （居中大字块里的【如果…无限期监禁…重新回到这部分选项的最开始】）要跳回
+    # 「这部分选项」——即这个块的块首。见下方 居中大字文本框 分支。
+    interro_menu_anchor = None
 
     while i < end_line and i < len(lines):
         line = lines[i].strip()
@@ -2001,6 +2514,7 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
             # 开关把这段 say 包起来，运行时 add_click_pauses 直接放行。say 文本/角色不变，
             # 不影响翻译 ID。
             no_split = '不分句' in line
+            block_anchor = len(output)   # 块首（含开始注释）在 output 里的下标
             output.append("    ## Extended大文本框开始 - accumulating large textbox"
                           + ("（不分句）" if no_split else ""))
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True)
@@ -2010,11 +2524,47 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
             if no_split:
                 output.append("    $ no_click_split = False")
             output.append("    ## Extended大文本框结束")
+            # 含嵌套选项的块 = 问询段选项部分，记下块首供监禁循环跳回。
+            if any('menu:' in seg for seg in accumulated):
+                interro_menu_anchor = block_anchor
             continue
 
         if 'Extended文本框开始' in line and 'Extended大文本框' not in line:
             centered_box = '居中' in line
             label = '居中Extended文本框' if centered_box else 'Extended文本框'
+            # 问询段监禁循环块：块内有【如果…无限期监禁…】条件标记 + 监禁/释放/
+            # 监禁2 三段 marker → 三分支生成（首监禁跳回重来 / 释放继续 /
+            # 二连监禁强制调和后继续）。见 _collect_jail_sections。
+            jail = _collect_jail_sections(lines, i, end_line)
+            if jail is not None:
+                cond, sections, i = jail
+                output.append(f"    ## {label}开始 - 监禁循环（条件展示）")
+                output.append(f"    ## {cond.strip('【】')}")
+                if interro_menu_anchor is not None:
+                    output.insert(interro_menu_anchor, "    label _interro_restart:")
+                    output.insert(interro_menu_anchor + 1, "        pass")
+                    interro_menu_anchor = None   # 只插一次
+                    output.append("    if interro_imprisoned and interro_attempt == 1:")
+                    emit_extended_segments([(None, l) for l in sections['jail']],
+                                           output, "        ", centered=centered_box)
+                    output.append("        ## 监禁+1，重新回到问询选项的最开始")
+                    output.append("        $ interro_attempt += 1")
+                    output.append("        jump _interro_restart")
+                    output.append("    elif interro_imprisoned:")
+                    output.append("        ## 第二次连续监禁：强制调和，继续流程")
+                    emit_extended_segments([(None, l) for l in sections['jail2']],
+                                           output, "        ", centered=centered_box)
+                    output.append("    else:")
+                    emit_extended_segments([(None, l) for l in sections['free']],
+                                           output, "        ", centered=centered_box)
+                else:
+                    print("WARNING: 监禁循环标记前找不到含选项的问询块，"
+                          "监禁/释放段按顺序无条件展示")
+                    for sec in ('jail', 'free', 'jail2'):
+                        emit_extended_segments([(None, l) for l in sections[sec]],
+                                               output, "    ", centered=centered_box)
+                output.append(f"    ## {label}结束")
+                continue
             output.append(f"    ## {label}开始 - {'centered ' if centered_box else ''}accumulating textbox")
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended文本框结束', use_large=False, centered=centered_box)
             output.extend(accumulated)
@@ -2069,9 +2619,9 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
             continue
 
         # Check for centered large font textbox markers 【居中大字文本框开始】【居中大字文本框结束】
+        # （监禁循环块已改用 居中Extended文本框 格式，见上方 _collect_jail_sections 分支）
         if '居中大字文本框开始' in line:
             output.append("    ## 居中大字文本框开始 - centered large font textbox")
-            # Collect all lines until end marker
             while i < end_line and i < len(lines):
                 next_line = lines[i].strip()
                 i += 1
@@ -2231,6 +2781,7 @@ def convert_prologue(lines, start_line, end_line):
     global _PROLOGUE_FIRST_TRANSITION_PENDING, _CURRENT_EXPR_SCENE
     _PROLOGUE_FIRST_TRANSITION_PENDING = True
     _CURRENT_EXPR_SCENE = None
+    _CLERK_STATE.clear()
 
     output = []
     output.append("## prologue.rpy")
@@ -2485,6 +3036,8 @@ def main():
     # 立绘 image 定义 + 摆位 transform（按 sprites/ 目录扫描结果生成）
     generate_sprites_rpy()
 
+    _GLOSSARY.clear()   # 注释词典（转换过程中收集，最后写 glossary.rpy）
+
     # Prologue
     prologue = insert_sfx_waits(convert_prologue(lines, 0, prologue_end))
     with open(os.path.join(BASE_DIR, 'game', 'scripts', 'prologue.rpy'), 'w', encoding='utf-8') as f:
@@ -2512,6 +3065,9 @@ def main():
     with open(os.path.join(BASE_DIR, 'game', 'scripts', 'route1.rpy'), 'w', encoding='utf-8') as f:
         f.write(route1)
     print("Route 1 converted!")
+
+    # 行内注释词典（本次转换收集到的 【注释：…】）
+    generate_glossary_rpy()
 
     print("Demo conversion complete!")
     print()

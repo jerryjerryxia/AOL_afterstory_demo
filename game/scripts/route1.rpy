@@ -8,14 +8,14 @@ label route1_start:
     call screen route_title(_("浮潜"), sfx="audio/sfx/bubbles/face-down-bubble.wav")
     $ wait_sfx()
     ## 转场：虚空对视
-    show ws backhand default at ws_close with scene_dissolve
+    show ws backhand default at ws_mid with scene_dissolve
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "欢迎回来，阿鹤。"
     ahe "嗯...那...倒不如去死...？"
     ## 立绘：背手站立，吃惊表情
-    show ws backhand shocked at ws_close
+    show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦？有趣的提议，为什么呢？"
     ahe "我...不好意思...我觉得我有点..."
@@ -29,31 +29,31 @@ label route1_start:
             pass
 
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，从之前的病史来看，你总是在这两个状态之间来回反复，但现在你是什么感觉呢？"
     ahe "…"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry at ws_close
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "啊...连这也说不出来么？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那也可以聊聊你此刻看到的，或听到的，都可以聊，我在听呢。"
     ahe "我感觉...有某种暴戾的东西在我耳边一直说个不停，它想我去做一些非常恶毒的事情..."
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank at ws_close
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "唔，原来如此，原来如此。"
     ahe "我...又病了吗？"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，默认表情
-    show ws akimbo default at ws_close
+    ## 立绘：讲解站立，默认表情
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不，恰恰相反，阿鹤。要我说，你现在就像太阳一样稳定。"
     ahe "太阳？"
     ## 立绘：背手站立，吃惊表情
-    show ws backhand shocked at ws_close
+    show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦，不好意思，太阳在那儿。"
     ## 玻璃破碎音效：glass-smash-normalized
@@ -130,7 +130,7 @@ label route1_start:
     scene summergaze_surprised
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦？所以还是想起来了一些。"
-    ahe "你...毁掉了整个逝乐园。"
+    ahe "你...毁掉了整个{a=gloss:g1}逝乐园{/a}。"
     ## 表情：大笑
     scene summergaze_laugh
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -143,7 +143,7 @@ label route1_start:
     ## 表情：面无表情
     scene summergaze_blank
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "嗯，我懂的，阿鹤。在完成一件惊人的壮举后，出现冒充者综合征是非常常见的事情。但不论你怎么想，事已至此，还是放平心态最重要。"
+    wangshuang "嗯，我懂的，阿鹤。在完成一件惊人的壮举后，出现{a=gloss:g2}冒充者综合征{/a}是非常常见的事情。但不论你怎么想，事已至此，还是放平心态最重要。"
     ahe "...行啊...你就继续哔哔吧...随便了...随你便了..."
     wangshuang "哎你看你这人，三天两头向外归因，遇事不决就无视问题——"
     ## 表情：小声嘀咕
@@ -165,7 +165,7 @@ label route1_start:
     wangshuang "你当然不明白，你肯定在想‘可这明明也是外因导致的，毕竟整个太阳系都齐心协力地求它继续活下去’。"
     ahe "唔..."
     ## 面无表情
-    wangshuang "被我猜到了吧？然而现实恰恰相反——太阳不死仅仅是因为它的使命尚未完成而已。而它的死活与它或其他任何造物的想法，则是没有半点关系。"
+    wangshuang "被我猜到了吧？然而现实恰恰相反——太阳不死仅仅是因为它的使命尚未完成而已，而它的死活与它或其他任何造物的想法，则是没有半点关系。"
     ## 小声嘀咕
     wangshuang "想法是轻薄的、由外界塑造的，一坨烂泥一样谁都可以捏一把，但同时也是无足轻重的。而使命则是彻头彻尾、由内而外的——只有在‘使命’松手之后，‘想法’才配拥有虚假的自由。"
     ahe "这和我们又有什么关系？"
@@ -192,13 +192,11 @@ label route1_start:
     ## 表情：面无表情
     scene summergaze_blank
     $ renpy.transition(Dissolve(0.2), layer="master")
-    show screen op_lock(2)
+    $ op_lock_start(2)
     wangshuang "盯——"
-    hide screen op_lock
     ahe "…"
-    show screen op_lock(2)
+    $ op_lock_start(2)
     wangshuang "盯——"
-    hide screen op_lock
     ahe "…"
     wangshuang "噗——"
     ahe "…"
@@ -316,46 +314,72 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不如问问店家咯。"
     ahe "好吧...你好，能帮我把门开一下吗？"
-    wangshuang "不好意思啊先生，老板刚才说了，今天店里的客人都必须留到天黑之后才能走。"
+    ## 店员入场
+    show ws backhand default_glitchsoft as ws_clerk1 at ws_clerk_right_enter
+    ## 在屏幕右边垂直滑出来
+    wangshuang_clerk "不好意思啊先生，老板刚才说了，今天店里的客人都必须留到天黑之后才能走。"
     ahe "你是这儿的店员？而且天已经黑了。"
-    wangshuang "老板说，还不够黑。"
+    ## 店员2入场
+    show ws crossed default_glitchsoft as ws_clerk2 at ws_clerk_ceiling_enter
+    ## 从屏幕左边天花板倒立下来
+    wangshuang_clerk2 "老板说，还不够黑。"
     ahe "好吧...所以我能走了吗？"
-    ## 表情：坏笑
+    ## 三人集体坏笑
     scene dessert1_smirk
+    show ws backhand smirk_glitchsoft as ws_clerk1 at ws_clerk_right
+    show ws crossed smirk_glitchsoft as ws_clerk2 at ws_clerk_ceiling
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不能。"
-    ahe "你好烦。"
-    ## 表情：撇嘴
-    scene dessert1_pout
+    ahe "你...你们好烦。"
+    ## 表情：默认
+    scene dessert1_default
+    show ws backhand smirk_glitchsoft as ws_clerk1 at ws_clerk_right
+    show ws crossed smirk_glitchsoft as ws_clerk2 at ws_clerk_ceiling
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "就算出去了，你准备做什么？"
+    wangshuang "就算出去了，你又准备做什么？"
     ahe "把大石头推上山，把琴弦拧成电缆，什么都可以。"
-    wangshuang "意思是你准备换个地方无所事事。"
-    ahe "再无所事事都胜过和你呆在这里。"
-    ## 表情：疑惑
-    scene dessert1_puzzled
+    show ws akimbo blank_glitchsoft as ws_clerk2 at ws_clerk_ceiling
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "啊，已经这么遭人嫌了么..."
+    wangshuang_clerk2 "意思是你准备换个地方无所事事。"
+    ahe "再无所事事都胜过和你呆在这里。"
+    show ws crossed wry_glitchsoft as ws_clerk1 at ws_clerk_right
+    $ renpy.transition(Dissolve(0.2), layer="master")
+    wangshuang_clerk "啊，已经这么遭人嫌了么..."
     ahe "...多少有点自知之明吧你..."
     ## 表情：撇嘴
     scene dessert1_pout
+    show ws crossed wry_glitchsoft as ws_clerk1 at ws_clerk_right
+    show ws akimbo blank_glitchsoft as ws_clerk2 at ws_clerk_ceiling
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "彼此彼此咯，毕竟我们都只是遵循着强烈的愿望，尝试了一直以来想要尝试的事情。"
     ahe "...区别在于我不需要人陪葬。"
+    ## 三人集体坏笑
+    scene dessert1_smirk
+    show ws crossed smirk_glitchsoft as ws_clerk1 at ws_clerk_right
+    show ws crossed smirk_glitchsoft as ws_clerk2 at ws_clerk_ceiling
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不，区别在于我做到了，而你没有。"
     ahe "…"
-    ## 表情：默认
+    ## 三人集体默认
     scene dessert1_default
+    show ws crossed default_glitchsoft as ws_clerk1 at ws_clerk_right
+    show ws crossed default_glitchsoft as ws_clerk2 at ws_clerk_ceiling
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "而你拒绝与我共处一室的真正原因只是嫉妒，仅此而已。"
     ahe "闭嘴吧..."
-    ## 表情：坏笑
+    ## 三人集体坏笑
     scene dessert1_smirk
+    show ws crossed smirk_glitchsoft as ws_clerk1 at ws_clerk_right
+    show ws crossed smirk_glitchsoft as ws_clerk2 at ws_clerk_ceiling
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我闭嘴了又有什么用？难道你那苍白的“理想”就不需要人来陪葬了？"
     wangshuang "你为了{i}尤里娅{/i}那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
     ahe "…"
     ## 转场：甜品店对视2
+    ## 店员退场（垂直平移出屏幕）
+    show ws crossed smirk_glitchsoft as ws_clerk1 at ws_clerk_right_exit
+    show ws crossed smirk_glitchsoft as ws_clerk2 at ws_clerk_ceiling_exit
+    pause 0.75
     scene bg_dessertgaze2 with scene_dissolve
     ## 表情：默认
     scene dessert2_default
@@ -379,7 +403,7 @@ label route1_start:
     scene dessert2_pout
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你这人，连真心话都不让人说。"
-    ahe "王霜？真心话？这两个概念居然能够产生任何关联？"
+    ahe "王霜？真心话？这两个词出现在同一个句子里是一种语法错误吧！"
     wangshuang "连真心话都分不清，以后可是要吃大亏的哦。"
     ## 手中出现无色透明多面体，多面体形状略微改变2
     wangshuang "哦，对，团子有得是，千万别客气，请吧——"
@@ -399,7 +423,7 @@ label route1_start:
     ## 表情：默认
     scene dessert3_default
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢再用{i}KAS{/i}的，那次是真的差点死了..."
+    wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢再碰 {i}KAS{/i} 的，那次是真的差点死了..."
     ahe "哦，这样一来你那“磕完药差点死掉的小故事集”就又有新章节可以更新了咯。"
     ## 表情：小激动
     scene dessert3_excited
@@ -407,11 +431,15 @@ label route1_start:
     wangshuang "那可是正儿八经的人命啊喂！"
     wangshuang "不过一般人的反应应该不会那么夸张。你会喜欢的，我觉得。"
     ahe "所以我们要在这里待到什么时候？"
+    ## 店员2入场
+    show ws crossed default_glitchsoft as ws_clerk2 at ws_clerk_ceiling_enter
+    wangshuang_clerk2 "等时机到了，自然就能离开。"
+    ## 店员2退场
+    show ws crossed default_glitchsoft as ws_clerk2 at ws_clerk_ceiling_exit
+    ahe "也是一种较为朴素的过程？"
     ## 表情：默认
     scene dessert3_default
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "等时机到了，自然就能离开。"
-    ahe "也是一种较为朴素的过程？"
     wangshuang "哦？如此简明且精确的定义，谁教你的？"
     ahe "一个傻逼。"
     ## 表情：小激动
@@ -431,11 +459,21 @@ label route1_start:
     ahe "存疑。"
     wangshuang "哎阿鹤，虽然有些事情我确实做得...不太好...从世俗意义上来说，但也没必要这样质疑我演戏的质量嘛。"
     ahe "你看，你都自首了。还不逮捕你自己。"
+    ## 店员1进场，讲解站立，面无表情
+    show ws akimbo blank_glitchsoft as ws_clerk1 at ws_clerk_right_enter
+    ## 店员2进场，讲解站立，面无表情
+    show ws akimbo blank_glitchsoft as ws_clerk2 at ws_clerk_ceiling_enter
     ## 表情：撇嘴
     scene dessert3_pout
+    show ws akimbo blank_glitchsoft as ws_clerk1 at ws_clerk_right_enter
+    show ws akimbo blank_glitchsoft as ws_clerk2 at ws_clerk_ceiling_enter
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那我还得兼任检察官辩护律师和法官，太麻烦了。"
     ahe "用来消磨时间正合适，反正用不完。"
+    ## 店员1退场
+    show ws akimbo blank_glitchsoft as ws_clerk1 at ws_clerk_right_exit
+    ## 店员2退场
+    show ws akimbo blank_glitchsoft as ws_clerk2 at ws_clerk_ceiling_exit
     wangshuang "不不不那就不对了，如果你还想“消磨时间”，那就说明你修为尚浅，还没悟透其中道理。"
     ahe "...好的，师傅。"
     ahe "话说师傅，你手里拿的是什么？"
@@ -461,7 +499,7 @@ label route1_start:
             wangshuang "哦，那随你便咯——说起来啊，阿鹤，你喜欢红色还是蓝色？"
         "接受。":
             $ madness += 1
-            "虽然你清楚地意识到你跳动的血管里，{i}KAS{/i} 即将穿越脑血屏障，随时可能把你的意识送上云端，可你那该死的好奇心还是压过了残存的理性。"
+            "虽然你清楚地意识到你跳动的血管里，{i}KAS{/i} 即将穿越{a=gloss:g3}脑血屏障{/a}，随时可能把你的意识送上云端，可你那该死的好奇心还是压过了残存的理性。"
             "你接过王霜手里那无色透明的多面体。"
             "那东西轻若无物又变幻莫测，看似是固体，摸起来却又有介于凝胶和麻薯之间的质感，躺在你手心里，冰冰凉的。"
             "你毫无戒心地将那不明物件送进嘴里，简单地咀嚼了一阵，没有尝出任何味道就囫囵吞下了。"
@@ -498,9 +536,11 @@ label route1_start:
     split_right_narrator "反复咀嚼伤痛直至淡而无味，直到甜味凭空冒出来。"
     extend "\n在一切都已结束的当下，连时间都已丧失价值，唯一还能让你睁开双眼的，就只有——"
     ## Split Extended大文本框结束
-    ## 居中大字文本框开始 - centered large font textbox
-    centered_large_narrator "瘾。"
-    ## 居中大字文本框结束
+    ## 转场：瘾
+    scene bg_addiction with scene_dissolve
+    ## 画面单独一拍：点击后才继续出字
+    window hide
+    pause
     ## Split Extended大文本框开始 - 左右分栏
     ## 转场：甜品店对视5
     scene bg_dessertgaze5 with scene_dissolve
@@ -551,20 +591,20 @@ label route1_start:
     ## 转场：甜品店对视6.51
     scene bg_dessertgaze6_51 with scene_dissolve
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "你的知能越是提升，它的样貌就越发模糊，谜样的面容中只显露出一抹依稀可见的残酷笑容，仿佛在嘲讽你的徒劳。"
+    large_narrator "你的知能越是提升，它的样貌就越发模糊，谜样的面容中只显露出一抹依稀可见的残酷笑容，仿佛在嘲讽你竭尽全力去理解它的徒劳模样。"
     extend "\n但你已经满足了，由内而外地满足了，在饱满的感官刺激中感到一阵——疲劳？"
     extend "\n幸福的疲劳、优质的疲劳、苦苦追寻的疲劳、允许你在辗转反侧后终于入睡的甜美疲劳。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "世界空无一人，因为任何个体都不具备足够的差异能够让它们自称“存在”，因此你将它们尽数吞下，如同团子。"
+    large_narrator "世界空无一人，因为任何个体都不具备足够的差异能够让它们自称“存在”，因此你将它们尽数吞下，就像你吞下一个又一个的团子那样。"
     extend "\n糖分继续满溢出来，沿着你存在的边缘缓缓淌下，坠入周身蔚蓝的虚空之中，粘稠而香甜。"
-    extend "\n糖浆，万物的粘合剂。就用它来替代血液。"
+    extend "\n糖浆，万物的粘合剂。就用它来替代血液！"
     extend "\n完成之后就去睡吧。"
-    extend "\n你的愿望在那念头浮出水面的瞬间便成为了现实，而你只想在这静谧安详的世界里睡去。"
+    extend "\n你的愿望在那念头浮出水面的瞬间便成为了现实，你将在这静谧安详的世界里沉沉睡去。"
     ## Extended大文本框结束
     ## 色彩开始还原
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "然而当你行将合眼时，一阵强烈的恶心自胃里上涌，就像有人抓住你的肠胃，自下而上地用力挤压。"
+    large_narrator "然而当你行将合眼时，一阵剧烈的恶心自下腹部上涌，就像有人抓住你的肠胃自下而上地来回挤压搓捻着。"
     extend "\n警告：过热。过热。"
     extend "\n钟表嘀嗒作响。"
     extend "\n恶心加剧，肠胃彻底拧成一团，而其中汹涌的内容物已经呼之欲出。"
@@ -636,7 +676,7 @@ label route1_start:
     $ set_scene_music("route1_deepspace")
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "没有人。周身只有一片暧昧的粉红色雾气。"
-    extend "\n试着蜷起手指，只觉得手心传来一阵稍纵即逝的触感，冰凉而虚幻。"
+    extend "\n你试着蜷起手指，只觉得手心传来一阵稍纵即逝的触感，冰凉而虚幻。"
     extend "\n你挣扎着想要活动身体，却猛地意识到自己的横膈膜停止了张弛。"
     ## Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox
@@ -647,8 +687,11 @@ label route1_start:
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "空气中充斥着一股微妙的甜腻味道。"
     extend "\n粉红色的？"
-    extend "\n在童年故乡的某个傍晚，太阳将要落山，你踌躇满志地幻想未来时，也闻到过这样的味道。"
+    extend "\n在童年故乡的某个傍晚，太阳将要落山，你踌躇满志地幻想未来时，也曾闻到过这样的味道。"
     extend "\n它让你想起一些美好但没有意义的事情。"
+    extend "\n比如王霜柔软而光滑的{a=gloss:g4}——{/a}"
+    extend "\n比如月明星稀的夜空。"
+    extend "\n比如此刻。"
     extend "\n无论如何也没法从中逃离，但请保持呼吸。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
@@ -663,14 +706,18 @@ label route1_start:
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "请严肃呕吐。"
     extend "\n只要能够继续呼吸。"
+    extend "\n耳畔那滔滔不绝的声音终于消褪了。"
+    extend "\n此刻你只能听见自己身体运转所发出的声响。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "请不要脱水。"
     extend "\n请不要腐烂。"
-    extend "\n请不要在恒温动物的皮囊里窒息。"
+    extend "\n请不要在一具人形脊椎动物的皮囊里窒息。"
     ## Extended大文本框结束
     ## 呼吸音效
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
+    label _interro_restart:
+        pass
     ## Extended大文本框开始 - accumulating large textbox（不分句）
     $ no_click_split = True
     $ interro_reset()
@@ -687,67 +734,81 @@ label route1_start:
                 extend "\n——请注意，您没有权利保持沉默。"
                 window hide Dissolve(.25)
                 menu:
-                    "王霜把三根冰凿子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。":
+                    "王霜把三根冰凿子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。" (interro=("m2A", "i")):
+                        $ interro_picked.add("m2A")
                         $ interro_insane += 1
                         $ interro_seen.add("王霜把三根冰凿子打进我的眼窝之后")
                         $ _intro_fade_pending = True
                         extend "\n——王霜把三根冰凿子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。\n——觉得可爱吗？"
                         window hide Dissolve(.25)
                         menu:
-                            "一般般...":
+                            "一般般..." (interro=("m3A", "c")):
+                                $ interro_picked.add("m3A")
                                 $ interro_calm += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——一般般...\n——您的回答已被记录。"
-                            "恶心死了！":
+                            "恶心死了！" (interro=("m3B", "d")):
+                                $ interro_picked.add("m3B")
                                 $ interro_death += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——恶心死了！\n——预料之外呢，阿鹤先生。"
-                            "可爱！":
+                            "可爱！" (interro=("m3C", "i")):
+                                $ interro_picked.add("m3C")
                                 $ interro_insane += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——可爱！\n——很好。"
-                    "吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。":
+                    "吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。" (interro=("m2B", "u")):
+                        $ interro_picked.add("m2B")
                         $ interro_halluc += 1
                         $ _intro_fade_pending = True
                         extend "\n——吃过 {i}KAS{/i} 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。\n——请问您还记得剂量吗？"
                         window hide Dissolve(.25)
                         menu:
-                            "不记得，王霜给的。":
+                            "不记得，王霜给的。" (interro=("m4A", "c")):
+                                $ interro_picked.add("m4A")
                                 $ interro_calm += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——不记得，王霜给的。\n——您的回答已被记录。"
-                            "三百八十二点三毫克，误差在零点四毫克之内。":
+                            "三百八十二点三毫克，误差在零点四毫克之内。" (interro=("m4B", "u")):
+                                $ interro_picked.add("m4B")
                                 $ interro_halluc += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——三百八十二点三毫克，误差在零点四毫克之内。\n——如果您无法如实作答，请不要胡乱编造答案。"
-                            "我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？":
+                            "我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？" (interro=("m4C", "h")):
+                                $ interro_picked.add("m4C")
                                 $ interro_hostile += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
-                    "尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...":
+                    "尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我..." (interro=("m2C", "d")):
+                        $ interro_picked.add("m2C")
                         $ interro_death += 1
                         $ _intro_fade_pending = True
                         extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
                         window hide Dissolve(.25)
                         menu:
-                            "闭嘴...":
+                            "闭嘴..." (interro=("m5A", "h")):
+                                $ interro_picked.add("m5A")
                                 $ interro_hostile += 1
                                 $ _intro_fade_pending = True
-                                extend "\n——闭嘴...\n——您的回答已被记录。"
-                            "我们是同事关系，正处于一段禁断的办公室恋情之中。":
+                                extend "\n——闭嘴...\n——请您注意您的态度。"
+                            "我们是同事关系，正处于一段禁断的办公室恋情之中。" (interro=("m5B", "u")):
+                                $ interro_picked.add("m5B")
                                 $ interro_halluc += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——我们是同事关系，正处于一段禁断的办公室恋情之中。\n——根据我们的调查，这属于不实信息。"
-                            "死了。还有什么要问的么？":
+                            "死了。还有什么要问的么？" (interro=("m5C", "d")):
+                                $ interro_picked.add("m5C")
                                 $ interro_death += 1
                                 $ _intro_fade_pending = True
                                 extend "\n——死了。还有什么要问的么？\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
-                    "沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。":
+                    "沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。" (interro=("m2D", "c")):
+                        $ interro_picked.add("m2D")
                         $ interro_calm += 1
                         $ _intro_fade_pending = True
                         extend "\n——沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
                         extend "\n——以及为什么您对“不朽”的定义是以天为单位的..."
-            "没有":
+            "没有" (interro=("m1B", "c")):
+                $ interro_picked.add("m1B")
                 if "m1B" not in interro_once:
                     $ interro_calm += 1
                     $ interro_once.add("m1B")
@@ -765,259 +826,333 @@ label route1_start:
             extend "\n——请注意，您没有权利保持沉默。"
             window hide Dissolve(.25)
             menu:
-                "她属于我，仅此而已。":
+                "她属于我，就这么简单。" (interro=("m7A", "u")):
+                    $ interro_picked.add("m7A")
                     $ interro_halluc += 1
                     $ _intro_fade_pending = True
-                    extend "\n——她属于我，仅此而已。\n——请问您是如何得出这一结论的呢？"
+                    extend "\n——她属于我，就这么简单。\n——请问您是如何得出这一结论的呢？"
                     window hide Dissolve(.25)
                     menu:
-                        "她亲口告诉我的。":
+                        "她亲口告诉我的。" (interro=("m8A", "u")):
+                            $ interro_picked.add("m8A")
                             $ interro_halluc += 1
                             $ _intro_fade_pending = True
                             extend "\n——她亲口告诉我的。\n——很不幸，当事人的语料库中并没有检索出类似的消息呢，阿鹤先生。"
-                        "但凡正常人的脑子都能得出这一结论的吧...":
+                            extend "\n——那你就继续骗自己吧，我言尽于此。"
+                        "但凡正常人的脑子都能得出这一结论的吧..." (interro=("m8B", "h")):
+                            $ interro_picked.add("m8B")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——但凡正常人的脑子都能得出这一结论的吧...\n——我恐怕有坏消息要告诉您，阿鹤先生。"
-                        "因为可爱！":
+                            extend "\n——哦，那你先闭嘴，最近坏消息扎堆感觉心脏承受不太住。"
+                        "因为可爱！" (interro=("m8C", "i")):
+                            $ interro_picked.add("m8C")
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——因为可爱！\n——明白了。"
-                "她说想去外面看看。":
+                            extend "\n——什么叫明白了！我看你是根本不明白吧！你们这是在侵犯我的权利，懂吗？"
+                            extend "\n——...我们会...如实记录您的反馈的..."
+                "她说想去外面看看，所以我要实现她的愿望。" (interro=("m7B", "c")):
+                    $ interro_picked.add("m7B")
                     $ interro_calm += 1
                     $ _intro_fade_pending = True
-                    extend "\n——她说想去外面看看。\n——请问您还记得她是在怎样的场合下告知您这个想法的吗？"
+                    extend "\n——她说想去外面看看，所以我要实现她的愿望。\n——请问您还记得她是在怎样的场合下告知您这个想法的吗？"
                     window hide Dissolve(.25)
                     menu:
-                        "不记得，王霜告诉我的。":
+                        "不记得，王霜告诉我的。" (interro=("m9A", "c")):
+                            $ interro_picked.add("m9A")
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——不记得，王霜告诉我的。\n——请不要随意相信他人传播的不实信息啊，阿鹤先生..."
-                        "在她死前。":
+                            extend "\n——嗯...王霜和你们这帮东西...该相信谁呢...感觉不好说啊..."
+                        "在她死前。" (interro=("m9B", "d")):
+                            $ interro_picked.add("m9B")
                             $ interro_death += 1
                             $ _intro_fade_pending = True
                             extend "\n——在她死前。\n——您的回答已被记录。"
-                        "能麻烦您别再问这种刁钻的记忆力考题了么？":
+                            extend "\n——嗯...记录...仔细记录...非常美妙的模样..."
+                        "能麻烦您别再问这种刁钻的记忆力考题了么？" (interro=("m9C", "h")):
+                            $ interro_picked.add("m9C")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——能麻烦您别再问这种刁钻的记忆力考题了么？\n——您没有权力质疑问题的合理性，阿鹤先生，请如实作答。"
-                "零件啊！零件不够用了，王霜说零件不够用了，那就只好自己出来找了咯。":
+                            extend "\n——那我无可奉告，想不起来了，开心了么？"
+                "零件啊！零件不够用了，王霜说零件不够用了，那就只好自己出来找了咯。" (interro=("m7C", "i")):
+                    $ interro_picked.add("m7C")
                     $ interro_insane += 1
                     $ _intro_fade_pending = True
                     extend "\n——零件啊！零件不够用了，王霜说零件不够用了，那就只好自己出来找了咯。\n——请确认您对于这个回答的严肃性。"
                     window hide Dissolve(.25)
                     menu:
-                        "非常严肃非常认真非常一丝不苟非常——":
+                        "非常严肃非常认真非常一丝不苟非常——" (interro=("m10A", "i")):
+                            $ interro_picked.add("m10A")
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——非常严肃非常认真非常一丝不苟非常——\n——请立刻停止无意义的胡言乱语，阿鹤先生。"
-                        "不如去问问王霜，看看她怎么说。":
+                        "你们不如去问问王霜，看看她怎么说。" (interro=("m10B", "c")):
+                            $ interro_picked.add("m10B")
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
-                            extend "\n——不如去问问王霜，看看她怎么说。\n——这不是需要您操心的问题。"
-                        "确认了。然后呢？":
+                            extend "\n——你们不如去问问王霜，看看她怎么说。\n——这不是需要您操心的问题。"
+                            extend "\n——那我就没什么可说的了，希望你们能够找到你们在寻找的答案。"
+                            extend "\n——这也不是需要您操心的问题。"
+                        "确认了。然后呢？" (interro=("m10C", "h")):
+                            $ interro_picked.add("m10C")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——确认了。然后呢？\n——明白。您的回答已被记录。"
-                "血...":
+                            extend "\n——没了？也太他妈无聊了吧！这可是我好不容易才想出来的变态回复诶！"
+                            extend "\n——已更新回答。"
+                "血..." (interro=("m7D", "d")):
+                    $ interro_picked.add("m7D")
                     $ interro_death += 1
                     $ _intro_fade_pending = True
                     extend "\n——血...\n——请展开聊聊"
                     window hide Dissolve(.25)
                     menu:
-                        "无可奉告。":
+                        "无可奉告。" (interro=("m11A", "c")):
+                            $ interro_picked.add("m11A")
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——无可奉告。\n——如果您坚持沉默，我们将保留采取强制措施的可能性，还请您多多理解。"
-                        "只有足够的血我们才能继续生存下去，你明白吗？这是基本常识吧，我亲爱的朋友，那么请问你愿意捐献——":
+                            extend "\n——如果会有更多血的话...嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻..."
+                        "只有足够的血我们才能继续生存下去，你明白吗？这是基本常识吧，我亲爱的朋友，那么请问你愿意捐献——" (interro=("m11B", "i")):
+                            $ interro_picked.add("m11B")
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——只有足够的血我们才能继续生存下去，你明白吗？这是基本常识吧，我亲爱的朋友，那么请问你愿意捐献——\n——问询对象出现了严重的精神状态波动，立即停止问询，启用code purple——"
-                        "杀了她，就能见到血。有什么很难理解的地方吗？":
+                        "杀了她，就能见到血。有什么很难理解的地方吗？" (interro=("m11C", "d")):
+                            $ interro_picked.add("m11C")
                             $ interro_death += 1
                             $ _intro_fade_pending = True
                             extend "\n——杀了她，就能见到血。有什么很难理解的地方吗？\n——您的回答已被记录。"
+                            extend "\n——如此简明的答案呢...与其在这儿浪费时间...不如..."
+                            extend "\n——阿鹤先生，不需要您考虑接下来的行动计划。"
         "受人指使":
             $ _intro_fade_pending = True
-            extend "\n——受人指使\n——请交代该第三方的身份。"
+            extend "\n——受人指使\n——请交代该个人或组织的身份。"
             extend "\n——请注意，您没有权利保持沉默。"
             window hide Dissolve(.25)
             menu:
-                "是尤里娅。":
+                "尤里娅...我们早就计划好了..." (interro=("m12A", "u")):
+                    $ interro_picked.add("m12A")
                     $ interro_halluc += 1
                     $ _intro_fade_pending = True
-                    extend "\n——是{i}尤里娅{/i}。\n——请详细交代她的动机。"
+                    extend "\n——{i}尤里娅{/i}...我们早就计划好了...\n——请详细交代她的动机。"
                     window hide Dissolve(.25)
                     menu:
-                        "她想要消失，仅此而已。":
+                        "她想要消失，仅此而已。" (interro=("m13A", "c")):
+                            $ interro_picked.add("m13A")
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——她想要消失，仅此而已。\n——这恐怕是您的一厢情愿，阿鹤先生。"
-                            extend "\n——悉听尊便。"
-                        "因为可爱！":
+                            extend "\n——你说是就是吧，但我知道的就这么多了。"
+                        "因为可爱！" (interro=("m13B", "i")):
+                            $ interro_picked.add("m13B")
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——因为可爱！\n——请停止无谓的胡言乱语，阿鹤先生。"
                             extend "\n——喂喂喂，质疑{i}尤里娅{/i}可爱的人可都没什么好下场啊，你可要想清楚了。"
-                            extend "\n——...让我们继续吧..."
-                        "她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！":
+                            extend "\n——…"
+                        "她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！" (interro=("m13C", "u")):
+                            $ interro_picked.add("m13C")
                             $ interro_halluc += 1
                             $ _intro_fade_pending = True
                             extend "\n——她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！\n——阿鹤先生精神分裂分析报告呢？需要重新评估么..."
-                "是王霜。":
+                            extend "\n——还评估？哎...官僚主义的幽灵啊，这就是逝乐园最窝囊的死法么..."
+                "是王霜啊，到现在了你还没搞明白这一点么？" (interro=("m12B", "c")):
+                    $ interro_picked.add("m12B")
                     $ interro_calm += 1
                     $ _intro_fade_pending = True
-                    extend "\n——是王霜。\n——请详细交代她的动机。"
+                    extend "\n——是王霜啊，到现在了你还没搞明白这一点么？\n——请详细交代她的动机。"
                     window hide Dissolve(.25)
                     menu:
-                        "不清楚，她只是告诉我要这么做而已。":
+                        "不清楚，她只是告诉我要这么做而已。" (interro=("m14A", "c")):
+                            $ interro_picked.add("m14A")
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——不清楚，她只是告诉我要这么做而已。\n——阿鹤先生...没有检测到不实信息么...无妨，那我们继续..."
-                        "那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！":
+                        "那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！" (interro=("m14B", "i")):
+                            $ interro_picked.add("m14B")
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！\n——..."
-                            extend "\n——怎么了？惊讶地说不出话来了么？也好，那就在她残酷的圣光中继续颤抖吧！"
-                        "用来研究。":
+                            extend "\n——怎么了？惊讶地说不出话来了么？也好，那就在她残酷的圣光中继续颤抖吧，垃圾们！"
+                        "当然是用来研究，你以为呢？" (interro=("m14C", "h")):
+                            $ interro_picked.add("m14C")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
-                            extend "\n——用来研究。\n——请详细交代她的研究课题和目的。"
-                            extend "\n——你们还是自己去问她吧。"
-                "是米特拉布。":
+                            extend "\n——当然是用来研究，你以为呢？\n——请详细交代她的研究课题和目的。"
+                            extend "\n——你觉得我要是听得懂她的那些课题和目的，我还能有闲工夫在这儿和你们唠嗑？"
+                "是米特拉布。" (interro=("m12C", "h")):
+                    $ interro_picked.add("m12C")
                     $ interro_hostile += 1
                     $ _intro_fade_pending = True
                     extend "\n——是米特拉布。\n——请详细交代该组织的动机。"
                     window hide Dissolve(.25)
                     menu:
-                        "你去问他们的老板啊，店面离你们这么近，跑来问我是做什么？":
+                        "你去问他们的老板啊，店面离你们这么近，跑来问我是做什么？" (interro=("m15A", "c")):
+                            $ interro_picked.add("m15A")
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——你去问他们的老板啊，店面离你们这么近，跑来问我是做什么？\n——请注意您的立场，阿鹤先生。"
                             extend "\n——假如你真的觉得我脑子里有你们想要的信息，打开我的脑子不就行了，为什么要在这儿浪费时间？"
                             extend "\n——…"
-                        "米姐喜欢看生体喝醉的样子，她觉得那很性感。":
+                        "米姐喜欢看生体喝醉的样子，她觉得那很性感。" (interro=("m15B", "u")):
+                            $ interro_picked.add("m15B")
                             $ interro_halluc += 1
                             $ _intro_fade_pending = True
                             extend "\n——米姐喜欢看生体喝醉的样子，她觉得那很性感。\n——醉态确实是本公司生体产品最新推出的性能优化点之一，非常高兴这一优化受到了用户的喜爱。我们将择机上门送上我们的感谢。"
-                        "她是来调查你们的，准备好人财两空吧，资本主义的走狗们。":
+                            extend "\n——建议不要空手去哦，米姐不喜欢没诚意的客人。"
+                            extend "\n——放心吧阿鹤先生，我们一定会诚意满满地上门的。"
+                        "她是来调查你们的，准备好人财两空吧，资本主义的走狗们。" (interro=("m15C", "h")):
+                            $ interro_picked.add("m15C")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——她是来调查你们的，准备好人财两空吧，资本主义的走狗们。\n——请提供浅显事实之外的信息。"
                             extend "\n——你们连这都知道了，还有什么事情不是浅显事实的..."
                             extend "\n——无妨，让我们继续吧。"
-                "死人...是死人...":
+                "死人...是死人..." (interro=("m12D", "d")):
+                    $ interro_picked.add("m12D")
                     $ interro_death += 1
                     $ _intro_fade_pending = True
                     extend "\n——死人...是死人...\n——阿鹤先生，请不要顾左右而言他。"
                     window hide Dissolve(.25)
                     menu:
-                        "他们已经到门口了...还不去迎接么？":
+                        "他们已经到门口了...还不去迎接么？" (interro=("m16A", "d")):
+                            $ interro_picked.add("m16A")
                             $ interro_death += 1
                             $ _intro_fade_pending = True
                             extend "\n——他们已经到门口了...还不去迎接么？\n——阿鹤先生，我们没有时间听您的胡言乱语，如果您已经打定主意——"
                             ## glitch音效
                             $ play_glitch()
-                            ## 转场：黑屏
-                            scene bg_black_video with scene_soft
-                        "你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么...":
+                            extend "\n——记录中断——"
+                        "你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么..." (interro=("m16B", "i")):
+                            $ interro_picked.add("m16B")
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么...\n——这与我们讨论的话题无关，阿鹤先生，请注意——"
                             ## glitch音效
                             $ play_glitch()
-                            ## 转场：红屏
-                            scene bg_red_video with scene_soft
-                        "血...是血...等你们也能看到那景象...一切就太迟了...太迟了...":
+                            extend "\n——检测到不合规信息，移除中——"
+                        "血...是血...等你们也能看到那景象...一切就太迟了...太迟了..." (interro=("m16C", "u")):
+                            $ interro_picked.add("m16C")
                             $ interro_halluc += 1
                             $ _intro_fade_pending = True
                             extend "\n——血...是血...等你们也能看到那景象...一切就太迟了...太迟了...\n——无妨，那就让我们继续吧。"
-    extend "\n——本公司将本着公平、公正、公开的原则，保留为具有高度危险性的犯罪嫌疑人实施脑前叶白质切除术的可能性 ，请问您有异议吗？"
+    extend "\n——最后一个问题：本公司将本着公平、公正、公开的原则，保留为具有高度危险性的犯罪嫌疑人实施{a=gloss:g5}脑前叶白质切除术{/a}的可能性 ，请问您有异议吗？"
     extend "\n——…"
     window hide Dissolve(.25)
     menu:
-        "随便吧。":
+        "随便吧。" (interro=("m17A", "c")):
+            $ interro_picked.add("m17A")
             $ interro_calm += 1
             $ _intro_fade_pending = True
             extend "\n——随便吧。\n——感谢您的配合。"
             extend "\n——如有必要，我们保证将以最人道的方式对您进行无害化处理。"
             extend "\n——请耐心等待审议结果。"
-        "有。":
+        "有。" (interro=("m17B", "h")):
+            $ interro_picked.add("m17B")
             $ interro_hostile += 1
             $ _intro_fade_pending = True
             extend "\n——有。\n——阿鹤先生，请注意您此刻没有反对的权利。"
             extend "\n——如有必要，我们保证将以最人道的方式对您进行无害化处理。"
-            extend "\n——在此期间，请您不要尝试阻挠我们的工作人员的日常工作，耐心等待审议结果。"
-        "都已经做过一遍了，看来你们还挺闲得慌？" if "王霜把三根冰凿子打进我的眼窝之后" in interro_seen:
+            extend "\n——在此期间，请您不要尝试阻挠本公司的职员的日常工作，耐心等待审议结果。"
+        "都已经做过一遍了，看来你们还挺闲得慌？" (interro=("m17C", "i")) if "王霜把三根冰凿子打进我的眼窝之后" in interro_seen:
+            $ interro_picked.add("m17C")
             $ interro_insane += 1
             $ _intro_fade_pending = True
             extend "\n——都已经做过一遍了，看来你们还挺闲得慌？\n——为了确保您的无害化，我们将对您进行核磁共振检查，在那之前请确保您体内没有任何金属制品。"
             extend "\n——如果您有佩戴心脏起搏器、植入式除颤器等设备，请自行移除。"
             extend "\n——您的核磁共振检查将在三十分钟后开始。"
-        "顺便杀了我如何？":
+        "顺便杀了我如何？" (interro=("m17D", "d")):
+            $ interro_picked.add("m17D")
             $ interro_death += 1
             $ _intro_fade_pending = True
             extend "\n——顺便杀了我如何？\n——这恐怕暂时是不可能的，阿鹤先生。"
-        "如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。":
+            extend "\n——但如果在调查结束后您仍有这方面的需求，我们可以考虑为您执行安乐死。"
+        "如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。" (interro=("m17E", "u")):
+            $ interro_picked.add("m17E")
             $ interro_halluc += 1
             $ _intro_fade_pending = True
-            extend "\n——如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。\n——末日是会来临的，阿鹤先生，请放心吧。"
+            extend "\n——如果牺牲大脑的一部分就能延迟末日的到来的话，请便吧。\n——末日会来临的，阿鹤先生，请放心吧。"
     extend "\n——感谢您的配合，针对您的综合处置措施将在明天的问询之后对外公开，请静候佳音。"
     extend "\n——录入完毕——"
     $ no_click_split = False
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
-    $ interro_evaluate()
-    large_narrator "更新了对于犯罪嫌疑人的心理评估和综合处置措施："
-    ## 精神状态：平稳【仅平稳>1】/疯狂【仅疯狂>1】/分裂【平稳和疯狂皆>1】/检测失败【前三选项皆不成立时】
-    extend "\n精神状态：[interro_mental!t]"
-    ## 人格特质：冷静【对抗<=1】/对抗【对抗>1】
-    extend "\n人格特质：[interro_trait!t]"
-    ## 污染进程：幻觉【仅幻觉>1】/死亡【仅死亡>1】/幻灭【幻觉和死亡皆>1】/无污染【前三选项皆不成立时】
-    extend "\n污染进程：[interro_pollution!t]"
-    ## 建议执行：记忆消除并释放【平稳/检测失败 × 冷静 × 无污染/幻觉/死亡 】，记忆消除和无限期监禁【疯狂 × 冷静 × 幻觉/死亡/幻灭/无污染，以及 平稳/检测失败 · 冷静 · 幻灭】，脑白质切除、记忆消除并释放【平稳/检测失败 × 对抗 × 无污染/幻觉/死亡，疯狂·对抗·无污染，分裂 × 冷静/对抗 × 无污染】，脑白质切除、记忆消除并无限期监禁【疯狂 × 对抗 × 幻觉/死亡/幻灭，平稳/检测失败 × 对抗 × 幻灭，分裂 × 冷静/对抗 × 幻觉/死亡/幻灭】
-    extend "\n建议执行：[interro_verdict!t]"
-    ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
     large_narrator "凝胶柔软。"
-    extend "\n玻璃也柔软。"
+    extend "\n铁栅栏与玻璃也柔软。"
     extend "\n黑夜柔软。"
-    extend "\n光源柔软。"
+    extend "\n聚光灯与拘束衣柔软。"
     extend "\n粉红色雾气却坚硬如铁。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "需要时刻监测的数据点："
+    $ interro_evaluate()
+    large_narrator "更新了对于犯罪嫌疑人的心理评估和综合处置措施："
+    ## 精神状态：稳定（仅平稳>1）/ 疯狂（仅疯狂>1）/ 分裂（平稳和疯狂皆>1）/检测失败（前三选项皆不成立时）
+    extend "\n精神状态：[interro_mental!t]"
+    ## 人格特质：冷静（对抗<=1）/ 对抗（对抗>1）
+    extend "\n人格特质：[interro_trait!t]"
+    ## 污染进程：已内化了幻觉（仅幻觉>1）/ 无法遏制死亡冲动（仅死亡>1）/ 幻灭倾向（幻觉和死亡皆>1）/ 无污染（前三选项皆不成立时）
+    extend "\n污染进程：[interro_pollution!t]"
+    ## 建议执行：记忆消除并释放（平稳/检测失败 × 冷静 × 无污染/幻觉/死亡 ），记忆消除和无限期监禁（疯狂 × 冷静 × 幻觉/死亡/幻灭/无污染，以及 平稳/检测失败 · 冷静 · 幻灭 ），脑白质切除、记忆消除并释放（平稳/检测失败 × 对抗 × 无污染/幻觉/死亡，疯狂·对抗·无污染，分裂 × 冷静/对抗 × 无污染 ），脑白质切除、记忆消除并无限期监禁（疯狂 × 对抗 × 幻觉/死亡/幻灭，平稳/检测失败 × 对抗 × 幻灭，分裂 × 冷静/对抗 × 幻觉/死亡/幻灭 ）
+    extend "\n建议执行：[interro_verdict!t]"
+    ## Extended大文本框结束
+    ## 居中Extended文本框开始 - 监禁循环（条件展示）
+    ## 如果在上方的心理评估中，最终被执行了任意一种无限期监禁，那么会展示监禁marker部分的文字，并重新回到这部分选项的最开始，如果没有被执行无限期监禁，那么展示释放marker部分的文字并继续流程，如果在遭到监禁一次后再次遭到监禁，则展示监禁2marker部分的文字并继续流程
+    if interro_imprisoned and interro_attempt == 1:
+        centered_narrator "监禁中——"
+        extend "\n监禁中——"
+        extend "\n监——"
+        extend "\n检测到不可逆冲突，重启中..."
+        ## 监禁+1，重新回到问询选项的最开始
+        $ interro_attempt += 1
+        jump _interro_restart
+    elif interro_imprisoned:
+        ## 第二次连续监禁：强制调和，继续流程
+        centered_narrator "监禁中——"
+        extend "\n监禁中——"
+        extend "\n监——"
+        extend "\n再次检测到不可逆冲突，强制调和..."
+        extend "\n恭喜，您被释放了。"
+    else:
+        centered_narrator "恭喜，您被释放了。"
+    ## 居中Extended文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "接下来，有这些需要时刻监测的指标："
     extend "\n生命体征。"
     extend "\n死亡体征。"
     extend "\n不可有误。"
     extend "\n脑电波。"
-    extend "\n脑电波。"
+    extend "\n脑电波——"
     extend "\n————————————？"
     extend "\n有误。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox（不分句）
     $ no_click_split = True
-    large_narrator "——插入记忆——"
-    extend "\n——连续24小时的核磁共振？小意思！除非这人的骨头是铁做的——？"
-    extend "\n——当然，即使如此，让他被由内而外地彻底烤熟，也不失为一种凄美悲壮的结局。"
-    extend "\n——所以...会继续监测的。"
+    large_narrator "——现在开始插入——记忆——"
+    extend "\n——连续24小时的核磁共振？嗨，小意思！除非这人的骨头是铁做的——？"
+    extend "\n——当然，即使真的如此，那让他被由内而外地彻底烤熟，也不失为一种凄美悲壮的结局。"
+    extend "\n——嗯...就是要考虑清理问题...也对...血肉混进仪器里了终归是一件麻烦事..."
+    extend "\n——所以...总之会继续监测的。"
     extend "\n——因为那正是...目的...盛大地收...后为后人所铭记，哈哈。现在的年轻人啊..."
     extend "\n——…的理想？"
-    extend "\n——理想？说得好像你这年近三十的__是一个十三岁的孩子。"
+    extend "\n——理想？说得好像这年近三十的...是一个十三岁的孩子。"
     extend "\n——同时，请务必...忘记..."
     extend "\n——弹出中——弹出中——"
     $ no_click_split = False
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox（不分句）
     $ no_click_split = True
-    large_narrator "——读取——读取——"
-    extend "\n所以你会为我保持呼吸么？"
-    extend "\n为我拆出旁人的肋骨，为我洞穿无辜者的肺叶？"
-    extend "\n为我毫无理由地献上溢美之词？"
-    extend "\n赠予我自由？"
-    extend "\n赠予我死亡？"
-    extend "\n无趣。"
-    extend "\n但请保持呼吸。"
+    large_narrator "——读取中——读取中——"
+    extend "\n——喂，所以你会为我保持呼吸么？"
+    extend "\n——为我折断旁人的肋骨，为我洞穿无辜者的肺叶？"
+    extend "\n——为我毫无理由地献上溢美之词？"
+    extend "\n——赠予我自由？"
+    extend "\n——赠予我死亡？"
+    extend "\n——真是无趣啊..."
+    extend "\n——但请保持呼吸。"
     extend "\n——读取失败——"
     $ no_click_split = False
     ## Extended大文本框结束
@@ -1026,131 +1161,124 @@ label route1_start:
     ahe "哦。"
     ahe "呃..."
     ahe "啊...！"
+    ahe "阿...霜..."
+    ahe "我..."
+    ahe "…"
     ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "横膈膜早就停止了张弛，当你意识到自己无法呼吸时，一切已经晚了。"
-    extend "\n你感到浑身发胀。那是因为粉红色的神经毒素正顺着透明细长的针刺注入你的血管。"
+    large_narrator "不经意间，横膈膜停止了张弛。当缺氧的眩晕擒住你的意识时，一切已经晚了。"
+    extend "\n你感到浑身发胀。"
+    extend "\n粉红色的神经毒素顺着透明细长的针刺注入你的血管。"
     extend "\n直到你全身都染上粉红色。"
     ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "粉红色的雾气散成一丝丝隐约可见的、游移的细线——水母的触手。"
-    extend "\n这分明是一场长期疗程的开端，却因为视线模糊而永远定格在了肤浅的一面。"
+    ## Extended大文本框开始 - accumulating large textbox（不分句）
+    $ no_click_split = True
+    large_narrator "粉红色的雾气散成一丝丝隐约可见的、游移的细线——水母的触须。"
+    extend "\n这分明是她精心策划的长期疗程的开端，却因为视线模糊而永远定格在了肤浅的一面。"
     extend "\n——杀人的也罢，懦弱的也罢，捏成一个便是了。"
     extend "\n——剧毒的也罢，解毒的也罢，混成一锅就行了。"
-    extend "\n总之要合而为一，总之要并联，总之要揉碎了再捏起来，总之即使不为了重生也要毁灭。"
-    extend "\n总之必须要保持呼吸。"
+    extend "\n总之要合而为一，总之要并联，总之要揉碎了再捏起来，总之即使不为了重生也要彻底毁灭。"
+    extend "\n总之必须保持呼吸。"
+    $ no_click_split = False
     ## Extended大文本框结束
     ## 呼吸音效
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你想了起她的善。"
-    extend "\n你只能想起她的善。"
-    extend "\n在这水母勾勒的温暖牢笼里，你只被允许想起她的善。"
-    extend "\n伞盖边缘在你看不到的远处有节奏地收缩舒张。每一根触手都与你相连。"
-    extend "\n触手连接肌肤的地方，火苗在跳动。"
+    extend "\n你只能想起她的善——在这水母勾勒的温暖牢笼里，你只被允许想起她的善。"
+    extend "\n水母伞盖的边缘在你看不到的远处有节奏地收缩舒张。每一根触须都与你相连。"
+    extend "\n触须连接肌肤的地方，有火苗在跳动。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "呼吸停止的那一刻，你感到舌尖有些麻木。"
     extend "\n一股苦涩液体自喉管深处涌上来。"
     extend "\n却在抵达舌尖的瞬间消散了。"
-    extend "\n所以说，要保持呼吸道畅通。"
+    extend "\n因为要保持呼吸道畅通。"
     extend "\n请保持呼吸。"
     ## Extended大文本框结束
-    ## 呼吸音效
-    $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
-    ## Extended大文本框开始 - accumulating large textbox
     ## 转场：灰屏
     $ pink_to_grey_started = True
-    large_narrator "她是治愈的灰，包容的灰。"
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "你想起她那窗明几净的办公室，但却无法回忆起分毫色彩。"
+    extend "\n因为她是治愈的灰，包容的灰。"
     extend "\n任何色彩倾泻其中，都只能归零的灰。"
-    extend "\n灰在扩散，由点到面，最后变得像一帘浩大的幕布般徐徐展开。"
-    extend "\n所以追求“还原”何罪之有？"
+    extend "\n灰在扩散，由点到面，最后变得宛如一帘浩大的幕布般徐徐展开。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你只能眼睁睁地看着面前的灰幕展开。"
-    extend "\n无能为力。"
-    extend "\n因为还原的灰幕此刻也是你的愿望。"
-    extend "\n即使身处灰幕下就必须遭受你拼尽全力也难以忍受的疼痛。"
-    extend "\n嚎叫。歇斯底里的嚎叫。你在嚎叫中睡去又醒来。"
+    extend "\n因为灰幕也是你此刻的愿望。"
+    extend "\n即使身处灰幕下就必须遭受剥皮般的剧痛。"
+    extend "\n嚎叫。肌肤裸露在苦咸的海水中。"
+    extend "\n你只能歇斯底里的嚎叫。在嚎叫中睡去又醒来。"
     extend "\n你并不明白自己为何嚎叫，明明只是感到疼痛而已。"
-    extend "\n也许那源自一种强加于你的欢欣，使你由衷地庆祝一个陌生灵魂的自由。"
     ## Extended大文本框结束
-    ## Extended文本框开始 - accumulating textbox
-    "灰幕沉默。你也是。"
-    extend "\n所以还要保持呼吸么？"
-    ## Extended文本框结束
-
-    menu:
-        extend ""
-        "保持呼吸。":
-            ## 呼吸音效渐强，随着文字进程逐渐加快&变响
-            $ swell_ambient(1.0, channel="ambient", swell=14.0)
-            ## Extended大文本框开始 - 大文本框分句
-            large_narrator "那就请继续忍耐吧。"
-            extend "\n灰幕的蔓延永无止境，一如疼痛的叠加永无止境。"
-            extend "\n更多毒液渗入血管，血液沸腾，内脏在沸腾血液的浇灌下燃烧破裂，但你只能感受到你执意选择的灰。"
-            extend "\n痛觉与痛苦开始分离。在日复一日的感官撕扯中，你的体表逐渐只剩下介于触觉和冷感之间的微妙麻木。"
-            extend "\n但横膈膜仍在均匀地舒张。"
-            extend "\n这就够了。"
-            extend "\n这就...够了。"
-            ## Extended大文本框结束
-            ## 呼吸ambient音效停止
-            $ stop_ambient(channel="ambient")
-            ## 电视机关机音效
-            $ play_sfx("audio/sfx/tv_off/dragon-studio-tv-shutdown-386167.mp3")
-            ## 电视机关机转场（CRT 断电，与关机音效同帧触发）
-            show layer master at crt_shutdown
-            $ hard_pause(0.8)
-            scene black with None
-            show layer master
-            ## 转场：黑屏
-            scene bg_black_video with scene_soft
-            ## Extended大文本框开始 - 大文本框分句
-            $ wait_sfx()
-            large_narrator "…"
-            extend "\n……"
-            extend "\n………"
-            ## Extended大文本框结束
-        "放弃。":
-            $ madness += 1
-            ## 呼吸ambient音效停止
-            $ stop_ambient(channel="ambient")
-            ## Extended大文本框开始 - 大文本框分句
-            large_narrator "在长久的窒息中，你的肢体变得干瘪而暗哑，仿佛再薄一点就要与灰幕融为一体。"
-            extend "\n但即使是这样的肢体，也只能站起来，让身子暖起来，让肠胃蠕动起来。"
-            extend "\n让血液流淌起来，即使横膈膜早就停止了舒张。"
-            extend "\n钟声。钟声。钟声。钟声。"
-            ## Extended大文本框结束
-            ## Extended大文本框开始 - 大文本框分句
-            large_narrator "主动放弃呼吸后，你在视野的余光中瞥见了某种远大于你的存在，祂在召唤你。"
-            extend "\n耳畔传来细弱的声音，那嗓音神秘而熟悉 - 你的病终究与我一样，我羸弱的爱人。"
-            extend "\n你听见那声音，就像听见了复活的钟声，虽然振聋发聩，却使你义无反顾地站了起来。"
-            ## Extended大文本框结束
-            ## Extended大文本框开始 - 大文本框分句
-            large_narrator "要去哪儿呢？"
-            extend "\n要从粉红色的雾气里走出去？"
-            extend "\n完全进到灰幕里去？"
-            extend "\n治病也罢，杀人也罢。"
-            extend "\n总要去些地方——"
-            ## Extended大文本框结束
-            ## Extended大文本框开始 - 大文本框分句
-            large_narrator "再回过神来时，贯穿全身的疼痛已经退却了，你的肢体看起来健康而饱满。"
-            extend "\n脑袋略有些刺痛，但你知道大脑皮层以内是不存在痛觉神经的，所以这痛觉想必与眼前的灰幕一样一触即碎。"
-            extend "\n想到这里，你伸出手。"
-            ## Extended大文本框结束
-            ## 呼吸ambient音效停止
-            $ stop_ambient(channel="ambient")
-            ## 玻璃破碎音效
-            ## 转场：黑屏
-            scene bg_black_video with scene_soft
-            $ stash_music_pos()
-            $ current_music_scene = None
-            stop music fadeout 3.0
-            ## Extended大文本框开始 - 大文本框分句
-            large_narrator "…"
-            extend "\n……"
-            extend "\n………"
-            ## Extended大文本框结束
-
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "灰幕沉默。你也终归沉默。"
+    extend "\n所以，还要保持呼吸么？"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "灰幕的蔓延永无止境，一如疼痛的叠加永无止境。"
+    extend "\n更多毒液渗入血管，血液沸腾起来，内脏在冒着泡的炽热血液浇灌下燃烧、破裂，但你只能感受到你执意选择的灰。"
+    extend "\n痛觉与痛苦重新开始分离。在日复一日的感官撕扯中，你的体表逐渐只剩下介于触觉和冷感之间的微妙麻木。"
+    extend "\n横膈膜仍然麻痹。"
+    extend "\n这就够了。"
+    extend "\n这就...够了。"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "她说，一定要保持呼吸。"
+    extend "\n于是你义无反顾地照做。"
+    extend "\n即使灰幕吞噬了整个视野也不会停歇。"
+    ## Extended大文本框结束
+    ## 电视机关机音效
+    $ play_sfx("audio/sfx/tv_off/dragon-studio-tv-shutdown-386167.mp3")
+    ## 电视机关机转场（CRT 断电，与关机音效同帧触发）
+    show layer master at crt_shutdown
+    $ hard_pause(0.8)
+    scene black with None
+    show layer master
+    ## 转场：黑屏
+    scene bg_black_video with scene_soft
+    ## Extended大文本框开始 - accumulating large textbox
+    $ wait_sfx()
+    large_narrator "…"
+    extend "\n……"
+    extend "\n………"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "在长久的漂浮中，你的肢体变得干瘪而暗哑，仿佛再薄一点就要与灰幕融为一体。"
+    extend "\n但即使是这样的肢体，也只能站起来，让身子暖起来，让肠胃蠕动起来。"
+    extend "\n让血液流淌起来，即使横膈膜早就停止了舒张。"
+    extend "\n钟声。钟声。钟声。钟声。"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "在钟声里，你在视野的余光中瞥见了某种远大于你的存在，祂在召唤着你。"
+    extend "\n耳畔传来细弱的声音，那嗓音神秘而熟悉 - 你的病终究与我一样，我羸弱的爱人。"
+    extend "\n你听见那声音，就像听见了复活的钟声，虽然振聋发聩，却使你义无反顾地动了起来。"
+    ## 呼吸ambient音效停止
+    $ stop_ambient(channel="ambient")
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "要去哪儿呢？"
+    extend "\n要从粉红色的雾气里走出去？"
+    extend "\n完全进到灰幕里去？"
+    extend "\n治病也罢，杀人也罢。"
+    extend "\n总要去些地方——"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "再回过神来时，贯穿全身的疼痛已经退却了，你的肢体看起来健康而饱满。"
+    extend "\n脑袋略有些刺痛，但你知道大脑皮层以内是不存在痛觉神经的，所以这痛觉想必与眼前的灰幕一样一触即碎。"
+    extend "\n想到这里，你缓缓伸出手。"
+    ## Extended大文本框结束
+    ## 玻璃破碎音效
+    ## 转场：黑屏
+    scene bg_black_video with scene_soft
+    $ stash_music_pos()
+    $ current_music_scene = None
+    stop music fadeout 3.0
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "…"
+    extend "\n……"
+    extend "\n………"
+    ## Extended大文本框结束
     ## 沙漠长风音效
     $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg", channel="ambient")
     $ stash_music_pos()
@@ -1159,40 +1287,41 @@ label route1_start:
     ## 沙漠中的脚步声
     ## 转场：银白色沙漠
     scene bg_desert with scene_soft
+    ahe "——啊！诶？怎么了？"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry at ws_close
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "喂，到了没啊？"
-    ahe "没有。"
+    ahe "到...哦，没呢。"
     ## 立绘：背手站立，面无表情
-    show ws backhand blank at ws_close
+    show ws backhand blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那还要走多久？"
-    ahe "到不了了。"
+    ahe "我感觉是不好说。"
     ## 立绘：背手站立，吃惊表情
-    show ws backhand shocked at ws_close
+    show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "啊？我们已经走了好久了诶。"
-    ahe "或者说我们早就到了，但找不到对的骨头。"
+    wangshuang "啊？可是我们已经走了好久了诶。"
+    ahe "或者说我们早就到了，可是找不到对的骨头。"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry at ws_close
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你就一定要拼出一副完整的骨架才满意么？"
-    ahe "不然好像我们也走不出这里。"
+    ahe "不然好像这里也没有别的可以做的事情。"
     wangshuang "啊...我当初就不该听你的鬼话和你一起来这里的..."
     ahe "不是挺好的么？像你这样整天坐办公室的，偶尔就需要走动走动。"
     ## 立绘：背手站立，吃惊表情
-    show ws backhand shocked at ws_close
+    show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "就算要走路也别让我来沙漠里找骨头啊..."
     ahe "明明就是你自己要跟来的。"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry at ws_close
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "呃呃呃我究竟中了什么邪才把你——"
     ahe "嗯？把我怎么？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "没事，别在意。"
     ## Extended文本框开始 - accumulating textbox
@@ -1202,21 +1331,21 @@ label route1_start:
     ## Extended文本框结束
     ahe "嗯...大腿骨明明应该是最容易找到的才对..."
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "这根不是？"
     ahe "那根我刚才试过了，髋关节对不上。"
     wangshuang "这边还有四五根，你都试过了？"
     ahe "诶？你是从哪儿找来的？"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "来的时候遍地都是啊，眼前一眼望去还有七八根。"
-    ahe "所以精神科的也得会认骨头？"
+    ahe "所以精神科也得会认骨头？"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk at ws_close
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "骨科可是我的强项。"
+    wangshuang "那倒不一定，但骨科可一直是我的强项。"
     ahe "有什么东西不是你的强项的么..."
     ## Extended文本框开始 - accumulating textbox
     "…"
@@ -1225,12 +1354,12 @@ label route1_start:
     ## Extended文本框结束
     ahe "对上了诶。"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我找来的，当然对咯。所以呢？接下来要做什么？"
     ahe "头骨..."
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，面无表情
-    show ws akimbo blank at ws_close
+    ## 立绘：讲解站立，面无表情
+    show ws akimbo blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "吼，只剩头骨了么...嗯...阿鹤啊——"
     ## 场景音乐参考：Stranger_Files, Sweet_Regrets，Whispers in the Twilight
@@ -1239,123 +1368,123 @@ label route1_start:
     wangshuang "你知道自己在做什么，对吧？"
     ahe "拼一副骨架而已。"
     ## 立绘：背手站立，面无表情
-    show ws backhand blank at ws_close
+    show ws backhand blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "而已？你不会觉得光靠一副骨架就能把她带回来吧？"
     ahe "...!"
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank at ws_close
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "与其尝试那种毫无意义的事情，直接离开也可以，门就在那边。"
     ahe "可是...我还..."
     wangshuang "你觉得执拗是一种美德么？"
-    ahe "...我只是..."
+    ahe "...我只是...只是...这是正确的事..."
     wangshuang "嗯，尽管继续骗自己。"
     ahe "...阿霜...之前这个梦里永远都只有我一个人...为什么这次你也在这里？"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，默认表情
-    show ws akimbo default at ws_close
+    ## 立绘：讲解站立，默认表情
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "因为我也能做同样的梦。"
+    wangshuang "当然是因为我也能做同样的梦啦。"
     ahe "可是..."
     ## 立绘：背手站立，坏笑表情
-    show ws backhand smirk at ws_close
+    show ws backhand smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "只不过我不会无聊到去尝试那种事情就是了。"
+    wangshuang "只不过我不会无聊到去拼骨架就是了。"
     ahe "可你...为什么要做这个梦？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "当然是因为后悔咯，否则人是不可能来到这里的。"
     ahe "还有...能让你后悔的事？"
-    wangshuang "当然。只要做过选择，就一定会后悔。"
+    wangshuang "当然了。一个人只要做过选择，就一定会后悔。"
     ahe "可如果你已经变成神了——"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry at ws_close
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哈？你在说什么呢？"
     ahe "好吧..."
     ## 立绘：背手站立，面无表情
-    show ws backhand blank at ws_close
+    show ws backhand blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你想啊，无论我们做了什么事，那都意味着同一时空内其他行为的可能性被完全抹杀了，不是么？所以从定义上来讲，活着就是一场超长的悔恨之旅。"
     wangshuang "不过你也别觉得那是什么坏事。应该说，完全不需要后悔的认知架构才真的要人命。我之前专门做过这方面的研究。"
     ahe "什么研究？"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，面无表情
-    show ws akimbo blank at ws_close
+    ## 立绘：讲解站立，面无表情
+    show ws akimbo blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "‘全知全能的代价’。"
     ahe "那和后悔一点都不相关吧..."
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "别急，听我讲完你就懂了。"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，默认表情
-    show ws akimbo default at ws_close
+    ## 立绘：讲解站立，默认表情
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "所谓‘全知全能’，虽然听着像是造物主才被允许拥有的力量，但事实上以今天的技术，想要在有限时空里模拟这一状态不算难。"
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank at ws_close
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "试想，假若在我们与杰罗瓦的最后一战里，你在见到他放出的{i}尤里娅{/i}的那一刻们就放弃了抵抗，会怎么样？一切就结束了对吧？"
+    wangshuang "试想，假若在我们与{a=gloss:g6}杰罗瓦{/a}的最后一战里，你在见到他放出的{i}尤里娅{/i}的那一刻们就放弃了抵抗，会怎么样？一切就结束了对吧？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那你再想，如果我能把这段不存在的“记忆”高清模拟出来，数据化掉，然后灌回你脑子里。"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，默认表情
-    show ws akimbo default at ws_close
+    ## 立绘：讲解站立，默认表情
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "加上你脑子里原本就存在的记忆，这时让你同时体验选择支两边的事件，那在这样的认知草拟完成后，你是不是就已经实现对于这段记忆的‘全知全能’了？"
     ahe "可那样的话，记忆肯定会和现实发生冲突的吧。"
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank at ws_close
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "当然，但假若两边的记忆，从肢体感官到事件次序，无不张弛有度地印在你脑海里，那对于一个不了解认知草拟的被试来说，该如何戳穿自己‘全知全能’的假象？"
     ahe "必须要外人点破才行。"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，默认表情
-    show ws akimbo default at ws_close
+    ## 立绘：讲解站立，默认表情
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "对，但不全对——即使有外人指出矛盾，又有多少人愿意摒弃自己的“切身体验”，转而允许他人的只言片语来定夺自己的认知？"
     ahe "…"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，面无表情
-    show ws akimbo blank at ws_close
+    ## 立绘：讲解站立，面无表情
+    show ws akimbo blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我们的实验数据也指向这一点——在草拟完成的三天内，所有被试都明确拒绝了外界干预，以不容置疑的姿态维持着选择支两边的草拟。"
     ahe "他们...在自行草拟？"
     wangshuang "没错。我们人工植入的认知流并没有在结尾处安排收束性事件，而在我们灌进去的认知与现实发生冲突后，被试们全部选择了无视现实，并开始自行草拟选择支两边的后续内容。"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "更有意思的是，所有被试在自行草拟的过程中多巴胺通路都在暴走，就仿佛这虚假的全知全能让他们——"
     ahe "成瘾了。"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，得意表情
-    show ws akimbo proud at ws_close
+    ## 立绘：讲解站立，得意表情
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "Bingo！我们用计算生成的认知数据让人染上了成瘾性的精神分裂，而这——"
     ahe "就是全知全能的代价？"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk at ws_close
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嘿嘿，别兴奋过头了，阿鹤。"
     wangshuang "一个人双线程草拟时需要的算力...这么说吧，会在草拟开始后的短时间内爆炸增长，而最初的草拟全是在被试脑内执行的...。"
     ahe "…"
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank at ws_close
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，第一批被试的脑子大多都烧了，物理意义上的。后来第二批还动用了医院的计算机集群，最后效果也没好多少就是..."
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry at ws_close
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "所以说能后悔是好事啊，能用如此低成本的认知模式来替代脑细胞被烧干，是一桩好买卖。"
     ahe "那这个梦..."
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "嗯，是我给自己搭的，用来强制认知收束的疗养院。后来发现效果不错，自然也就向一些VIP们开放咯。"
+    wangshuang "嗯，是我给自己搭的，用来强制认知收束的疗养院。后来发现效果不错，自然也就向一些 VIP 们开放咯。"
     ahe "你自己也参与了？"
     wangshuang "当然，我可是第一批被试。只是我的脑子不太一样，成瘾这个问题对我来说并不存在，可以随时自行结束草拟，所以可以在当被试的同时一边跟进实验。"
     ahe "所以为什么没有让其他被试来这里..."
-    ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    ## 立绘：抱胸站立，无奈表情
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦...哈哈...这个嘛，毕竟当时搭得比较匆忙，这个梦境第一版的认知收束任务只能单线程地跑，慢得不行的同时还会很吃资源，所以就算开放了也救不了太多人...哈哈..."
     ## 沙漠长风音效
@@ -1367,52 +1496,56 @@ label route1_start:
     wangshuang "…"
     ahe "这就是你后悔的事情？"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你觉得呢？"
     ahe "我怎么知道..."
     wangshuang "嗯，那还是保持无知比较好。"
     ahe "只要你心安理得就行..."
     ## 立绘：背手站立，面无表情
-    show ws backhand blank at ws_close
+    show ws backhand blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "…"
     ahe "所以这梦也是你那朴素过程的一部分？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那可不一样，现在能够来到这里的都是游离于朴素过程之外的异客。当他们离开这里时，我希望他们至少能明白自己为什么会这样游离。"
     ahe "唔，所以这也是你的实验的一部分，带课题的。"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，默认表情
-    show ws akimbo default at ws_close
+    ## 立绘：讲解站立，默认表情
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "不不不，这只是一个治疗场所而已。不过对于你来说...哼哼。"
+    wangshuang "不不不，这只是一个治疗场所而已。"
+    ## 立绘：讲解站立，得意表情
+    show ws akimbo proud at ws_mid
+    $ renpy.transition(Dissolve(0.2), layer="master")
+    extend "不过对于你来说...哼哼。"
     ahe "怎么了？"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，默认表情
-    show ws akimbo default at ws_close
+    ## 立绘：抱胸站立，默认表情
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "没事，我之前还在想，你为什么还能来到这里。不过从你刚才手上一直在忙活的事情来看，这早就不是问题了。"
     ahe "可你说它没有意义。"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，现在我也维持原判。"
     ahe "…"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk at ws_close
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不想知道为什么？"
     ahe "不是很想。"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "行吧。毕竟我们有得是时间。"
     ahe "…"
     wangshuang "…"
     ahe "…"
     wangshuang "…"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，得意表情
-    show ws akimbo proud at ws_close
+    ## 立绘：讲解站立，得意表情
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯...但是我站累了，所以让我来告诉你吧——你要找的头骨并不存在，所以就算一直这样找下去，你也永远不会达到你的目的。"
     ahe "啊...可是...你是怎么知道的？"
@@ -1423,7 +1556,7 @@ label route1_start:
     ## glitchy音效
     $ play_glitch()
     ## 立绘：背手站立，默认表情上蒙了glitch
-    show ws backhand default_glitch at ws_close
+    show ws backhand default_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "因为欧按物昆咽——"
     ahe "阿...霜？"
@@ -1432,27 +1565,27 @@ label route1_start:
     ## glitchy音效
     $ play_glitch()
     ## 立绘：抱胸站立，坏笑表情上蒙了glitch
-    show ws crossed smirk_glitch at ws_close
+    show ws crossed smirk_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "啊啊呐唔一握艾鈤——..."
     ## glitchy音效
     $ play_glitch()
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，默认表情上蒙了glitch
-    show ws akimbo default_glitch at ws_close
+    ## 立绘：讲解站立，默认表情上蒙了glitch
+    show ws akimbo default_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "唵椅迩唵毋炆戊囮吔坳唔岙莪。"
     ## glitch消失
     with glitch_fx()
-    show ws akimbo default at ws_close
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     ahe "阿霜，你还好吗？"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯？怎么了？"
     ahe "你刚才...当我没说。所以为什么头骨不存在？"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，得意表情
-    show ws akimbo proud at ws_close
+    ## 立绘：讲解站立，得意表情
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "因为我看不见。"
     ahe "啊？"
@@ -1463,16 +1596,16 @@ label route1_start:
     ## 尸首黑影闪过
     with fx_shock
     ## 立绘：背手站立，默认表情上蒙了glitch
-    show ws backhand default_glitch at ws_close
+    show ws backhand default_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "一焱髻暨戊馹曳葳邑吖霭肮毐峪镍醪！"
     ahe "喂...阿霜你又——"
     ## glitch消失
     with glitch_fx()
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，得意表情
-    show ws akimbo proud at ws_close
+    ## 立绘：讲解站立，得意表情
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哎，话又说回来，我也没说过缺了头骨就不行啊。"
     wangshuang "既然你这么想见她，那肯定得成全你嘛——你看，你的“作品”啊，从各种意义上已经完成了。"
@@ -1502,7 +1635,7 @@ label route1_start:
     ## glitchy音效
     $ play_glitch()
     ## 立绘：抱胸站立，默认表情上蒙了glitch
-    show ws crossed default_glitch at ws_close
+    show ws crossed default_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "飒炟曠莩皎靸礚睫覅是否解释你的诨涤？"
     ahe "啊...你们...你们...等等..."
@@ -1546,7 +1679,7 @@ label route1_start:
     shishou "阿鹤，事到如今你又在害怕什么呢？这可是你亲手拼出来的身子哦。"
     ahe "啊...啊啊啊啊...啊啊啊啊啊啊啊啊啊啊——"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "别跑啊，这可是你们的感人重逢诶！"
     ahe "别过来！"
@@ -1556,12 +1689,12 @@ label route1_start:
     ## 做些古怪特效，世界有点崩解的感觉
     ahe "这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的！"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "阿鹤？"
     ahe "啊——！你为什么还在这里！"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk at ws_close
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我当然在啦，她也还在——"
     shishou "哈喽~"
@@ -1573,7 +1706,7 @@ label route1_start:
     shishou "你好。"
     ahe "…"
     ## 立绘：背手站立，默认表情
-    show ws backhand default at ws_close
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "这就跑不动了？"
     ahe "...不要...过来..."
@@ -1581,17 +1714,17 @@ label route1_start:
     shishou "嗯。"
     ahe "我...一定...要...离开这里！"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default at ws_close
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "阿鹤啊，你倒是冷静下来仔细想想，你费了这么大力气把她拼凑出来，可当她真正活过来之后又无法直视她了？"
     ahe "这不是我想要的..."
     ## 立绘：背手站立，坏笑表情
-    show ws backhand smirk at ws_close
+    show ws backhand smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "只因为她身子不完整？"
     ahe "这不是我想要的！"
-    ## 立绘：右手叉腰，左手食指竖起做讲解状，得意表情
-    show ws akimbo proud at ws_close
+    ## 立绘：讲解站立，得意表情
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那就把头埋进沙子里啊，那样你就什么都不用看了。"
     ahe "呃...啊——对不起——"

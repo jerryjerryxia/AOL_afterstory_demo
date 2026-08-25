@@ -7,7 +7,7 @@ translate english strings:
     new "Divided"
 
     # game/scripts/variables.rpy:123
-    old "平稳"
+    old "稳定"
     new "Stable"
 
     # game/scripts/variables.rpy:125
@@ -27,16 +27,16 @@ translate english strings:
     new "Composed"
 
     # game/scripts/variables.rpy:131
-    old "幻灭"
-    new "Disillusion"
+    old "幻灭倾向"
+    new "Disillusionment Tendency"
 
     # game/scripts/variables.rpy:133
-    old "幻觉"
-    new "Hallucination"
+    old "已内化了幻觉"
+    new "Hallucinations Internalized"
 
     # game/scripts/variables.rpy:135
-    old "死亡"
-    new "Death"
+    old "无法遏制死亡冲动"
+    new "Uncontrollable Death Drive"
 
     # game/scripts/variables.rpy:137
     old "无污染"

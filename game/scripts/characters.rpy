@@ -57,6 +57,9 @@ define protag_thought = ClickPauseCharacter(None, kind=adv, what_prefix='"', wha
 
 define wangshuang = ClickPauseCharacter("王霜", color="#4a90d9", ctc=ctc, ctc_pause=ctc)  # 蓝色（原阿鹤的颜色）
 define wangshuang_unknown = ClickPauseCharacter("王霜（？）", color="#4a90d9", ctc=ctc, ctc_pause=ctc)  # 蓝色，身份存疑
+## 甜品店的店员＝王霜复制体（同色同素材，立绘走 ws_clerk1/2 tag，见 sprites.rpy）
+define wangshuang_clerk = ClickPauseCharacter("王霜（店员）", color="#4a90d9", ctc=ctc, ctc_pause=ctc)
+define wangshuang_clerk2 = ClickPauseCharacter("王霜（店员2）", color="#4a90d9", ctc=ctc, ctc_pause=ctc)
 define ahe = ClickPauseCharacter("阿鹤", color="#f5c518", ctc=ctc, ctc_pause=ctc)  # 金黄色
 define shishou = ClickPauseCharacter("尸首", color="#dc143c", ctc=ctc, ctc_pause=ctc)  # 深红色
 

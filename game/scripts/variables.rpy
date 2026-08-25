@@ -96,8 +96,82 @@ default interro_mental = ""
 default interro_trait = ""
 default interro_pollution = ""
 default interro_verdict = ""
+## 是否被判无限期监禁（interro_evaluate() 填充）。监禁循环（居中大字「监禁中——」
+## 段展示后跳回问询开头）用这个布尔判断，不用字符串包含 —— verdict 是翻译后的
+## 文案，英文模式下按中文子串匹配会失效。
+default interro_imprisoned = False
+
+## 问询第几轮（监禁循环每次跳回前 +1）。第 2 轮起，被选过的选项 hover 按
+## 风味上色（见 interro_choice_style / 选项屏 choice）。
+default interro_attempt = 1
+## 历轮选过的选项 id 集合（跨监禁循环累积，interro_reset() 不清 —— 循环的
+## 意义就是带着记忆重来；新开一局由 default 复位）。
+default interro_picked = set()
+
+## 【锁定操作Ns】的截止时刻（挂钟）。旧方案是 op_lock 全屏按钮屏幕 + timer
+## Hide —— timer 在台词中途触发 Hide 会 restart_interaction、把 say 的打字机
+## st 清零，表现为解锁瞬间文字重打闪烁（"盯——"的 glitch，截图实证过）。
+## 现方案走 config.say_allow_dismiss：时限内拒绝推进（点击被静默丢弃，
+## 不产生任何交互重启，文本框全程不被碰），到点后放行。
+default _op_lock_deadline = 0.0
 
 init python:
+    import time as _oplock_time
+
+    def op_lock_start(seconds):
+        """台词前调用：接下来 N 秒内不允许点击推进（ctrl 快进不受限）。"""
+        store._op_lock_deadline = _oplock_time.time() + float(seconds)
+
+    def _op_lock_allow_dismiss():
+        if renpy.config.skipping:
+            return True          # 保留 ctrl 快进（与旧 op_lock 行为一致）
+        return _oplock_time.time() >= store._op_lock_deadline
+
+    config.say_allow_dismiss = _op_lock_allow_dismiss
+
+    ## 问询五风味 → 颜色（诊断书文字 与 二轮起已选选项的 hover 共用同一套，
+    ## 颜色是玩家把"哪句话有毒"和诊断对上号的桥梁）：
+    ## 疯狂=紫 死亡=黑 平稳=黄 对抗=红 幻觉=蓝
+    INTERRO_FLAVOR_COLORS = {
+        'c': '#f5c518',   # 平稳 黄
+        'i': '#b26bff',   # 疯狂 紫
+        'h': '#ff4040',   # 对抗 红
+        'u': '#55aaff',   # 幻觉 蓝
+        'd': '#0a0a0a',   # 死亡 黑（深底上靠浅色描边保可读，见下）
+    }
+
+    def _interro_tint(txt, fl):
+        """诊断书文字上色。死亡的黑字包一圈浅描边 —— 问询个别分支会把场景切到
+        黑屏/红屏，纯黑字会隐形（描边宽度来自 large_say 的透明 outlines，
+        {outlinecolor} 只改色不加宽，所以别处视觉零影响）。"""
+        c = INTERRO_FLAVOR_COLORS[fl]
+        if fl == 'd':
+            return '{outlinecolor=#e8e8e8}{color=%s}%s{/color}{/outlinecolor}' % (c, txt)
+        return '{color=%s}%s{/color}' % (c, txt)
+
+    def _interro_tint_halves(txt, fl1, fl2):
+        """复合结论（分裂=平稳+疯狂、幻灭倾向=幻觉+死亡）前后各染一半——
+        双色本身就是"由两种成分构成"的提示。按译后文本对半切，中英通用。"""
+        h = (len(txt) + 1) // 2
+        return _interro_tint(txt[:h], fl1) + _interro_tint(txt[h:], fl2)
+
+    def interro_choice_style(i):
+        """选项屏用：问询第 2 轮起，历轮选过的问询选项 hover 按风味上色。
+        返回 (hover颜色, hover描边) 或 None（普通样式）。id/风味由转换器
+        经 menu 参数 interro=(id, 风味) 传入；一轮时或没选过的选项不上色。"""
+        kw = getattr(i, 'kwargs', None) or {}
+        info = kw.get('interro')
+        if not info:
+            return None
+        oid, fl = info
+        if store.interro_attempt < 2 or oid not in store.interro_picked:
+            return None
+        ## 选项文字自带 gui.text_outlines 黑描边，彩色 hover 直接沿用；
+        ## 只有死亡的黑字要把描边换成浅色（黑字黑边在暗场景里会隐形）。
+        ## 宽度与底描边一致（2px），不会显得变粗。
+        rim = [(2, "#e8e8e8", 0, 0)] if fl == 'd' else None
+        return (INTERRO_FLAVOR_COLORS[fl], rim)
+
     def interro_reset():
         """问询桥段开头清零全部问询计数（桥段外不生效，与 madness 无关）。"""
         store.interro_calm = 0
@@ -111,48 +185,74 @@ init python:
     def interro_evaluate():
         """按剧本的条件表把五个计数折算成四项唯一结论。
         规则原文见 demo_script.txt「更新了对于犯罪嫌疑人的心理评估」一节：
-        - 精神状态：平稳【仅平稳>1】/疯狂【仅疯狂>1】/分裂【皆>1】/检测失败【皆<=1】
-        - 人格特质：冷静【对抗<=1】/对抗【对抗>1】
-        - 污染进程：幻觉【仅幻觉>1】/死亡【仅死亡>1】/幻灭【皆>1】/无污染【皆<=1】
+        - 精神状态：稳定（仅平稳>1）/疯狂（仅疯狂>1）/分裂（皆>1）/检测失败（皆<=1）
+        - 人格特质：冷静（对抗<=1）/对抗（对抗>1）
+        - 污染进程：已内化了幻觉（仅幻觉>0）/无法遏制死亡冲动（仅死亡>0）/
+          幻灭倾向（皆>0）/无污染（皆=0）
+          ★污染阈值是 >0 不是 >1★ —— 数值设计定的（穷举验证）：随机选择下
+          首周目监禁率 ~51%，知情后二周目趋近 0%。想调难度改这一档最有效。
         - 建议执行：脑白质切除 = 对抗或分裂一票即中；监禁与释放的划分逐行核对过原表
-          （32 种组合完备且不重叠，穷举验证过）。"""
+          （32 种组合完备且不重叠，穷举验证过）。
+        判定用内部 key、展示文案单独查表 —— 旧版拿 __() 翻译后的字符串做逻辑比较，
+        英文模式下永远不相等，评估会整个判错。"""
         calm2, insane2 = store.interro_calm > 1, store.interro_insane > 1
         if calm2 and insane2:
-            mental = __("分裂")
+            mkey = 'split'
         elif calm2:
-            mental = __("平稳")
+            mkey = 'calm'
         elif insane2:
-            mental = __("疯狂")
+            mkey = 'insane'
         else:
-            mental = __("检测失败")
-        trait = __("对抗") if store.interro_hostile > 1 else __("冷静")
-        h2, d2 = store.interro_halluc > 1, store.interro_death > 1
+            mkey = 'fail'
+        hostile = store.interro_hostile > 1
+        h2, d2 = store.interro_halluc > 0, store.interro_death > 0
         if h2 and d2:
-            poll = __("幻灭")
+            pkey = 'both'
         elif h2:
-            poll = __("幻觉")
+            pkey = 'halluc'
         elif d2:
-            poll = __("死亡")
+            pkey = 'death'
         else:
-            poll = __("无污染")
+            pkey = 'none'
         ## 脑白质切除：对抗人格或分裂精神一票即中。
-        lobotomy = (trait == "对抗") or (mental == "分裂")
+        lobotomy = hostile or mkey == 'split'
         ## 释放/监禁：按原表——疯狂仅在「对抗×无污染」时释放；分裂看是否无污染；
-        ## 平稳/检测失败除幻灭外都释放。
-        if mental == "疯狂":
-            release = (trait == "对抗" and poll == "无污染")
-        elif mental == "分裂":
-            release = (poll == "无污染")
+        ## 稳定/检测失败除幻灭外都释放。
+        if mkey == 'insane':
+            release = hostile and pkey == 'none'
+        elif mkey == 'split':
+            release = (pkey == 'none')
         else:
-            release = (poll != "幻灭")
+            release = (pkey != 'both')
+        ## 结论按风味上色（先 __() 翻译干净文本，再包色 —— tl 键保持无标签）。
+        ## 复合结论双色对半：分裂=黄+紫，幻灭倾向=蓝+黑，颜色即成分提示。
+        mtxt = __({'calm': '稳定', 'insane': '疯狂',
+                   'split': '分裂', 'fail': '检测失败'}[mkey])
+        if mkey == 'calm':
+            mtxt = _interro_tint(mtxt, 'c')
+        elif mkey == 'insane':
+            mtxt = _interro_tint(mtxt, 'i')
+        elif mkey == 'split':
+            mtxt = _interro_tint_halves(mtxt, 'c', 'i')
+        store.interro_mental = mtxt
+        store.interro_trait = (_interro_tint(__('对抗'), 'h') if hostile
+                               else __('冷静'))
+        ptxt = __({'halluc': '已内化了幻觉', 'death': '无法遏制死亡冲动',
+                   'both': '幻灭倾向', 'none': '无污染'}[pkey])
+        if pkey == 'halluc':
+            ptxt = _interro_tint(ptxt, 'u')
+        elif pkey == 'death':
+            ptxt = _interro_tint(ptxt, 'd')
+        elif pkey == 'both':
+            ptxt = _interro_tint_halves(ptxt, 'u', 'd')
+        store.interro_pollution = ptxt
         if lobotomy:
-            verdict = __("脑白质切除、记忆消除并释放") if release else __("脑白质切除、记忆消除并无限期监禁")
+            store.interro_verdict = (__("脑白质切除、记忆消除并释放") if release
+                                     else __("脑白质切除、记忆消除并无限期监禁"))
         else:
-            verdict = __("记忆消除并释放") if release else __("记忆消除和无限期监禁")
-        store.interro_mental = mental
-        store.interro_trait = trait
-        store.interro_pollution = poll
-        store.interro_verdict = verdict
+            store.interro_verdict = (__("记忆消除并释放") if release
+                                     else __("记忆消除和无限期监禁"))
+        store.interro_imprisoned = not release
 
 ## 当前场景音乐 ID（由 set_scene_music 设置；after_load 用它恢复音乐）
 default current_music_scene = None

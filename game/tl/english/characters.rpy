@@ -9,6 +9,8 @@ translate None python:
     ## 主要角色（中文复位 —— 见上方注释）
     wangshuang.name = "王霜"
     wangshuang_unknown.name = "王霜（？）"
+    wangshuang_clerk.name = "王霜（店员）"
+    wangshuang_clerk2.name = "王霜（店员2）"
     ahe.name = "阿鹤"
     shishou.name = "尸首"
 
@@ -26,6 +28,8 @@ translate english python:
     ## Main characters
     wangshuang.name = "Wang Shuang"
     wangshuang_unknown.name = "Wang Shuang (?)"
+    wangshuang_clerk.name = "Wang Shuang (Clerk)"
+    wangshuang_clerk2.name = "Wang Shuang (Clerk 2)"
     ahe.name = "Kaku"
     shishou.name = "The Corpse"
 

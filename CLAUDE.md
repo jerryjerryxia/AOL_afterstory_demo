@@ -22,10 +22,13 @@
 
 ```
 王霜：Character dialogue
-王霜【背手站立，默认表情】：Dialogue + sprite（姿势，表情 → show 立绘；仅【表情】则走场景差分，不动立绘）
+王霜【背手站立，默认表情】：Dialogue + sprite（姿势，表情 → show 立绘；仅【表情】则走场景差分，不动立绘。讲解站立=叉腰素材的别名。台词中途可插【姿势，表情】→ 拆成 say+extend，点击间换立绘）
+王霜（店员）/王霜（店员2）：店员=王霜复制体（右侧正立 / 左侧天花板倒吊）。【店员N进场，姿势，表情】/【店员N退场】独立标记；【…三人集体X表情】主立绘+在场店员齐换；转场自动垂直平移退场。见 convert_script.py _CLERK_CFG
 阿鹤：Another character
 Plain text is narration
 【Stage direction → becomes comment】
+概念【注释：解释文字】→ 概念带下划线可点击，点击右侧滑出注释抽屉（UI: glossary_ui.rpy，词典生成到 glossary.rpy）。术语边界靠 convert_script.py ANNOTATION_TERMS 列表——加新注释要把术语加进列表，否则按末尾连续文字兜底并告警
+嵌套选项的行首缩进（tab/空格）纯装饰——转换器全部 strip 后按 A：/兄弟选项/收束标记 解析，缩进乱了不影响转换
 A: Choice A text
 B: Choice B text（madness+1）
 【选项分线到此结束】

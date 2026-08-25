@@ -229,9 +229,12 @@ style input:
     color gui.accent_color
     adjust_spacing False
 
+## 行内注释链接（{a=gloss:…}，见 glossary_ui.rpy）：常态标蓝提示可点击
+## （下划线贴字太近，弃用），hover 提亮。项目里没有其他 {a=} 链接，
+## 这个样式即注释专用。
 style hyperlink_text:
-    color gui.accent_color
-    hover_underline True
+    color "#8fc7ff"
+    hover_color "#ffffff"
 
 ## GUI 基础样式 - Base GUI Styles
 style gui_button is button:
@@ -323,6 +326,21 @@ init python:
         i = 0
         while i < n:
             ch = what[i]
+            if ch == '[':
+                ## 插值区（如 [interro_mental!t]）整段原样跳过——里面的 ! 是
+                ## Ren'Py 的转换标记不是感叹号，插 {w} 会把插值拆坏
+                ## （ValueError: invalid conversion）。[[ 是转义的字面 [。
+                if i + 1 < n and what[i + 1] == '[':
+                    out.append('[[')
+                    i += 2
+                    continue
+                j = what.find(']', i)
+                if j < 0:
+                    out.append(what[i:])
+                    break
+                out.append(what[i:j + 1])
+                i = j + 1
+                continue
             if ch == '.':                # ASCII 点：≥2 个=省略号不断，单个=句号断
                 j = i
                 while j < n and what[j] == '.':
@@ -536,23 +554,13 @@ image ctc_dots = DynamicDisplayable(_caret_size("normal"))
 image ctc_dots_large = DynamicDisplayable(_caret_size("large"))
 
 ################################################################################
-## 操作锁定屏幕 - op_lock（point 5）
+## 操作锁定（point 5，【锁定操作Ns】）—— 已改由 config.say_allow_dismiss 实现
 ## ----------------------------------------------------------------
-## 用一个全屏按钮把"点击/回车/空格"吃掉（NullAction），让玩家在 N 秒内无法靠点击
-## 跳过文字展示或前进；但**不 modal**，所以 ctrl 快进（skip 是 keysym，不落到按钮
-## 上）依然有效。N 秒后自动隐藏。配合 convert_script.py 的 【锁定操作Ns】。
-## （"盯——"：不允许点击快速结束文字展示，但允许 ctrl 快进。）
+## 旧方案是这里的 op_lock 全屏按钮屏幕 + timer Hide。已废弃：timer 在台词中途
+## 触发 Hide 会 restart_interaction、把 say 打字机的 st 清零，解锁瞬间文字
+## 重打闪烁（"盯——"的 glitch）。现实现见 variables.rpy 的 op_lock_start /
+## _op_lock_allow_dismiss：时限内点击被静默丢弃，零交互重启，ctrl 快进保留。
 ################################################################################
-
-screen op_lock(seconds):
-    zorder 200
-    button:
-        xfill True
-        yfill True
-        background None
-        hover_background None
-        action NullAction()
-    timer seconds action Hide("op_lock")
 
 ################################################################################
 ## 颤动文字标签 - {shake}...{/shake}（point 8）
@@ -947,7 +955,19 @@ screen choice(items):
         at _choice_fadein
         ypos (540 if alone else 405)
         for i in items:
-            textbutton i.caption action i.action
+            ## 问询段第 2 轮起，历轮选过的选项 hover 按风味上色（疯狂紫/死亡黑/
+            ## 平稳黄/对抗红/幻觉蓝）—— 颜色与诊断书结论同套，是玩家把"哪句话
+            ## 有毒"和诊断对上号的通道。其余菜单/一轮时走普通样式。
+            $ _iflav = interro_choice_style(i)
+            if _iflav and _iflav[1]:
+                textbutton i.caption action i.action:
+                    text_hover_color _iflav[0]
+                    text_hover_outlines _iflav[1]
+            elif _iflav:
+                textbutton i.caption action i.action:
+                    text_hover_color _iflav[0]
+            else:
+                textbutton i.caption action i.action
 
 ## 选项组浮现：配合大文本框菜单的 window hide/show 溶解，避免文字↔选项切换生硬。
 transform _choice_fadein:
@@ -978,8 +998,8 @@ style choice_button_text is default:
     size gui.choice_button_text_size
     ## 960 按钮宽 − 左右各 40 内边距；折行后的续行与首行左对齐
     xmaximum 880
-    ## 加粗 + 与正文一致的黑色描边/阴影（gui.text_outlines），不再依赖按钮底框
-    bold True
+    ## 与正文一致的黑色描边/阴影（gui.text_outlines），不再依赖按钮底框
+    ## （曾经附加 bold，后定为不加粗——描边已足够立住可点击感）
     outlines gui.text_outlines
     idle_color "#cccccc"
     hover_color "#ffffff"

@@ -14,6 +14,15 @@ image ws backhand smirk = "images/sprites/背手表情/背手(坏笑.png"
 image ws backhand blank = "images/sprites/背手表情/背手(面无表情).png"
 image ws backhand default = "images/sprites/背手表情/背手(默认.png"
 
+image ws akimbo blank_glitch:
+    "images/sprites/glitch/叉腰（面无表情_glitch1.png"
+    0.12
+    "images/sprites/glitch/叉腰（面无表情_glitch2.png"
+    0.12
+    "images/sprites/glitch/叉腰（面无表情_glitch3.png"
+    0.12
+    repeat
+
 image ws akimbo default_glitch:
     "images/sprites/glitch/叉腰（默认_glitch1.png"
     0.12
@@ -32,12 +41,30 @@ image ws crossed smirk_glitch:
     0.12
     repeat
 
+image ws crossed wry_glitch:
+    "images/sprites/glitch/抱胸(无奈_glitch1.png"
+    0.12
+    "images/sprites/glitch/抱胸(无奈_glitch2.png"
+    0.12
+    "images/sprites/glitch/抱胸(无奈_glitch3.png"
+    0.12
+    repeat
+
 image ws crossed default_glitch:
     "images/sprites/glitch/抱胸(默认_glitch1.png"
     0.12
     "images/sprites/glitch/抱胸(默认_glitch2.png"
     0.12
     "images/sprites/glitch/抱胸(默认_glitch3.png"
+    0.12
+    repeat
+
+image ws backhand smirk_glitch:
+    "images/sprites/glitch/背手(坏笑_glitch1.png"
+    0.12
+    "images/sprites/glitch/背手(坏笑_glitch2.png"
+    0.12
+    "images/sprites/glitch/背手(坏笑_glitch3.png"
     0.12
     repeat
 
@@ -50,9 +77,192 @@ image ws backhand default_glitch:
     0.12
     repeat
 
+image ws akimbo blank_glitchsoft:
+    block:
+        "images/sprites/叉腰表情/叉腰（面无表情.png"
+        choice:
+            pause 1.8
+        choice:
+            pause 2.4
+        choice:
+            pause 3.0
+        "images/sprites/glitch_soft/叉腰（面无表情_glitchsoft1.png"
+        0.07
+        "images/sprites/叉腰表情/叉腰（面无表情.png"
+        0.08
+        "images/sprites/glitch_soft/叉腰（面无表情_glitchsoft2.png"
+        0.07
+        repeat
+
+image ws akimbo default_glitchsoft:
+    block:
+        "images/sprites/叉腰表情/叉腰（默认.png"
+        choice:
+            pause 1.8
+        choice:
+            pause 2.4
+        choice:
+            pause 3.0
+        "images/sprites/glitch_soft/叉腰（默认_glitchsoft1.png"
+        0.07
+        "images/sprites/叉腰表情/叉腰（默认.png"
+        0.08
+        "images/sprites/glitch_soft/叉腰（默认_glitchsoft2.png"
+        0.07
+        repeat
+
+image ws crossed smirk_glitchsoft:
+    block:
+        "images/sprites/抱胸表情/抱胸(坏笑.png"
+        choice:
+            pause 1.8
+        choice:
+            pause 2.4
+        choice:
+            pause 3.0
+        "images/sprites/glitch_soft/抱胸(坏笑_glitchsoft1.png"
+        0.07
+        "images/sprites/抱胸表情/抱胸(坏笑.png"
+        0.08
+        "images/sprites/glitch_soft/抱胸(坏笑_glitchsoft2.png"
+        0.07
+        repeat
+
+image ws crossed wry_glitchsoft:
+    block:
+        "images/sprites/抱胸表情/抱胸(无奈.png"
+        choice:
+            pause 1.8
+        choice:
+            pause 2.4
+        choice:
+            pause 3.0
+        "images/sprites/glitch_soft/抱胸(无奈_glitchsoft1.png"
+        0.07
+        "images/sprites/抱胸表情/抱胸(无奈.png"
+        0.08
+        "images/sprites/glitch_soft/抱胸(无奈_glitchsoft2.png"
+        0.07
+        repeat
+
+image ws crossed default_glitchsoft:
+    block:
+        "images/sprites/抱胸表情/抱胸(默认.png"
+        choice:
+            pause 1.8
+        choice:
+            pause 2.4
+        choice:
+            pause 3.0
+        "images/sprites/glitch_soft/抱胸(默认_glitchsoft1.png"
+        0.07
+        "images/sprites/抱胸表情/抱胸(默认.png"
+        0.08
+        "images/sprites/glitch_soft/抱胸(默认_glitchsoft2.png"
+        0.07
+        repeat
+
+image ws backhand smirk_glitchsoft:
+    block:
+        "images/sprites/背手表情/背手(坏笑.png"
+        choice:
+            pause 1.8
+        choice:
+            pause 2.4
+        choice:
+            pause 3.0
+        "images/sprites/glitch_soft/背手(坏笑_glitchsoft1.png"
+        0.07
+        "images/sprites/背手表情/背手(坏笑.png"
+        0.08
+        "images/sprites/glitch_soft/背手(坏笑_glitchsoft2.png"
+        0.07
+        repeat
+
+image ws backhand default_glitchsoft:
+    block:
+        "images/sprites/背手表情/背手(默认.png"
+        choice:
+            pause 1.8
+        choice:
+            pause 2.4
+        choice:
+            pause 3.0
+        "images/sprites/glitch_soft/背手(默认_glitchsoft1.png"
+        0.07
+        "images/sprites/背手表情/背手(默认.png"
+        0.08
+        "images/sprites/glitch_soft/背手(默认_glitchsoft2.png"
+        0.07
+        repeat
+
 ## 半身近景（第一人称对视感）：头到腰占满屏，底部裁掉，水平居中。
 transform ws_close:
     xalign 0.5
     yanchor 0.0
     ypos -50
     zoom 0.52
+
+## 中景（沙漠桥段/虚空对视）：大小与店员立绘一致。
+transform ws_mid:
+    xalign 0.5
+    yanchor 0.0
+    ypos 120
+    zoom 0.42
+
+## 店员（王霜复制体，甜品店段）：右侧正立。
+transform ws_clerk_right:
+    xanchor 0.5
+    xpos 0.88
+    yanchor 0.0
+    ypos 120
+    zoom 0.42
+
+## 店员1入场：从屏幕下方升上来（非阻塞，与店员2 的降下对称）。
+transform ws_clerk_right_enter:
+    xanchor 0.5
+    xpos 0.88
+    yanchor 0.0
+    ypos 120
+    zoom 0.42
+    yoffset 1100
+    ease 0.7 yoffset 0
+
+## 店员1退场：垂直平移沉出画面（非阻塞）。
+transform ws_clerk_right_exit:
+    xanchor 0.5
+    xpos 0.88
+    yanchor 0.0
+    ypos 120
+    zoom 0.42
+    ease 0.7 yoffset 1100
+
+## 店员2：左侧从天花板倒吊（rotate 180，底边=头部下沿）。
+transform ws_clerk_ceiling:
+    rotate 180
+    xanchor 0.5
+    xpos 0.12
+    yanchor 1.0
+    ypos 960
+    zoom 0.42
+
+## 店员2入场：从天花板上方倒吊降下（非阻塞）。
+transform ws_clerk_ceiling_enter:
+    rotate 180
+    xanchor 0.5
+    xpos 0.12
+    yanchor 1.0
+    ypos 960
+    zoom 0.42
+    yoffset -1100
+    ease 0.7 yoffset 0
+
+## 店员2退场：垂直平移收回天花板（非阻塞）。
+transform ws_clerk_ceiling_exit:
+    rotate 180
+    xanchor 0.5
+    xpos 0.12
+    yanchor 1.0
+    ypos 960
+    zoom 0.42
+    ease 0.7 yoffset -1100

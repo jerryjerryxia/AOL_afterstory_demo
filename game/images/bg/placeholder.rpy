@@ -86,6 +86,15 @@ image bg_dessertgaze7:
     u_ripple_scale 12.0
     function _ripple_tick
 image bg_dessertgaze8 = Transform("images/bg/dessertgaze8.png", xysize=(1920, 1080), fit="cover")
+## 瘾：幻视高潮的转场卡（【转场：瘾。】，对视4→5 之间）——被瘾扭曲的甜品店。
+## 波纹与前后场景（4 的 0.1 → 5 的 0.2）衔接，取略强的 0.25 作为这一拍的顶点。
+image bg_addiction:
+    Transform("images/bg/dessertshop_addiction.png", xysize=(1920, 1080), fit="cover")
+    shader "game.water_ripple"
+    u_ripple_strength 0.25
+    u_ripple_speed 0.9
+    u_ripple_scale 12.0
+    function _ripple_tick
 
 ## 旧实验：甜品店 + 水面波纹 shader。当前没有场景引用，留作以后复用。
 ## shader 注册和 _ripple_tick callback 见 game/scripts/shaders.rpy。
