@@ -32,7 +32,18 @@ init python:
             float wave2 = sin(uv.y * u_ripple_scale * 0.8 + u_time * u_ripple_speed * 1.3) * u_ripple_strength * 0.7;
             float wave3 = sin((uv.x + uv.y) * u_ripple_scale * 0.6 + u_time * u_ripple_speed * 0.9) * u_ripple_strength * 0.5;
 
-            vec2 distorted_uv = uv + vec2(wave1 + wave3, wave2 + wave3) * 0.02;
+            // 边缘衰减（按轴分离）：出界风险只来自"指向那条边"的位移分量 ——
+            // x 位移只需在左右边缘归零，y 位移只需在上下边缘归零。两轴合用一个
+            // 衰减系数会把贴边的另一轴起伏也掐死，波浪线在边缘窄带里被硬掰直，
+            // 看起来像一条断层缝（实测可见）。margin 0.08 按最大位移
+            // 0.03×strength 反推，覆盖到 strength≈2.3，且过渡平缓。
+            vec2 edge_dist = min(uv, 1.0 - uv);
+            vec2 edge_fade = smoothstep(vec2(0.0), vec2(0.08), edge_dist);
+            vec2 distorted_uv = uv + vec2(wave1 + wave3, wave2 + wave3) * 0.02 * edge_fade;
+
+            // 保险丝：万一将来 strength 超出 margin 覆盖范围，出界采样按镜面
+            // 反射折回，兜底成不显眼的镜像而不是 clamp 色条。正常参数下不触发。
+            distorted_uv = 1.0 - abs(1.0 - abs(distorted_uv));
 
             gl_FragColor = texture2D(tex0, distorted_uv, u_lod_bias);
         """

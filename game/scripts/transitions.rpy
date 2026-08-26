@@ -12,6 +12,14 @@ define scene_soft = Fade(0.4, 0.1, 0.5)
 ## 淡入 0.8s。比 scene_soft 更慢更重，给"光褪去、世界沉入黑暗再浮现"的感觉。
 define fade_to_black_long = Fade(1.5, 0.3, 0.8)
 
+## 镜头缓移（【镜头：…缓移…】）专用：scene_soft 拆成的两半。camera 变换包在
+## 图层过渡的外面 —— 若在 `with scene_soft` 前直接设镜头，淡出中的**旧画面**也会
+## 被新镜头带着动。所以转换器改发三段：scene black with cam_fade_out（旧镜头沉黑）
+## → camera 块（全黑中设/复位，不可见）→ scene 新背景 with cam_fade_in。
+## 两半时长合起来 = scene_soft 的节奏（0.4 出 / 0.1 停 / 0.5 入）。
+define cam_fade_out = Fade(0.4, 0.1, 0.0)
+define cam_fade_in = Fade(0.0, 0.0, 0.5)
+
 ## 同场景渐变 —— 直接交叉淡入淡出，不经过黑场。
 ## 用于"同一地点、同一时刻"内的视觉渐变（甜品店对视 1→2→3...），让画面像
 ## 时间慢慢流过去那样彼此过渡，而不是每次都"切走又切回来"。

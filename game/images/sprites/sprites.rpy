@@ -210,6 +210,25 @@ transform ws_mid:
     ypos 120
     zoom 0.42
 
+## 沙漠走路进场（【王霜走路进场】）：左缘外走到画面偏右，水平匀速 +
+## 每步一次起伏。落点即站定位置 —— 走路窗口内的后续姿势 show 不带 at
+## 列表，沿用本 transform 的落点（见 convert_script.py 走路窗口逻辑）。
+## subpixel：起伏只有十几像素，不开亚像素会整像素跳格。
+transform ws_desert_walk:
+    subpixel True
+    xanchor 0.5
+    xpos -0.3
+    yanchor 0.0
+    ypos 120
+    zoom 0.42
+    parallel:
+        linear 10.0 xpos 0.7
+    parallel:
+        block:
+            easeout 0.3 yoffset -12
+            easein 0.3 yoffset 0
+            repeat 17
+
 ## 店员（王霜复制体，甜品店段）：右侧正立。
 transform ws_clerk_right:
     xanchor 0.5

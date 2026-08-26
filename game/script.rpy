@@ -22,11 +22,50 @@ label splashscreen:
 ## options.rpy 早，那时候读到的还是引擎默认分辨率。
 ## main_menu screen 和 label start 都引用这一个名字，保证进游戏时铺到 master 层上的
 ## 画面和主菜单上看到的逐像素一致，切换那一帧才看不出破绽。
-image bg_menu_sea = Fixed(
+##
+## 镜头缓移：保持原有 contain 构图（整幅横条 + 上下黑边），只把横条轻微变焦
+## 1.06 后 15 秒从左缓移到右定格 —— 幅度与游戏内场景的镜头缓移一致（全程约
+## 115px，~8px/s，细微可感）。黑边是背后的 Solid，不参与缓移，纹丝不动。
+## 位置不是 ATL 时间轴而是**墙钟的纯函数**（_menu_sea_pan_tick）：菜单 screen 和
+## label start 的 master 各自实例化这个 transform 时钟都一样，所以玩家在缓移中途
+## 点"开始游戏"，master 接住的画面照样逐像素一致、并继续同步漂移。
+## _menu_pan_t0 是 default 变量：从游戏退回主菜单时 store 重置 → 缓移重新来一遍；
+## 主菜单 ⇄ 设置/存读档（同一 store）则共用时钟，镜头连续不跳。
+define MENU_PAN_SECONDS = 15.0
+define MENU_PAN_ZOOM = 1.06
+
+default _menu_pan_t0 = None
+
+init python:
+    import time as _time_mod
+
+    def _menu_sea_pan_tick(trans, st, at):
+        if store._menu_pan_t0 is None:
+            store._menu_pan_t0 = _time_mod.time()
+        p = min((_time_mod.time() - store._menu_pan_t0) / MENU_PAN_SECONDS, 1.0)
+        trans.xalign = 1.0 - (1.0 - p) ** 2   # easeout：减速滑入右端定格
+        return 0 if p < 1.0 else None          # 定格后停止每帧重算
+
+transform menu_sea_pan:
+    subpixel True
+    zoom MENU_PAN_ZOOM
+    yalign 0.5
+    function _menu_sea_pan_tick
+
+## 海面层（黑底 + 缓移横条，无压暗）：main_menu 经 bg_menu_sea 用，
+## game_menu（设置/存读档）直接 add —— 两边共享同一个缓移时钟。
+## contain 盒的上下留白是透明的，变焦溢出的只是透明区，横条永远完整可见；
+## 黑边由背后的 Solid 提供，静止。
+image menu_sea_panorama = Fixed(
     Solid("#000000"),
-    Transform("images/ui/menu_background/sea.png",
-              xysize=(config.screen_width, config.screen_height),
-              fit="contain", xalign=0.5, yalign=0.5),
+    At(Transform("images/ui/menu_background/sea.png",
+                 xysize=(config.screen_width, config.screen_height),
+                 fit="contain", xalign=0.5, yalign=0.5),
+       menu_sea_pan),
+    xysize=(config.screen_width, config.screen_height))
+
+image bg_menu_sea = Fixed(
+    "menu_sea_panorama",
     ## 压暗层：主菜单的标题图和左侧按钮压在海面上，不压暗亮部会吃掉白字。
     ## 比 game_menu 的 #00000080 轻一档 —— 主菜单文字少，画面留得开一点。
     Solid("#00000066"),

@@ -1243,15 +1243,11 @@ style main_menu_button_text is gui_button_text:
 screen game_menu(title, kicker="", scroll=None, yinitial=0.0):
     style_prefix "game_menu"
 
-    ## 背景：sea.png（3840x1240，3.10:1）。fit="contain" 按宽度铺满，
-    ## 上下各留约 230px 黑边 —— 暂时接受，等有 16:9 版本的图再换。
-    ## 铺满不透明 = 游戏中 ESC 进菜单不再透出当前场景（原来 #1a1a2acc 是 80% 遮罩）。
+    ## 背景：海面缓移层（script.rpy 的 menu_sea_panorama，contain 横条 + 黑边，
+    ## 轻微变焦缓移）——与主菜单共用同一个缓移时钟，主菜单 ⇄ 设置/存读档切换时
+    ## 镜头位置连续不跳。不透明 = 游戏中 ESC 进菜单不透出当前场景。
     ## 上面还叠着 game_menu_outer_frame 的 #00000080 压暗层，保证文字可读。
-    add Solid("#000000")
-    add Transform(
-        "images/ui/menu_background/sea.png",
-        xysize=(config.screen_width, config.screen_height),
-        fit="contain", xalign=0.5, yalign=0.5)
+    add "menu_sea_panorama"
 
     frame:
         style "game_menu_outer_frame"

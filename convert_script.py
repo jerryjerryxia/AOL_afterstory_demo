@@ -302,6 +302,79 @@ SCENE_EXPRESSIONS = {
 _CURRENT_EXPR_SCENE = None
 
 ################################################################################
+## 镜头缓移（Ken Burns 开场）
+##
+## 剧本标记：【镜头：左下缓移右上】，可选时长/变焦：【镜头：左下缓移右上，5秒，变焦1.1】
+## 写在【转场：…】的前一行。标记只登记不发码——由紧随其后的 _emit_scene 发出。
+## 发码形状是"沉黑 → 黑中设镜头 → 带镜头浮出"三段（cam_fade_out/cam_fade_in）：
+## camera 变换包在图层过渡的**外面**，直接写在 `with` 前会让淡出中的旧画面也
+## 跟着新镜头动。浮出时镜头已在漂移，走完后定格在终点、整段场景保持。
+##
+## 用 camera（作用于 master 层）而不是 scene 上的 at 变换，是因为整图表情差分
+## 每次都发新的 scene 语句（见 emit_expression_change）——at 变换会被第一次差分
+## 冲掉，而 camera 不受 scene 影响，能横跨整段场景存活。
+##
+## 复位是自动的：下一次 _emit_scene（真正的场景切换）发现镜头不在默认位，就在
+## 自己的 scene 语句前补一行裸 `camera`。scene_soft 是 Fade 过黑，复位跳变被
+## 黑场完全盖住；就地转场（IN_PLACE_SCENES）不换画面，不复位。
+_CAMERA_PAN_PENDING = None   # {'from','to','secs','zoom'} 或 None
+_CAMERA_PAN_ACTIVE = False   # 镜头当前不在默认位（下次转场需复位）
+
+# 方位名 -> (xalign, yalign)。zoom>1 时 align 决定看到图的哪一块（角/边/中）。
+_CAMERA_CORNERS = {
+    '左上': ('0.0', '0.0'),
+    '左下': ('0.0', '1.0'),
+    '右上': ('1.0', '0.0'),
+    '右下': ('1.0', '1.0'),
+    '中央': ('0.5', '0.5'),
+    '左': ('0.0', '0.5'),
+    '右': ('1.0', '0.5'),
+    '上': ('0.5', '0.0'),
+    '下': ('0.5', '1.0'),
+}
+# 正则备选：长名在前，防止 '左' 抢走 '左上' 的匹配。
+_CAMERA_CORNER_ALT = '|'.join(sorted(_CAMERA_CORNERS, key=len, reverse=True))
+_CAMERA_DEFAULT_SECS = '5.0'
+_CAMERA_DEFAULT_ZOOM = '1.06'
+
+def _emit_camera_at_switch(out, indent, ease_back=False):
+    """场景切换点的镜头语句。返回值告诉调用方这些行能不能见光：
+      'switch' —— 硬设/硬复位，必须藏在全黑里发（调用方拆转场）；
+      'inline' —— 缓回动画，可直接跟在交叉溶解前发（镜头随溶解一起归位）；
+      None     —— 没有镜头变化。
+    有登记的缓移 → 发 camera 块并标记生效中；没有新缓移但镜头还停在上一
+    场景的终点 → 复位（ease_back=True 时改为 3 秒缓回默认位，用于藏不住
+    硬复位的交叉溶解场景；config.keep_show_layer_state 默认开，新 camera
+    块从当前镜头状态起插值）。"""
+    global _CAMERA_PAN_PENDING, _CAMERA_PAN_ACTIVE
+    if _CAMERA_PAN_PENDING:
+        p = _CAMERA_PAN_PENDING
+        fx, fy = _CAMERA_CORNERS[p['from']]
+        tx, ty = _CAMERA_CORNERS[p['to']]
+        out.append(f"{indent}## 镜头：{p['from']}缓移{p['to']}"
+                   f"（{p['secs']}秒定格，变焦{p['zoom']}；下个转场自动复位）")
+        out.append(f'{indent}camera:')
+        # subpixel：缓移每帧只挪零点几像素，不开亚像素渲染会整像素跳格（可见抖动）
+        out.append(f'{indent}    subpixel True')
+        out.append(f"{indent}    zoom {p['zoom']} xalign {fx} yalign {fy}")
+        out.append(f"{indent}    easein_quad {p['secs']} xalign {tx} yalign {ty}")
+        _CAMERA_PAN_PENDING = None
+        _CAMERA_PAN_ACTIVE = True
+        return 'switch'
+    if _CAMERA_PAN_ACTIVE:
+        _CAMERA_PAN_ACTIVE = False
+        if ease_back:
+            out.append(f'{indent}## 镜头缓回默认位（随交叉溶解同走，不经黑场）')
+            out.append(f'{indent}camera:')
+            out.append(f'{indent}    subpixel True')
+            out.append(f'{indent}    easein_quad 3.0 zoom 1.0 xalign 0.5 yalign 0.5')
+            return 'inline'
+        out.append(f'{indent}## 镜头复位')
+        out.append(f'{indent}camera')
+        return 'switch'
+    return None
+
+################################################################################
 ## 立绘（王霜全身立绘，game/images/sprites/）
 ##
 ## 剧本标记形状是区分的唯一依据：
@@ -377,6 +450,20 @@ WS_CLERK_GLITCH_GAP = 0.08                 # 两下故障之间的干净间隙
 
 # 中景主立绘摆位（ws_mid，沙漠桥段/虚空对视）：大小与店员一致。
 WS_MID_YPOS = 120
+
+# 沙漠走路进场（剧本标记【王霜走路进场】）：从屏幕左缘外走到画面偏右站定，
+# 水平匀速推进 + 每步一次轻微起伏。想调手感改这里 + 重跑转换器。
+WS_WALK_SECONDS = 10.0   # 全程时长
+WS_WALK_START_X = -0.3   # 起点 xpos（屏幕比例；-0.3 = 整个立绘在左缘外）
+WS_WALK_END_X = 0.7      # 终点站定位置（偏右——她走在前头）
+WS_WALK_STEP = 0.6       # 每步周期（秒），起伏一次 = 迈一步
+WS_WALK_BOB = 12         # 起伏幅度（px）
+
+# 走路窗口状态：标记登记 pending → 下一条立绘 show 挂 ws_desert_walk 并转
+# active → 同场景内后续姿势/表情 show 一律不带 at 列表（带了会把走路
+# transform 冲掉，人瞬移回 ws_mid）。转场（scene 清立绘）时窗口关闭。
+_SPRITE_WALK_PENDING = False
+_SPRITE_WALK_ACTIVE = False
 
 
 def _build_sprite_index():
@@ -507,10 +594,19 @@ def emit_sprite_change(marker, indent):
     if is_glitch:
         img += "_glitch"   # glitch 并进表情属性名，避免 show 属性残留粘连
     at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
-    global _LAST_SPRITE
+    global _LAST_SPRITE, _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE
     _LAST_SPRITE = (pose, use_expr, is_glitch)
+    # 走路窗口：首条立绘挂走路 transform；之后不带 at，沿用走路的位置/动画。
+    if _SPRITE_WALK_PENDING:
+        _SPRITE_WALK_PENDING = False
+        _SPRITE_WALK_ACTIVE = True
+        at_clause = ' at ws_desert_walk'
+    elif _SPRITE_WALK_ACTIVE:
+        at_clause = ''
+    else:
+        at_clause = f' at {at}'
     return (f'{indent}## 立绘：{marker}\n'
-            f'{indent}show {img} at {at}\n'
+            f'{indent}show {img}{at_clause}\n'
             f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
 
 
@@ -525,7 +621,9 @@ def emit_sprite_unglitch(indent):
     _LAST_SPRITE = (pose, expr, False)
     img = f"ws {SPRITE_POSE_ATTRS[pose]} {SPRITE_EXPR_ATTRS[expr]}"
     at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
-    return (f'{indent}show {img} at {at}\n'
+    # 走路窗口内不带 at 列表（同 emit_sprite_change：别把走路 transform 冲掉）。
+    at_clause = '' if _SPRITE_WALK_ACTIVE else f' at {at}'
+    return (f'{indent}show {img}{at_clause}\n'
             f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
 
 
@@ -763,6 +861,29 @@ def generate_sprites_rpy():
         '    yanchor 0.0',
         f'    ypos {WS_MID_YPOS}',
         f'    zoom {WS_CLERK_ZOOM}',
+        '',
+    ]
+    # 走路步数取整到完整周期：x 到位后最后一步在原地落定，像自然收步。
+    walk_steps = max(1, round(WS_WALK_SECONDS / WS_WALK_STEP))
+    out += [
+        '## 沙漠走路进场（【王霜走路进场】）：左缘外走到画面偏右，水平匀速 +',
+        '## 每步一次起伏。落点即站定位置 —— 走路窗口内的后续姿势 show 不带 at',
+        '## 列表，沿用本 transform 的落点（见 convert_script.py 走路窗口逻辑）。',
+        '## subpixel：起伏只有十几像素，不开亚像素会整像素跳格。',
+        'transform ws_desert_walk:',
+        '    subpixel True',
+        '    xanchor 0.5',
+        f'    xpos {WS_WALK_START_X}',
+        '    yanchor 0.0',
+        f'    ypos {WS_MID_YPOS}',
+        f'    zoom {WS_CLERK_ZOOM}',
+        '    parallel:',
+        f'        linear {WS_WALK_SECONDS} xpos {WS_WALK_END_X}',
+        '    parallel:',
+        '        block:',
+        f'            easeout {WS_WALK_STEP / 2} yoffset -{WS_WALK_BOB}',
+        f'            easein {WS_WALK_STEP / 2} yoffset 0',
+        f'            repeat {walk_steps}',
         '',
     ]
     # 店员摆位。入/退场是**内联静态摆位的完整 transform**——每次 show 的 at
@@ -1290,8 +1411,10 @@ def emit_char_dialogue(char_var, dialogue, indent, comment=None):
 def _emit_scene(out, indent, scene_name, bg_image, transition):
     """发出 scene 行，并更新当前表情场景。overlay 表情场景额外把透明立绘默认
     表情叠上去（scene <bg> + show <default> + with，三者同一个过渡一起淡入）。"""
-    global _CURRENT_EXPR_SCENE, _LAST_SPRITE
+    global _CURRENT_EXPR_SCENE, _LAST_SPRITE, _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE
     _LAST_SPRITE = None   # scene 语句会清掉所有 show，立绘追踪一起清
+    _SPRITE_WALK_PENDING = False   # 走路窗口随立绘一起被 scene 清掉
+    _SPRITE_WALK_ACTIVE = False
     # 有店员在场：先发垂直平移退场动画，pause 等动画走完再转场
     # （剧本：「店员和店员2退场，退场的形式是垂直平移出屏幕」）。
     clerk_exits = [e for e in (emit_clerk_exit(c, indent) for c in sorted(_CLERK_STATE))
@@ -1319,6 +1442,7 @@ def _emit_scene(out, indent, scene_name, bg_image, transition):
         out.append(f'{indent}$ hard_pause({fo})')
         if hold:
             out.append(f'{indent}$ hard_pause({hold})')
+        _emit_camera_at_switch(out, indent)   # 全黑期间设/复位镜头，跳变不可见
         out.append(f'{indent}scene {bg_image}')
         out.append(f'{indent}show black zorder 100:')
         out.append(f'{indent}    alpha 1.0')
@@ -1327,17 +1451,38 @@ def _emit_scene(out, indent, scene_name, bg_image, transition):
         out.append(f'{indent}hide black')
         _CURRENT_EXPR_SCENE = scene_name
         return
+    # 镜头设/复位不能直接跟在 `with 过渡` 前面 —— camera 变换包在图层过渡外面，
+    # 淡出中的旧画面会被新镜头带着动。'switch' 类镜头变化要把转场拆成"沉黑 →
+    # 黑中动镜头 → 浮出"三段（cam_fade_out / cam_fade_in，见 transitions.rpy）；
+    # 交叉溶解场景（scene_dissolve）藏不住黑场，复位退化成 'inline' 缓回动画。
+    cam = []
+    cam_kind = _emit_camera_at_switch(cam, indent,
+                                      ease_back=(transition == 'scene_dissolve'))
     cfg = SCENE_EXPRESSIONS.get(scene_name)
     if cfg and cfg['model'] == 'overlay':
         if cfg.get('continue_bg'):
             # bg（黑屏视频）从上一场景连续过来：不重新 scene —— 重新 scene 会重启视频
             # 并经 scene_soft 的黑场"暗一下"。只把立绘 dissolve 淡入，黑屏全程连续。
+            out.extend(cam)   # 画面是连续黑屏，镜头变化落在黑上不可见
             out.append(f'{indent}show {cfg["default"]} with scene_dissolve')
+        elif cam_kind == 'switch':
+            out.append(f'{indent}scene black with cam_fade_out')
+            out.extend(cam)
+            out.append(f'{indent}scene {bg_image}')
+            out.append(f'{indent}show {cfg["default"]}')
+            out.append(f'{indent}with cam_fade_in')
         else:
+            out.extend(cam)
             out.append(f'{indent}scene {bg_image}')
             out.append(f'{indent}show {cfg["default"]}')
             out.append(f'{indent}with {transition}')
+    elif cam_kind == 'switch' and transition != 'None':
+        out.append(f'{indent}scene black with cam_fade_out')
+        out.extend(cam)
+        out.append(f'{indent}scene {bg_image} with cam_fade_in')
     else:
+        # 'inline' 缓回随过渡同走；transition 为 None 的硬切与换景同帧，无残留。
+        out.extend(cam)
         out.append(f'{indent}scene {bg_image} with {transition}')
     # 揭示卡场景：转场演完后藏文本框、等一次点击，画面自己占一拍。
     if scene_name in SCENE_CLICK_HOLD:
@@ -1852,6 +1997,40 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
                 f'{indent}stop music fadeout 2.0\n'
                 f'{indent}scene black with fade_to_black_long\n'
                 f'{indent}$ hard_pause(1.0)')
+
+    # 镜头缓移标记 【镜头：左下缓移右上】（可选 ，5秒 / ，变焦1.1）。
+    # 写在【转场：…】前一行。只登记不发码——camera 块由下一个 _emit_scene 在
+    # scene 语句前发出（详见 _CAMERA_PAN_PENDING 上方的说明）。
+    cam_match = re.match(
+        r'^【镜头[：:](%s)缓移(%s)'
+        r'(?:[，,]\s*([\d.]+)秒)?(?:[，,]\s*变焦([\d.]+))?】$'
+        % (_CAMERA_CORNER_ALT, _CAMERA_CORNER_ALT), line)
+    if cam_match:
+        global _CAMERA_PAN_PENDING
+        frm, to, secs, zoom = cam_match.groups()
+        _CAMERA_PAN_PENDING = {
+            'from': frm, 'to': to,
+            'secs': secs or _CAMERA_DEFAULT_SECS,
+            'zoom': zoom or _CAMERA_DEFAULT_ZOOM,
+        }
+        return f'{indent}## 镜头标记：{frm}缓移{to}（于下个转场生效）'
+
+    # 走路进场标记（与店员进场同模式）：
+    #   【王霜走路进场，<姿势>，<表情>】 → 立即以该姿势入场开走（可先于台词）；
+    #   【王霜走路进场】                → 等下一条立绘 show 时才入场开走。
+    # 挂 ws_desert_walk（左缘外走到画面偏右站定，见 sprites.rpy）。
+    # 手感参数改 WS_WALK_* 常量。
+    walk_match = re.match(r'^【王霜走路进场(?:[，,](.+))?】$', line)
+    if walk_match:
+        global _SPRITE_WALK_PENDING
+        _SPRITE_WALK_PENDING = True
+        rest = walk_match.group(1)
+        if rest:
+            code = emit_sprite_change(rest.strip(), indent)
+            if code:
+                return f'{indent}## 王霜走路进场\n{code}'
+            # 姿势解析不出素材：退化成"下一条立绘生效"（pending 已置位）
+        return f'{indent}## 王霜走路进场（下一条立绘生效）'
 
     # Pause markers 【停顿：N】 -> `pause N` (N is seconds, float ok)
     # Use sparingly — for breathing room before a scene's first line, etc.
@@ -2779,8 +2958,14 @@ def convert_prologue(lines, start_line, end_line):
     # section will emit `with None` to avoid a fade-through-black on the
     # main-menu→prologue boundary (where the bg is already the same video).
     global _PROLOGUE_FIRST_TRANSITION_PENDING, _CURRENT_EXPR_SCENE
+    global _CAMERA_PAN_PENDING, _CAMERA_PAN_ACTIVE
+    global _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE
     _PROLOGUE_FIRST_TRANSITION_PENDING = True
     _CURRENT_EXPR_SCENE = None
+    _CAMERA_PAN_PENDING = None
+    _CAMERA_PAN_ACTIVE = False
+    _SPRITE_WALK_PENDING = False
+    _SPRITE_WALK_ACTIVE = False
     _CLERK_STATE.clear()
 
     output = []
