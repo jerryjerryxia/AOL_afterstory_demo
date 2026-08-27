@@ -465,18 +465,16 @@ WS_WALK_BOB = 12         # 起伏幅度（px）
 _SPRITE_WALK_PENDING = False
 _SPRITE_WALK_ACTIVE = False
 
-# 小跳（剧本标记【小跳】，跟在姿势/表情标记后）：立绘原地轻跳一下。
-# 实现 = re-show 当前立绘，摆位 at 之后追加一段 yoffset 起落的内联 ATL
-# （show 的 ATL block 会附加到 at 列表尾部，摆位不动，只加位移）。
+# 小跳（剧本标记【小跳】，跟在姿势/表情标记后）：立绘原地轻跳一下（幅度小）。
+# 实现 = re-show 当前立绘，at 换成对应摆位的 <摆位>_hop 版 —— ★必须是内联了
+# 静态摆位的完整单元素 transform★（生成见 generate_sprites_rpy），不能用
+# `at 摆位 + ATL block`：block 会追加成第二个 at 元素，替换 at 列表时 Ren'Py
+# 从尾部对齐取状态，block 继承摆位的 zoom、摆位又套一遍 → zoom 平方立绘缩小
+# （与店员入退场当年同一个坑，见 _CLERK_CFG 注释）。
 # 起落 warper 与沙漠走路的 bob 同款：easeout 上（顶点减速）、easein 落。
 SPRITE_HOP_PX = 28       # 跳起高度（px）
 SPRITE_HOP_UP = 0.14     # 上升时长（秒）
 SPRITE_HOP_DOWN = 0.12   # 落回时长（秒）
-
-
-def _hop_atl(indent):
-    return (f'{indent}    easeout {SPRITE_HOP_UP} yoffset -{SPRITE_HOP_PX}\n'
-            f'{indent}    easein {SPRITE_HOP_DOWN} yoffset 0')
 
 
 def _build_sprite_index():
@@ -624,9 +622,9 @@ def emit_sprite_change(marker, indent):
 
 
 def emit_sprite_hop(indent):
-    """【小跳】（主立绘）：re-show 当前立绘并追加起落 ATL。
-    无立绘在场时返回 None；走路窗口内忽略——那时 show 不能带 at 列表，
-    而只带 ATL block 的 show 会把走路 transform 整个冲掉。"""
+    """【小跳】（主立绘）：re-show 当前立绘，at 换成摆位的 _hop 版。
+    无立绘在场时返回 None；走路窗口内忽略——hop 版 transform 会把走路
+    transform 冲掉（人瞬移回摆位落点）。"""
     if _LAST_SPRITE is None:
         return None
     if _SPRITE_WALK_ACTIVE or _SPRITE_WALK_PENDING:
@@ -637,11 +635,11 @@ def emit_sprite_hop(indent):
     if is_glitch:
         img += "_glitch"
     at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
-    return f'{indent}show {img} at {at}:\n' + _hop_atl(indent)
+    return f'{indent}show {img} at {at}_hop'
 
 
 def emit_clerk_hop(clerk, indent):
-    """【小跳】（店员）：同 emit_sprite_hop，走店员的 as tag 与摆位。
+    """【小跳】（店员）：同 emit_sprite_hop，走店员的 as tag 与摆位 _hop 版。
     刚触发入场动画的同一拍内忽略（re-show 会打断入场平移）。"""
     st = _CLERK_STATE.get(clerk)
     if not st or not st['visible']:
@@ -653,8 +651,7 @@ def emit_clerk_hop(clerk, indent):
     if resolved is None:
         return None
     cfg = _CLERK_CFG[clerk]
-    return (f'{indent}show {resolved[0]} as {cfg["tag"]} at {cfg["at"]}:\n'
-            + _hop_atl(indent))
+    return f'{indent}show {resolved[0]} as {cfg["tag"]} at {cfg["at"]}_hop'
 
 
 def emit_sprite_unglitch(indent):
@@ -893,21 +890,39 @@ def generate_sprites_rpy():
         out.append(f'        "{f2}"')
         out.append(f'        {WS_CLERK_GLITCH_FLASH}')
         out.append('        repeat')
-    out += [
-        '',
-        '## 半身近景（第一人称对视感）：头到腰占满屏，底部裁掉，水平居中。',
-        'transform ws_close:',
+    # 小跳（【小跳】标记）的起落 ATL；每个摆位都配一个内联了自己静态摆位的
+    # _hop 版完整 transform —— at 列表必须始终单元素（zoom 平方坑，见
+    # SPRITE_HOP_PX 上方注释）。subpixel 同走路：位移小，不开会整像素跳格。
+    hop_atl = [
+        '    subpixel True',
+        f'    easeout {SPRITE_HOP_UP} yoffset -{SPRITE_HOP_PX}',
+        f'    easein {SPRITE_HOP_DOWN} yoffset 0',
+    ]
+    close_static = [
         '    xalign 0.5',
         '    yanchor 0.0',
         f'    ypos {WS_CLOSE_YPOS}',
         f'    zoom {WS_CLOSE_ZOOM}',
-        '',
-        '## 中景（沙漠桥段/虚空对视）：大小与店员立绘一致。',
-        'transform ws_mid:',
+    ]
+    mid_static = [
         '    xalign 0.5',
         '    yanchor 0.0',
         f'    ypos {WS_MID_YPOS}',
         f'    zoom {WS_CLERK_ZOOM}',
+    ]
+    out += [
+        '',
+        '## 半身近景（第一人称对视感）：头到腰占满屏，底部裁掉，水平居中。',
+        'transform ws_close:'] + close_static + [
+        '',
+        '## 半身近景 + 小跳（【小跳】）。',
+        'transform ws_close_hop:'] + close_static + hop_atl + [
+        '',
+        '## 中景（沙漠桥段/虚空对视）：大小与店员立绘一致。',
+        'transform ws_mid:'] + mid_static + [
+        '',
+        '## 中景 + 小跳（【小跳】）。',
+        'transform ws_mid_hop:'] + mid_static + hop_atl + [
         '',
     ]
     # 走路步数取整到完整周期：x 到位后最后一步在原地落定，像自然收步。
@@ -964,6 +979,9 @@ def generate_sprites_rpy():
         'transform ws_clerk_right_exit:'] + clerk1_static + [
         f'    ease {CLERK_MOVE_SECONDS} yoffset {CLERK_TRAVEL}',
         '',
+        '## 店员1 + 小跳（【小跳】）。',
+        'transform ws_clerk_right_hop:'] + clerk1_static + hop_atl + [
+        '',
         '## 店员2：左侧从天花板倒吊（rotate 180，底边=头部下沿）。',
         'transform ws_clerk_ceiling:'] + clerk2_static + [
         '',
@@ -975,6 +993,9 @@ def generate_sprites_rpy():
         '## 店员2退场：垂直平移收回天花板（非阻塞）。',
         'transform ws_clerk_ceiling_exit:'] + clerk2_static + [
         f'    ease {CLERK_MOVE_SECONDS} yoffset {-CLERK_TRAVEL}',
+        '',
+        '## 店员2 + 小跳（【小跳】）：倒吊着向上（天花板方向）弹一下。',
+        'transform ws_clerk_ceiling_hop:'] + clerk2_static + hop_atl + [
         '',
     ]
     path = os.path.join(BASE_DIR, 'game', 'images', 'sprites', 'sprites.rpy')

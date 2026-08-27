@@ -56,9 +56,7 @@ label route1_start:
     show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     ## 小跳
-    show ws backhand shocked at ws_mid:
-        easeout 0.14 yoffset -28
-        easein 0.12 yoffset 0
+    show ws backhand shocked at ws_mid_hop
     wangshuang "哦，不好意思，太阳在那儿。"
     ## 玻璃破碎音效：glass-smash-normalized
     $ play_sfx("audio/sfx/glass_smash/glass-smash-normalized.wav")
@@ -386,9 +384,7 @@ label route1_start:
     show ws crossed wry_glitchsoft as ws_clerk1 at ws_clerk_right
     $ renpy.transition(Dissolve(0.2), layer="master")
     ## 小跳
-    show ws crossed wry_glitchsoft as ws_clerk1 at ws_clerk_right:
-        easeout 0.14 yoffset -28
-        easein 0.12 yoffset 0
+    show ws crossed wry_glitchsoft as ws_clerk1 at ws_clerk_right_hop
     wangshuang_clerk "啊，已经这么遭人嫌了么..."
     ahe "...多少有点自知之明吧你..."
     ## 表情：撇嘴

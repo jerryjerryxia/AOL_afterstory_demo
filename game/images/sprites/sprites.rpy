@@ -203,12 +203,32 @@ transform ws_close:
     ypos -50
     zoom 0.52
 
+## 半身近景 + 小跳（【小跳】）。
+transform ws_close_hop:
+    xalign 0.5
+    yanchor 0.0
+    ypos -50
+    zoom 0.52
+    subpixel True
+    easeout 0.14 yoffset -28
+    easein 0.12 yoffset 0
+
 ## 中景（沙漠桥段/虚空对视）：大小与店员立绘一致。
 transform ws_mid:
     xalign 0.5
     yanchor 0.0
     ypos 120
     zoom 0.42
+
+## 中景 + 小跳（【小跳】）。
+transform ws_mid_hop:
+    xalign 0.5
+    yanchor 0.0
+    ypos 120
+    zoom 0.42
+    subpixel True
+    easeout 0.14 yoffset -28
+    easein 0.12 yoffset 0
 
 ## 沙漠走路进场（【王霜走路进场】）：左缘外走到画面偏右，水平匀速 +
 ## 每步一次起伏。落点即站定位置 —— 走路窗口内的后续姿势 show 不带 at
@@ -256,6 +276,17 @@ transform ws_clerk_right_exit:
     zoom 0.42
     ease 0.7 yoffset 1100
 
+## 店员1 + 小跳（【小跳】）。
+transform ws_clerk_right_hop:
+    xanchor 0.5
+    xpos 0.82
+    yanchor 0.0
+    ypos 120
+    zoom 0.42
+    subpixel True
+    easeout 0.14 yoffset -28
+    easein 0.12 yoffset 0
+
 ## 店员2：左侧从天花板倒吊（rotate 180，底边=头部下沿）。
 transform ws_clerk_ceiling:
     rotate 180
@@ -285,3 +316,15 @@ transform ws_clerk_ceiling_exit:
     ypos 960
     zoom 0.42
     ease 0.7 yoffset -1100
+
+## 店员2 + 小跳（【小跳】）：倒吊着向上（天花板方向）弹一下。
+transform ws_clerk_ceiling_hop:
+    rotate 180
+    xanchor 0.5
+    xpos 0.18
+    yanchor 1.0
+    ypos 960
+    zoom 0.42
+    subpixel True
+    easeout 0.14 yoffset -28
+    easein 0.12 yoffset 0
