@@ -432,9 +432,9 @@ WS_GLITCH_FRAME = 0.12    # glitch 动画每帧时长（秒），3 帧循环
 # 店员（王霜复制体，甜品店段）摆位参数。素材与主立绘同一套，缩小放在两侧：
 # 店员1 右侧正立，店员2 左侧从天花板倒吊（rotate 180）。
 WS_CLERK_ZOOM = 0.42
-WS_CLERK1_XPOS = 0.88     # 右侧（中心点的横向位置，屏幕比例）
+WS_CLERK1_XPOS = 0.82     # 右侧（中心点的横向位置，屏幕比例）
 WS_CLERK1_YPOS = 120      # 头顶离屏幕上沿的距离（px）
-WS_CLERK2_XPOS = 0.12     # 左侧
+WS_CLERK2_XPOS = 0.18     # 左侧
 # 倒吊时头部下沿的位置（px，越大垂得越低）。取 1080 - WS_CLERK1_YPOS：
 # 两人同一动作时（如 都是讲解站立），左上店员2 和右下店员1 露出的身体量
 # 一致，占据对称的空间。
@@ -464,6 +464,19 @@ WS_WALK_BOB = 12         # 起伏幅度（px）
 # transform 冲掉，人瞬移回 ws_mid）。转场（scene 清立绘）时窗口关闭。
 _SPRITE_WALK_PENDING = False
 _SPRITE_WALK_ACTIVE = False
+
+# 小跳（剧本标记【小跳】，跟在姿势/表情标记后）：立绘原地轻跳一下。
+# 实现 = re-show 当前立绘，摆位 at 之后追加一段 yoffset 起落的内联 ATL
+# （show 的 ATL block 会附加到 at 列表尾部，摆位不动，只加位移）。
+# 起落 warper 与沙漠走路的 bob 同款：easeout 上（顶点减速）、easein 落。
+SPRITE_HOP_PX = 28       # 跳起高度（px）
+SPRITE_HOP_UP = 0.14     # 上升时长（秒）
+SPRITE_HOP_DOWN = 0.12   # 落回时长（秒）
+
+
+def _hop_atl(indent):
+    return (f'{indent}    easeout {SPRITE_HOP_UP} yoffset -{SPRITE_HOP_PX}\n'
+            f'{indent}    easein {SPRITE_HOP_DOWN} yoffset 0')
 
 
 def _build_sprite_index():
@@ -608,6 +621,40 @@ def emit_sprite_change(marker, indent):
     return (f'{indent}## 立绘：{marker}\n'
             f'{indent}show {img}{at_clause}\n'
             f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+
+
+def emit_sprite_hop(indent):
+    """【小跳】（主立绘）：re-show 当前立绘并追加起落 ATL。
+    无立绘在场时返回 None；走路窗口内忽略——那时 show 不能带 at 列表，
+    而只带 ATL block 的 show 会把走路 transform 整个冲掉。"""
+    if _LAST_SPRITE is None:
+        return None
+    if _SPRITE_WALK_ACTIVE or _SPRITE_WALK_PENDING:
+        print("WARNING: 【小跳】出现在走路窗口内——忽略（会冲掉走路 transform）")
+        return None
+    pose, expr, is_glitch = _LAST_SPRITE
+    img = f"ws {SPRITE_POSE_ATTRS[pose]} {SPRITE_EXPR_ATTRS[expr]}"
+    if is_glitch:
+        img += "_glitch"
+    at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
+    return f'{indent}show {img} at {at}:\n' + _hop_atl(indent)
+
+
+def emit_clerk_hop(clerk, indent):
+    """【小跳】（店员）：同 emit_sprite_hop，走店员的 as tag 与摆位。
+    刚触发入场动画的同一拍内忽略（re-show 会打断入场平移）。"""
+    st = _CLERK_STATE.get(clerk)
+    if not st or not st['visible']:
+        return None
+    if st.get('enter_pending'):
+        print("WARNING: 【小跳】紧跟店员入场——忽略（会打断入场动画）")
+        return None
+    resolved = _clerk_img(st['pose'], st['expr'])
+    if resolved is None:
+        return None
+    cfg = _CLERK_CFG[clerk]
+    return (f'{indent}show {resolved[0]} as {cfg["tag"]} at {cfg["at"]}:\n'
+            + _hop_atl(indent))
 
 
 def emit_sprite_unglitch(indent):
@@ -970,7 +1017,9 @@ CHAR_PATTERN = '|'.join(
 # 专有名词列表（point 7）：这些字眼在正文中出现时用 {i}斜体{/i} 强调。
 # 在 demo_script.txt 里直接以普通文字书写，由转换器负责加斜体标签——
 # 这样剧本保持干净，新增名词只要往这个列表里加即可。
-PROPER_NOUNS = ['尤里娅', 'KAS']
+# 2026-08：作者决定去掉 尤里娅/KAS 的斜体，列表清空（机制保留备用）。
+# 注意：增删名词会改 say 文本 → 英文 tl 的哈希 ID 失配，需要重打 key。
+PROPER_NOUNS = []
 
 def italicize_proper_nouns(text):
     """Wrap any proper noun (PROPER_NOUNS) in {i}...{/i} for italic emphasis."""
@@ -2175,6 +2224,12 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
             if m == '小字':
                 # 把 【小字】 放回台词开头，交给 apply_small_text 缩小到行尾。
                 dialogue = '【小字】' + dialogue
+                continue
+            if m == '小跳':
+                # 立绘原地轻跳（跟在姿势/表情标记后，见 emit_sprite_hop）。
+                code = (emit_clerk_hop(_clerk_id(char_name), indent) if is_clerk
+                        else emit_sprite_hop(indent))
+                pre.append(f'{indent}## 小跳' + ('\n' + code if code else ''))
                 continue
             if is_clerk:
                 # 店员台词的标记：立绘归店员系统（as tag 独立于主立绘）。

@@ -464,7 +464,8 @@ def fill_string_translations(filepath, string_translations):
 # 转换器会给正文里的专有名词加 {i}…{/i}（见 convert_script.py PROPER_NOUNS），
 # 但 demo_script_eng.txt 里两边都是素文本 —— 查表键必须匹配转换后的文本。
 # 这里为每个含专有名词的条目补一份「斜体键 → 斜体值」，中英各自斜体化。
-_PROPER_NOUN_PAIRS = [('尤里娅', 'Julia'), ('KAS', 'KAS')]
+# 2026-08：斜体已去掉（convert_script.py PROPER_NOUNS 同步清空），留空即整段跳过。
+_PROPER_NOUN_PAIRS = []
 
 
 def _italicize(text, nouns):

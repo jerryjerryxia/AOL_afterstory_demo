@@ -232,7 +232,7 @@ transform ws_desert_walk:
 ## 店员（王霜复制体，甜品店段）：右侧正立。
 transform ws_clerk_right:
     xanchor 0.5
-    xpos 0.88
+    xpos 0.82
     yanchor 0.0
     ypos 120
     zoom 0.42
@@ -240,7 +240,7 @@ transform ws_clerk_right:
 ## 店员1入场：从屏幕下方升上来（非阻塞，与店员2 的降下对称）。
 transform ws_clerk_right_enter:
     xanchor 0.5
-    xpos 0.88
+    xpos 0.82
     yanchor 0.0
     ypos 120
     zoom 0.42
@@ -250,7 +250,7 @@ transform ws_clerk_right_enter:
 ## 店员1退场：垂直平移沉出画面（非阻塞）。
 transform ws_clerk_right_exit:
     xanchor 0.5
-    xpos 0.88
+    xpos 0.82
     yanchor 0.0
     ypos 120
     zoom 0.42
@@ -260,7 +260,7 @@ transform ws_clerk_right_exit:
 transform ws_clerk_ceiling:
     rotate 180
     xanchor 0.5
-    xpos 0.12
+    xpos 0.18
     yanchor 1.0
     ypos 960
     zoom 0.42
@@ -269,7 +269,7 @@ transform ws_clerk_ceiling:
 transform ws_clerk_ceiling_enter:
     rotate 180
     xanchor 0.5
-    xpos 0.12
+    xpos 0.18
     yanchor 1.0
     ypos 960
     zoom 0.42
@@ -280,7 +280,7 @@ transform ws_clerk_ceiling_enter:
 transform ws_clerk_ceiling_exit:
     rotate 180
     xanchor 0.5
-    xpos 0.12
+    xpos 0.18
     yanchor 1.0
     ypos 960
     zoom 0.42

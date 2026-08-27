@@ -47,14 +47,18 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "唔，原来如此，原来如此。"
     ahe "我...又病了吗？"
-    ## 立绘：讲解站立，默认表情
-    show ws akimbo default at ws_mid
+    ## 立绘：讲解站立，面无表情
+    show ws akimbo blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不，恰恰相反，阿鹤。要我说，你现在就像太阳一样稳定。"
     ahe "太阳？"
     ## 立绘：背手站立，吃惊表情
     show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
+    ## 小跳
+    show ws backhand shocked at ws_mid:
+        easeout 0.14 yoffset -28
+        easein 0.12 yoffset 0
     wangshuang "哦，不好意思，太阳在那儿。"
     ## 玻璃破碎音效：glass-smash-normalized
     $ play_sfx("audio/sfx/glass_smash/glass-smash-normalized.wav")
@@ -381,6 +385,10 @@ label route1_start:
     ahe "再无所事事都胜过和你呆在这里。"
     show ws crossed wry_glitchsoft as ws_clerk1 at ws_clerk_right
     $ renpy.transition(Dissolve(0.2), layer="master")
+    ## 小跳
+    show ws crossed wry_glitchsoft as ws_clerk1 at ws_clerk_right:
+        easeout 0.14 yoffset -28
+        easein 0.12 yoffset 0
     wangshuang_clerk "啊，已经这么遭人嫌了么..."
     ahe "...多少有点自知之明吧你..."
     ## 表情：撇嘴
@@ -410,7 +418,7 @@ label route1_start:
     show ws crossed smirk_glitchsoft as ws_clerk2 at ws_clerk_ceiling
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我闭嘴了又有什么用？难道你那苍白的“理想”就不需要人来陪葬了？"
-    wangshuang "你为了{i}尤里娅{/i}那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
+    wangshuang "你为了尤里娅那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
     ahe "…"
     ## 转场：甜品店对视2
     ## 店员退场（垂直平移出屏幕）
@@ -427,16 +435,16 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "所以不如放下成见，吃点团子，如何？"
     ## 默默吃一口
-    ahe "…"
+    ahe "...嗯...吧唧吧唧"
     ## 手中出现无色透明多面体
     wangshuang "这就对了嘛，来都来了。"
-    ahe "…"
-    wangshuang "有件事你可能不知道，他们家团子是加了 {i}KAS{/i} 才这么好吃的。"
+    ahe "...吧唧吧唧"
+    wangshuang "有件事你可能不知道，他们家团子是加了 KAS 才这么好吃的。"
     ahe "诶？所以之后我会上瘾？"
-    wangshuang "也许。"
+    wangshuang "也许吧，我也挺好奇的。"
     ahe "行吧，如果能让你从我眼前消失的话。"
     ## 手中出现无色透明多面体，多面体形状略微改变
-    wangshuang "你见过哪门子的药能让东西凭空消失的？而且靠染上新瘾来戒旧瘾可是个无底洞啊。"
+    wangshuang "你见过哪门子的药能让东西凭空消失的？而且靠染上新瘾来戒旧瘾可是个无底洞啊，阿鹤。"
     ahe "那你还让我吃？以及你自己不也在做同样的事情？"
     wangshuang "那确实还是有点不想看着你和我坠入同样的深渊嘛，毕竟我还挺在乎你的。不过最后还是好奇心赢了，嘿嘿嘿。"
     ahe "别恶心我了，求你了。"
@@ -451,7 +459,7 @@ label route1_start:
     ## 转场：甜品店对视3
     scene bg_dessertgaze3 with scene_dissolve
     ahe "明明刚说完不想我染上。"
-    wangshuang "{i}KAS{/i} 生理上确实不成瘾啊，只是太多人会陷进它能让人看到的那些东西，最后心理上产生依赖了，所以你才能在安息地见到那么多活死人。"
+    wangshuang "KAS 生理上确实不成瘾啊，只是太多人会陷进它能让人看到的那些东西，最后心理上产生依赖了，所以你才能在安息地见到那么多活死人。"
     ahe "那我看我估计危险。"
     wangshuang "所以嘛，你到底会怎样呢，阿鹤？我很期待哦。"
     ahe "可是只致幻的话岂不是很无聊？尤其对你来讲。"
@@ -464,12 +472,15 @@ label route1_start:
     ## 表情：默认
     scene dessert3_default
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢再碰 {i}KAS{/i} 的，那次是真的差点死了..."
+    wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢再碰 KAS 的，那次是真的差点死了..."
     ahe "哦，这样一来你那“磕完药差点死掉的小故事集”就又有新章节可以更新了咯。"
     ## 表情：小激动
     scene dessert3_excited
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那可是正儿八经的人命啊喂！"
+    ## 表情：默认
+    scene dessert3_default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不过一般人的反应应该不会那么夸张。你会喜欢的，我觉得。"
     ahe "所以我们要在这里待到什么时候？"
     ## 店员2入场
@@ -534,13 +545,13 @@ label route1_start:
             "阿霜手里把玩的那物件，你之前肯定见过，却想不起任何细节。"
             "总之没想到竟是一件吃食。"
             "从它那轻若无物又变幻莫测的形态来看，可能真是什么珍馐也说不定。当然，是另一剂猛药的可能性绝对更大。"
-            "但无论如何，在 {i}KAS{/i} 即将穿过血脑屏障的前一刻，再往身体里追加不明物质想必不是什么明智决定。"
+            "但无论如何，在 KAS 即将穿过血脑屏障的前一刻，再往身体里追加不明物质想必不是什么明智决定。"
             "你并不准备在来到这破地方的第一晚就这样放飞自我。"
             ahe "算了吧，都吃过团子了。"
             wangshuang "哦，那随你便咯——说起来啊，阿鹤，你喜欢红色还是蓝色？"
         "接受。":
             $ madness += 1
-            "虽然你清楚地意识到你跳动的血管里，{i}KAS{/i} 即将穿越{a=gloss:g3}脑血屏障{/a}，随时可能把你的意识送上云端，可你那该死的好奇心还是压过了残存的理性。"
+            "虽然你清楚地意识到你跳动的血管里，KAS 即将穿越{a=gloss:g3}脑血屏障{/a}，随时可能把你的意识送上云端，可你那该死的好奇心还是压过了残存的理性。"
             "你接过王霜手里那无色透明的多面体。"
             "那东西轻若无物又变幻莫测，看似是固体，摸起来却又有介于凝胶和麻薯之间的质感，躺在你手心里，冰冰凉的。"
             "你毫无戒心地将那不明物件送进嘴里，简单地咀嚼了一阵，没有尝出任何味道就囫囵吞下了。"
@@ -572,7 +583,7 @@ label route1_start:
     extend "\n她略卷的水蓝色长发在周身空间的波浪里散着，勾勒出洋流的轮廓。"
     ## Split Extended大文本框结束
     ## Split Extended大文本框开始 - 左右分栏
-    split_left_narrator "你心中对她海啸般的戒心早已荡然无存了——你几乎有些喜欢她现在的样子，宛如一个母亲，又像是神明，给视野不断抹上温柔的蓝色。"
+    split_left_narrator "见到此景，你心中对她海啸般的戒心竟顷刻间荡然无存——你几乎有些喜欢她现在的样子，宛如一个母亲，又像是一位神明，给你的视野不断抹上温柔的蓝色。"
     extend "\n每一缕神经都在扩张。启示性的景象。时间和空间波浪。无孔不入的色彩和甜味。蓝色的。交响。"
     split_right_narrator "反复咀嚼伤痛直至淡而无味，直到甜味凭空冒出来。"
     extend "\n在一切都已结束的当下，连时间都已丧失价值，唯一还能让你睁开双眼的，就只有——"
@@ -586,7 +597,7 @@ label route1_start:
     ## 转场：甜品店对视5
     scene bg_dessertgaze5 with scene_dissolve
     split_left_narrator "王霜的微笑越发邪魅——她逐渐成为了一个微笑。"
-    extend "\n成瘾。糖分子的洪流。只消一个浪头就使你染上了挥之不去的瘾。"
+    extend "\n成瘾。糖分子的洪流。只消一个浪头就把你拍得晕头转向，很快染上了挥之不去的瘾。"
     extend "\n渴望的源头冲动的源头向往的源头发现了。"
     split_right_narrator "浪潮般的甜味反复沁入意识。她开始微笑。她停止微笑。目光所及之处就能看见她的微笑。"
     ## Split Extended大文本框结束
@@ -802,7 +813,7 @@ label route1_start:
                         $ interro_picked.add("m2B")
                         $ interro_halluc += 1
                         $ _intro_fade_pending = True
-                        extend "\n——吃过 {i}KAS{/i} 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。\n——请问您还记得剂量吗？"
+                        extend "\n——吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。\n——请问您还记得剂量吗？"
                         window hide Dissolve(.25)
                         menu:
                             "不记得，王霜给的。" (interro=("m4A", "c")):
@@ -824,7 +835,7 @@ label route1_start:
                         $ interro_picked.add("m2C")
                         $ interro_death += 1
                         $ _intro_fade_pending = True
-                        extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
+                        extend "\n——尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...\n——请问您与尤里娅女士——"
                         window hide Dissolve(.25)
                         menu:
                             "闭嘴..." (interro=("m5A", "h")):
@@ -979,7 +990,7 @@ label route1_start:
                     $ interro_picked.add("m12A")
                     $ interro_halluc += 1
                     $ _intro_fade_pending = True
-                    extend "\n——{i}尤里娅{/i}...我们早就计划好了...\n——请详细交代她的动机。"
+                    extend "\n——尤里娅...我们早就计划好了...\n——请详细交代她的动机。"
                     window hide Dissolve(.25)
                     menu:
                         "她想要消失，仅此而已。" (interro=("m13A", "c")):
@@ -993,7 +1004,7 @@ label route1_start:
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——因为可爱！\n——请停止无谓的胡言乱语，阿鹤先生。"
-                            extend "\n——喂喂喂，质疑{i}尤里娅{/i}可爱的人可都没什么好下场啊，你可要想清楚了。"
+                            extend "\n——喂喂喂，质疑尤里娅可爱的人可都没什么好下场啊，你可要想清楚了。"
                             extend "\n——…"
                         "她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！" (interro=("m13C", "u")):
                             $ interro_picked.add("m13C")
@@ -1335,45 +1346,38 @@ label route1_start:
         zoom 1.06 xalign 1.0 yalign 0.5
         easein_quad 15 xalign 0.0 yalign 0.5
     scene bg_desert with cam_fade_in
-    ## 王霜走路进场
-    ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry at ws_desert_walk
-    $ renpy.transition(Dissolve(0.2), layer="master")
     ahe "——啊！诶？怎么了？"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "喂，到了没啊？"
     ahe "到...哦，没呢。"
-    ## 立绘：背手站立，面无表情
-    show ws backhand blank
-    $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那还要走多久？"
     ahe "我感觉是不好说。"
     ## 立绘：背手站立，吃惊表情
-    show ws backhand shocked
+    show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "啊？可是我们已经走了好久了诶。"
     ahe "或者说我们早就到了，可是找不到对的骨头。"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你就一定要拼出一副完整的骨架才满意么？"
     ahe "不然好像这里也没有别的可以做的事情。"
     wangshuang "啊...我当初就不该听你的鬼话和你一起来这里的..."
     ahe "不是挺好的么？像你这样整天坐办公室的，偶尔就需要走动走动。"
     ## 立绘：背手站立，吃惊表情
-    show ws backhand shocked
+    show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "就算要走路也别让我来沙漠里找骨头啊..."
     ahe "明明就是你自己要跟来的。"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "呃呃呃我究竟中了什么邪才把你——"
     ahe "嗯？把我怎么？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "没事，别在意。"
     ## Extended文本框开始 - accumulating textbox
@@ -1383,19 +1387,19 @@ label route1_start:
     ## Extended文本框结束
     ahe "嗯...大腿骨明明应该是最容易找到的才对..."
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "这根不是？"
     ahe "那根我刚才试过了，髋关节对不上。"
     wangshuang "这边还有四五根，你都试过了？"
     ahe "诶？你是从哪儿找来的？"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "来的时候遍地都是啊，眼前一眼望去还有七八根。"
     ahe "所以精神科也得会认骨头？"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那倒不一定，但骨科可一直是我的强项。"
     ahe "有什么东西不是你的强项的么..."
@@ -1406,12 +1410,12 @@ label route1_start:
     ## Extended文本框结束
     ahe "对上了诶。"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我找来的，当然对咯。所以呢？接下来要做什么？"
     ahe "头骨..."
     ## 立绘：讲解站立，面无表情
-    show ws akimbo blank
+    show ws akimbo blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "吼，只剩头骨了么...嗯...阿鹤啊——"
     ## 场景音乐参考：Stranger_Files, Sweet_Regrets，Whispers in the Twilight
@@ -1420,12 +1424,12 @@ label route1_start:
     wangshuang "你知道自己在做什么，对吧？"
     ahe "拼一副骨架而已。"
     ## 立绘：背手站立，面无表情
-    show ws backhand blank
+    show ws backhand blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "而已？你不会觉得光靠一副骨架就能把她带回来吧？"
     ahe "...!"
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "与其尝试那种毫无意义的事情，直接离开也可以，门就在那边。"
     ahe "可是...我还..."
@@ -1434,109 +1438,109 @@ label route1_start:
     wangshuang "嗯，尽管继续骗自己。"
     ahe "...阿霜...之前这个梦里永远都只有我一个人...为什么这次你也在这里？"
     ## 立绘：讲解站立，默认表情
-    show ws akimbo default
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "当然是因为我也能做同样的梦啦。"
     ahe "可是..."
     ## 立绘：背手站立，坏笑表情
-    show ws backhand smirk
+    show ws backhand smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "只不过我不会无聊到去拼骨架就是了。"
     ahe "可你...为什么要做这个梦？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "当然是因为后悔咯，否则人是不可能来到这里的。"
     ahe "还有...能让你后悔的事？"
     wangshuang "当然了。一个人只要做过选择，就一定会后悔。"
     ahe "可如果你已经变成神了——"
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哈？你在说什么呢？"
     ahe "好吧..."
     ## 立绘：背手站立，面无表情
-    show ws backhand blank
+    show ws backhand blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你想啊，无论我们做了什么事，那都意味着同一时空内其他行为的可能性被完全抹杀了，不是么？所以从定义上来讲，活着就是一场超长的悔恨之旅。"
     wangshuang "不过你也别觉得那是什么坏事。应该说，完全不需要后悔的认知架构才真的要人命。我之前专门做过这方面的研究。"
     ahe "什么研究？"
     ## 立绘：讲解站立，面无表情
-    show ws akimbo blank
+    show ws akimbo blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "‘全知全能的代价’。"
     ahe "那和后悔一点都不相关吧..."
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "别急，听我讲完你就懂了。"
     ## 立绘：讲解站立，默认表情
-    show ws akimbo default
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "所谓‘全知全能’，虽然听着像是造物主才被允许拥有的力量，但事实上以今天的技术，想要在有限时空里模拟这一状态不算难。"
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "试想，假若在我们与{a=gloss:g6}杰罗瓦{/a}的最后一战里，你在见到他放出的{i}尤里娅{/i}的那一刻们就放弃了抵抗，会怎么样？一切就结束了对吧？"
+    wangshuang "试想，假若在我们与{a=gloss:g6}杰罗瓦{/a}的最后一战里，你在见到他放出的尤里娅的那一刻们就放弃了抵抗，会怎么样？一切就结束了对吧？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那你再想，如果我能把这段不存在的“记忆”高清模拟出来，数据化掉，然后灌回你脑子里。"
     ## 立绘：讲解站立，默认表情
-    show ws akimbo default
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "加上你脑子里原本就存在的记忆，这时让你同时体验选择支两边的事件，那在这样的认知草拟完成后，你是不是就已经实现对于这段记忆的‘全知全能’了？"
     ahe "可那样的话，记忆肯定会和现实发生冲突的吧。"
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "当然，但假若两边的记忆，从肢体感官到事件次序，无不张弛有度地印在你脑海里，那对于一个不了解认知草拟的被试来说，该如何戳穿自己‘全知全能’的假象？"
     ahe "必须要外人点破才行。"
     ## 立绘：讲解站立，默认表情
-    show ws akimbo default
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "对，但不全对——即使有外人指出矛盾，又有多少人愿意摒弃自己的“切身体验”，转而允许他人的只言片语来定夺自己的认知？"
     ahe "…"
     ## 立绘：讲解站立，面无表情
-    show ws akimbo blank
+    show ws akimbo blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我们的实验数据也指向这一点——在草拟完成的三天内，所有被试都明确拒绝了外界干预，以不容置疑的姿态维持着选择支两边的草拟。"
     ahe "他们...在自行草拟？"
     wangshuang "没错。我们人工植入的认知流并没有在结尾处安排收束性事件，而在我们灌进去的认知与现实发生冲突后，被试们全部选择了无视现实，并开始自行草拟选择支两边的后续内容。"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "更有意思的是，所有被试在自行草拟的过程中多巴胺通路都在暴走，就仿佛这虚假的全知全能让他们——"
     ahe "成瘾了。"
     ## 立绘：讲解站立，得意表情
-    show ws akimbo proud
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "Bingo！我们用计算生成的认知数据让人染上了成瘾性的精神分裂，而这——"
     ahe "就是全知全能的代价？"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嘿嘿，别兴奋过头了，阿鹤。"
     wangshuang "一个人双线程草拟时需要的算力...这么说吧，会在草拟开始后的短时间内爆炸增长，而最初的草拟全是在被试脑内执行的...。"
     ahe "…"
     ## 立绘：抱胸站立，面无表情
-    show ws crossed blank
+    show ws crossed blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，第一批被试的脑子大多都烧了，物理意义上的。后来第二批还动用了医院的计算机集群，最后效果也没好多少就是..."
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "所以说能后悔是好事啊，能用如此低成本的认知模式来替代脑细胞被烧干，是一桩好买卖。"
     ahe "那这个梦..."
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，是我给自己搭的，用来强制认知收束的疗养院。后来发现效果不错，自然也就向一些 VIP 们开放咯。"
     ahe "你自己也参与了？"
     wangshuang "当然，我可是第一批被试。只是我的脑子不太一样，成瘾这个问题对我来说并不存在，可以随时自行结束草拟，所以可以在当被试的同时一边跟进实验。"
     ahe "所以为什么没有让其他被试来这里..."
     ## 立绘：抱胸站立，无奈表情
-    show ws crossed wry
+    show ws crossed wry at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哦...哈哈...这个嘛，毕竟当时搭得比较匆忙，这个梦境第一版的认知收束任务只能单线程地跑，慢得不行的同时还会很吃资源，所以就算开放了也救不了太多人...哈哈..."
     ## 沙漠长风音效
@@ -1548,48 +1552,48 @@ label route1_start:
     wangshuang "…"
     ahe "这就是你后悔的事情？"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "你觉得呢？"
     ahe "我怎么知道..."
     wangshuang "嗯，那还是保持无知比较好。"
     ahe "只要你心安理得就行..."
     ## 立绘：背手站立，面无表情
-    show ws backhand blank
+    show ws backhand blank at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "…"
     ahe "所以这梦也是你那朴素过程的一部分？"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那可不一样，现在能够来到这里的都是游离于朴素过程之外的异客。当他们离开这里时，我希望他们至少能明白自己为什么会这样游离。"
     ahe "唔，所以这也是你的实验的一部分，带课题的。"
     ## 立绘：讲解站立，默认表情
-    show ws akimbo default
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不不不，这只是一个治疗场所而已。"
     ## 立绘：讲解站立，得意表情
-    show ws akimbo proud
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     extend "不过对于你来说...哼哼。"
     ahe "怎么了？"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "没事，我之前还在想，你为什么还能来到这里。不过从你刚才手上一直在忙活的事情来看，这早就不是问题了。"
     ahe "可你说它没有意义。"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯，现在我也维持原判。"
     ahe "…"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "不想知道为什么？"
     ahe "不是很想。"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "行吧。毕竟我们有得是时间。"
     ahe "…"
@@ -1597,7 +1601,7 @@ label route1_start:
     ahe "…"
     wangshuang "…"
     ## 立绘：讲解站立，得意表情
-    show ws akimbo proud
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯...但是我站累了，所以让我来告诉你吧——你要找的头骨并不存在，所以就算一直这样找下去，你也永远不会达到你的目的。"
     ahe "啊...可是...你是怎么知道的？"
@@ -1608,7 +1612,7 @@ label route1_start:
     ## glitchy音效
     $ play_glitch()
     ## 立绘：背手站立，默认表情上蒙了glitch
-    show ws backhand default_glitch
+    show ws backhand default_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "因为欧按物昆咽——"
     ahe "阿...霜？"
@@ -1617,27 +1621,27 @@ label route1_start:
     ## glitchy音效
     $ play_glitch()
     ## 立绘：抱胸站立，坏笑表情上蒙了glitch
-    show ws crossed smirk_glitch
+    show ws crossed smirk_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "啊啊呐唔一握艾鈤——..."
     ## glitchy音效
     $ play_glitch()
     ## 立绘：讲解站立，默认表情上蒙了glitch
-    show ws akimbo default_glitch
+    show ws akimbo default_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "唵椅迩唵毋炆戊囮吔坳唔岙莪。"
     ## glitch消失
     with glitch_fx()
-    show ws akimbo default
+    show ws akimbo default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     ahe "阿霜，你还好吗？"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "嗯？怎么了？"
     ahe "你刚才...当我没说。所以为什么头骨不存在？"
     ## 立绘：讲解站立，得意表情
-    show ws akimbo proud
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "因为我看不见。"
     ahe "啊？"
@@ -1648,16 +1652,16 @@ label route1_start:
     ## 尸首黑影闪过
     with fx_shock
     ## 立绘：背手站立，默认表情上蒙了glitch
-    show ws backhand default_glitch
+    show ws backhand default_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "一焱髻暨戊馹曳葳邑吖霭肮毐峪镍醪！"
     ahe "喂...阿霜你又——"
     ## glitch消失
     with glitch_fx()
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     ## 立绘：讲解站立，得意表情
-    show ws akimbo proud
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "哎，话又说回来，我也没说过缺了头骨就不行啊。"
     wangshuang "既然你这么想见她，那肯定得成全你嘛——你看，你的“作品”啊，从各种意义上已经完成了。"
@@ -1675,7 +1679,7 @@ label route1_start:
     ahe "啊...等等...等一下！"
     ## 一般态默认
     youliya "嗯，又失忆了么...离我们上次分别也没过多久吧，阿鹤？"
-    ahe "不是...{i}尤里娅{/i}...不对..."
+    ahe "不是...尤里娅...不对..."
     ## glitchy音效
     $ play_glitch()
     ## 一般态面部glitch
@@ -1683,11 +1687,11 @@ label route1_start:
     ## 尤里娅消失
     ## 场景音乐参考：N2-07
     $ set_scene_music("route1_horror1")
-    ahe "{i}尤里娅{/i}，{i}尤里娅{/i}？"
+    ahe "尤里娅，尤里娅？"
     ## glitchy音效
     $ play_glitch()
     ## 立绘：抱胸站立，默认表情上蒙了glitch
-    show ws crossed default_glitch
+    show ws crossed default_glitch at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "飒炟曠莩皎靸礚睫覅是否解释你的诨涤？"
     ahe "啊...你们...你们...等等..."
@@ -1701,7 +1705,7 @@ label route1_start:
     ahe "…"
     ## 一般态默认
     youliya "可是阿鹤，你知道吗？所有复制体的感官都会回流到我的身体。"
-    ahe "{i}尤里娅{/i}...这不是——"
+    ahe "尤里娅...这不是——"
     youliya "每根断掉的骨头、每滴流出来的血、每副碎掉的内脏——虽然对我来说这些痛苦并不真实，可那体验还是让我记忆犹新啊，每一次死掉。"
     ## 一般态坏笑glitch
     youliya "死掉诶...那就是你口中的“无法重复的深邃体验”吧。能连续体验那么多次，我是不是该...感谢你呢？"
@@ -1731,7 +1735,7 @@ label route1_start:
     shishou "阿鹤，事到如今你又在害怕什么呢？这可是你亲手拼出来的身子哦。"
     ahe "啊...啊啊啊啊...啊啊啊啊啊啊啊啊啊啊——"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "别跑啊，这可是你们的感人重逢诶！"
     ahe "别过来！"
@@ -1741,12 +1745,12 @@ label route1_start:
     ## 做些古怪特效，世界有点崩解的感觉
     ahe "这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的！"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "阿鹤？"
     ahe "啊——！你为什么还在这里！"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我当然在啦，她也还在——"
     shishou "哈喽~"
@@ -1758,7 +1762,7 @@ label route1_start:
     shishou "你好。"
     ahe "…"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "这就跑不动了？"
     ahe "...不要...过来..."
@@ -1766,17 +1770,17 @@ label route1_start:
     shishou "嗯。"
     ahe "我...一定...要...离开这里！"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "阿鹤啊，你倒是冷静下来仔细想想，你费了这么大力气把她拼凑出来，可当她真正活过来之后又无法直视她了？"
     ahe "这不是我想要的..."
     ## 立绘：背手站立，坏笑表情
-    show ws backhand smirk
+    show ws backhand smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "只因为她身子不完整？"
     ahe "这不是我想要的！"
     ## 立绘：讲解站立，得意表情
-    show ws akimbo proud
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那就把头埋进沙子里啊，那样你就什么都不用看了。"
     ahe "呃...啊——对不起——"

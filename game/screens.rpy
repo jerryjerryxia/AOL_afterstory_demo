@@ -377,8 +377,11 @@ init python:
     ## 不设限的话堆积文字迟早溢出到屏幕外。机制：Ren'Py 的 extend 在拼接前会调用
     ## 角色的 do_extend()，且拼接源是 store._last_say_what —— 在这里做行数预算：
     ## 已堆内容 + 新块 预计超过 LARGE_BOX_MAX_LINES 视觉行时，清空累积，本次
-    ## extend 就"新开一箱"只显示新块。对所有 large_narrator 的 extend 生效
-    ## （含转换器静态生成的长块），其他文本框不受影响。
+    ## extend 就"新开一箱"只显示新块。
+    ## ★只在粉红屏问询段生效★（门控 = bg_pink_video 在场）：无限堆行只有嵌套
+    ## 循环选项才会发生；其他段落的长块是剧本静态写死的，行数作者自己负责，
+    ## 封顶反而会在长段中途悄悄清箱。粉红屏整段（问询+监禁循环，到切黑屏为止）
+    ## 都在门内，其余一切文本框/段落不受影响。
     LARGE_BOX_MAX_LINES = 10       # 箱内可用高 640px ÷ 行高约 56px ≈ 11，留 1 行余量
     LARGE_BOX_CHARS_PER_LINE = 38  # 可用宽 1360px ÷ 汉字约 36px，保守取整；半角按半字计
 
@@ -399,6 +402,8 @@ init python:
     class CappedBoxCharacter(ClickPauseCharacter):
         def do_extend(self):
             super(CappedBoxCharacter, self).do_extend()
+            if not renpy.showing("bg_pink_video"):
+                return
             prev = store._last_say_what or ""
             new = (store._last_raw_what or "").lstrip('\n')
             if _box_visual_lines(prev) + _box_visual_lines(new) > LARGE_BOX_MAX_LINES:
@@ -664,6 +669,15 @@ screen centered_say(who, what):
 ## 居中大字文本框界面 - Centered Large Font Textbox Screen
 ################################################################################
 
+## 大字冲击句（疯子。/ 逃避吧！/ 瘾。）专用逐字速度：一个字一个字砸出来。
+## slow_cps 给数字会覆盖玩家在设置里的文字速度偏好——这里是演出节奏，不该被
+## 玩家的"瞬间显示"冲掉。点击仍可跳过逐字（标准 {fast} 行为）。
+## 配 dissolve textshader：默认逐字是硬出现（typewriter），低速下一颗颗"蹦"；
+## dissolve 让每个字形按 u__duration/cps 秒的窗口淡入，起点仍按 cps 逐字错开
+## —— 慢而丝滑。u__duration 单位是"同时在淡入的字数"，越大越绵。
+define centered_large_cps = 6
+define centered_large_textshader = "dissolve:u__duration=4.0"
+
 screen centered_large_say(who, what):
     frame:
         xpos 200
@@ -686,6 +700,8 @@ screen centered_large_say(who, what):
             color "#ffffff"
             line_spacing 10
             outlines gui.text_outlines
+            slow_cps centered_large_cps
+            textshader centered_large_textshader
 
     ## 快捷按钮
     use quick_menu

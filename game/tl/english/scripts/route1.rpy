@@ -486,10 +486,10 @@ translate english route1_start_5ba9680b:
     wangshuang 'So what if I did? Do you dare say that pale "dream" of yours needed no sacrifice?'
 
 # game/scripts/route1.rpy:235
-translate english route1_start_5d1b749f:
+translate english route1_start_5e494470:
 
-    # wangshuang "你为了{i}尤里娅{/i}那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
-    wangshuang "How many bones did you break for that little girl {i}Julia{/i}? Kaku, my man, there is no need to quibble. We are accomplices in destroying the PL District no matter how you look at it."
+    # wangshuang "你为了尤里娅那小姑娘折断了多少人的骨头？阿鹤，狡辩是没有意义的，无论如何我们都是逝乐园覆灭的共犯。"
+    wangshuang "How many bones did you break for that little girl Julia? Kaku, my man, there is no need to quibble. We are accomplices in destroying the PL District no matter how you look at it."
 
 # game/scripts/route1.rpy:242
 translate english route1_start_de45be2d:
@@ -1499,10 +1499,10 @@ translate english route1_start_73ae6900:
     ahe "The difference is, I don't drag people down with me."
 
 # game/scripts/route1.rpy:349
-translate english route1_start_a612aa14:
+translate english route1_start_37b8e196:
 
-    # wangshuang "有件事你可能不知道，他们家团子是加了 {i}KAS{/i} 才这么好吃的。"
-    wangshuang "FYI, their mochi is good because it's laced with {i}KAS{/i}."
+    # wangshuang "有件事你可能不知道，他们家团子是加了 KAS 才这么好吃的。"
+    wangshuang "FYI, their mochi is good because it's laced with KAS."
 
 # game/scripts/route1.rpy:350
 translate english route1_start_b38bf47d:
@@ -1547,10 +1547,10 @@ translate english route1_start_ba7207af:
     wangshuang "If you can't tell the two apart, you'll be in for some serious trouble down the road."
 
 # game/scripts/route1.rpy:369
-translate english route1_start_2214c972:
+translate english route1_start_468c3288:
 
-    # wangshuang "{i}KAS{/i} 生理上确实不成瘾啊，只是太多人会陷进它能让人看到的那些东西，最后心理上产生依赖了，所以你才能在安息地见到那么多活死人。"
-    wangshuang "{i}KAS{/i} really isn't physiologically addictive. It's just that too many got hooked to the shit they see in those visions, and end up psychologically dependent. That's why you see so many {i}KAS{/i} zombies out in the streets in Grave Town."
+    # wangshuang "KAS 生理上确实不成瘾啊，只是太多人会陷进它能让人看到的那些东西，最后心理上产生依赖了，所以你才能在安息地见到那么多活死人。"
+    wangshuang "KAS really isn't physiologically addictive. It's just that too many got hooked to the shit they see in those visions, and end up psychologically dependent. That's why you see so many KAS zombies out in the streets in Grave Town."
 
 # game/scripts/route1.rpy:370
 translate english route1_start_7f1ab139:
@@ -1593,8 +1593,8 @@ translate english route1_start_13f6870a:
 # game/scripts/route1.rpy:382
 translate english route1_start_7b6d9dbf:
 
-    # wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢再用{i}KAS{/i}的，那次是真的差点死了..."
-    wangshuang "Anyway if it wasn't for my glasses later, I could never ever touch {i}KAS{/i} ever again. Shit actually almost killed me that time."
+    # wangshuang "总之要不是后来配了眼镜，不然我是绝对不敢再用KAS的，那次是真的差点死了..."
+    wangshuang "Anyway if it wasn't for my glasses later, I could never ever touch KAS ever again. Shit actually almost killed me that time."
 
 # game/scripts/route1.rpy:383
 translate english route1_start_17d5e5fa:
@@ -1615,10 +1615,10 @@ translate english route1_start_e5b005c1:
     "Judging by its weightless, ever-shifting form, it might really be some kind of delicacy. Though of course, another potent drug is by far the likelier possibility."
 
 # game/scripts/route1.rpy:438
-translate english route1_start_b7c9cb74:
+translate english route1_start_8fe9e0d0:
 
-    # "但无论如何，在 {i}KAS{/i} 即将穿过血脑屏障的前一刻，再往身体里追加不明物质想必不是什么明智决定。"
-    "As {i}KAS{/i} was about to go through your blood brain barrier, adding more substances into your blood stream was likely not a wise idea."
+    # "但无论如何，在 KAS 即将穿过血脑屏障的前一刻，再往身体里追加不明物质想必不是什么明智决定。"
+    "As KAS was about to go through your blood brain barrier, adding more substances into your blood stream was likely not a wise idea."
 
 # game/scripts/route1.rpy:439
 translate english route1_start_94be6724:
@@ -1641,8 +1641,8 @@ translate english route1_start_77b68ef3:
 # game/scripts/route1.rpy:444
 translate english route1_start_f32a9730:
 
-    # "虽然你清楚地意识到你跳动的血管里，{i}KAS{/i} 即将穿越脑血屏障，随时可能把你的意识送上云端，可你那该死的好奇心还是压过了残存的理性。"
-    "Even though you knew full well that {i}KAS{/i} was about to cross the blood brain barrier in your pulsing veins, and was about to send your consciousness over to cloud nine at any second, your damn curiosity took over."
+    # "虽然你清楚地意识到你跳动的血管里，KAS 即将穿越脑血屏障，随时可能把你的意识送上云端，可你那该死的好奇心还是压过了残存的理性。"
+    "Even though you knew full well that KAS was about to cross the blood brain barrier in your pulsing veins, and was about to send your consciousness over to cloud nine at any second, your damn curiosity took over."
 
 # game/scripts/route1.rpy:447
 translate english route1_start_35639c0d:
@@ -2547,8 +2547,8 @@ translate english route1_start_8c66042b:
 # game/scripts/route1.rpy:932
 translate english route1_start_71340cf0:
 
-    # wangshuang "试想，假若在我们与杰罗瓦的最后一战里，你在见到他放出的{i}尤里娅{/i}的那一刻们就放弃了抵抗，会怎么样？一切就结束了对吧？"
-    wangshuang "Picture it. Our last fight with Jerowald - say you'd given up the moment you saw the {i}Julia{/i}s he let loose. It's all over, right?"
+    # wangshuang "试想，假若在我们与杰罗瓦的最后一战里，你在见到他放出的尤里娅的那一刻们就放弃了抵抗，会怎么样？一切就结束了对吧？"
+    wangshuang "Picture it. Our last fight with Jerowald - say you'd given up the moment you saw the Julias he let loose. It's all over, right?"
 
 # game/scripts/route1.rpy:934
 translate english route1_start_c3524eba:
@@ -2881,10 +2881,10 @@ translate english route1_start_35e69190:
     youliya "Mm, lost your memory again, huh...it hasn't been that long since we said goodbye, has it, Kaku?"
 
 # game/scripts/route1.rpy:1063
-translate english route1_start_f65d8b96:
+translate english route1_start_e6ae1e17:
 
-    # ahe "不是...{i}尤里娅{/i}...不对..."
-    ahe "No...{i}Julia{/i}...that's not right..."
+    # ahe "不是...尤里娅...不对..."
+    ahe "No...Julia...that's not right..."
 
 # game/scripts/route1.rpy:1067
 translate english route1_start_b6272e3a:
@@ -2893,10 +2893,10 @@ translate english route1_start_b6272e3a:
     youliya "Oh, it certainly isn't right——."
 
 # game/scripts/route1.rpy:1071
-translate english route1_start_beaf7577:
+translate english route1_start_3df3bfeb:
 
-    # ahe "{i}尤里娅{/i}，{i}尤里娅{/i}？"
-    ahe "{i}Julia{/i}, {i}Julia{/i}?"
+    # ahe "尤里娅，尤里娅？"
+    ahe "Julia, Julia?"
 
 # game/scripts/route1.rpy:1075
 translate english route1_start_26d4543e:
@@ -2935,10 +2935,10 @@ translate english route1_start_8f65a428:
     youliya "But did you know, Kaku? Every copy's sensation run back into my body."
 
 # game/scripts/route1.rpy:1087
-translate english route1_start_f95f3818:
+translate english route1_start_91cd74a4:
 
-    # ahe "{i}尤里娅{/i}...这不是——"
-    ahe "{i}Julia{/i}...that's not——"
+    # ahe "尤里娅...这不是——"
+    ahe "Julia...that's not——"
 
 # game/scripts/route1.rpy:1088
 translate english route1_start_143538c5:
@@ -4224,10 +4224,10 @@ translate english route1_start_c863b6f3:
     extend "\n——After Wang Shuang drove three ice picks into my eye sockets, she had me do the same to her. Once you get through the bone you'll know...it's soft. Like fresh tofu.\n——Did you find it cute?"
 
 # game/scripts/route1.rpy:712
-translate english route1_start_8ac865ee:
+translate english route1_start_71ffe5a9:
 
-    # extend "\n——吃过 {i}KAS{/i} 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。\n——请问您还记得剂量吗？"
-    extend "\n——After taking {i}KAS{/i} I grabbed whoever was next to me and leapt straight out the window. Just didn't fly high enough—makes it harder to die, actually. First time and all, so I went with the conservative option.\n——Do you recall the dosage?"
+    # extend "\n——吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。\n——请问您还记得剂量吗？"
+    extend "\n——After taking KAS I grabbed whoever was next to me and leapt straight out the window. Just didn't fly high enough—makes it harder to die, actually. First time and all, so I went with the conservative option.\n——Do you recall the dosage?"
 
 # game/scripts/route1.rpy:726
 translate english route1_start_6195e01c:
@@ -4236,10 +4236,10 @@ translate english route1_start_6195e01c:
     extend "\n——If my fucking brain worked that well, would I have time to sit here doing crosstalk with you?\n——Your brain is indeed very important, Mr. Kaku."
 
 # game/scripts/route1.rpy:730
-translate english route1_start_f6677a28:
+translate english route1_start_8d2beff6:
 
-    # extend "\n——{i}尤里娅{/i}，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...\n——请问您与{i}尤里娅{/i}女士——"
-    extend "\n——{i}Julia{/i}—she's gone from here for good. A windpipe and a pair of lips don't add up to her voice——she...she lied to me...\n——Please state your relationship with Ms. {i}Julia{/i}——"
+    # extend "\n——尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...\n——请问您与尤里娅女士——"
+    extend "\n——Julia—she's gone from here for good. A windpipe and a pair of lips don't add up to her voice——she...she lied to me...\n——Please state your relationship with Ms. Julia——"
 
 # game/scripts/route1.rpy:740
 translate english route1_start_3e9aaab9:
@@ -4382,8 +4382,8 @@ translate english route1_start_889daff9_2:
 # game/scripts/route1.rpy:849
 translate english route1_start_31f1ceab:
 
-    # extend "\n——是{i}尤里娅{/i}。\n——请详细交代她的动机。"
-    extend "\n——It was {i}Julia{/i}.\n——Please give a detailed account of her motive."
+    # extend "\n——是尤里娅。\n——请详细交代她的动机。"
+    extend "\n——It was Julia.\n——Please give a detailed account of her motive."
 
 # game/scripts/route1.rpy:855
 translate english route1_start_1e618f38:
@@ -4404,10 +4404,10 @@ translate english route1_start_8b547e3d:
     extend "\n——Because she's cute!\n——Please cease this pointless babbling, Mr. Kaku."
 
 # game/scripts/route1.rpy:861
-translate english route1_start_86fb6cfc:
+translate english route1_start_f4ef3ff9:
 
-    # extend "\n——喂喂喂，质疑{i}尤里娅{/i}可爱的人可都没什么好下场啊，你可要想清楚了。"
-    extend "\n——Hey, hey, hey. People who question {i}Julia{/i}'s cuteness don't tend to end well. You'd better think this through."
+    # extend "\n——喂喂喂，质疑尤里娅可爱的人可都没什么好下场啊，你可要想清楚了。"
+    extend "\n——Hey, hey, hey. People who question Julia's cuteness don't tend to end well. You'd better think this through."
 
 # game/scripts/route1.rpy:862
 translate english route1_start_807447fe:

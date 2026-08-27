@@ -47,53 +47,75 @@ image bg_polyhedron_video = Movie(
 image bg_dessertgaze1 = Transform("images/bg/dessertgaze1.png", xysize=(1920, 1080), fit="cover")
 image bg_dessertgaze2 = Transform("images/bg/dessertgaze2.png", xysize=(1920, 1080), fit="cover")
 image bg_dessertgaze3 = Transform("images/bg/dessertgaze3.png", xysize=(1920, 1080), fit="cover")
-## 4→5→6→6.51→7：水面波纹（水面波纹 shader，见 shaders.rpy）。4 起幻视、微弱入场，
-## 5→6 渐强，6.51 顶峰，7 呕吐复原后留极微弱残留。振幅 u_ripple_strength 是主要"动态
-## 强度"旋钮，speed 顺带略升加剧。想调强弱就改各自的 strength / speed。
+## 4→瘾卡→5→6→6.51→7→8：水面波纹（水面波纹 shader，见 shaders.rpy）。4 起幻视，
+## 瘾卡小顶点，5 微退，6 加强，6.51 顶峰，7 呕吐复原后平息到极微弱残留，
+## 8 保持残留直到碎裂黑屏。
+## ★整条链继承动态★：u_time 是全帧共享的全局时基，speed/scale 相同的两张图
+## 扰动场逐像素一致 —— 全链 speed=1.0、scale=12.0 统一，交叉溶解期间波纹原样
+## 延续，换掉的只有底图。每张图的 strength 都【从上一张的目标值起步、入场后
+## ease 到自己的目标值】，振幅也无跳变；4 从 0 起步 = 水面从静止慢慢晃起来，
+## 与无 shader 的 3 无缝衔接。
+## ★speed 不能参与 ease、也不能各图各设★：波形相位 = u_time × speed，u_time
+## 可能已累计很大，speed 一变相位会整体回卷、波纹倒着狂奔。强弱只调 strength。
+## ease 时长按各场停留节奏取：瘾卡/5 只有一两拍，取短，玩家快速点过也只差
+## 百分位的振幅（不可见）；6/6.51 各两大段文本，7 是长释放。
 image bg_dessertgaze4:
     Transform("images/bg/dessertgaze4.png", xysize=(1920, 1080), fit="cover")
     shader "game.water_ripple"
-    u_ripple_strength 0.1   # 微弱入场
-    u_ripple_speed 0.5
+    u_ripple_strength 0.0   # 入场 = 3 的静止水面
+    u_ripple_speed 1.0
     u_ripple_scale 12.0
+    ease 4.0 u_ripple_strength 0.1   # 幻视起：水面慢慢晃起来，微弱
     function _ripple_tick
 image bg_dessertgaze5:
     Transform("images/bg/dessertgaze5.png", xysize=(1920, 1080), fit="cover")
     shader "game.water_ripple"
-    u_ripple_strength 0.2   # 非常微弱
-    u_ripple_speed 0.9
+    u_ripple_strength 0.25  # 入场 = 瘾卡的小顶点
+    u_ripple_speed 1.0
     u_ripple_scale 12.0
+    ease 2.0 u_ripple_strength 0.2   # 过了那一拍，微退
     function _ripple_tick
 image bg_dessertgaze6:
     Transform("images/bg/dessertgaze6.png", xysize=(1920, 1080), fit="cover")
     shader "game.water_ripple"
-    u_ripple_strength 0.5   # 加强
+    u_ripple_strength 0.2   # 入场 = 5 的目标值
     u_ripple_speed 1.0
     u_ripple_scale 12.0
+    ease 4.0 u_ripple_strength 0.5   # 加强
     function _ripple_tick
 image bg_dessertgaze6_51:
     Transform("images/bg/dessertgaze6_51.png", xysize=(1920, 1080), fit="cover")
     shader "game.water_ripple"
-    u_ripple_strength 0.9   # 顶峰
+    u_ripple_strength 0.5   # 入场 = 6 的目标值
     u_ripple_speed 1.0
     u_ripple_scale 12.0
+    ease 4.0 u_ripple_strength 0.9   # 涌向顶峰
     function _ripple_tick
 image bg_dessertgaze7:
     Transform("images/bg/dessertgaze7.png", xysize=(1920, 1080), fit="cover")
     shader "game.water_ripple"
-    u_ripple_strength 0.1   # 极微弱残留
-    u_ripple_speed 0.5
+    u_ripple_strength 0.9   # 入场 = 6.51 的顶峰值
+    u_ripple_speed 1.0      # 必须 == 6.51 的 speed（继承动态的前提，见上）
+    u_ripple_scale 12.0
+    ease 8.0 u_ripple_strength 0.1   # 随色彩还原逐渐平息到极微弱残留
+    function _ripple_tick
+image bg_dessertgaze8:
+    Transform("images/bg/dessertgaze8.png", xysize=(1920, 1080), fit="cover")
+    shader "game.water_ripple"
+    u_ripple_strength 0.1   # 延续 7 的残留强度，无升降
+    u_ripple_speed 1.0
     u_ripple_scale 12.0
     function _ripple_tick
-image bg_dessertgaze8 = Transform("images/bg/dessertgaze8.png", xysize=(1920, 1080), fit="cover")
 ## 瘾：幻视高潮的转场卡（【转场：瘾。】，对视4→5 之间）——被瘾扭曲的甜品店。
-## 波纹与前后场景（4 的 0.1 → 5 的 0.2）衔接，取略强的 0.25 作为这一拍的顶点。
+## 链上的小顶点：从 4 的 0.1 起步，短 ease 涌到 0.25（这一拍是 window hide +
+## pause，停留短，ease 取 1.5 保证点得快也基本到位）。
 image bg_addiction:
     Transform("images/bg/dessertshop_addiction.png", xysize=(1920, 1080), fit="cover")
     shader "game.water_ripple"
-    u_ripple_strength 0.25
-    u_ripple_speed 0.9
+    u_ripple_strength 0.1   # 入场 = 4 的目标值
+    u_ripple_speed 1.0
     u_ripple_scale 12.0
+    ease 1.5 u_ripple_strength 0.25  # 瘾的小顶点
     function _ripple_tick
 
 ## 旧实验：甜品店 + 水面波纹 shader。当前没有场景引用，留作以后复用。
