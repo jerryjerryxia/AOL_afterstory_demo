@@ -210,6 +210,7 @@ transform ws_close_hop:
     ypos -50
     zoom 0.52
     subpixel True
+    pause 0.2
     easeout 0.14 yoffset -28
     easein 0.12 yoffset 0
 
@@ -227,6 +228,7 @@ transform ws_mid_hop:
     ypos 120
     zoom 0.42
     subpixel True
+    pause 0.2
     easeout 0.14 yoffset -28
     easein 0.12 yoffset 0
 
@@ -284,6 +286,7 @@ transform ws_clerk_right_hop:
     ypos 120
     zoom 0.42
     subpixel True
+    pause 0.2
     easeout 0.14 yoffset -28
     easein 0.12 yoffset 0
 
@@ -326,5 +329,6 @@ transform ws_clerk_ceiling_hop:
     ypos 960
     zoom 0.42
     subpixel True
+    pause 0.2
     easeout 0.14 yoffset -28
     easein 0.12 yoffset 0

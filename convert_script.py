@@ -229,7 +229,9 @@ SPECIAL_FX = [
 ]
 
 # 表情切换过渡（短溶解；改这里改全局表情切换速度）。
-EXPR_TRANSITION = "Dissolve(0.2)"
+# 秒数单独成常量：小跳 transform 要用它做起跳延迟（等溶解完成再跳）。
+EXPR_TRANSITION_SECONDS = 0.2
+EXPR_TRANSITION = f"Dissolve({EXPR_TRANSITION_SECONDS})"
 
 # 电视机关机（CRT 断电）动画总时长，秒。必须与 transitions.rpy 里 crt_shutdown 的
 # 时间轴总和一致 —— 短了会在光点没灭时就切走，长了会在黑屏上干等。
@@ -895,6 +897,9 @@ def generate_sprites_rpy():
     # SPRITE_HOP_PX 上方注释）。subpixel 同走路：位移小，不开会整像素跳格。
     hop_atl = [
         '    subpixel True',
+        # 先等姿势/表情的 master 层溶解走完再起跳——小跳标记总是跟在立绘
+        # 变化之后，同帧起跳会跳在半透明的切换过程上。
+        f'    pause {EXPR_TRANSITION_SECONDS}',
         f'    easeout {SPRITE_HOP_UP} yoffset -{SPRITE_HOP_PX}',
         f'    easein {SPRITE_HOP_DOWN} yoffset 0',
     ]
