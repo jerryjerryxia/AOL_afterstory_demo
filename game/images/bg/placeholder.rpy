@@ -26,6 +26,59 @@ image bg_summergaze = Transform("images/bg/summergaze.png", xysize=(1920, 1080),
 image bg_sungaze = Transform("images/bg/sungaze.png", xysize=(1920, 1080), fit="cover")
 image bg_desert = Transform("images/bg/desert.png", xysize=(1920, 1080), fit="cover")
 
+## 跑动 sequence（尸首追逐段，剧本标记【进入一个向前跑动的sequence…】/
+## 【重新开始跑动sequence】）：单背景奔跑错觉 = desert_run 光流 shader
+## （shaders.rpy）+ 奔跑节奏的颠簸/摇摆 ATL。两档递进：run 起跑、run2 更快更狂
+## （配心跳渐强）。幅度从上一档的目标值 ease 入场——与甜品店波纹链同一套
+## "入场继承 + 场内渐变"原则。zoom 放大 + 居中：给颠簸/摇摆留边，不露黑边。
+## 颠簸 repeat 循环顺带充当 shader 的每帧重绘驱动（u_time 才会推进）。
+image bg_desert_run:
+    Transform("images/bg/desert.png", xysize=(1920, 1080), fit="cover")
+    shader "game.desert_run"
+    u_run_vp (0.5, 0.42)    # 消失点（屏幕比例，略高于中心 = 地平线）
+    u_run_ground 1.4        # 地面光流加成
+    u_run_speed 0.55        # 循环速率
+    u_run_amp 0.0           # 入场 = 静止（从 bg_desert 交叉溶解过来）
+    zoom 1.07
+    xalign 0.5
+    yalign 0.5
+    subpixel True
+    parallel:
+        ease 2.0 u_run_amp 0.12   # 起跑：光流两秒内涌到位
+    parallel:
+        block:
+            easeout 0.17 yoffset -13
+            easein 0.15 yoffset 5
+            repeat
+    parallel:
+        block:
+            ease 0.61 xoffset -8
+            ease 0.61 xoffset 8
+            repeat
+image bg_desert_run2:
+    Transform("images/bg/desert.png", xysize=(1920, 1080), fit="cover")
+    shader "game.desert_run"
+    u_run_vp (0.5, 0.42)
+    u_run_ground 1.4
+    u_run_speed 0.8         # 第二段更快
+    u_run_amp 0.12          # 入场 = run 的目标值
+    zoom 1.07
+    xalign 0.5
+    yalign 0.5
+    subpixel True
+    parallel:
+        ease 1.5 u_run_amp 0.2    # 冲向更狂的档位
+    parallel:
+        block:
+            easeout 0.14 yoffset -16
+            easein 0.12 yoffset 6
+            repeat
+    parallel:
+        block:
+            ease 0.5 xoffset -10
+            ease 0.5 xoffset 10
+            repeat
+
 ## 无色透明多面体：WebM (VP9) 循环视频，共享 channel polyhedron_video。
 ## channel 在 game/scripts/videos.rpy 注册，splashscreen 启动播放。
 ## 主菜单和序章首场景都从同一个 channel 取帧，跨 scene 不重新开始 ——

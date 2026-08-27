@@ -268,6 +268,53 @@ transform screen_ripple(t0=0.0):
     linear (RIPPLE_DURATION * (1.0 - t0)) u_ripple_t 1.0
 
 ################################################################################
+## 沙漠奔跑（跑动 sequence，尸首追逐段）：单张背景做"不断向前跑"的错觉。
+## 原理 = 光流位移 + 双层半相位交叉淡化：
+##   * 位移场从消失点 u_run_vp 向四周发散，幅度随"离消失点的距离"和地面权重
+##     （消失点以下越低越大）增长 —— 这正是第一人称前进时的视网膜光流分布：
+##     正前方几乎不动，脚下和两侧飞速后掠；
+##   * 每层采样点随相位 p∈[0,1) 向消失点回退 → 画面内容被持续"推向四周"，
+##     读作向前冲；p 回卷的跳变靠两层相差半周期的采样交叉淡化隐藏 ——
+##     哪层跳变哪层恰好全透明，循环无缝；
+##   * 代价是轻微的双重曝光感 —— 在"奔跑+世界崩解"的语境里是加分项。
+## 与 water_ripple 相同：fragment_300、复用 tex0/v_tex_coord/u_lod_bias、
+## u_time 要自己声明；重绘由挂载图的奔跑颠簸 ATL 循环驱动（见 placeholder.rpy），
+## 不需要 _ripple_tick。
+################################################################################
+init python:
+    renpy.register_shader("game.desert_run",
+        variables="""
+            uniform float u_time;
+            uniform float u_run_amp;
+            uniform float u_run_speed;
+            uniform vec2 u_run_vp;
+            uniform float u_run_ground;
+        """,
+        fragment_300="""
+            vec2 uv = v_tex_coord.xy;
+            vec2 rel = uv - u_run_vp;
+
+            // 光流权重：径向距离 + 地面加成 + 底数（消失点处也留一丝呼吸感）
+            float w = length(rel) * 0.6
+                    + max(uv.y - u_run_vp.y, 0.0) * u_run_ground
+                    + 0.15;
+            vec2 d = rel * (w * u_run_amp);
+
+            // 两层相差半周期；采样向消失点回退（uv - d*p），内容外扩 = 前冲
+            float t = u_time * u_run_speed;
+            float p1 = fract(t);
+            float p2 = fract(t + 0.5);
+            vec4 c1 = texture2D(tex0, uv - d * p1, u_lod_bias);
+            vec4 c2 = texture2D(tex0, uv - d * p2, u_lod_bias);
+
+            // 混合权重 sin^2(pi*p1)：p1=0/1 时恰好全走另一层，回卷不可见
+            float b = sin(3.14159265 * p1);
+            b = b * b;
+            gl_FragColor = c1 * b + c2 * (1.0 - b);
+        """
+    )
+
+################################################################################
 ## 按钮悬停特效 —— 鼠标停在任何按钮上时，**这颗按钮自己的矩形里** glitch 一下。
 ## （按钮四周那圈会荡的水框已关闭但代码保留，见下面 HOVER_WAVE 的注释。）
 ################################################################################

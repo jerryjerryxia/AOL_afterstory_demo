@@ -1748,28 +1748,43 @@ label route1_start:
     ahe "别过来！"
     shishou "阿鹤，我们还没聊完——"
     ahe "你别过来！！！"
-    ## 进入一个向前跑动的sequence，可以是少量几帧透视感比较明显的画面，然后无限循环
+    ## 跑动sequence开始，并锁操作5秒
+    ## 镜头缓回默认位（随交叉溶解同走，不经黑场）
+    camera:
+        subpixel True
+        easein_quad 3.0 zoom 1.0 xalign 0.5 yalign 0.5
+    scene bg_desert_run with scene_dissolve
+    $ hard_pause(5)
+    ## 王霜和尸首退场
     ## 做些古怪特效，世界有点崩解的感觉
     ahe "这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的这不是真的！"
+    ## 跑动sequence结束
+    scene bg_desert with scene_dissolve
+    ## 王霜和尸首登场
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "阿鹤？"
     ahe "啊——！你为什么还在这里！"
     ## 立绘：抱胸站立，坏笑表情
-    show ws crossed smirk
+    show ws crossed smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "我当然在啦，她也还在——"
     shishou "哈喽~"
     ahe "别过来！你别过来！再见！"
     ## 心跳音效渐强
     $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
-    ## 重新开始跑动sequence
+    ## 跑动sequence开始
+    scene bg_desert_run2 with scene_dissolve
+    ## 王霜和尤里娅退场
     ahe "啊...保持呼吸...保持呼吸...保持呼吸...保持呼吸..."
+    ## 跑动sequence结束
+    scene bg_desert with scene_dissolve
+    ## 王霜和尤里娅登场
     shishou "你好。"
     ahe "…"
     ## 立绘：背手站立，默认表情
-    show ws backhand default
+    show ws backhand default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "这就跑不动了？"
     ahe "...不要...过来..."
@@ -1777,27 +1792,24 @@ label route1_start:
     shishou "嗯。"
     ahe "我...一定...要...离开这里！"
     ## 立绘：抱胸站立，默认表情
-    show ws crossed default
+    show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "阿鹤啊，你倒是冷静下来仔细想想，你费了这么大力气把她拼凑出来，可当她真正活过来之后又无法直视她了？"
     ahe "这不是我想要的..."
     ## 立绘：背手站立，坏笑表情
-    show ws backhand smirk
+    show ws backhand smirk at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "只因为她身子不完整？"
     ahe "这不是我想要的！"
     ## 立绘：讲解站立，得意表情
-    show ws akimbo proud
+    show ws akimbo proud at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "那就把头埋进沙子里啊，那样你就什么都不用看了。"
     ahe "呃...啊——对不起——"
     ## 沙漠长风音效
     $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg", channel="ambient")
     ## 转场：图片黑屏
-    scene black with cam_fade_out
-    ## 镜头复位
-    camera
-    scene bg_black_still with cam_fade_in
+    scene bg_black_still with scene_soft
     $ stash_music_pos()
     $ current_music_scene = None
     stop music fadeout 3.0

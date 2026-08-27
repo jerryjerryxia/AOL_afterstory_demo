@@ -423,7 +423,8 @@ SPRITE_GLITCH_SUFFIX = '上蒙了glitch'
 # 默认半身近景（第一人称对视感，参考 DDLC 的莫妮卡）——全身远景试过，
 # 人物太小没有压迫感。某场景要不同摆位，在这里加映射即可。
 # 沙漠桥段与虚空对视：缩到与店员立绘一致的大小（ws_mid 中景）。
-SPRITE_SCENE_AT = {'银白色沙漠': 'ws_mid', '虚空对视': 'ws_mid'}
+SPRITE_SCENE_AT = {'银白色沙漠': 'ws_mid', '虚空对视': 'ws_mid',
+                   '银白色沙漠跑动': 'ws_mid'}
 SPRITE_DEFAULT_AT = 'ws_close'
 
 # 摆位参数（写进生成的 sprites.rpy；改这里 + 重跑转换器即可调）。原图 2299x3824。
@@ -469,6 +470,9 @@ WS_WALK_BOB = 12         # 起伏幅度（px）
 # transform 冲掉，人瞬移回 ws_mid）。转场（scene 清立绘）时窗口关闭。
 _SPRITE_WALK_PENDING = False
 _SPRITE_WALK_ACTIVE = False
+
+# 跑动 sequence 计数：第 1 次 开始 用 bg_desert_run，之后用更狂的 run2。
+_RUN_SEQ_COUNT = [0]
 
 # 小跳（剧本标记【小跳】，跟在姿势/表情标记后）：立绘原地轻跳一下（幅度小）。
 # 实现 = re-show 当前立绘，at 换成对应摆位的 <摆位>_hop 版 —— ★必须是内联了
@@ -2143,6 +2147,26 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
             # 姿势解析不出素材：退化成"下一条立绘生效"（pending 已置位）
         return f'{indent}## 王霜走路进场（下一条立绘生效）'
 
+    # 跑动 sequence（尸首追逐段）：【跑动sequence开始[，并锁操作N秒]】起跑 /
+    # 【跑动sequence结束】收——溶解回静止沙漠。单背景奔跑错觉（bg_desert_run/
+    # run2，光流 shader + 颠簸 ATL，见 placeholder.rpy 和 shaders.rpy desert_run）。
+    # 第二次及以后的 开始 用更狂的 run2（配剧本侧心跳渐强的递进）。锁操作 =
+    # hard_pause，让起跑演出播完才收点击。走 _emit_scene 复用立绘清理/镜头复位
+    # （scene 清立绘 = 【王霜和尸首退场】所要的效果，那行标记本身保持注释）。
+    run_start = re.match(r'^【跑动sequence开始(?:[，,]\s*并?锁操作([\d.]+)秒)?】$', line)
+    if run_start:
+        _RUN_SEQ_COUNT[0] += 1
+        bg = 'bg_desert_run' if _RUN_SEQ_COUNT[0] == 1 else 'bg_desert_run2'
+        run_lines = [f'{indent}## {line.strip("【】")}']
+        _emit_scene(run_lines, indent, '银白色沙漠跑动', bg, 'scene_dissolve')
+        if run_start.group(1):
+            run_lines.append(f'{indent}$ hard_pause({run_start.group(1)})')
+        return '\n'.join(run_lines)
+    if line == '【跑动sequence结束】':
+        run_lines = [f'{indent}## 跑动sequence结束']
+        _emit_scene(run_lines, indent, '银白色沙漠', 'bg_desert', 'scene_dissolve')
+        return '\n'.join(run_lines)
+
     # Pause markers 【停顿：N】 -> `pause N` (N is seconds, float ok)
     # Use sparingly — for breathing room before a scene's first line, etc.
     pause_match = re.match(r'^【停顿[：:]([\d.]+)】$', line)
@@ -3093,6 +3117,7 @@ def convert_prologue(lines, start_line, end_line):
     _SPRITE_WALK_PENDING = False
     _SPRITE_WALK_ACTIVE = False
     _CLERK_STATE.clear()
+    _RUN_SEQ_COUNT[0] = 0
 
     output = []
     output.append("## prologue.rpy")
