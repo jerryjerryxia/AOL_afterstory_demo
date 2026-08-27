@@ -453,8 +453,11 @@ WS_CLERK_GLITCH_GAP = 0.08                 # 两下故障之间的干净间隙
 # 中景主立绘摆位（ws_mid，沙漠桥段/虚空对视）：大小与店员一致。
 WS_MID_YPOS = 120
 
-# 沙漠走路进场（剧本标记【王霜走路进场】）：从屏幕左缘外走到画面偏右站定，
-# 水平匀速推进 + 每步一次轻微起伏。想调手感改这里 + 重跑转换器。
+# 沙漠走路进场（剧本标记【王霜走路进场】，或台词行内【从左到右缓缓走入】——
+# 后者是作者管理剧本用的行内别名，挂在 王霜【姿势，表情】 之后同样触发走路窗口）：
+# 从屏幕左缘外走到画面偏右站定，水平匀速推进 + 每步一次轻微起伏。
+# 想调手感改这里 + 重跑转换器。
+WS_WALK_INLINE_MARK = '从左到右缓缓走入'
 WS_WALK_SECONDS = 10.0   # 全程时长
 WS_WALK_START_X = -0.3   # 起点 xpos（屏幕比例；-0.3 = 整个立绘在左缘外）
 WS_WALK_END_X = 0.7      # 终点站定位置（偏右——她走在前头）
@@ -1738,6 +1741,11 @@ _ONCE_MARK = '只加一次'
 # 条件出现标记：引用另一个选项的文本前缀（尾部省略号在解析时剥掉）。
 _COND_SEEN_RE = re.compile(r'本选项仅在观看过[“"](.+?)[”"]后出现')
 
+# 条件双态文本标记：【本选项在观看过"X"后显示前者，否则显示后者】，
+# 选项文本以 / 分隔前者/后者。生成两条互斥条件的 menu 项（同 id 同数值同分支，
+# 只有显示文本不同），玩家任何时刻只见其一。
+_COND_VARIANT_RE = re.compile(r'本选项在观看过[“"](.+?)[”"]后显示前者[，,]?\s*否则显示后者')
+
 # 本次 Extended 块里被条件标记引用的选项前缀（emit_extended_choice_block 填充；
 # 被引用的选项被选中时生成 interro_seen.add(前缀)）。
 _COND_SEEN_PREFIXES = set()
@@ -1782,8 +1790,21 @@ def _parse_block_choice(line):
     cm = _COND_SEEN_RE.search(mods)
     if cm:
         cond_seen = cm.group(1).rstrip('.…。')
+    # 条件双态文本：文本按第一个 / 拆成 前者/后者。
+    cond_variant = None
+    alt_text = None
+    vm = _COND_VARIANT_RE.search(mods)
+    if vm:
+        cond_variant = vm.group(1).rstrip('.…。')
+        if '/' in text:
+            text, alt_text = (s.strip() for s in text.split('/', 1))
+        else:
+            print(f"WARNING: 条件双态选项 {letter} 的文本没有 '/' 分隔前者/后者，"
+                  "两态将显示同一文本")
+            alt_text = text
     return {'letter': letter, 'text': text, 'loop': loop, 'madness': madness,
-            'stats': stats, 'once': once, 'cond_seen': cond_seen}
+            'stats': stats, 'once': once, 'cond_seen': cond_seen,
+            'cond_variant': cond_variant, 'alt_text': alt_text}
 
 
 def _build_choice_tree(items):
@@ -1838,12 +1859,14 @@ def _build_choice_tree(items):
 
 
 def _collect_cond_prefixes(seq, acc):
-    """递归收集树里所有被 【仅在观看过X后出现】 引用的前缀。"""
+    """递归收集树里所有被条件标记（仅在观看过X后出现 / 双态显示）引用的前缀。"""
     for item in seq:
         if item[0] == '__menu__':
             for opt, body in item[1]:
                 if opt.get('cond_seen'):
                     acc.add(opt['cond_seen'])
+                if opt.get('cond_variant'):
+                    acc.add(opt['cond_variant'])
                 _collect_cond_prefixes(body, acc)
 
 
@@ -1896,11 +1919,23 @@ def _emit_block_menu(options, output, indent, large, centered):
     # 进框，再继续该分支的正文。溶解让文字↔选项的来回切换不生硬。
     output.append(f'{menu_indent}window hide Dissolve(.25)')
     output.append(f'{menu_indent}menu:')
+    expanded = []
     for opt, body in options:
-        # 条件出现：仅在被引用选项已看过（选过）时出现。
+        if opt.get('cond_variant'):
+            # 条件双态：拆成两条互斥条件的 menu 项（看过→前者，没看过→后者）。
+            # id/数值/分支相同，玩家任何时刻只见其一；分支正文原样生成两份。
+            expanded.append(({**opt, 'cond_seen': opt['cond_variant']}, body))
+            expanded.append(({**opt, 'text': opt['alt_text'],
+                              'cond_unseen': opt['cond_variant']}, body))
+        else:
+            expanded.append((opt, body))
+    for opt, body in expanded:
+        # 条件出现：仅在被引用选项已看过（选过）时出现；cond_unseen 反之。
         cond = ''
         if opt.get('cond_seen'):
             cond = f' if "{opt["cond_seen"]}" in interro_seen'
+        elif opt.get('cond_unseen'):
+            cond = f' if "{opt["cond_unseen"]}" not in interro_seen'
         # 带数值的选项：menu 参数捎上 (id, 风味)，第 2 轮起已选项 hover 上色。
         oid = f'm{n}{opt["letter"]}'
         flavor = (_INTERRO_FLAVOR.get(opt['stats'][0][0])
@@ -2095,7 +2130,8 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     #   【王霜走路进场】                → 等下一条立绘 show 时才入场开走。
     # 挂 ws_desert_walk（左缘外走到画面偏右站定，见 sprites.rpy）。
     # 手感参数改 WS_WALK_* 常量。
-    walk_match = re.match(r'^【王霜走路进场(?:[，,](.+))?】$', line)
+    walk_match = re.match(
+        rf'^【(?:王霜走路进场|{WS_WALK_INLINE_MARK})(?:[，,](.+))?】$', line)
     if walk_match:
         global _SPRITE_WALK_PENDING
         _SPRITE_WALK_PENDING = True
@@ -2246,7 +2282,16 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         char_var = char_var_map[char_name]
         is_clerk = '店员' in char_name
         pre = []   # 表情切换 / 注释，放在台词前
-        for m in re.findall(r'【(.+?)】', char_action_match.group(2)):
+        markers = re.findall(r'【(.+?)】', char_action_match.group(2))
+        # 行内走路标记：走路窗口的别名。★必须先于同行姿势标记置 pending★——
+        # 这样本行的立绘 show 直接挂 ws_desert_walk 入场开走，而不是先按静态
+        # 摆位站定。（global 声明在上方 walk_match 分支，同函数共享。）
+        if WS_WALK_INLINE_MARK in markers and not is_clerk:
+            _SPRITE_WALK_PENDING = True
+        for m in markers:
+            if m == WS_WALK_INLINE_MARK:
+                pre.append(f'{indent}## {m}（走路进场，挂在本行立绘 show 上）')
+                continue
             if m == '小字':
                 # 把 【小字】 放回台词开头，交给 apply_small_text 缩小到行尾。
                 dialogue = '【小字】' + dialogue
