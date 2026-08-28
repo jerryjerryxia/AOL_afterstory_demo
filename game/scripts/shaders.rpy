@@ -735,3 +735,150 @@ transform gl_roll(duration=GLITCH_FX_SECONDS, seed=0.0, *, new_widget=None, old_
     u_glitch_t 0.0
     linear duration u_glitch_t 1.0
 
+################################################################################
+## 甩头转场（whip pan）—— 剧本【转头】：第一视角猛回头就跑。
+## 用在跑动 sequence 起手的 scene 切换上（convert_script.py 的 run_start 分支）。
+##
+## 单 widget 方案（只引用 new_widget，同 glitch 转场家族）：新画面横向整圈
+## wrap（fract 采样），easeout —— t=0 就是最大速度，首帧即烂糊拖影，正好掩住
+## 新旧画面的硬切；随后减速、模糊收干净，稳稳落在奔跑画面上。前后两个场景
+## 都是同一片沙漠，整圈横甩读作"原地猛回头"，不需要真的两段式新旧交接。
+## 模糊 = 沿甩动方向的 13 tap 均值，宽度正比于瞬时速度 —— 方向性运动模糊，
+## 不是均匀糊掉。
+init python:
+    renpy.register_shader("game.whip_pan",
+        variables="""
+            uniform float u_whip_t;
+            uniform float u_whip_dir;
+        """,
+        fragment_300="""
+            float inv = 1.0 - u_whip_t;
+            float p = 1.0 - inv * inv;      // easeout：起手最快，减速停住
+            float speed = 2.0 * inv;        // dp/dt，驱动模糊宽度
+            float base = v_tex_coord.x + u_whip_dir * p;
+            float spread = 0.22 * speed;
+            // per-pixel 抖动错开采样相位：不加的话高对比元素（月亮）会拖出
+            // 一排离散残影（tap 间距在屏幕上有几十像素），加了就化成连续涂抹。
+            float jit = fract(sin(dot(v_tex_coord, vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
+            vec4 acc = vec4(0.0);
+            for (int i = 0; i < 17; i++) {
+                float o = ((float(i) + jit) / 16.0 - 0.5) * spread;
+                acc += texture2D(tex0, vec2(fract(base + o), v_tex_coord.y));
+            }
+            gl_FragColor = acc / 17.0;
+        """
+    )
+
+transform whip_pan(duration=0.5, direction=1.0, *, new_widget=None, old_widget=None):
+    delay duration
+    new_widget
+    mesh True
+    shader "game.whip_pan"
+    u_whip_dir direction
+    u_whip_t 0.0
+    linear duration u_whip_t 1.0
+
+################################################################################
+## 黑红混沌 vignette —— 尤里娅对峙段的"混沌死亡"滤镜。
+## 剧本标记：【场景滤镜：黑红混沌，逐渐加深】/【停止场景滤镜：…】（见 convert_script.py）。
+##
+## 形态：画面边缘被黑雾吞噬，吞噬前沿透一圈淤血红；雾的边界不是干净的圆 ——
+## 两层 fbm 噪声让它持续翻涌、向画面内伸出触手。u_chaos 0→1 驱动"逐渐加深"：
+## 侵蚀半径向中心收缩 + 整体不透明度上升；CHAOS_RAMP_SECONDS 后到顶，之后 ATL
+## 循环让 u_chaos 在 1.0↔CHAOS_PULSE_LOW 之间缓慢呼吸。呼吸不只是演出：u_chaos
+## 永远在插值 = 每帧都触发重绘，u_time 的翻涌才动得起来（文件头注意事项 3 ——
+## 自定义 uniform 不动就没有重绘，翻涌会冻住）。
+##
+## 挂载：独立图层 "chaos"（master 之上、transient/screens 之下）。为什么不用 camera：
+##   * scene 只清 master 层 —— 这段戏里有跑动 sequence 和多次转场，滤镜必须全程扛住；
+##   * master 的 camera 列表已留给 screen_ripple / 【镜头】缓移，再挤会互相覆盖；
+##   * 对话框在 screens 层，永远压在雾上面，文字不受影响。
+## 纯 procedural：不采样底下的画面（Solid 黑底只是 mesh 的载体），输出预乘 alpha
+## 直接叠在场景合成结果上。存档/读档：层内容随场景表保存；ATL 进度不存 ——
+## 读档后从头再侵蚀一遍（75 秒），这段戏里可接受，不为它引入持久时钟。
+init python:
+    renpy.add_layer("chaos", above="master")
+
+    renpy.register_shader("game.chaos_vignette",
+        variables="""
+            uniform float u_time;
+            uniform float u_chaos;
+        """,
+        fragment_functions="""
+            float cvg_hash(vec2 q) {
+                return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453);
+            }
+            float cvg_noise(vec2 q) {
+                vec2 i = floor(q);
+                vec2 f = fract(q);
+                f = f * f * (3.0 - 2.0 * f);
+                float a = cvg_hash(i);
+                float b = cvg_hash(i + vec2(1.0, 0.0));
+                float c = cvg_hash(i + vec2(0.0, 1.0));
+                float d = cvg_hash(i + vec2(1.0, 1.0));
+                return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+            }
+            float cvg_fbm(vec2 q) {
+                float v = 0.0;
+                v += 0.500 * cvg_noise(q);
+                v += 0.250 * cvg_noise(q * 2.03 + 19.7);
+                v += 0.125 * cvg_noise(q * 4.11 - 7.3);
+                return v / 0.875;
+            }
+        """,
+        fragment_300="""
+            vec2 p = (v_tex_coord - vec2(0.5)) * vec2(1.7778, 1.0);
+            float r = length(p);
+            float t = u_time * 0.30;
+            // 两层反向漂移的 fbm：低频定黑雾轮廓的翻涌，高频加小尺度的碎触手。
+            float n1 = cvg_fbm(p * 2.4 + vec2(t * 0.9, -t * 0.7));
+            float n2 = cvg_fbm(p * 5.6 + vec2(-t * 0.5, t * 1.1) + 31.4);
+            float wob = (n1 - 0.5) * (0.30 + 0.34 * u_chaos) + (n2 - 0.5) * 0.14;
+            float rr = r + wob;
+            // 侵蚀前沿的半径：u_chaos=0 时在画面外（1.05 > 屏角 1.02），滤镜不可见；
+            // 加深过程就是这个半径向中心收缩（0.38 = 满强度时中心留一小片清明）。
+            float inner = mix(1.05, 0.38, u_chaos);
+            // 雾体：窄过渡带（0.38）——边界读作一堵翻涌的"雾墙"，而不是慢慢变糊。
+            float g = smoothstep(inner, inner + 0.38, rr);
+            // 前沿那一圈淤血红：两个 smoothstep 相减出一条随雾界扭动的环带。
+            float front = clamp(smoothstep(inner - 0.08, inner + 0.10, rr)
+                              - smoothstep(inner + 0.10, inner + 0.34, rr), 0.0, 1.0);
+            // 雾体颜色：贴着前沿是淤血红，往外迅速沉到纯黑。
+            vec3 col = mix(vec3(0.30, 0.02, 0.045), vec3(0.0),
+                           smoothstep(inner + 0.05, inner + 0.50, rr));
+            col += vec3(0.20, 0.012, 0.02) * front * (0.4 + 0.6 * n2);
+            // 不透明度：雾体外缘接近全黑（亮背景也压得住）；前沿环有自己的实度，
+            // 否则在亮背景上血红会被冲成粉色。
+            float a = g * mix(0.70, 1.0, u_chaos);
+            a = max(a, front * 0.85 * u_chaos);
+            a = min(a, 0.985);
+            gl_FragColor = vec4(col * a, a);
+        """
+    )
+
+define CHAOS_ATTACK_SECONDS = 20.0 ## 起手时长。整段加深绑的是墙钟时间，玩家点击速度
+                                   ## 不定 —— 起手太慢的话，快速读者会在滤镜可见之前
+                                   ## 就走到停止点。
+                                   ## ★warper 必须是 easein（前快后慢）★：低强度时雾
+                                   ## 还在画面外、肉眼看不见，S 型 ease 的中段增速会
+                                   ## 让它在某一秒"突然冒出来"；easein 让角落几秒内
+                                   ## 就开始渗、之后减速软着陆，可见过程摊满整段。
+define CHAOS_ATTACK_LEVEL = 0.60   ## 起手到达的强度（边缘明显被黑红侵入的程度；
+                                   ## 白色沙漠背景会吃掉半透明雾，低于 0.6 存在感不足）
+define CHAOS_RAMP_SECONDS = 60.0   ## 起手之后慢慢爬到满强度的时长
+define CHAOS_PULSE_LOW = 0.87      ## 到顶后呼吸的下限（同时是重绘的驱动，别设成 1.0）
+define CHAOS_PULSE_SECONDS = 3.2   ## 呼吸半周期（缓慢的濒死喘息感）
+
+transform chaos_vignette_fx:
+    mesh True
+    shader "game.chaos_vignette"
+    u_chaos 0.0
+    easein CHAOS_ATTACK_SECONDS u_chaos CHAOS_ATTACK_LEVEL
+    ease CHAOS_RAMP_SECONDS u_chaos 1.0
+    block:
+        ease CHAOS_PULSE_SECONDS u_chaos CHAOS_PULSE_LOW
+        ease CHAOS_PULSE_SECONDS u_chaos 1.0
+        repeat
+
+image chaos_vignette = At(Solid("#000"), chaos_vignette_fx)
+

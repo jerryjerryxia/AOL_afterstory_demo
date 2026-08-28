@@ -102,6 +102,9 @@ SFX_CUES = {
     '电视机关': {'file': 'dragon-studio-tv-shutdown-386167'},
     # 骨头断裂（"锁骨似乎断了"）：bone_break 用在这里名副其实。
     '骨头断裂': {'file': 'universfield-bone-break-2-140224'},
+    # 玻璃破碎：剧本开头写了带文件名的 【玻璃破碎音效：glass-smash-normalized】，
+    # 后面两处只写 【玻璃破碎音效】——同一记声音，裸 cue 也解析到同一素材。
+    '玻璃破碎': {'file': 'glass-smash-normalized'},
     # 连续破裂（眼珠一颗颗炸开）：暂不接。bone_break 是骨裂声，未必是这里要的东西，
     # 等素材定下来再加一条。当前 cue 退化成纯注释（无声）。
 
@@ -430,7 +433,9 @@ SPRITE_DEFAULT_AT = 'ws_close'
 # 摆位参数（写进生成的 sprites.rpy；改这里 + 重跑转换器即可调）。原图 2299x3824。
 WS_CLOSE_ZOOM = 0.52      # 半身近景：头到腰约占满全屏
 WS_CLOSE_YPOS = -50       # 近景往上提一点，让头顶留白自然
-WS_GLITCH_FRAME = 0.12    # glitch 动画每帧时长（秒），3 帧循环
+# glitch（毁容脸）：显示期间静止不动（试过 0.12s 连闪和 3s 溶解轮播，都不如
+# 静帧——毁容本身够吓人，动起来反而提醒观众"这是特效"）。随机性放在 show
+# 时：ATL choice 三选一，每次人物换表情/姿势重新 show 都重新抽一张脸。
 
 # 店员（王霜复制体，甜品店段）摆位参数。素材与主立绘同一套，缩小放在两侧：
 # 店员1 右侧正立，店员2 左侧从天花板倒吊（rotate 180）。
@@ -473,6 +478,11 @@ _SPRITE_WALK_ACTIVE = False
 
 # 跑动 sequence 计数：第 1 次 开始 用 bg_desert_run，之后用更狂的 run2。
 _RUN_SEQ_COUNT = [0]
+
+# 【转头】（第一视角猛回头就跑）：登记 pending，由紧随其后的跑动 sequence 起手
+# 消费 —— 那次 scene 切换改用 whip_pan 甩头转场（shaders.rpy）而非溶解。
+# 方向按次数交替（第一次向右甩、第二次向左），连续两次同向会像复播。
+_HEAD_TURN = {'pending': False, 'count': 0}
 
 # 小跳（剧本标记【小跳】，跟在姿势/表情标记后）：立绘原地轻跳一下（幅度小）。
 # 实现 = re-show 当前立绘，at 换成对应摆位的 <摆位>_hop 版 —— ★必须是内联了
@@ -864,9 +874,8 @@ def generate_sprites_rpy():
         out.append('')
         out.append(f'image ws {SPRITE_POSE_ATTRS[pose]} {expr_attr}_glitch:')
         for rel in frames:
-            out.append(f'    "{rel}"')
-            out.append(f'    {WS_GLITCH_FRAME}')
-        out.append('    repeat')
+            out.append('    choice:')
+            out.append(f'        "{rel}"')
     # 软 glitch（店员用）：干净立绘挂着，每隔 2~3 秒随机闪两下故障帧。
     # 闪帧优先用 _glitchsoft 局部帧（只有几个小范围出故障，--patches 生成）；
     # 没有软帧的组合回退全身 glitch 帧并告警。持续循环的 _glitch 是
@@ -2153,12 +2162,28 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     # 第二次及以后的 开始 用更狂的 run2（配剧本侧心跳渐强的递进）。锁操作 =
     # hard_pause，让起跑演出播完才收点击。走 _emit_scene 复用立绘清理/镜头复位
     # （scene 清立绘 = 【王霜和尸首退场】所要的效果，那行标记本身保持注释）。
+    # 【转头】：只登记，不出画面 —— 甩头转场由下面的跑动 sequence 起手消费。
+    if line == '【转头】':
+        _HEAD_TURN['pending'] = True
+        _HEAD_TURN['count'] += 1
+        return f'{indent}## 转头（跑动起手换用 whip_pan 甩头转场）'
+
     run_start = re.match(r'^【跑动sequence开始(?:[，,]\s*并?锁操作([\d.]+)秒)?】$', line)
     if run_start:
         _RUN_SEQ_COUNT[0] += 1
         bg = 'bg_desert_run' if _RUN_SEQ_COUNT[0] == 1 else 'bg_desert_run2'
         run_lines = [f'{indent}## {line.strip("【】")}']
-        _emit_scene(run_lines, indent, '银白色沙漠跑动', bg, 'scene_dissolve')
+        if _HEAD_TURN['pending']:
+            _HEAD_TURN['pending'] = False
+            whip_dir = 1.0 if _HEAD_TURN['count'] % 2 else -1.0
+            transition = f'whip_pan(direction={whip_dir})'
+            # 先就地排掉 pending 的镜头设/复位：whip_pan 只渲染新画面、首帧即
+            # 最大模糊，镜头跳变不可见 —— 不需要 _emit_scene 的黑场三段式
+            # （那会把甩头转场整个吃掉，换成 cam_fade_out/in）。
+            _emit_camera_at_switch(run_lines, indent)
+        else:
+            transition = 'scene_dissolve'
+        _emit_scene(run_lines, indent, '银白色沙漠跑动', bg, transition)
         if run_start.group(1):
             run_lines.append(f'{indent}$ hard_pause({run_start.group(1)})')
         return '\n'.join(run_lines)
@@ -2172,6 +2197,25 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     pause_match = re.match(r'^【停顿[：:]([\d.]+)】$', line)
     if pause_match:
         return f'{indent}pause {pause_match.group(1)}'
+
+    # 场景滤镜 【场景滤镜：黑红混沌，逐渐加深】/【停止场景滤镜：…】。
+    # 滤镜住在独立的 "chaos" 图层上（scene 只清 master，中途的转场/跑动 sequence
+    # 冲不掉它），"逐渐加深"由 chaos_vignette_fx 的 ATL 自己完成 —— show 的那一刻
+    # 强度为 0，所以起点不需要转场。停止标记按剧本约定写在转场之前 —— 雾先在
+    # 当前画面上用 1.5 秒 dissolve 退散，然后画面才切走（"滤镜先停，再转场"）。
+    # 实现见 shaders.rpy「黑红混沌 vignette」一节。未知滤镜名退化为注释并告警。
+    filter_match = re.match(r'^【(停止)?场景滤镜[：:](.+?)】$', line)
+    if filter_match:
+        stopping, filter_name = filter_match.groups()
+        if '黑红混沌' not in filter_name and '红黑' not in filter_name:
+            print(f"WARNING: 未实现的场景滤镜 '{filter_name}' —— 仅注释")
+            return f'{indent}## {line.strip("【】")}'
+        if stopping:
+            return (f'{indent}## 停止场景滤镜：{filter_name}\n'
+                    f'{indent}hide chaos_vignette onlayer chaos\n'
+                    f'{indent}with Dissolve(1.5)')
+        return (f'{indent}## 场景滤镜：{filter_name}\n'
+                f'{indent}show chaos_vignette onlayer chaos')
 
     # (Removed 【文本框淡入】 marker — `window show TRANSITION` does not affect
     # custom say screens, which is what this project uses. Fade-in is now
@@ -2286,6 +2330,16 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
             unglitch = emit_sprite_unglitch(indent)
             if unglitch:
                 out += '\n' + unglitch
+            return out
+        # 【王霜面部glitch移除】：只把当前立绘的脸换回干净版（master 层溶解）。
+        # 与【glitch消失】的区别：不放全屏 glitch_fx —— 安静地恢复，不搞动静。
+        if '面部glitch移除' in text:
+            out = f"{indent}## {text}"
+            unglitch = emit_sprite_unglitch(indent)
+            if unglitch:
+                out += '\n' + unglitch
+            else:
+                print(f"WARNING: 【{text}】处没有 glitch 立绘在场 —— 仅注释")
             return out
         if '音效' not in text:
             for keyword, fx in SPECIAL_FX:

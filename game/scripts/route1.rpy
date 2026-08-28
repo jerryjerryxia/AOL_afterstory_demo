@@ -1327,12 +1327,14 @@ label route1_start:
     extend "\n想到这里，你缓缓伸出手。"
     ## Extended大文本框结束
     ## 玻璃破碎音效
+    $ play_sfx("audio/sfx/glass_smash/glass-smash-normalized.wav")
     ## 转场：黑屏
     scene bg_black_video with scene_soft
     $ stash_music_pos()
     $ current_music_scene = None
     stop music fadeout 3.0
     ## Extended大文本框开始 - accumulating large textbox
+    $ wait_sfx()
     large_narrator "…"
     extend "\n……"
     extend "\n………"
@@ -1702,6 +1704,9 @@ label route1_start:
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "飒炟曠莩皎靸礚睫覅是否解释你的诨涤？"
     ahe "啊...你们...你们...等等..."
+    ## 王霜面部glitch移除
+    show ws crossed default
+    $ renpy.transition(Dissolve(0.2), layer="master")
     ## 尤里娅出现
     ## 一般态坏笑
     youliya "嗯...有什么好等的？只是撕碎了几百个长得和我一样的东西就承受不住了？这可不是我认识的阿鹤呢。"
@@ -1710,6 +1715,8 @@ label route1_start:
     youliya "但那对你来说根本不重要吧，毕竟都是最后关头了，无论怎样都不能输给一群杰罗瓦控制的假人嘛！尤其那些东西只是长得和我一样而已，根本不需要任何同情。"
     youliya "只要你“看到”那些东西不是“我”，自然就可以随手杀掉了——一切都顺理成章，无可厚非，对吧？"
     ahe "…"
+    ## 场景滤镜：黑红混沌，逐渐加深
+    show chaos_vignette onlayer chaos
     ## 一般态默认
     youliya "可是阿鹤，你知道吗？所有复制体的感官都会回流到我的身体。"
     ahe "尤里娅...这不是——"
@@ -1748,12 +1755,11 @@ label route1_start:
     ahe "别过来！"
     shishou "阿鹤，我们还没聊完——"
     ahe "你别过来！！！"
+    ## 转头（跑动起手换用 whip_pan 甩头转场）
     ## 跑动sequence开始，并锁操作5秒
-    ## 镜头缓回默认位（随交叉溶解同走，不经黑场）
-    camera:
-        subpixel True
-        easein_quad 3.0 zoom 1.0 xalign 0.5 yalign 0.5
-    scene bg_desert_run with scene_dissolve
+    ## 镜头复位
+    camera
+    scene bg_desert_run with whip_pan(direction=1.0)
     $ hard_pause(5)
     ## 王霜和尸首退场
     ## 做些古怪特效，世界有点崩解的感觉
@@ -1774,13 +1780,15 @@ label route1_start:
     ahe "别过来！你别过来！再见！"
     ## 心跳音效渐强
     $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
-    ## 跑动sequence开始
-    scene bg_desert_run2 with scene_dissolve
-    ## 王霜和尤里娅退场
+    ## 转头（跑动起手换用 whip_pan 甩头转场）
+    ## 跑动sequence开始，并锁操作5秒
+    scene bg_desert_run2 with whip_pan(direction=-1.0)
+    $ hard_pause(5)
+    ## 王霜和尸首退场
     ahe "啊...保持呼吸...保持呼吸...保持呼吸...保持呼吸..."
     ## 跑动sequence结束
     scene bg_desert with scene_dissolve
-    ## 王霜和尤里娅登场
+    ## 王霜和尸首登场
     shishou "你好。"
     ahe "…"
     ## 立绘：背手站立，默认表情
@@ -1808,6 +1816,9 @@ label route1_start:
     ahe "呃...啊——对不起——"
     ## 沙漠长风音效
     $ play_ambient("audio/sfx/desert_wind/desert_wind_bed.ogg", channel="ambient")
+    ## 停止场景滤镜：黑红混沌，逐渐加深
+    hide chaos_vignette onlayer chaos
+    with Dissolve(1.5)
     ## 转场：图片黑屏
     scene bg_black_still with scene_soft
     $ stash_music_pos()
@@ -1877,7 +1888,9 @@ label route1_start:
     $ hard_pause(10.8)
     hide screen text_wall
     ## 玻璃破碎音效
+    $ play_sfx("audio/sfx/glass_smash/glass-smash-normalized.wav")
     ## Extended大文本框开始 - accumulating large textbox
+    $ wait_sfx()
     large_narrator "口中不断重复着同样的三个音节，直到语言失去意义，只剩下干涩的空气波动无情地敲打你的耳膜。"
     extend "\n血液骨髓脂肪溢出来。脂肪明黄。胆汁墨绿。血液暗红。"
     extend "\n手心粘稠依旧。"

@@ -15,67 +15,60 @@ image ws backhand blank = "images/sprites/背手表情/背手(面无表情).png"
 image ws backhand default = "images/sprites/背手表情/背手(默认.png"
 
 image ws akimbo blank_glitch:
-    "images/sprites/glitch/叉腰（面无表情_glitch1.png"
-    0.12
-    "images/sprites/glitch/叉腰（面无表情_glitch2.png"
-    0.12
-    "images/sprites/glitch/叉腰（面无表情_glitch3.png"
-    0.12
-    repeat
+    choice:
+        "images/sprites/glitch/叉腰（面无表情_glitch1.png"
+    choice:
+        "images/sprites/glitch/叉腰（面无表情_glitch2.png"
+    choice:
+        "images/sprites/glitch/叉腰（面无表情_glitch3.png"
 
 image ws akimbo default_glitch:
-    "images/sprites/glitch/叉腰（默认_glitch1.png"
-    0.12
-    "images/sprites/glitch/叉腰（默认_glitch2.png"
-    0.12
-    "images/sprites/glitch/叉腰（默认_glitch3.png"
-    0.12
-    repeat
+    choice:
+        "images/sprites/glitch/叉腰（默认_glitch1.png"
+    choice:
+        "images/sprites/glitch/叉腰（默认_glitch2.png"
+    choice:
+        "images/sprites/glitch/叉腰（默认_glitch3.png"
 
 image ws crossed smirk_glitch:
-    "images/sprites/glitch/抱胸(坏笑_glitch1.png"
-    0.12
-    "images/sprites/glitch/抱胸(坏笑_glitch2.png"
-    0.12
-    "images/sprites/glitch/抱胸(坏笑_glitch3.png"
-    0.12
-    repeat
+    choice:
+        "images/sprites/glitch/抱胸(坏笑_glitch1.png"
+    choice:
+        "images/sprites/glitch/抱胸(坏笑_glitch2.png"
+    choice:
+        "images/sprites/glitch/抱胸(坏笑_glitch3.png"
 
 image ws crossed wry_glitch:
-    "images/sprites/glitch/抱胸(无奈_glitch1.png"
-    0.12
-    "images/sprites/glitch/抱胸(无奈_glitch2.png"
-    0.12
-    "images/sprites/glitch/抱胸(无奈_glitch3.png"
-    0.12
-    repeat
+    choice:
+        "images/sprites/glitch/抱胸(无奈_glitch1.png"
+    choice:
+        "images/sprites/glitch/抱胸(无奈_glitch2.png"
+    choice:
+        "images/sprites/glitch/抱胸(无奈_glitch3.png"
 
 image ws crossed default_glitch:
-    "images/sprites/glitch/抱胸(默认_glitch1.png"
-    0.12
-    "images/sprites/glitch/抱胸(默认_glitch2.png"
-    0.12
-    "images/sprites/glitch/抱胸(默认_glitch3.png"
-    0.12
-    repeat
+    choice:
+        "images/sprites/glitch/抱胸(默认_glitch1.png"
+    choice:
+        "images/sprites/glitch/抱胸(默认_glitch2.png"
+    choice:
+        "images/sprites/glitch/抱胸(默认_glitch3.png"
 
 image ws backhand smirk_glitch:
-    "images/sprites/glitch/背手(坏笑_glitch1.png"
-    0.12
-    "images/sprites/glitch/背手(坏笑_glitch2.png"
-    0.12
-    "images/sprites/glitch/背手(坏笑_glitch3.png"
-    0.12
-    repeat
+    choice:
+        "images/sprites/glitch/背手(坏笑_glitch1.png"
+    choice:
+        "images/sprites/glitch/背手(坏笑_glitch2.png"
+    choice:
+        "images/sprites/glitch/背手(坏笑_glitch3.png"
 
 image ws backhand default_glitch:
-    "images/sprites/glitch/背手(默认_glitch1.png"
-    0.12
-    "images/sprites/glitch/背手(默认_glitch2.png"
-    0.12
-    "images/sprites/glitch/背手(默认_glitch3.png"
-    0.12
-    repeat
+    choice:
+        "images/sprites/glitch/背手(默认_glitch1.png"
+    choice:
+        "images/sprites/glitch/背手(默认_glitch2.png"
+    choice:
+        "images/sprites/glitch/背手(默认_glitch3.png"
 
 image ws akimbo blank_glitchsoft:
     block:

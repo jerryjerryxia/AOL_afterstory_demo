@@ -162,6 +162,130 @@ def glitch(path, seed=0, strength=1.0):
     return np.clip(rgb, 0.0, 1.0), np.clip(a, 0.0, 1.0)
 
 
+# ---------------------------------------------------------------------------
+# 面部恐怖模式（--face）：只毁脸，不碰身体。
+# 剧本【…表情上蒙了glitch】的字面意图是【王霜面部开始出现glitch】——要的是
+# "脸坏掉了"的恐怖感，不是全身电视串台。三个种子各自生成不同的扭曲，
+# 游戏里 0.12s 轮播 —— 脸在不停地重新排列自己。
+#
+# 效果栈（全部限制在自动检测的脸部椭圆内，边缘羽化）：
+#   melt   低频位移场热熔，带向下偏置 —— 五官糊开、下坠
+#   tears  脸内横向错位条 —— 眼睛和嘴从中间错开
+#   ghost  半透明的第二张脸错位叠影 —— "脸后面还有一张脸"
+#   decay  尸斑污渍 + 灰紫尸色 + 眼窝发黑
+# ---------------------------------------------------------------------------
+
+def detect_face_box(path, top_frac=0.16, pad=0.20):
+    """自动定位脸：立绘不透明包围盒的顶部 top_frac 高度内找肤色像素
+    （r-b 明显为正的暖色 —— 头发是蓝的、衣服是白的，只有皮肤是暖的），
+    取其 2~98 百分位包围盒外扩 pad。返回 (x0, y0, x1, y1)。"""
+    rgb, a = _load_premultiplied(path)
+    h, w = a.shape
+    rows = np.where(a.max(axis=1) > 0.05)[0]
+    by0 = int(rows[0]) if len(rows) else 0
+    by1 = int(rows[-1]) if len(rows) else h
+    win_y1 = by0 + int((by1 - by0) * top_frac)
+    safe = np.maximum(a, 1e-6)
+    r, g, b = (rgb[..., i] / safe for i in range(3))
+    warm = (a > 0.5) & (r - b > 0.06) & (r > 0.55) & (r - g > 0.015)
+    warm[win_y1:] = False
+    ys, xs = np.where(warm)
+    if len(ys) < 400:
+        raise SystemExit("face detect failed: %s (warm px=%d)" % (path, len(ys)))
+    x0, x1 = np.percentile(xs, 2), np.percentile(xs, 98)
+    y0, y1 = np.percentile(ys, 2), np.percentile(ys, 98)
+    fw, fh = x1 - x0, y1 - y0
+    x0 -= fw * pad; x1 += fw * pad
+    y0 -= fh * pad * 1.4; y1 += fh * pad          # 额头多留一点（刘海压着脸）
+    return (int(max(0, x0)), int(max(0, y0)),
+            int(min(w, x1)), int(min(h, y1)))
+
+
+def _smooth_noise(rng, h, w, scale):
+    """低频平滑噪声：低分辨率高斯噪声双线性放大到 (h, w)，值域约 ±1。"""
+    gh, gw = max(2, h // scale), max(2, w // scale)
+    g = rng.standard_normal((gh, gw)).astype(np.float32)
+    return np.asarray(Image.fromarray(g, "F").resize((w, h), Image.BILINEAR),
+                      dtype=np.float32)
+
+
+def _bilinear(img, my, mx):
+    """按浮点坐标图采样（位移场用）。img 可为 (h,w) 或 (h,w,3)。"""
+    h, w = img.shape[:2]
+    y0 = np.clip(np.floor(my).astype(np.int32), 0, h - 1)
+    x0 = np.clip(np.floor(mx).astype(np.int32), 0, w - 1)
+    y1 = np.clip(y0 + 1, 0, h - 1)
+    x1 = np.clip(x0 + 1, 0, w - 1)
+    fy, fx = my - y0, mx - x0
+    if img.ndim == 3:
+        fy, fx = fy[..., None], fx[..., None]
+    top = img[y0, x0] * (1 - fx) + img[y0, x1] * fx
+    bot = img[y1, x0] * (1 - fx) + img[y1, x1] * fx
+    return top * (1 - fy) + bot * fy
+
+
+def face_horror(path, seed, strength):
+    """原图 + 只在脸部椭圆内的毁容效果。身体一个像素都不动。"""
+    rng = np.random.default_rng(seed)
+    rgb, a = _load_premultiplied(path)
+    x0, y0, x1, y1 = detect_face_box(path)
+    fh, fw = y1 - y0, x1 - x0
+    face = rgb[y0:y1, x0:x1].copy()
+    fa = a[y0:y1, x0:x1].copy()
+
+    yy, xx = np.mgrid[0:fh, 0:fw].astype(np.float32)
+    ny = (yy - fh / 2) / (fh / 2)
+    nx = (xx - fw / 2) / (fw / 2)
+    d = np.sqrt(nx * nx + ny * ny)
+    mask = np.clip((1.05 - d) / 0.30, 0.0, 1.0)     # 椭圆内 1，边缘羽化到 0
+
+    # melt：位移场热熔。向下偏置 —— 器官会坠，信号不会。
+    sc = max(6, fh // 6)
+    dx = _smooth_noise(rng, fh, fw, sc) * 0.11 * fw * strength
+    dy = (_smooth_noise(rng, fh, fw, sc) * 0.07 + 0.045) * fh * strength
+    my = np.clip(yy + dy * mask, 0, fh - 1)
+    mx = np.clip(xx + dx * mask, 0, fw - 1)
+    face = _bilinear(face, my, mx)
+    fa = _bilinear(fa, my, mx)
+
+    # tears：脸内横向错位条 —— 眼与嘴从中缝错开。
+    for _ in range(int(rng.integers(3, 6))):
+        yb = int(rng.integers(0, max(1, fh - 20)))
+        bh = int(rng.integers(int(fh * 0.05), int(fh * 0.15)))
+        dxb = int(rng.uniform(0.06, 0.17) * fw * strength
+                  * (1 if rng.random() < 0.5 else -1))
+        band = np.zeros((fh, 1), dtype=np.float32)
+        band[yb:yb + bh] = 1.0
+        bm = (np.broadcast_to(band, (fh, fw)) * mask)[..., None]
+        rolled = np.roll(face, dxb, axis=1)
+        rolled_a = np.roll(fa, dxb, axis=1)
+        face = face * (1 - bm) + rolled * bm * 0.94   # 错位条微暗，读作"断开"
+        fa = fa * (1 - bm[..., 0]) + rolled_a * bm[..., 0]
+
+    # ghost：错位的第二张脸，低透明度叠在下层。
+    gdx = int(rng.integers(int(fw * 0.05), int(fw * 0.14))) * (1 if rng.random() < 0.5 else -1)
+    gdy = int(rng.integers(int(fh * 0.03), int(fh * 0.10)))
+    gface = np.roll(np.roll(face, gdx, axis=1), gdy, axis=0)
+    face = face + gface * 0.22 * mask[..., None]
+
+    # decay：尸斑污渍 + 灰紫尸色 + 眼窝发黑。
+    mottle = np.clip(_smooth_noise(rng, fh, fw, max(4, fh // 12)) * 0.8 + 0.15, 0, 1)
+    eyeband = np.exp(-(((yy / fh) - 0.42) / 0.13) ** 2)
+    dark = 1.0 - (0.40 * mottle + 0.30 * eyeband) * mask * strength
+    face *= np.clip(dark, 0.15, 1.0)[..., None]
+    lum = (face[..., 0] * 0.30 + face[..., 1] * 0.59 + face[..., 2] * 0.11)
+    corpse = np.stack([lum * 0.72, lum * 0.68, lum * 0.80], axis=-1)
+    t = (0.55 * mask * strength)[..., None]
+    face = face * (1 - t) + corpse * t
+
+    out_rgb, out_a = rgb, a
+    m3 = mask[..., None]
+    out_rgb[y0:y1, x0:x1] = rgb[y0:y1, x0:x1] * (1 - m3) + face * m3
+    out_a[y0:y1, x0:x1] = a[y0:y1, x0:x1] * (1 - mask) + fa * mask
+    out_rgb = np.minimum(out_rgb, out_a[..., None])
+    return np.clip(out_rgb, 0.0, 1.0), np.clip(out_a, 0.0, 1.0)
+
+
 def apply_patches(rgb_g, a_g, path, n, rng):
     """局部 glitch（--patches N）：只在 N 个随机小矩形带里保留 glitch 结果，
     其余像素还原成原图。用于"偶发小范围抽搐"的软 glitch 素材（店员立绘）——
@@ -196,6 +320,9 @@ def main():
     ap.add_argument("--patches", type=int, default=0,
                     help="只在 N 个随机小矩形带里保留 glitch、其余还原原图"
                          "（软 glitch，输出命名 _glitchsoft<seed>）")
+    ap.add_argument("--face", action="store_true",
+                    help="面部恐怖模式：只毁脸不碰身体（输出命名仍是 _glitch<seed>，"
+                         "直接覆盖旧的整身 glitch 帧）")
     args = ap.parse_args()
 
     base = os.path.splitext(os.path.basename(args.input))[0]
@@ -203,7 +330,10 @@ def main():
 
     for i in range(args.variants):
         seed = args.seed + i
-        rgb, a = glitch(args.input, seed=seed, strength=args.strength)
+        if args.face:
+            rgb, a = face_horror(args.input, seed=seed, strength=args.strength)
+        else:
+            rgb, a = glitch(args.input, seed=seed, strength=args.strength)
         if args.patches:
             rng = np.random.default_rng(seed + 1000)   # 落点独立于 glitch 内部随机流
             rgb, a = apply_patches(rgb, a, args.input, args.patches, rng)

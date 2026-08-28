@@ -70,7 +70,7 @@ define lurenbing = ClickPauseCharacter("路人丙", color="#6c7a89", ctc=ctc, ct
 define lurending = ClickPauseCharacter("路人丁", color="#a0a0a0", ctc=ctc, ctc_pause=ctc)  # 中灰色
 define jieluowa = ClickPauseCharacter("杰罗瓦", color="#e67e22", ctc=ctc, ctc_pause=ctc)  # 橙色
 define mijie = ClickPauseCharacter("米姐", color="#27ae60", ctc=ctc, ctc_pause=ctc)  # 绿色
-define youliya = ClickPauseCharacter("尤里娅", color="#f1c40f", ctc=ctc, ctc_pause=ctc)  # 金色
+define youliya = ClickPauseCharacter("尤里娅", color="#c0c0c0", ctc=ctc, ctc_pause=ctc)  # 银色
 
 ## 未知角色（用于角色未揭示身份时）
 define unknown = ClickPauseCharacter("???", color="#888888", ctc=ctc, ctc_pause=ctc)
