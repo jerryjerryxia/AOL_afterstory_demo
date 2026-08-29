@@ -160,6 +160,15 @@ SCENE_BG_MAP = {
     '甜品店对视6.51': 'bg_dessertgaze6_51',
     '甜品店对视7': 'bg_dessertgaze7',
     '甜品店对视8': 'bg_dessertgaze8',
+    # 地下 1-8：沙漠地下（头埋进沙里）恐怖段的场景渐进，见 placeholder.rpy。
+    '地下1': 'bg_underground1',
+    '地下2': 'bg_underground2',
+    '地下3': 'bg_underground3',
+    '地下4': 'bg_underground4',
+    '地下5': 'bg_underground5',
+    '地下6': 'bg_underground6',
+    '地下7': 'bg_underground7',
+    '地下8': 'bg_underground8',
 }
 
 # 就地转场：不换背景，只在当前画面上启动一段效果。场景名 -> 要发的那一行。
@@ -201,6 +210,16 @@ CROSS_DISSOLVE_SCENES = {
     '甜品店对视6.51',
     '甜品店对视7',
     '甜品店对视8',
+    # 地下 2-8：同一视野的递进拍（沙砾→多面体→眼珠→爆裂），黑场会打断
+    # "越看越清楚"的连续感。地下1 不在这里 —— 它是从图片黑屏睁眼的入场，
+    # 走默认黑场淡入。
+    '地下2',
+    '地下3',
+    '地下4',
+    '地下5',
+    '地下6',
+    '地下7',
+    '地下8',
 }
 
 # Tracks whether the prologue's first 【转场：...】 still needs its own special
@@ -230,6 +249,13 @@ SPECIAL_FX = [
     ('glitch', 'glitch_fx()'),
     ('黑影', 'fx_shock'),
 ]
+
+# 停顿标记：【停顿：N】 与 【等待N秒】 是同义写法（剧本里两种都出现过）。
+# 命中返回秒数字符串，否则 None。普通正文与 Extended 块内都要认——
+# 块内若不认，会被"整行【】舞台提示"的兜底静默吃掉，两个转场就贴在一起了。
+def _match_pause(line):
+    m = re.match(r'^【停顿[：:]([\d.]+)】$', line) or re.match(r'^【等待([\d.]+)秒】$', line)
+    return m.group(1) if m else None
 
 # 表情切换过渡（短溶解；改这里改全局表情切换速度）。
 # 秒数单独成常量：小跳 transform 要用它做起跳延迟（等溶解完成再跳）。
@@ -1106,7 +1132,7 @@ def normalize_dots_line(text):
 # 术语结尾，链接就套在哪个术语上。加新注释 = 把术语加进这个列表。
 # 找不到术语时的兜底：标记紧跟在破折号/省略号后（如 "柔软而光滑的——【注释：
 # 想都别想】"）就把那串标点作为链接锚点；再不行取末尾的连续文字并告警。
-ANNOTATION_TERMS = ['逝乐园', '冒充者综合征', '脑血屏障', '脑前叶白质切除术', '杰罗瓦']
+ANNOTATION_TERMS = ['逝乐园', '冒充者综合征', '脑血屏障', '脑前叶白质切除术', '杰罗瓦', '被试']
 
 _ANNOT_RE = re.compile(r'【注释：\s*(.*?)\s*】')
 
@@ -1689,6 +1715,10 @@ def emit_extended_segments(collected, output, indent, large=False, centered=Fals
             emit_transition_lines(output, indent, scene_name, scene_desc)
             first_emitted = False
             continue
+        if speaker == '__pause__':
+            # 块内停顿：定格当前画面。不动 first_emitted —— 停顿不打断文字累积。
+            output.append(f'{indent}pause {text}')
+            continue
         # 行内屏幕震动：按标记拆段，段间插 with fx_quake（point 6）。
         parts = text.split('【屏幕震动】')
         for pidx, part in enumerate(parts):
@@ -2192,11 +2222,11 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         _emit_scene(run_lines, indent, '银白色沙漠', 'bg_desert', 'scene_dissolve')
         return '\n'.join(run_lines)
 
-    # Pause markers 【停顿：N】 -> `pause N` (N is seconds, float ok)
+    # Pause markers 【停顿：N】/【等待N秒】 -> `pause N` (N is seconds, float ok)
     # Use sparingly — for breathing room before a scene's first line, etc.
-    pause_match = re.match(r'^【停顿[：:]([\d.]+)】$', line)
+    pause_match = _match_pause(line)
     if pause_match:
-        return f'{indent}pause {pause_match.group(1)}'
+        return f'{indent}pause {pause_match}'
 
     # 场景滤镜 【场景滤镜：黑红混沌，逐渐加深】/【停止场景滤镜：…】。
     # 滤镜住在独立的 "chaos" 图层上（scene 只清 master，中途的转场/跑动 sequence
@@ -2476,11 +2506,26 @@ def parse_choice(line):
     return None, 0, None
 
 
-def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=False, centered=False):
+def _lr_transform(line):
+    """「左右分开对齐」块内的行首对齐标记：
+    【左】= 默认左对齐，纯剥前缀（正文与历史版本逐字节一致，不动翻译 ID）；
+    【右】= 整行包成 {r}…{/r}，运行时 custom text tag 把该行整体右对齐
+    （见 screens.rpy _lr_right_text_tag）。无前缀的行（——录入中—— 等系统行）
+    保持原样走左对齐。"""
+    if line.startswith('【左】'):
+        return line[3:].lstrip()
+    if line.startswith('【右】'):
+        return '{r}' + line[3:].lstrip() + '{/r}'
+    return line
+
+
+def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=False, centered=False,
+                               lr=False):
     """
     Collect lines between markers and output them with extend for accumulating display.
     First line is normal dialogue, subsequent lines use extend to append.
     centered=True：居中累积框（centered_say），用于 demo 结尾谢幕卡等。
+    lr=True：开始标记带「左右分开对齐」，行首【左】/【右】决定该行对齐（见 _lr_transform）。
     Returns (output_lines, new_index)
     """
     # Character name to variable mapping（单一来源见模块级 CHAR_VAR_MAP）
@@ -2500,6 +2545,11 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
         # Check for end marker
         if marker_end in line:
             break
+
+        # 左右分开对齐：行首【左】/【右】标记先行消化（【右】行包 {r}…{/r}），
+        # 必须在下面所有解析之前——否则会被当成整行【】舞台提示静默吃掉。
+        if lr:
+            line = _lr_transform(line)
 
         # 嵌套选项（Extended 块内，见 emit_extended_choice_block）：
         # 汇合标记必须先于下面通用的【】跳过截获，否则会被静默吃掉。
@@ -2534,6 +2584,13 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
                 scene_desc = ""
             # Mark as scene transition (special marker)
             collected.append(('__transition__', (scene_name, scene_desc)))
+            continue
+
+        # 块内停顿（【停顿：N】/【等待N秒】，如 地下5→等待3秒→地下6）：
+        # 必须先于下面的舞台提示兜底，否则被静默吃掉、两个转场贴在一起。
+        pause_secs = _match_pause(line)
+        if pause_secs:
+            collected.append(('__pause__', pause_secs))
             continue
 
         # Character dialogue with one or more leading 【…】（块内也可能出现，如夏日对视
@@ -2638,6 +2695,7 @@ def process_choice_content(content_lines, indent="            "):
 
         # Check for Extended大文本框 markers（也走同段落标点分句，large=True）
         if 'Extended大文本框开始' in line:
+            lr = '左右分开对齐' in line
             output.append(f"{indent}## Extended大文本框开始 - 大文本框分句")
             entries = []
             while i < len(content_lines):
@@ -2647,6 +2705,8 @@ def process_choice_content(content_lines, indent="            "):
                     break
                 if not next_line:
                     continue
+                if lr:
+                    next_line = _lr_transform(next_line)
                 if next_line.startswith('【') and next_line.endswith('】'):
                     continue
                 entries.append((None, next_line))
@@ -2897,10 +2957,12 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
             # 开关把这段 say 包起来，运行时 add_click_pauses 直接放行。say 文本/角色不变，
             # 不影响翻译 ID。
             no_split = '不分句' in line
+            lr = '左右分开对齐' in line
             block_anchor = len(output)   # 块首（含开始注释）在 output 里的下标
             output.append("    ## Extended大文本框开始 - accumulating large textbox"
-                          + ("（不分句）" if no_split else ""))
-            accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True)
+                          + ("（不分句）" if no_split else "")
+                          + ("（左右分开对齐）" if lr else ""))
+            accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True, lr=lr)
             if no_split:
                 output.append("    $ no_click_split = True")
             output.extend(accumulated)
@@ -3243,9 +3305,11 @@ def convert_prologue(lines, start_line, end_line):
             # 开关把这段 say 包起来，运行时 add_click_pauses 直接放行。say 文本/角色不变，
             # 不影响翻译 ID。
             no_split = '不分句' in line
+            lr = '左右分开对齐' in line
             output.append("    ## Extended大文本框开始 - accumulating large textbox"
-                          + ("（不分句）" if no_split else ""))
-            accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True)
+                          + ("（不分句）" if no_split else "")
+                          + ("（左右分开对齐）" if lr else ""))
+            accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True, lr=lr)
             if no_split:
                 output.append("    $ no_click_split = True")
             output.extend(accumulated)

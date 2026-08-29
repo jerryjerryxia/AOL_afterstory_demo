@@ -41,19 +41,19 @@ label route1_prologue:
     extend "\n它既关于你，也关于别人，关于所有人。"
     extend "\n关于一切。"
     ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox（不分句）
+    ## Extended大文本框开始 - accumulating large textbox（不分句）（左右分开对齐）
     $ no_click_split = True
     large_narrator "——可‘一切’是个懒散的字眼。"
     extend "\n——一句在词穷时用来欲盖弥彰的空话。"
-    extend "\n——但在此刻，‘一切’是精确的。"
+    extend "\n{r}——但在此刻，‘一切’是精确的。{/r}"
     extend "\n——这无需争论。"
-    extend "\n——自然无需争论！"
-    extend "\n——在这里，“一切”都无需争论。"
-    extend "\n——完整是无需争论的。"
+    extend "\n{r}——自然无需争论！{/r}"
+    extend "\n{r}——在这里，“一切”都无需争论。{/r}"
+    extend "\n{r}——完整是无需争论的。{/r}"
     extend "\n——嗯，我无言以对。"
-    extend "\n——不如顺便移开目光，看看别处。"
-    extend "\n——嗯，我无可奉告。"
-    extend "\n——真是无聊啊你。"
+    extend "\n{r}——不如顺便移开目光，看看别处。{/r}"
+    extend "\n——嗯，那就这样吧。"
+    extend "\n{r}——真是无聊啊你。{/r}"
     $ no_click_split = False
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
@@ -61,19 +61,20 @@ label route1_prologue:
     extend "\n……"
     extend "\n………"
     ## Extended大文本框结束
-    ## Extended大文本框开始 - accumulating large textbox（不分句）
+    ## Extended大文本框开始 - accumulating large textbox（不分句）（左右分开对齐）
     $ no_click_split = True
-    large_narrator "——没想到，这么快就找到你了。"
+    large_narrator "{r}——没想到，这么快就找到你了。{/r}"
     extend "\n——我以为这种事对于现在的你来说易如反掌。"
-    extend "\n——当然。只是一想到又要见到你那张臭脸，我就下意识地多做了点心理准备。"
+    extend "\n{r}——当然。{/r}"
+    extend "\n{r}——只是一想到又要见到你那张臭脸，我就下意识地多做了点心理准备。{/r}"
     extend "\n——心理准备？你？"
-    extend "\n——嗯，毕竟做了“伤天害理”的事情。"
+    extend "\n{r}——嗯，毕竟做了“伤天害理”的事情。{/r}"
     extend "\n——哦？歉意，你能感受到那种东西？"
-    extend "\n——不能。但能演给你看，要看吗？"
+    extend "\n{r}——不能。但能演给你看，要看吗？{/r}"
     extend "\n——看来你也挺无聊。"
-    extend "\n——是咯，所以想不想出去溜达溜达？"
+    extend "\n{r}——是咯，所以想不想出去溜达溜达？{/r}"
     extend "\n——向一个不具备意志的人征求认可又是何苦？彰显你那虚伪的开明？"
-    extend "\n——那就当你同意了。"
+    extend "\n{r}——那就当你同意了。{/r}"
     extend "\n——请自便吧。"
     $ no_click_split = False
     ## Extended大文本框结束

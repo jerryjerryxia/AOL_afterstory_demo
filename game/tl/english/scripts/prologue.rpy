@@ -83,46 +83,46 @@ translate english route1_prologue_46cfe1c9:
     extend "\n——You only say this when you have nothing better to say."
 
 # game/scripts/prologue.rpy:49
-translate english route1_prologue_96cf2dfb:
+translate english route1_prologue_de5c7eba:
 
-    # extend "\n——但在此刻，‘一切’是精确的。"
-    extend "\n——But at this moment, 'Everything' is quite precise."
+    # extend "\n{r}——但在此刻，‘一切’是精确的。{/r}"
+    extend "\n{r}——But at this moment, 'Everything' is quite precise.{/r}"
 
 # game/scripts/prologue.rpy:51
-translate english route1_prologue_480b26e3:
+translate english route1_prologue_69801065:
 
-    # extend "\n——自然无需争论！"
-    extend "\n——Of course there's no need to argue!"
+    # extend "\n{r}——自然无需争论！{/r}"
+    extend "\n{r}——Of course there's no need to argue!{/r}"
 
 # game/scripts/prologue.rpy:52
-translate english route1_prologue_076dc717:
+translate english route1_prologue_4f7ad4ab:
 
-    # extend "\n——在这里，“一切”都无需争论。"
-    extend "\n——Here, 'Everything' is set in stone."
+    # extend "\n{r}——在这里，“一切”都无需争论。{/r}"
+    extend "\n{r}——Here, 'Everything' is set in stone.{/r}"
 
 # game/scripts/prologue.rpy:53
-translate english route1_prologue_9dd4596f:
+translate english route1_prologue_aa0631ba:
 
-    # extend "\n——完整是无需争论的。"
-    extend "\n——Complete beings have no need for argument."
+    # extend "\n{r}——完整是无需争论的。{/r}"
+    extend "\n{r}——Complete beings have no need for argument.{/r}"
 
 # game/scripts/prologue.rpy:55
-translate english route1_prologue_6183a470:
+translate english route1_prologue_5359eaa4:
 
-    # extend "\n——不如顺便移开目光，看看别处。"
-    extend "\n——Maybe you should turn away and look elsewhere."
+    # extend "\n{r}——不如顺便移开目光，看看别处。{/r}"
+    extend "\n{r}——Maybe you should turn away and look elsewhere.{/r}"
 
 # game/scripts/prologue.rpy:57
-translate english route1_prologue_313dbcbb:
+translate english route1_prologue_9cbd843b:
 
-    # extend "\n——真是无聊啊你。"
-    extend "\n——You're boring."
+    # extend "\n{r}——真是无聊啊你。{/r}"
+    extend "\n{r}——You're boring.{/r}"
 
 # game/scripts/prologue.rpy:69
-translate english route1_prologue_a691e6a6:
+translate english route1_prologue_f28ffa31:
 
-    # large_narrator "——没想到，这么快就找到你了。"
-    large_narrator "——Didn't think I'd find you so soon."
+    # large_narrator "{r}——没想到，这么快就找到你了。{/r}"
+    large_narrator "{r}——Didn't think I'd find you so soon.{/r}"
 
 # game/scripts/prologue.rpy:70
 translate english route1_prologue_a1985929:
@@ -137,10 +137,10 @@ translate english route1_prologue_d527c1e5:
     extend "\n——You? Mentally prepared? For what?"
 
 # game/scripts/prologue.rpy:75
-translate english route1_prologue_bf4233f7:
+translate english route1_prologue_0afc079e:
 
-    # extend "\n——不能。但能演给你看，要看吗？"
-    extend "\n——Not really, but I can act it out for you. Wanna see it?"
+    # extend "\n{r}——不能。但能演给你看，要看吗？{/r}"
+    extend "\n{r}——Not really, but I can act it out for you. Wanna see it?{/r}"
 
 # game/scripts/prologue.rpy:76
 translate english route1_prologue_cf1f310d:
@@ -155,10 +155,10 @@ translate english route1_prologue_e561b331:
     extend "\n——What's the point of asking the opinion of someone who has no will for anything? Just to showcase your fake-ass generosity?"
 
 # game/scripts/prologue.rpy:79
-translate english route1_prologue_51a9894c:
+translate english route1_prologue_f53b927a:
 
-    # extend "\n——那就当你同意了。"
-    extend "\n——I'll take that as a yes."
+    # extend "\n{r}——那就当你同意了。{/r}"
+    extend "\n{r}——I'll take that as a yes.{/r}"
 
 # game/scripts/prologue.rpy:80
 translate english route1_prologue_bc2f2ccc:
@@ -264,10 +264,10 @@ translate english route1_prologue_0ea3b1c0:
     extend "\n——Hmm, I don't know what to say to that."
 
 # game/scripts/prologue.rpy:55
-translate english route1_prologue_1762c1f3:
+translate english route1_prologue_1b50d713:
 
-    # extend "\n——嗯，我无可奉告。"
-    extend "\n——Hmm, maybe you are right."
+    # extend "\n——嗯，那就这样吧。"
+    extend "\n——Hmm, fine, let's do that."
 
 # game/scripts/prologue.rpy:60
 translate english route1_prologue_526eac06:
@@ -288,16 +288,22 @@ translate english route1_prologue_4bfaa876:
     extend "\n………"
 
 # game/scripts/prologue.rpy:68
-translate english route1_prologue_2c1885a2:
+translate english route1_prologue_1a6bb328:
 
-    # extend "\n——当然。只是一想到又要见到你那张臭脸，我就下意识地多做了点心理准备。"
-    extend "\n——Of course, of course. It's just that I came extra mentally prepared, so that I can bear to look at your resting bitch face again."
+    # extend "\n{r}——当然。{/r}"
+    extend "\n{r}——Of course, of course.{/r}"
+
+# game/scripts/prologue.rpy:69
+translate english route1_prologue_1b492dce:
+
+    # extend "\n{r}——只是一想到又要见到你那张臭脸，我就下意识地多做了点心理准备。{/r}"
+    extend "\n{r}——It's just that I came extra mentally prepared, so that I can bear to look at your resting bitch face again.{/r}"
 
 # game/scripts/prologue.rpy:70
-translate english route1_prologue_fc76ed85:
+translate english route1_prologue_375ea891:
 
-    # extend "\n——嗯，毕竟做了“伤天害理”的事情。"
-    extend '\n——Well, you see, I\'m aware that I did something "outrageous".'
+    # extend "\n{r}——嗯，毕竟做了“伤天害理”的事情。{/r}"
+    extend '\n{r}——Well, you see, I\'m aware that I did something "outrageous".{/r}'
 
 # game/scripts/prologue.rpy:71
 translate english route1_prologue_2cc2a05b:
@@ -306,10 +312,10 @@ translate english route1_prologue_2cc2a05b:
     extend "\n——Oh, so you are saying you can feel guilt? That's a thing for you now?"
 
 # game/scripts/prologue.rpy:74
-translate english route1_prologue_169e25cf:
+translate english route1_prologue_9fc185c7:
 
-    # extend "\n——是咯，所以想不想出去溜达溜达？"
-    extend "\n——Yea, maybe. So, wanna head out?"
+    # extend "\n{r}——是咯，所以想不想出去溜达溜达？{/r}"
+    extend "\n{r}——Yea, maybe. So, wanna head out?{/r}"
 
 # game/scripts/prologue.rpy:81
 translate english route1_prologue_526eac06_1:

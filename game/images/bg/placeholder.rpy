@@ -171,6 +171,19 @@ image bg_addiction:
     ease 1.5 u_ripple_strength 0.25  # 瘾的小顶点
     function _ripple_tick
 
+## 地下 1-8：沙漠地下（头埋进沙里）恐怖段的场景渐进（【转场：地下N】）。
+## 1 初见沙砾 → 2-4 逐步细看（沙砾=多面体=眼珠）→ 5-6 眼珠注意到你 →
+## 7 目光刺穿 → 8 眼珠爆裂。1 从图片黑屏黑场淡入，2-8 交叉溶解（同一视野的
+## 递进拍，与甜品店 1-8 同一处理，见 convert_script.py CROSS_DISSOLVE_SCENES）。
+image bg_underground1 = Transform("images/bg/underground1.png", xysize=(1920, 1080), fit="cover")
+image bg_underground2 = Transform("images/bg/underground2.png", xysize=(1920, 1080), fit="cover")
+image bg_underground3 = Transform("images/bg/underground3.png", xysize=(1920, 1080), fit="cover")
+image bg_underground4 = Transform("images/bg/underground4.png", xysize=(1920, 1080), fit="cover")
+image bg_underground5 = Transform("images/bg/underground5.png", xysize=(1920, 1080), fit="cover")
+image bg_underground6 = Transform("images/bg/underground6.png", xysize=(1920, 1080), fit="cover")
+image bg_underground7 = Transform("images/bg/underground7.png", xysize=(1920, 1080), fit="cover")
+image bg_underground8 = Transform("images/bg/underground8.png", xysize=(1920, 1080), fit="cover")
+
 ## 旧实验：甜品店 + 水面波纹 shader。当前没有场景引用，留作以后复用。
 ## shader 注册和 _ripple_tick callback 见 game/scripts/shaders.rpy。
 image bg_dessertshop:

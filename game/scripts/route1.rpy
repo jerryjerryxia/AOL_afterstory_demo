@@ -17,6 +17,8 @@ label route1_start:
     ## 立绘：背手站立，吃惊表情
     show ws backhand shocked at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
+    ## 小跳
+    show ws backhand shocked at ws_mid_hop
     wangshuang "哦？有趣的提议，为什么呢？"
     ahe "我...不好意思...我觉得我有点..."
 
@@ -85,7 +87,7 @@ label route1_start:
     ## 表情：面无表情
     scene summergaze_blank
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "那就闭上眼睛吧。那样你的问题便会迎刃而解了。"
+    wangshuang "那就闭上眼睛吧。那样你的问题就迎刃而解了。"
     ahe "可我还是觉得我快要..."
 
     menu:
@@ -99,14 +101,14 @@ label route1_start:
     ## 表情：默认
     scene summergaze_default
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "嗯，那样也是无可厚非的事情。"
+    wangshuang "嗯，那也是无可厚非的事情。"
     ahe "那怎么可能是——"
     wangshuang "当然就是这样的，阿鹤。"
     ## 表情：小吃惊
     scene summergaze_surprised
     $ renpy.transition(Dissolve(0.2), layer="master")
     wangshuang "这是你的心理咨询。你是来访者，而我是咨询师。假如你连这种基本前提都不愿接受的话，你来这里又是为什么？"
-    ahe "可我确实想不起来啊...所以...我该怎样才能好起来？"
+    ahe "想不起来...所以...我该怎样才能好起来？"
     wangshuang "修补本就完整的东西，那自然是做不到的。"
     ahe "…"
     ## 表情：面无表情
@@ -134,7 +136,7 @@ label route1_start:
     wangshuang "总是向外归因可解决不了问题啊，我的朋友。"
     wangshuang "你的病虽然看起来已经根治了，但以你的身心状态而言，任何时候复发我都不意外。"
     wangshuang "不过，你还是没回答我的问题——时间对现在的你而言，有什么用？"
-    ahe "啊——啊——没用...完全没用...一切都结束了..."
+    ahe "呃——啊——没用...完全没用...一切都结束了..."
     ## 表情：小吃惊
     scene summergaze_surprised
     $ renpy.transition(Dissolve(0.2), layer="master")
@@ -700,6 +702,8 @@ label route1_start:
     extend "\n就够了..."
     extend "\n即便如此，王霜依旧没有回来。"
     ## Extended大文本框结束
+    ## 转场：黑屏
+    scene bg_black_video with scene_soft
     ## 水底泡泡上浮音效：Bubbles_10
     $ play_sfx("audio/sfx/bubbles/Bubbles_10.wav")
     ## 音效完成后再执行转场
@@ -766,13 +770,13 @@ label route1_start:
     $ play_ambient("audio/sfx/slow_breath_ambience/freesound_community-slow-breath-relaxmp3-14704.mp3", channel="ambient", level=0.55)
     label _interro_restart:
         pass
-    ## Extended大文本框开始 - accumulating large textbox（不分句）
+    ## Extended大文本框开始 - accumulating large textbox（不分句）（左右分开对齐）
     $ no_click_split = True
     $ interro_reset()
     large_narrator "——录入中——录入中——"
     extend "\n——接下来将对生体失窃案的犯罪嫌疑人进行问询。"
     extend "\n——请问，您在过去的二十四小时内，是否经历过严重肉体伤害、认知紊乱、大量出血、死亡等重大健康隐患？"
-    extend "\n——…"
+    extend "\n{r}——...{/r}"
     label _extmenu_1:
         window hide Dissolve(.25)
         menu:
@@ -865,7 +869,7 @@ label route1_start:
                 ## 重新展示本次选择
                 jump _extmenu_1
     extend "\n——请问，您盗窃本公司的生体产品，是出于自主意愿，还是有他人指使？"
-    extend "\n——…"
+    extend "\n{r}——...{/r}"
     window hide Dissolve(.25)
     menu:
         "是自愿的":
@@ -886,19 +890,19 @@ label route1_start:
                             $ interro_halluc += 1
                             $ _intro_fade_pending = True
                             extend "\n——她亲口告诉我的。\n——很不幸，当事人的语料库中并没有检索出类似的消息呢，阿鹤先生。"
-                            extend "\n——那你就继续骗自己吧，我言尽于此。"
+                            extend "\n{r}——那你就继续骗自己吧，我言尽于此。{/r}"
                         "但凡正常人的脑子都能得出这一结论的吧..." (interro=("m8B", "h")):
                             $ interro_picked.add("m8B")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——但凡正常人的脑子都能得出这一结论的吧...\n——我恐怕有坏消息要告诉您，阿鹤先生。"
-                            extend "\n——哦，那你先闭嘴，最近坏消息扎堆感觉心脏承受不太住。"
+                            extend "\n{r}——哦，那你先闭嘴，最近坏消息扎堆感觉心脏承受不太住。{/r}"
                         "因为可爱！" (interro=("m8C", "i")):
                             $ interro_picked.add("m8C")
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——因为可爱！\n——明白了。"
-                            extend "\n——什么叫明白了！我看你是根本不明白吧！你们这是在侵犯我的权利，懂吗？"
+                            extend "\n{r}——什么叫明白了！我看你是根本不明白吧！你们这是在侵犯我的权利，懂吗？{/r}"
                             extend "\n——...我们会...如实记录您的反馈的..."
                 "她想去外面看看，所以我要实现她的愿望。但如果你们执意要阻拦的话..." (interro=("m7B", "c")):
                     $ interro_picked.add("m7B")
@@ -912,19 +916,19 @@ label route1_start:
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——不记得了，王霜有一天突然告诉我的。\n——请不要随意相信他人传播的不实信息啊，阿鹤先生..."
-                            extend "\n——嗯...可是王霜和你们这帮东西...到底该相信谁呢...感觉不好说啊..."
+                            extend "\n{r}——嗯...可是王霜和你们这帮东西...到底该相信谁呢...感觉不好说啊...{/r}"
                         "在她死前。" (interro=("m9B", "d")):
                             $ interro_picked.add("m9B")
                             $ interro_death += 1
                             $ _intro_fade_pending = True
                             extend "\n——在她死前。\n——您的回答已被记录。"
-                            extend "\n——嗯...记录...仔细记录吧...毕竟那是个非常美妙的时刻..."
+                            extend "\n{r}——嗯...记录...仔细记录吧...毕竟那是个非常美妙的时刻...{/r}"
                         "能麻烦您别再问这种刁钻的记忆力考题了么？你去街上随便拦十个人问问看，看有多少记得半个月前早上吃了什么，超过三个我就——" (interro=("m9C", "h")):
                             $ interro_picked.add("m9C")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——能麻烦您别再问这种刁钻的记忆力考题了么？你去街上随便拦十个人问问看，看有多少记得半个月前早上吃了什么，超过三个我就——\n——您没有权力质疑问题的合理性，阿鹤先生，请如实作答。"
-                            extend "\n——那我无可奉告，想不起来了，开心了么？"
+                            extend "\n{r}——那我无可奉告，想不起来了，开心了么？{/r}"
                 "零件啊！零件不够，零件不够用了啊！那我就只好自己出来找了咯。" (interro=("m7C", "i")):
                     $ interro_picked.add("m7C")
                     $ interro_insane += 1
@@ -937,20 +941,20 @@ label route1_start:
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——非常严肃非常认真非常一丝不苟非常谨慎非常别具一格非常五花八门非常流光溢彩非常——\n——请立刻停止无意义的胡言乱语，阿鹤先生。"
-                            extend "\n——明明是你们要我严肃的..."
+                            extend "\n{r}——明明是你们要我严肃的...{/r}"
                         "非常严肃。我刚才的回答不够严肃么？" (interro=("m10B", "c")):
                             $ interro_picked.add("m10B")
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——非常严肃。我刚才的回答不够严肃么？\n——这不是需要您操心的问题。"
-                            extend "\n——那我也没什么可说的，希望你们能够找到你们在寻找的答案。"
+                            extend "\n{r}——那我也没什么可说的，希望你们能够找到你们在寻找的答案。{/r}"
                             extend "\n——这也不是需要您操心的问题。"
                         "确认了。然后呢？接下来要我家的户口本吗？" (interro=("m10C", "h")):
                             $ interro_picked.add("m10C")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——确认了。然后呢？接下来要我家的户口本吗？\n——明白。您的回答已被记录。"
-                            extend "\n——没了？也太他妈无聊了吧！这可是我好不容易才想出来的变态回复诶！"
+                            extend "\n{r}——没了？也太他妈无聊了吧！这可是我好不容易才想出来的变态回复诶！{/r}"
                             extend "\n——已更新回答。"
                 "血..." (interro=("m7D", "d")):
                     $ interro_picked.add("m7D")
@@ -964,7 +968,7 @@ label route1_start:
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——无可奉告。\n——如果您坚持沉默，我们将保留采取强制措施的可能性，还请您多多理解。"
-                            extend "\n——好啊...如果能有更多血的话...嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻..."
+                            extend "\n{r}——好啊...如果能有更多血的话...嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻...{/r}"
                         "只有足够的血我们才能继续生存下去，你明白吗？这是基本常识啊，我亲爱的朋友，那么请问你愿意捐献——" (interro=("m11B", "i")):
                             $ interro_picked.add("m11B")
                             $ interro_insane += 1
@@ -975,7 +979,7 @@ label route1_start:
                             $ interro_death += 1
                             $ _intro_fade_pending = True
                             extend "\n——杀了她，就能见到血。有什么很难理解的地方吗？\n——您的回答已被记录。"
-                            extend "\n——如此简明的答案呢...与其在这儿浪费时间...不如..."
+                            extend "\n{r}——如此简明的答案呢...与其在这儿浪费时间...不如...{/r}"
                             extend "\n——阿鹤先生，不需要您考虑接下来的行动计划。"
         "受人指使":
             $ _intro_fade_pending = True
@@ -995,20 +999,20 @@ label route1_start:
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——她想要消失，仅此而已。\n——这恐怕是您的一厢情愿，阿鹤先生。"
-                            extend "\n——你说是就是吧，但我知道的就这么多了。"
+                            extend "\n{r}——你说是就是吧，但我知道的就这么多了。{/r}"
                         "因为可爱！" (interro=("m13B", "i")):
                             $ interro_picked.add("m13B")
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——因为可爱！\n——请停止无谓的胡言乱语，阿鹤先生。"
-                            extend "\n——喂喂喂，质疑尤里娅可爱的人可都没什么好下场啊，你可要想清楚了。"
+                            extend "\n{r}——喂喂喂，质疑尤里娅可爱的人可都没什么好下场啊，你可要想清楚了。{/r}"
                             extend "\n——…"
                         "她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！" (interro=("m13C", "u")):
                             $ interro_picked.add("m13C")
                             $ interro_halluc += 1
                             $ _intro_fade_pending = True
                             extend "\n——她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！\n——阿鹤先生精神分裂分析报告呢？需要重新评估么..."
-                            extend "\n——还评估？哎...官僚主义的幽灵啊，这就是逝乐园最窝囊的死法么..."
+                            extend "\n{r}——还评估？哎...官僚主义的幽灵啊，这就是逝乐园最窝囊的死法么...{/r}"
                 "当然是王霜，都到现在了你们还没搞明白这一点么？这可...有点危险啊，各位..." (interro=("m12B", "c")):
                     $ interro_picked.add("m12B")
                     $ interro_calm += 1
@@ -1026,13 +1030,13 @@ label route1_start:
                             $ interro_insane += 1
                             $ _intro_fade_pending = True
                             extend "\n——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！\n——..."
-                            extend "\n——怎么了？惊讶地说不出话来了么？也好，那就在她残酷的圣光中继续颤抖吧，垃圾们！"
+                            extend "\n{r}——怎么了？惊讶地说不出话来了么？也好，那就在她残酷的圣光中继续颤抖吧，垃圾们！{/r}"
                         "当然是用来研究，你以为呢？" (interro=("m14C", "h")):
                             $ interro_picked.add("m14C")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——当然是用来研究，你以为呢？\n——请详细交代她的研究课题和目的。"
-                            extend "\n——你觉得我要是听得懂她的那些课题和目的，我还能有闲工夫在这儿和你们唠嗑？"
+                            extend "\n{r}——你觉得我要是听得懂她的那些课题和目的，我还能有闲工夫在这儿和你们唠嗑？{/r}"
                             extend "\n——沟通有困难啊，老大..."
                 "是米特拉布。" (interro=("m12C", "h")):
                     $ interro_picked.add("m12C")
@@ -1046,21 +1050,21 @@ label route1_start:
                             $ interro_calm += 1
                             $ _intro_fade_pending = True
                             extend "\n——你去问他们的老板呗，人家店面离你们这么近，跑来问我又是何苦？\n——请注意您的立场，阿鹤先生。"
-                            extend "\n——假如你真的觉得我脑子里有你们想要的信息，打开我的脑子不就行了，为什么要在这儿浪费时间？"
+                            extend "\n{r}——假如你真的觉得我脑子里有你们想要的信息，打开我的脑子不就行了，为什么要在这儿浪费时间？{/r}"
                             extend "\n——…"
                         "米姐她喜欢看生体喝醉的样子，说是觉得那很性感。" (interro=("m15B", "u")):
                             $ interro_picked.add("m15B")
                             $ interro_halluc += 1
                             $ _intro_fade_pending = True
                             extend "\n——米姐她喜欢看生体喝醉的样子，说是觉得那很性感。\n——醉态确实是本公司生体产品最新推出的性能优化点之一，非常高兴这一优化受到了用户的喜爱。我们将择机上门送上我们的感谢。"
-                            extend "\n——建议不要空手去哦，米姐不喜欢没诚意的客人。"
+                            extend "\n{r}——建议不要空手去哦，米姐不喜欢没诚意的客人。{/r}"
                             extend "\n——放心吧阿鹤先生，我们一定会“诚意满满”地上门的。"
                         "她是来调查你们的，准备好人财两空吧，资本主义的走狗们。" (interro=("m15C", "h")):
                             $ interro_picked.add("m15C")
                             $ interro_hostile += 1
                             $ _intro_fade_pending = True
                             extend "\n——她是来调查你们的，准备好人财两空吧，资本主义的走狗们。\n——请提供浅显事实之外的信息。"
-                            extend "\n——你们连这都知道了，还有什么事情不是浅显事实的..."
+                            extend "\n{r}——你们连这都知道了，还有什么事情不是浅显事实的...{/r}"
                             extend "\n——无妨，那就让我们继续吧。"
                 "死人...是死人..." (interro=("m12D", "d")):
                     $ interro_picked.add("m12D")
@@ -1133,7 +1137,7 @@ label route1_start:
             $ interro_halluc += 1
             $ _intro_fade_pending = True
             extend "\n——如果牺牲我的一部分大脑就能延迟末日的到来的话，请便吧...\n——末日会来临的，阿鹤先生，请耐心等待吧。"
-    extend "\n——感谢您的配合，针对您的综合处置措施将在明天的问询之后向您公开，请静候佳音。"
+    extend "\n——针对您的综合处置措施将在明天的问询之后向您公开，请静候佳音。"
     extend "\n——录入完毕——"
     $ no_click_split = False
     ## Extended大文本框结束
@@ -1503,7 +1507,7 @@ label route1_start:
     ## 立绘：抱胸站立，面无表情
     show ws crossed blank
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "当然，但假若两边的记忆，从肢体感官到事件次序，无不张弛有度地印在你脑海里，那对于一个不了解认知草拟的被试来说，该如何戳穿自己‘全知全能’的假象？"
+    wangshuang "当然，但假若两边的记忆，从肢体感官到事件次序，无不张弛有度地印在你脑海里，那对于一个不了解认知草拟的{a=gloss:g7}被试{/a}来说，该如何戳穿自己‘全知全能’的假象？"
     ahe "必须要外人点破才行。"
     ## 立绘：讲解站立，默认表情
     show ws akimbo default
@@ -1743,7 +1747,7 @@ label route1_start:
     $ play_ambient("audio/sfx/heart_beat/heartbeat_60.wav", channel="ambient_pulse", fadein=0.8, level=0.6)
     ## 尤里娅异变
     ## 炸裂jump scare音效
-    ## 浑身伤痕累累仿佛由尸块缝纫而成的无头尸首登场
+    ## 浑身伤痕累累仿佛由尸块缝纫而成的尸首登场
     ## 屏幕边缘开始随着心跳的节奏震动
     ahe "——么！！！"
     shishou "阿鹤，事到如今你又在害怕什么呢？这可是你亲手拼出来的身子哦。"
@@ -1780,10 +1784,8 @@ label route1_start:
     ahe "别过来！你别过来！再见！"
     ## 心跳音效渐强
     $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
-    ## 转头（跑动起手换用 whip_pan 甩头转场）
-    ## 跑动sequence开始，并锁操作5秒
-    scene bg_desert_run2 with whip_pan(direction=-1.0)
-    $ hard_pause(5)
+    ## 跑动sequence开始
+    scene bg_desert_run2 with scene_dissolve
     ## 王霜和尸首退场
     ahe "啊...保持呼吸...保持呼吸...保持呼吸...保持呼吸..."
     ## 跑动sequence结束
@@ -1802,7 +1804,7 @@ label route1_start:
     ## 立绘：抱胸站立，默认表情
     show ws crossed default at ws_mid
     $ renpy.transition(Dissolve(0.2), layer="master")
-    wangshuang "阿鹤啊，你倒是冷静下来仔细想想，你费了这么大力气把她拼凑出来，可当她真正活过来之后又无法直视她了？"
+    wangshuang "阿鹤啊，你倒是冷静下来仔细想想，你费了这么大力气把她拼凑出来，可等她真正活过来之后又没法直视她了？"
     ahe "这不是我想要的..."
     ## 立绘：背手站立，坏笑表情
     show ws backhand smirk at ws_mid
@@ -1829,18 +1831,31 @@ label route1_start:
     $ play_ambient("audio/sfx/heart_beat/heartbeat_60.wav", channel="ambient_pulse", fadein=1.5, level=0.6)
     large_narrator "沙地冰凉而干燥，在这个无声的世界里，你艰难地呼吸。"
     extend "\n随着恐惧略微消散，你察觉到这地下似乎不像想象中那样黑暗，便试探性地睁开双眼，但立刻后悔了，因为你见到了比地面上那无头尸首更加令人绝望的恐怖——"
-    extend "\n沙砾。"
+    ## 转场：地下1
+    scene bg_underground1 with scene_soft
+    large_narrator "银白色的沙漠之下只有银白色的沙砾。"
     extend "\n满眼都是沙砾。但只消稍稍细看，那一颗颗的，分明就不是沙砾。"
     ## Extended大文本框结束
     ## 心跳音效渐强
     $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
-    ## 转场：眼珠背景
-    scene black with scene_soft
+    ## 转场：地下2
+    scene bg_underground2 with scene_dissolve
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "每颗“沙砾”都是一颗无色透明多面体。"
-    extend "\n而每颗多面体里，都有一颗泛着血丝的眼珠。"
-    extend "\n随着那些眼珠在你视野里逐渐清晰，它们似乎也注意到了你的存在。"
-    extend "\n无数锥子般的目光将你刺得千疮百孔。"
+    ## 转场：地下3
+    scene bg_underground3 with scene_dissolve
+    large_narrator "而每颗多面体里，都有一颗泛着血丝的眼珠。"
+    ## 转场：地下4
+    scene bg_underground4 with scene_dissolve
+    large_narrator "随着那些眼珠在你视野里逐渐清晰，它们似乎也注意到了你的存在。"
+    ## 转场：地下5
+    scene bg_underground5 with scene_dissolve
+    pause 3
+    ## 转场：地下6
+    scene bg_underground6 with scene_dissolve
+    large_narrator "无数锥子般的目光将你刺得千疮百孔。"
+    ## 转场：地下7
+    scene bg_underground7 with scene_dissolve
     ## Extended大文本框结束
     ## 场景音乐参考：N2-14 - 从上次音乐停的位置继续播放，不要重头开始
     $ set_scene_music("route1_horror3")
@@ -1850,6 +1865,8 @@ label route1_start:
     ## Extended大文本框结束
     ## 连续破裂音效
     ## Extended大文本框开始 - accumulating large textbox
+    ## 转场：地下8
+    scene bg_underground8 with scene_dissolve
     large_narrator "它们一颗颗地在你眼前爆裂开来，里面迸发出浑浊的玻璃体与血液的混合物，飞溅到你脸上，温热而粘稠。"
     extend "\n所剩无几的空气中弥漫着你闻所未闻的诡异气味。那是尸体的味道，但其来源并非布满你颜面的异色粘液。"
     extend "\n几团大块的血污顺着你的脸颊缓缓滑下，留下一道道蜗牛足迹般亮晶晶的轨迹。"

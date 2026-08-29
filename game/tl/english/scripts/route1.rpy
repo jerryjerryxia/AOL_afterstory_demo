@@ -1157,15 +1157,15 @@ translate english route1_start_4381b057:
     ahe "But it's clearly the most violent and arrogant thing I can see."
 
 # game/scripts/route1.rpy:63
-translate english route1_start_12cb70c8:
+translate english route1_start_6efd5041:
 
-    # wangshuang "那就闭上眼睛吧。那样你的问题便会迎刃而解了。"
+    # wangshuang "那就闭上眼睛吧。那样你的问题就迎刃而解了。"
     wangshuang "Then close your eyes. That solves all your problems."
 
 # game/scripts/route1.rpy:77
-translate english route1_start_92e48c4e:
+translate english route1_start_6d6942f4:
 
-    # wangshuang "嗯，那样也是无可厚非的事情。"
+    # wangshuang "嗯，那也是无可厚非的事情。"
     wangshuang "Well, sounds like you are fine then."
 
 # game/scripts/route1.rpy:83
@@ -1175,9 +1175,9 @@ translate english route1_start_1555f01f:
     wangshuang "This is your consultation. You're the client, I'm the counselor. If you won't even take that much as given, what did you come here for?"
 
 # game/scripts/route1.rpy:84
-translate english route1_start_086bfa06:
+translate english route1_start_20e34288:
 
-    # ahe "可我确实想不起来啊...所以...我该怎样才能好起来？"
+    # ahe "想不起来...所以...我该怎样才能好起来？"
     ahe "But I really can't remember anything...so...what do I do to get better?"
 
 # game/scripts/route1.rpy:95
@@ -1223,9 +1223,9 @@ translate english route1_start_ec038312:
     wangshuang "But let's get back on track - what does time mean to you right now?"
 
 # game/scripts/route1.rpy:112
-translate english route1_start_7f6c0c04:
+translate english route1_start_96568d9c:
 
-    # ahe "啊——啊——没用...完全没用...一切都结束了..."
+    # ahe "呃——啊——没用...完全没用...一切都结束了..."
     ahe "Agh——agh——Nothing...it means nothing...it's all...over..."
 
 # game/scripts/route1.rpy:121
@@ -2563,9 +2563,9 @@ translate english route1_start_f9ec6764:
     wangshuang "Stack it on the memory already in there and you live both sides of the branch at once. Once that draft finishes, haven't you achieved 'omniscience' over that stretch of your life?"
 
 # game/scripts/route1.rpy:939
-translate english route1_start_3c943f31:
+translate english route1_start_90b23674:
 
-    # wangshuang "当然，但假若两边的记忆，从肢体感官到事件次序，无不张弛有度地印在你脑海里，那对于一个不了解认知草拟的被试来说，该如何戳穿自己‘全知全能’的假象？"
+    # wangshuang "当然，但假若两边的记忆，从肢体感官到事件次序，无不张弛有度地印在你脑海里，那对于一个不了解认知草拟的{a=gloss:g7}被试{/a}来说，该如何戳穿自己‘全知全能’的假象？"
     wangshuang "Of course. But if both sets of memories are printed in with the exact same level of fidelity - every sensation perfectly real, every event in perfect order - how is a subject who's never heard of cognitive drafting supposed to puncture their own omniscience?"
 
 # game/scripts/route1.rpy:940
@@ -3121,9 +3121,9 @@ translate english route1_start_b21be4b6:
     ahe "I...have to...get out...of here!"
 
 # game/scripts/route1.rpy:1144
-translate english route1_start_f8a04f0e:
+translate english route1_start_2dc4e688:
 
-    # wangshuang "阿鹤啊，你倒是冷静下来仔细想想，你费了这么大力气把她拼凑出来，可当她真正活过来之后又无法直视她了？"
+    # wangshuang "阿鹤啊，你倒是冷静下来仔细想想，你费了这么大力气把她拼凑出来，可等她真正活过来之后又没法直视她了？"
     wangshuang "Kaku. Sit down and think it through. All that work putting her together, and now she's actually up and walking you can't stand to look at her?"
 
 # game/scripts/route1.rpy:1145
@@ -3914,16 +3914,16 @@ translate english route1_start_2b3452d8:
     extend "\n——Please state: in the past twenty-four hours, have you experienced severe physical injury, cognitive disruption, major blood loss, death, or any other significant health hazards?"
 
 # game/scripts/route1.rpy:679
-translate english route1_start_a5823c22:
+translate english route1_start_291abaa5:
 
-    # extend "\n——…"
-    extend "\n——…"
+    # extend "\n{r}——...{/r}"
+    extend "\n{r}——…{/r}"
 
 # game/scripts/route1.rpy:769
-translate english route1_start_a5823c22_1:
+translate english route1_start_291abaa5_1:
 
-    # extend "\n——…"
-    extend "\n——…"
+    # extend "\n{r}——...{/r}"
+    extend "\n{r}——…{/r}"
 
 # game/scripts/route1.rpy:771
 translate english route1_start_a5823c22_2:
@@ -4404,10 +4404,10 @@ translate english route1_start_8b547e3d:
     extend "\n——Because she's cute!\n——Please cease this pointless babbling, Mr. Kaku."
 
 # game/scripts/route1.rpy:861
-translate english route1_start_f4ef3ff9:
+translate english route1_start_7cf0e601:
 
-    # extend "\n——喂喂喂，质疑尤里娅可爱的人可都没什么好下场啊，你可要想清楚了。"
-    extend "\n——Hey, hey, hey. People who question Julia's cuteness don't tend to end well. You'd better think this through."
+    # extend "\n{r}——喂喂喂，质疑尤里娅可爱的人可都没什么好下场啊，你可要想清楚了。{/r}"
+    extend "\n{r}——Hey, hey, hey. People who question Julia's cuteness don't tend to end well. You'd better think this through.{/r}"
 
 # game/scripts/route1.rpy:862
 translate english route1_start_807447fe:
@@ -4470,10 +4470,10 @@ translate english route1_start_e8e1b2c3:
     extend "\n——Go ask their boss. The place is right around the corner from you—why come asking me?\n——Please mind your position, Mr. Kaku."
 
 # game/scripts/route1.rpy:897
-translate english route1_start_8d399bad:
+translate english route1_start_feac54a1:
 
-    # extend "\n——假如你真的觉得我脑子里有你们想要的信息，打开我的脑子不就行了，为什么要在这儿浪费时间？"
-    extend "\n——If you really think the information you want is in my head, just crack it open. Why waste time here?"
+    # extend "\n{r}——假如你真的觉得我脑子里有你们想要的信息，打开我的脑子不就行了，为什么要在这儿浪费时间？{/r}"
+    extend "\n{r}——If you really think the information you want is in my head, just crack it open. Why waste time here?{/r}"
 
 # game/scripts/route1.rpy:902
 translate english route1_start_94df26db:
@@ -4488,10 +4488,10 @@ translate english route1_start_44cfc4bb:
     extend "\n——She's investigating you. Get ready to lose everything, you capitalist running dogs.\n——Please provide information beyond the obvious facts."
 
 # game/scripts/route1.rpy:907
-translate english route1_start_63f747f2:
+translate english route1_start_e16b6d8c:
 
-    # extend "\n——你们连这都知道了，还有什么事情不是浅显事实的..."
-    extend "\n——If you already know even that, what's left that isn't an obvious fact..."
+    # extend "\n{r}——你们连这都知道了，还有什么事情不是浅显事实的...{/r}"
+    extend "\n{r}——If you already know even that, what's left that isn't an obvious fact...{/r}"
 
 # game/scripts/route1.rpy:908
 translate english route1_start_7b852e01:
@@ -4530,7 +4530,7 @@ translate english route1_start_6170e745:
     extend "\n——In accordance with the principles of fairness, impartiality and transparency, the company reserves the option of performing a prefrontal lobotomy on suspects deemed highly dangerous. Do you have any objection?"
 
 # game/scripts/route1.rpy:936
-translate english route1_start_a5823c22_3:
+translate english route1_start_a5823c22:
 
     # extend "\n——…"
     extend "\n——…"

@@ -371,7 +371,14 @@ init python:
         ## 标签静默吞掉 —— 整句一次显示、完全不分句（和文字速度无关，这是之前的真 bug）。
         ## {w} 停顿是按 dtt 拆出的独立 saybehavior 交互，逐段等点击，瞬显也照样生效。
         def __call__(self, what, *args, **kwargs):
-            return super(ClickPauseCharacter, self).__call__(add_click_pauses(what), *args, **kwargs)
+            what = add_click_pauses(what)
+            ## {r} 右对齐行的打字机判定要拿到本次 say 的完整文本（extend 已把
+            ## 旧内容 + {fast} + 新块拼好才走到这里）——最后一个 {fast} 之后的
+            ## {r} 行才逐字，见 _lr_right_text_tag。光标压制到期时刻每句清零，
+            ## 布局时若发现活动 {r} 行再由 tag 函数重新设置。
+            renpy.store._lr_current_what = what
+            renpy.store._lr_ctc_hold = 0.0
+            return super(ClickPauseCharacter, self).__call__(what, *args, **kwargs)
 
     ## 大文本框行数封顶。问询段的循环选项（"没有"→重新作答）会反复 extend 同一行，
     ## 不设限的话堆积文字迟早溢出到屏幕外。机制：Ren'Py 的 extend 在拼接前会调用
@@ -539,6 +546,14 @@ init python:
     }
     def _caret_size(kind):
         def f(st, at):
+            ## {r} 右对齐行逐字期间压住光标：外层 say 的 slow 把内嵌 displayable
+            ## 当一个字位、几乎立刻"打完"，nestled 光标会在右行还在打字时就冒出来。
+            ## _lr_ctc_hold 是 tag 函数按行长/文字速度算的到期时刻（见
+            ## _lr_right_text_tag），到期前光标不画。左行/普通 say 恒为 0 不受影响。
+            import time as _time
+            hold = getattr(renpy.store, "_lr_ctc_hold", 0.0)
+            if hold and _time.time() < hold:
+                return Null(), 0.1
             lang = "english" if _preferences.language == "english" else "chinese"
             length, yoff, width, xoff = _CARET_CFG[(kind, lang)]
             ow = 2  # 黑色描边宽度（浮在亮背景上也清晰）
@@ -603,6 +618,68 @@ init python:
         return new_list
 
     config.custom_text_tags["shake"] = _shake_text_tag
+
+################################################################################
+## 整行右对齐标签 - {r}...{/r}（左右分开对齐大文本框的【右】行）
+## ----------------------------------------------------------------
+## Ren'Py 单个 Text 没有逐行对齐标签，这里把被包裹的整行替换成一个占满
+## 大文本框行宽（1360 = large_say 的 text xsize）的内联 displayable，行内
+## 文本靠右。转换器在「左右分开对齐」块里给【右】行包上（见 convert_script.py
+## _lr_transform）；【左】行不带标签、维持原生左对齐与逐字显示。
+## 打字机：嵌入 displayable 不参与外层 say 的逐字 reveal，改为内联 Text 自带
+## slow —— 只有「本次点击新增」的那一行（say 全文最后一个 {fast} 之后的 {r}）
+## 逐字出现，旧行与左行的旧内容一样瞬出；跳过/回滚时直接全显。判定所需的
+## say 全文由 ClickPauseCharacter.__call__ 存进 _lr_current_what。
+## 已知偏差：右行逐字期间点击会直接推进到下一句（左行是先补全本句再等一次
+## 点击）——内联 Text 的 reveal 挂不进外层 say 的 slow 状态。
+## {w} 在 {r} 内不生效，别把它用进会分句的普通块。
+################################################################################
+
+style lr_right_text is default:
+    font gui.text_font
+    size gui.text_size
+    color "#ffffff"
+    line_spacing 10
+    outlines gui.text_outlines
+    text_align 1.0
+    xalign 1.0
+
+init python:
+    import re as _lr_re
+    _LR_CONTENT_RE = _lr_re.compile(r'\{r\}(.*?)\{/r\}', _lr_re.S)
+
+    def _lr_right_text_tag(tag, argument, contents):
+        raw = []
+        for kind, text in contents:
+            if kind == renpy.TEXT_TEXT:
+                raw.append(text)
+            elif kind == renpy.TEXT_TAG:
+                raw.append('{' + text + '}')
+        raw = ''.join(raw)
+        ## 活动行判定：本次 say 全文最后一个 {fast} 之后的 {r} 行才逐字
+        ## （首条 say 没有 {fast}，tail = 全文，同样命中）。跳过/回滚全显。
+        slow = False
+        what = getattr(renpy.store, "_lr_current_what", None) or ""
+        tail = what.rsplit("{fast}", 1)[-1]
+        ## not predicting：预测阶段可能提前构建下一句的 Text——那时设置
+        ## _lr_ctc_hold 会把"当前正在展示"的那句的光标错误压掉。
+        if raw and raw in _LR_CONTENT_RE.findall(tail) \
+                and not renpy.game.after_rollback and not renpy.is_skipping() \
+                and not renpy.predicting():
+            slow = True
+            ## 逐字期间压住 nestled 光标（见 _caret_size）：按可见字符数/当前
+            ## 文字速度估算打完时刻。cps=0（瞬显）不压。
+            cps = _preferences.text_cps
+            if cps:
+                import time as _time
+                plain = _lr_re.sub(r'\{[^}]*\}', '', raw)
+                renpy.store._lr_ctc_hold = (_time.time()
+                                            + len(plain) / float(cps) + 0.05)
+        d = Fixed(Text(raw, style="lr_right_text", slow=slow, slow_cps=True),
+                  xsize=1360, yfit=True)
+        return [(renpy.TEXT_DISPLAYABLE, d)]
+
+    config.custom_text_tags["r"] = _lr_right_text_tag
 
 ################################################################################
 ## 大文本框界面 - Large Textbox Screen (Full-height narrative text)
