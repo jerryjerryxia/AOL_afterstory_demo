@@ -1525,9 +1525,14 @@ def emit_char_dialogue(char_var, dialogue, indent, comment=None):
     out.append(f'{indent}{char_var} {format_dialogue(cleaned)}')
     return '\n'.join(out)
 
-def _emit_scene(out, indent, scene_name, bg_image, transition):
+def _emit_scene(out, indent, scene_name, bg_image, transition, in_say=False):
     """发出 scene 行，并更新当前表情场景。overlay 表情场景额外把透明立绘默认
-    表情叠上去（scene <bg> + show <default> + with，三者同一个过渡一起淡入）。"""
+    表情叠上去（scene <bg> + show <default> + with，三者同一个过渡一起淡入）。
+    in_say=True（Extended 块中段、正文已累积）：普通场景不用 `with`——那是
+    全屏过渡交互，会把大文本框藏掉一拍；改学表情差分把过渡调度到 master 层
+    （renpy.transition），在紧随的 extend say 交互里播放，框和文字全程不动。
+    只覆盖"纯换背景"的情况：镜头设/复位、overlay 立绘、店员退场等复杂分支
+    照走原 `with` 路径（它们各自的时序依赖阻塞式过渡）。"""
     global _CURRENT_EXPR_SCENE, _LAST_SPRITE, _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE
     _LAST_SPRITE = None   # scene 语句会清掉所有 show，立绘追踪一起清
     _SPRITE_WALK_PENDING = False   # 走路窗口随立绘一起被 scene 清掉
@@ -1597,6 +1602,11 @@ def _emit_scene(out, indent, scene_name, bg_image, transition):
         out.append(f'{indent}scene black with cam_fade_out')
         out.extend(cam)
         out.append(f'{indent}scene {bg_image} with cam_fade_in')
+    elif in_say and not cam and transition != 'None':
+        # 说话中转场：过渡调度到 master 层，随下一个 extend 交互播放，
+        # 大文本框不藏（见 docstring）。
+        out.append(f'{indent}scene {bg_image}')
+        out.append(f'{indent}$ renpy.transition({transition}, layer="master")')
     else:
         # 'inline' 缓回随过渡同走；transition 为 None 的硬切与换景同帧，无残留。
         out.extend(cam)
@@ -1636,9 +1646,11 @@ def emit_expression_change(action, indent):
     lines.append(f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
     return '\n'.join(lines)
 
-def emit_transition_lines(output, indent, scene_name, scene_desc):
+def emit_transition_lines(output, indent, scene_name, scene_desc, in_say=False):
     """把一个场景转场写进 output（供 Extended 累积块内部复用）。
-    scene_desc 仅用于剧本可读性，不再写进 .rpy（开发者场景叠层已移除）。"""
+    scene_desc 仅用于剧本可读性，不再写进 .rpy（开发者场景叠层已移除）。
+    in_say=True：文本框里已有累积正文（Extended 块中段）——转场期间不藏框，
+    见 _emit_scene 的 in_say 分支。"""
     output.append(f'{indent}## 转场：{scene_name}')
     bg_image = SCENE_BG_MAP.get(scene_name, 'black')
     if scene_name in SCENE_TRANSITIONS:
@@ -1649,7 +1661,7 @@ def emit_transition_lines(output, indent, scene_name, scene_desc):
         transition = 'scene_dissolve'
     else:
         transition = 'scene_soft'
-    _emit_scene(output, indent, scene_name, bg_image, transition)
+    _emit_scene(output, indent, scene_name, bg_image, transition, in_say=in_say)
 
 def emit_extended_segments(collected, output, indent, large=False, centered=False,
                            continued=False):
@@ -1662,8 +1674,8 @@ def emit_extended_segments(collected, output, indent, large=False, centered=Fals
     - 行内 【屏幕震动】(point 6)：在标记处把该行拆开，中间插 `with fx_quake`；
       拆出的后半段不另起 \\n（仍属同一句、同一视觉行）。这是唯一仍在转换期拆分的
       情况（震动是屏幕特效，没法靠 {w} 文本标签触发）。
-    - __transition__ 结束当前段落（其后另起新 say，不带前导 \\n）。large=True 旁白
-      走 large_narrator（大文本框屏幕），否则普通 narrator。
+    - __transition__ 不打断累积（scene 语句夹在 extend 之间，正文续在同一个框里）。
+      large=True 旁白走 large_narrator（大文本框屏幕），否则普通 narrator。
     """
     # centered：居中Extended 文本框 —— 累积句子走 centered_say 屏幕、屏幕正中显示。
     # continued=True：接续上一段累积（首行直接 extend，不另起 say）——
@@ -1711,13 +1723,32 @@ def emit_extended_segments(collected, output, indent, large=False, centered=Fals
                 output.append(code)
             continue
         if speaker == '__transition__':
+            # 块内转场不打断文字累积：清框语义由剧本的显式块边界
+            # （【…结束】+【…开始】）表达，块中段换背景时正文继续 extend
+            # 堆在同一个框里（如 地下3→7 的递进拍）。正文已累积（first_emitted）
+            # 时走 in_say 路径——转场期间大文本框不藏。
             scene_name, scene_desc = text
-            emit_transition_lines(output, indent, scene_name, scene_desc)
-            first_emitted = False
+            emit_transition_lines(output, indent, scene_name, scene_desc,
+                                  in_say=first_emitted)
             continue
         if speaker == '__pause__':
-            # 块内停顿：定格当前画面。不动 first_emitted —— 停顿不打断文字累积。
-            output.append(f'{indent}pause {text}')
+            # 块内停顿：不动 first_emitted —— 停顿不打断文字累积。
+            # 正文已累积时不能用 pause 语句——那是独立交互，大文本框会消失一拍；
+            # 改成把等待折进 say 内部：extend "{w=N}{nw}"（官方打断模式），
+            # 框和文字全程在屏，N 秒后 {nw} 自动放行。{nw} 不会泄漏到后续
+            # extend——合并文本里紧随的 {fast} 会把 no_wait/停顿全部复位
+            # （renpy DialogueTextTags）。前面若有调度中的 master 层转场，
+            # 正好在这次交互里播。
+            # ★必须配 op_lock★：{w=N} 本身可被点击跳过，而这一拍画面上没有
+            # 任何新东西（框和文字都不动），玩家按阅读节奏顺手一点就把等待
+            # 无感跳掉了（实测反馈"pause失效"）。op_lock（say_allow_dismiss）
+            # 在时限内静默丢弃点击，到点由 {w=N} 的计时器自动放行；ctrl 快进
+            # 仍然放行（与全项目 op_lock 行为一致）。
+            if first_emitted:
+                output.append(f'{indent}$ op_lock_start({text})')
+                output.append(f'{indent}extend "{{w={text}}}{{nw}}"')
+            else:
+                output.append(f'{indent}pause {text}')
             continue
         # 行内屏幕震动：按标记拆段，段间插 with fx_quake（point 6）。
         parts = text.split('【屏幕震动】')

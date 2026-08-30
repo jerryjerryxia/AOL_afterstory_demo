@@ -1831,32 +1831,43 @@ label route1_start:
     $ play_ambient("audio/sfx/heart_beat/heartbeat_60.wav", channel="ambient_pulse", fadein=1.5, level=0.6)
     large_narrator "沙地冰凉而干燥，在这个无声的世界里，你艰难地呼吸。"
     extend "\n随着恐惧略微消散，你察觉到这地下似乎不像想象中那样黑暗，便试探性地睁开双眼，但立刻后悔了，因为你见到了比地面上那无头尸首更加令人绝望的恐怖——"
+    ## Extended大文本框结束
     ## 转场：地下1
     scene bg_underground1 with scene_soft
+    ## Extended大文本框开始 - accumulating large textbox
     large_narrator "银白色的沙漠之下只有银白色的沙砾。"
+    ## 转场：地下2
+    scene bg_underground2
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n满眼都是沙砾。但只消稍稍细看，那一颗颗的，分明就不是沙砾。"
-    ## Extended大文本框结束
     ## 心跳音效渐强
     $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
-    ## 转场：地下2
-    scene bg_underground2 with scene_dissolve
-    ## Extended大文本框开始 - accumulating large textbox
-    large_narrator "每颗“沙砾”都是一颗无色透明多面体。"
     ## 转场：地下3
-    scene bg_underground3 with scene_dissolve
-    large_narrator "而每颗多面体里，都有一颗泛着血丝的眼珠。"
+    scene bg_underground3
+    $ renpy.transition(scene_dissolve, layer="master")
+    extend "\n每颗“沙砾”都是一颗无色透明多面体。"
     ## 转场：地下4
-    scene bg_underground4 with scene_dissolve
-    large_narrator "随着那些眼珠在你视野里逐渐清晰，它们似乎也注意到了你的存在。"
+    scene bg_underground4
+    $ renpy.transition(scene_dissolve, layer="master")
+    extend "\n而每颗多面体里，都有一颗泛着血丝的眼珠。"
+    extend "\n随着那些眼珠在你视野里逐渐清晰，它们似乎也注意到了你的存在。"
+    ## Extended大文本框结束
+    ## Extended大文本框开始 - accumulating large textbox
+    large_narrator "你想要尖叫，喉咙却发不出一点声音。"
+    extend "\n所有眼珠都令人不安地开始颤动，就像被某个异类的存在所激怒。"
     ## 转场：地下5
-    scene bg_underground5 with scene_dissolve
-    pause 3
+    scene bg_underground5
+    $ renpy.transition(scene_dissolve, layer="master")
+    $ op_lock_start(3)
+    extend "{w=3}{nw}"
     ## 转场：地下6
-    scene bg_underground6 with scene_dissolve
-    large_narrator "无数锥子般的目光将你刺得千疮百孔。"
+    scene bg_underground6
+    $ renpy.transition(scene_dissolve, layer="master")
+    extend "\n在某个宿命般的时刻，所有眼珠将它们空洞的视线齐刷刷地指向你。"
+    extend "\n无数锥子般的目光将你刺得千疮百孔。"
+    ## Extended大文本框结束
     ## 转场：地下7
     scene bg_underground7 with scene_dissolve
-    ## Extended大文本框结束
     ## 场景音乐参考：N2-14 - 从上次音乐停的位置继续播放，不要重头开始
     $ set_scene_music("route1_horror3")
     ## Extended大文本框开始 - accumulating large textbox

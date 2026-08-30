@@ -341,6 +341,20 @@ init python:
                 out.append(what[i:j + 1])
                 i = j + 1
                 continue
+            if ch == '{':
+                ## 文本标签区（{w=3}/{size=30}/{i} 等）整段原样跳过——标签值里的
+                ## '.'（如 {w=2.5}）绝不能被当句号插 {w} 拆坏标签。{{ 是字面 {。
+                if i + 1 < n and what[i + 1] == '{':
+                    out.append('{{')
+                    i += 2
+                    continue
+                j = what.find('}', i)
+                if j < 0:
+                    out.append(what[i:])
+                    break
+                out.append(what[i:j + 1])
+                i = j + 1
+                continue
             if ch == '.':                # ASCII 点：≥2 个=省略号不断，单个=句号断
                 j = i
                 while j < n and what[j] == '.':
