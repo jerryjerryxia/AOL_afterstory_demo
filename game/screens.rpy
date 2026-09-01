@@ -392,6 +392,23 @@ init python:
             ## 布局时若发现活动 {r} 行再由 tag 函数重新设置。
             renpy.store._lr_current_what = what
             renpy.store._lr_ctc_hold = 0.0
+            ## 问询段节奏（interro_pace）：文字速度写死 INTERRO_CPS、且打字途中
+            ## 点击不许把文字瞬间补完。两者都是 what 那个 Text 的 style property，
+            ## 由 Character 的 what_args 送过去（character.py:1094 把 slow_abortable
+            ## 单独挑出来放进 what_args；slow_cps 走 what_ 前缀）。
+            ## 每句都按当前开关重设 —— 所以既不会漏出问询段，也不怕回滚留下脏值。
+            ## ★不能改成给问询段单独定义一个角色★：翻译 ID 含角色名，换角色会孤儿化
+            ## 整块英文翻译（见 variables.rpy lr_chat_mode 的说明）。
+            if getattr(renpy.store, "interro_pace", False):
+                self.what_args["slow_cps"] = INTERRO_CPS
+                ## False = 点击不再"补完本句"。★必须配合 config.say_allow_dismiss★——
+                ## 单独关掉它反而更糟：Text.event 不再吞掉这次点击，事件落到
+                ## SayBehavior 直接推进下一句（文字还打到一半）。见 variables.rpy
+                ## _op_lock_allow_dismiss。
+                self.what_args["slow_abortable"] = False
+            else:
+                self.what_args["slow_cps"] = True      # True = 跟随玩家的速度设置
+                self.what_args["slow_abortable"] = True
             return super(ClickPauseCharacter, self).__call__(what, *args, **kwargs)
 
     ## 大文本框行数封顶。问询段的循环选项（"没有"→重新作答）会反复 extend 同一行，
@@ -410,14 +427,17 @@ init python:
     _BOX_TAG_RE = _box_re.compile(r'\{[^}]*\}')
 
     def _box_visual_lines(text):
-        """估算一段文本在大文本框里占多少视觉行（含自动折行）。半字为计数单位。"""
+        """估算一段文本在大文本框里占多少视觉行（含自动折行）。半字为计数单位。
+        聊天模式下行宽只有半幅，每行装得下的字数按比例缩——不缩的话行数会被低估，
+        封顶还没触发文字就已经溢出箱底了。"""
         if not text:
             return 0
         text = _BOX_TAG_RE.sub('', text)
+        per_line = max(1, int(LARGE_BOX_CHARS_PER_LINE * _lr_line_width() / 1360.0))
         total = 0
         for seg in text.split('\n'):
             halves = sum(1 if ord(c) < 0x2E80 else 2 for c in seg)
-            total += max(1, -(-halves // (LARGE_BOX_CHARS_PER_LINE * 2)))
+            total += max(1, -(-halves // (per_line * 2)))
         return total
 
     class CappedBoxCharacter(ClickPauseCharacter):
@@ -655,12 +675,70 @@ style lr_right_text is default:
     color "#ffffff"
     line_spacing 10
     outlines gui.text_outlines
-    text_align 1.0
+    ## 行内左对齐（text_align 0.0）：右侧文本跨行后每一行都从中线那侧起头，
+    ## 参差在右边——和左侧文本的行为一致，只是整块被推到右半区。
+    ## xalign 1.0 是把这个「半幅栏」整体钉到内联块的右缘（＝正文右边界），
+    ## 栏宽由 Text 的 xsize 定死，所以短句也从中线起头，不会飘到右边去。
+    text_align 0.0
     xalign 1.0
 
 init python:
     import re as _lr_re
     _LR_CONTENT_RE = _lr_re.compile(r'\{r\}(.*?)\{/r\}', _lr_re.S)
+
+    ## 聊天框排版的单侧最大宽度（lr_chat_mode 打开时生效）。整箱正文宽 1360：
+    ## 左行占 0–640、右行占 720–1360，中间留 80px 空气当「中线」——中线不画出来，
+    ## 只是两侧各自的换行边界（作者要的「快要超过就换行」）。
+    ## 想让两侧更宽/更窄、留白更大/更小，只改这一个数。
+    LR_HALF = 640
+
+    ## 问询段写死的文字速度（字/秒）。玩家的「文字速度」设置在这一段里不生效——
+    ## 审讯要的就是一个固定的、慢的机械节奏。改快慢只改这一个数。
+    INTERRO_CPS = 12
+
+    ## 玩家选完之后：回显（——选项文本）打完，停这么久，再开始打对方的回应。
+    ## 只在选完选项那一次生效，普通行之间不留。
+    INTERRO_ECHO_BEAT = 0.5
+
+    def _lr_line_width():
+        """当前正文行宽：聊天模式半幅，否则整幅。"""
+        return LR_HALF if getattr(renpy.store, "lr_chat_mode", False) else 1360
+
+    def _lr_cps():
+        """内联 {r} 行该用的 cps。★必须与外层 say 完全一致★：{r} 后面补的
+        Null(0,1) 占位是「按字数」算的，外层每个占位吃 1/外层cps、内层整行花
+        len/内层cps —— 两个 cps 不同，补时就对不上，右行和下一行又会同时逐字。
+        True = 跟随玩家设置（非问询段的老行为）。"""
+        return INTERRO_CPS if getattr(renpy.store, "interro_pace", False) else True
+
+    def _lr_still_typing():
+        """当前大文本框是否还在逐字。给 config.say_allow_dismiss 用（它是零参数
+        回调，只能自己去查状态；SDK 里没有 renpy.is_slow）。
+        直接读活的 widget，不用 store 标志——标志会因为中断/回滚留下脏值，
+        而脏的 True 会把全游戏的点击都锁死。
+        ★不要用 renpy.text.text.slow_text★：那个表只在 slow_abortable 为真时
+        才登记，我们恰好把它关了，查它永远返回「没在打字」。
+        ★用 .displayables 不用 .visit()★：visit() 会在脏时重跑 update()，
+        也就是在事件处理里重新调用 _lr_right_text_tag。"""
+        d = renpy.get_widget("large_say", "what")   # say 屏幕的 tag == 屏幕名
+        if d is None:
+            return False
+        stack = [d]
+        seen = set()
+        while stack:
+            w = stack.pop()
+            if id(w) in seen:
+                continue
+            seen.add(id(w))
+            if getattr(w, "slow", False):
+                return True
+            ## 外层 Text 的内联 {r} 块挂在 .displayables 里；块本身是
+            ## Fixed(Text(...))，再往下走一层 .children 才是真正逐字的那个 Text。
+            for c in (getattr(w, "displayables", None) or ()):
+                stack.append(c)
+            for c in (getattr(w, "children", None) or ()):
+                stack.append(c)
+        return False
 
     def _lr_right_text_tag(tag, argument, contents):
         raw = []
@@ -673,6 +751,9 @@ init python:
         ## 活动行判定：本次 say 全文最后一个 {fast} 之后的 {r} 行才逐字
         ## （首条 say 没有 {fast}，tail = 全文，同样命中）。跳过/回滚全显。
         slow = False
+        cps = 0
+        beat = 0
+        plain = _lr_re.sub(r'\{[^}]*\}', '', raw)
         what = getattr(renpy.store, "_lr_current_what", None) or ""
         tail = what.rsplit("{fast}", 1)[-1]
         ## not predicting：预测阶段可能提前构建下一句的 Text——那时设置
@@ -681,17 +762,54 @@ init python:
                 and not renpy.game.after_rollback and not renpy.is_skipping() \
                 and not renpy.predicting():
             slow = True
+            cps = _lr_cps()
+            if cps is True:
+                cps = _preferences.text_cps
             ## 逐字期间压住 nestled 光标（见 _caret_size）：按可见字符数/当前
             ## 文字速度估算打完时刻。cps=0（瞬显）不压。
-            cps = _preferences.text_cps
             if cps:
                 import time as _time
-                plain = _lr_re.sub(r'\{[^}]*\}', '', raw)
                 renpy.store._lr_ctc_hold = (_time.time()
                                             + len(plain) / float(cps) + 0.05)
-        d = Fixed(Text(raw, style="lr_right_text", slow=slow, slow_cps=True),
+            ## 选择回显之后留一个节拍：问询段里「右行后面还接着同一次点击要显示的
+            ## 内容」＝玩家选完之后的「——选项文本」＋对方的回应。这个形状只在选项
+            ## 回显里出现（全剧 89 条含 {r} 的语句，55 条是这个形状，正好等于回显
+            ## 条数），所以不需要在剧本或转换器里另打标记 —— 也就不动任何台词文本、
+            ## 不重 key 翻译。普通右行后面没有内容，不留节拍。
+            if cps and getattr(renpy.store, "interro_pace", False):
+                after = _lr_re.sub(r'\{[^}]*\}', '', tail.split('{/r}', 1)[-1])
+                if after.strip():
+                    beat = int(round(INTERRO_ECHO_BEAT * cps))
+        ## 外层 Fixed 恒占整幅 1360（这样内层文字才够得着右缘）。
+        ## ★内层必须是 xmaximum 而不是 xsize★ —— 短句/跨行两种对齐就靠这一个字：
+        ## xmaximum 让 Text 的框「贴着内容缩」、最宽不超过半幅，再由 style 的
+        ## xalign 1.0 把这个框钉到右缘：
+        ##   · 不到一行的短句 → 框 = 句子本身的宽度 → 整句贴住右缘（右对齐观感）；
+        ##   · 跨行的长句   → 框 = 半幅（被 xmaximum 截住）→ 框左沿落在中线附近，
+        ##                    框内 text_align 0.0 让每行都从那儿起头（左对齐）。
+        ## 写成 xsize 的话框恒等于半幅，短句也会被摁到中线起头 —— 就没有短句例外了。
+        d = Fixed(Text(raw, style="lr_right_text", slow=slow, slow_cps=_lr_cps(),
+                       xmaximum=_lr_line_width()),
                   xsize=1360, yfit=True)
-        return [(renpy.TEXT_DISPLAYABLE, d)]
+        out = [(renpy.TEXT_DISPLAYABLE, d)]
+        ## 占位补时：内嵌 displayable 在外层 say 眼里只占「一个字」，外层打完这
+        ## 一个字就立刻去打后面的行——于是右行（问询段的选项回显）和紧随其后的
+        ## 左行会同时逐字。补 len-1 个占位 displayable，每个在 DisplayableSegment
+        ## .assign_times 里各吃掉 1/cps，外层就得花掉与内嵌 Text 相同的时间，
+        ## 右行打完才轮到下一行。
+        ## ★必须是 Null(0, 1) 而不是 Null(0, 0)★——DisplayableSegment.glyphs 对
+        ## 宽高全 0 的 Null 直接 return []（不产生字形），既不占位也不计时，
+        ## 补了等于没补。宽 0 保证 advance=0：不占横向宽度、不触发折行。
+        ## beat = 回显之后那 0.5 秒的空转（同样用占位字位表达，见上）。
+        ## 特意不用 {w=0.5}：{w} 会在 split_pauses 处把这一句劈成两次交互，
+        ## 第二段要连回显一起重新渲染，而 tag 的逐字判定认不出它是旧内容、
+        ## 会把回显再打一遍；而且 {w} 段落之间会闪一下 ctc 光标。
+        ## 用占位还有一个好处：这半秒里 say 仍在「逐字」状态，_lr_still_typing()
+        ## 为真，点击照样被吞掉 —— 节拍不会被抢拍点掉。
+        pad = (len(plain) - 1 if len(plain) > 1 else 0) + beat
+        if slow and pad > 0:
+            out += [(renpy.TEXT_DISPLAYABLE, Null(0, 1)) for _ in range(pad)]
+        return out
 
     config.custom_text_tags["r"] = _lr_right_text_tag
 
@@ -715,7 +833,11 @@ screen large_say(who, what):
             xalign 0.0
             yalign 0.0
             text_align 0.0
-            xsize 1360
+            ## 聊天框排版（lr_chat_mode，见 variables.rpy）：换行宽度收成半幅，
+            ## 左行只能写到中线前就得换行。右行是 {r} 返回的整幅内联块（仍 1360 宽），
+            ## 它比这里的行宽还宽，会整块探出到右半区并贴住右缘——排版实测无多余
+            ## 空行、不被 frame 裁切（见 _lr_right_text_tag 的说明）。
+            xsize (LR_HALF if lr_chat_mode else 1360)
             font gui.text_font
             ## Full-height box has room to spare, so keep English at the normal
             ## gui.text_size (33) — same as the other text — instead of shrinking

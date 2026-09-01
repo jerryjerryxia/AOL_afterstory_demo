@@ -4156,60 +4156,60 @@ translate english strings:
     new "No"
 
 # game/scripts/route1.rpy:695
-translate english route1_start_c5e0b9ba:
+translate english route1_start_f63e3288:
 
-    # extend "\n——一般般...\n——您的回答已被记录。"
-    extend "\n——It was okay...\n——Your answer has been recorded."
+    # extend "\n{r}——一般般...{/r}\n——您的回答已被记录。"
+    extend "\n{r}——It was okay...{/r}\n——Your answer has been recorded."
 
 # game/scripts/route1.rpy:698
-translate english route1_start_2d4ab236:
+translate english route1_start_193e55b2:
 
-    # extend "\n——恶心死了！\n——预料之外呢，阿鹤先生。"
-    extend "\n——Disgusting!\n——How unexpected, Mr. Kaku."
+    # extend "\n{r}——恶心死了！{/r}\n——预料之外呢，阿鹤先生。"
+    extend "\n{r}——Disgusting!{/r}\n——How unexpected, Mr. Kaku."
 
 # game/scripts/route1.rpy:701
-translate english route1_start_439ed967:
+translate english route1_start_60a0aec2:
 
-    # extend "\n——可爱！\n——很好。"
-    extend "\n——Cute!\n——Very good."
+    # extend "\n{r}——可爱！{/r}\n——很好。"
+    extend "\n{r}——Cute!{/r}\n——Very good."
 
 # game/scripts/route1.rpy:709
-translate english route1_start_578315f3:
+translate english route1_start_3613b46e:
 
-    # extend "\n——不记得，王霜给的。\n——您的回答已被记录。"
-    extend "\n——I don't. Wang Shuang gave it to me.\n——Your answer has been recorded."
+    # extend "\n{r}——不记得，王霜给的。{/r}\n——您的回答已被记录。"
+    extend "\n{r}——I don't. Wang Shuang gave it to me.{/r}\n——Your answer has been recorded."
 
 # game/scripts/route1.rpy:712
-translate english route1_start_69a1b2e4:
+translate english route1_start_f7976cb1:
 
-    # extend "\n——三百八十二点三毫克，误差在零点四毫克之内。\n——如果您无法如实作答，请不要胡乱编造答案。"
-    extend "\n——Three hundred eighty-two point three milligrams, accurate to within zero point four.\n——If you are unable to answer truthfully, please do not fabricate an answer."
+    # extend "\n{r}——三百八十二点三毫克，误差在零点四毫克之内。{/r}\n——如果您无法如实作答，请不要胡乱编造答案。"
+    extend "\n{r}——Three hundred eighty-two point three milligrams, accurate to within zero point four.{/r}\n——If you are unable to answer truthfully, please do not fabricate an answer."
 
 # game/scripts/route1.rpy:723
 translate english route1_start_835fb870:
 
     # extend "\n——闭嘴...\n——您的回答已被记录。"
-    extend "\n——Shut up...\n——Your answer has been recorded."
+    extend "\n{r}——Shut up...{/r}\n——Your answer has been recorded."
 
 # game/scripts/route1.rpy:729
-translate english route1_start_79cf8080:
+translate english route1_start_988170ae:
 
-    # extend "\n——死了。还有什么要问的么？\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
-    extend "\n——Dead. Anything else you want to ask?\n——Please try to provide information beyond the plain facts, Mr. Kaku."
+    # extend "\n{r}——死了。还有什么要问的么？{/r}\n——请尝试提供朴素事实以外的信息，阿鹤先生。"
+    extend "\n{r}——Dead. Anything else you want to ask?{/r}\n——Please try to provide information beyond the plain facts, Mr. Kaku."
 
 # game/scripts/route1.rpy:735
-translate english route1_start_e930bf55:
+translate english route1_start_9f5b61a4:
 
-    # extend "\n——没有\n——检测到您提供了不实信息，请再次作答。"
-    extend "\n——No\n——False information detected. Please answer again."
+    # extend "\n{r}——没有{/r}\n——检测到您提供了不实信息，请再次作答。"
+    extend "\n{r}——No{/r}\n——False information detected. Please answer again."
 
 # TODO: Translation updated at 2026-08-24 03:24
 
 # game/scripts/route1.rpy:686
-translate english route1_start_b67fc344:
+translate english route1_start_cf215c36:
 
-    # extend "\n——有\n——请详细交代该经历的过程。"
-    extend "\n——Yes\n——Please give a detailed account of the experience."
+    # extend "\n{r}——有{/r}\n——请详细交代该经历的过程。"
+    extend "\n{r}——Yes{/r}\n——Please give a detailed account of the experience."
 
 # game/scripts/route1.rpy:687
 translate english route1_start_889daff9:
@@ -4224,34 +4224,34 @@ translate english route1_start_c863b6f3:
     extend "\n——After Wang Shuang drove three ice picks into my eye sockets, she had me do the same to her. Once you get through the bone you'll know...it's soft. Like fresh tofu.\n——Did you find it cute?"
 
 # game/scripts/route1.rpy:712
-translate english route1_start_71ffe5a9:
+translate english route1_start_0915ecaf:
 
-    # extend "\n——吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。\n——请问您还记得剂量吗？"
-    extend "\n——After taking KAS I grabbed whoever was next to me and leapt straight out the window. Just didn't fly high enough—makes it harder to die, actually. First time and all, so I went with the conservative option.\n——Do you recall the dosage?"
+    # extend "\n{r}——吃过 KAS 之后我就拉着身边不知道是谁一个箭步跳出了窗户。就是飞得不够高，反而不容易死，毕竟第一次嘛，走的是保守选项。{/r}\n——请问您还记得剂量吗？"
+    extend "\n{r}——After taking KAS I grabbed whoever was next to me and leapt straight out the window. Just didn't fly high enough—makes it harder to die, actually. First time and all, so I went with the conservative option.{/r}\n——Do you recall the dosage?"
 
 # game/scripts/route1.rpy:726
-translate english route1_start_6195e01c:
+translate english route1_start_75a85bc0:
 
-    # extend "\n——我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？\n——您的脑子确实非常重要，阿鹤先生。"
-    extend "\n——If my fucking brain worked that well, would I have time to sit here doing crosstalk with you?\n——Your brain is indeed very important, Mr. Kaku."
+    # extend "\n{r}——我他妈脑子要是这么好使我还有空在你这儿跟你讲相声？{/r}\n——您的脑子确实非常重要，阿鹤先生。"
+    extend "\n{r}——If my fucking brain worked that well, would I have time to sit here doing crosstalk with you?{/r}\n——Your brain is indeed very important, Mr. Kaku."
 
 # game/scripts/route1.rpy:730
-translate english route1_start_8d2beff6:
+translate english route1_start_efcd4390:
 
-    # extend "\n——尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...\n——请问您与尤里娅女士——"
-    extend "\n——Julia—she's gone from here for good. A windpipe and a pair of lips don't add up to her voice——she...she lied to me...\n——Please state your relationship with Ms. Julia——"
+    # extend "\n{r}——尤里娅，她已经彻底离开这里了。用喉管与嘴唇并不能拼出她的声带——她...她骗了我...{/r}\n——请问您与尤里娅女士——"
+    extend "\n{r}——Julia—she's gone from here for good. A windpipe and a pair of lips don't add up to her voice——she...she lied to me...{/r}\n——Please state your relationship with Ms. Julia——"
 
 # game/scripts/route1.rpy:740
-translate english route1_start_3e9aaab9:
+translate english route1_start_685584af:
 
-    # extend "\n——我们是同事关系，正处于一段禁断的办公室恋情之中。\n——根据我们的调查，这属于不实信息。"
-    extend "\n——We're colleagues, currently in the middle of a forbidden office romance.\n——According to our investigation, this is false information."
+    # extend "\n{r}——我们是同事关系，正处于一段禁断的办公室恋情之中。{/r}\n——根据我们的调查，这属于不实信息。"
+    extend "\n{r}——We're colleagues, currently in the middle of a forbidden office romance.{/r}\n——According to our investigation, this is false information."
 
 # game/scripts/route1.rpy:748
-translate english route1_start_46502242:
+translate english route1_start_5b77321f:
 
-    # extend "\n——沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。\n——请不要提供与本次问询无关的信息，阿鹤先生。"
-    extend "\n——On the beach you can carve statues out of salt that never rot. The sea wind hardens them like stone—right up until the next high tide.\n——Please refrain from providing information irrelevant to this interrogation, Mr. Kaku."
+    # extend "\n{r}——沙滩上可以用盐雕出永远不会腐朽的雕像哦。海风会让它变得无比坚硬，直到下一次涨潮为止。{/r}\n——请不要提供与本次问询无关的信息，阿鹤先生。"
+    extend "\n{r}——On the beach you can carve statues out of salt that never rot. The sea wind hardens them like stone—right up until the next high tide.{/r}\n——Please refrain from providing information irrelevant to this interrogation, Mr. Kaku."
 
 # game/scripts/route1.rpy:749
 translate english route1_start_5b715a45:
@@ -4260,10 +4260,10 @@ translate english route1_start_5b715a45:
     extend '\n——Also, why is your definition of “never” measured in days...'
 
 # game/scripts/route1.rpy:764
-translate english route1_start_87a42d43:
+translate english route1_start_1670a962:
 
-    # extend "\n——是自愿的\n——请详细交代您的动机。"
-    extend "\n——Of my own volition\n——Please give a detailed account of your motive."
+    # extend "\n{r}——是自愿的{/r}\n——请详细交代您的动机。"
+    extend "\n{r}——Of my own volition{/r}\n——Please give a detailed account of your motive."
 
 # game/scripts/route1.rpy:765
 translate english route1_start_889daff9_1:
@@ -4278,22 +4278,22 @@ translate english route1_start_fe25c309:
     extend "\n——She belongs to me. That's all.\n——And how did you arrive at this conclusion?"
 
 # game/scripts/route1.rpy:777
-translate english route1_start_20a4b40e:
+translate english route1_start_9e890e9d:
 
-    # extend "\n——她亲口告诉我的。\n——很不幸，当事人的语料库中并没有检索出类似的消息呢，阿鹤先生。"
-    extend "\n——She told me so herself.\n——Unfortunately, no such statement could be retrieved from the party's corpus, Mr. Kaku."
+    # extend "\n{r}——她亲口告诉我的。{/r}\n——很不幸，当事人的语料库中并没有检索出类似的消息呢，阿鹤先生。"
+    extend "\n{r}——She told me so herself.{/r}\n——Unfortunately, no such statement could be retrieved from the party's corpus, Mr. Kaku."
 
 # game/scripts/route1.rpy:781
-translate english route1_start_8ffc1c69:
+translate english route1_start_34245cea:
 
-    # extend "\n——但凡正常人的脑子都能得出这一结论的吧...\n——我恐怕有坏消息要告诉您，阿鹤先生。"
-    extend "\n——Any brain in working order would reach the same conclusion...\n——I'm afraid I have bad news for you, Mr. Kaku."
+    # extend "\n{r}——但凡正常人的脑子都能得出这一结论的吧...{/r}\n——我恐怕有坏消息要告诉您，阿鹤先生。"
+    extend "\n{r}——Any brain in working order would reach the same conclusion...{/r}\n——I'm afraid I have bad news for you, Mr. Kaku."
 
 # game/scripts/route1.rpy:785
-translate english route1_start_8aa9e81d:
+translate english route1_start_6ff6a72c:
 
-    # extend "\n——因为可爱！\n——明白了。"
-    extend "\n——Because she's cute!\n——Understood."
+    # extend "\n{r}——因为可爱！{/r}\n——明白了。"
+    extend "\n{r}——Because she's cute!{/r}\n——Understood."
 
 # game/scripts/route1.rpy:789
 translate english route1_start_963cf494:
@@ -4308,10 +4308,10 @@ translate english route1_start_ad8a5152:
     extend "\n——I don't. Wang Shuang told me.\n——Please do not casually believe false information spread by others, Mr. Kaku..."
 
 # game/scripts/route1.rpy:799
-translate english route1_start_3de43b10:
+translate english route1_start_be2b3423:
 
-    # extend "\n——在她死前。\n——您的回答已被记录。"
-    extend "\n——Before she died.\n——Your answer has been recorded."
+    # extend "\n{r}——在她死前。{/r}\n——您的回答已被记录。"
+    extend "\n{r}——Before she died.{/r}\n——Your answer has been recorded."
 
 # game/scripts/route1.rpy:803
 translate english route1_start_40994db6:
@@ -4344,16 +4344,16 @@ translate english route1_start_f88d838a:
     extend "\n——Confirmed. Now what?\n——Understood. Your answer has been recorded."
 
 # game/scripts/route1.rpy:825
-translate english route1_start_e212e0b8:
+translate english route1_start_92878bb1:
 
-    # extend "\n——血...\n——请展开聊聊"
-    extend "\n——Blood...\n——Please elaborate"
+    # extend "\n{r}——血...{/r}\n——请展开聊聊"
+    extend "\n{r}——Blood...{/r}\n——Please elaborate"
 
 # game/scripts/route1.rpy:831
-translate english route1_start_e676cb4d:
+translate english route1_start_a61ccad3:
 
-    # extend "\n——无可奉告。\n——如果您坚持沉默，我们将保留采取强制措施的可能性，还请您多多理解。"
-    extend "\n——No comment.\n——If you insist on silence, we reserve the option of coercive measures. We appreciate your understanding."
+    # extend "\n{r}——无可奉告。{/r}\n——如果您坚持沉默，我们将保留采取强制措施的可能性，还请您多多理解。"
+    extend "\n{r}——No comment.{/r}\n——If you insist on silence, we reserve the option of coercive measures. We appreciate your understanding."
 
 # game/scripts/route1.rpy:835
 translate english route1_start_f703e2df:
@@ -4362,16 +4362,16 @@ translate english route1_start_f703e2df:
     extend "\n——Only with enough blood can we go on living, don't you see? That's common knowledge, my dear friend. So tell me, would you care to donate——\n——Subject exhibiting severe psychological instability. Terminate interrogation immediately. Initiating code purple——"
 
 # game/scripts/route1.rpy:839
-translate english route1_start_9d15d294:
+translate english route1_start_c7edc3d8:
 
-    # extend "\n——杀了她，就能见到血。有什么很难理解的地方吗？\n——您的回答已被记录。"
-    extend "\n——Kill her, and you get to see blood. What's so hard to understand?\n——Your answer has been recorded."
+    # extend "\n{r}——杀了她，就能见到血。有什么很难理解的地方吗？{/r}\n——您的回答已被记录。"
+    extend "\n{r}——Kill her, and you get to see blood. What's so hard to understand?{/r}\n——Your answer has been recorded."
 
 # game/scripts/route1.rpy:842
 translate english route1_start_b9902010:
 
     # extend "\n——受人指使\n——请交代该第三方的身份。"
-    extend "\n——I was instructed\n——Please identify this third party."
+    extend "\n{r}——I was instructed{/r}\n——Please identify this third party."
 
 # game/scripts/route1.rpy:843
 translate english route1_start_889daff9_2:
@@ -4386,10 +4386,10 @@ translate english route1_start_31f1ceab:
     extend "\n——It was Julia.\n——Please give a detailed account of her motive."
 
 # game/scripts/route1.rpy:855
-translate english route1_start_1e618f38:
+translate english route1_start_26530ad6:
 
-    # extend "\n——她想要消失，仅此而已。\n——这恐怕是您的一厢情愿，阿鹤先生。"
-    extend "\n——She wanted to disappear. That's all.\n——I'm afraid that is your wishful thinking, Mr. Kaku."
+    # extend "\n{r}——她想要消失，仅此而已。{/r}\n——这恐怕是您的一厢情愿，阿鹤先生。"
+    extend "\n{r}——She wanted to disappear. That's all.{/r}\n——I'm afraid that is your wishful thinking, Mr. Kaku."
 
 # game/scripts/route1.rpy:856
 translate english route1_start_84c07833:
@@ -4398,10 +4398,10 @@ translate english route1_start_84c07833:
     extend "\n——As you wish."
 
 # game/scripts/route1.rpy:860
-translate english route1_start_8b547e3d:
+translate english route1_start_13bf7c0f:
 
-    # extend "\n——因为可爱！\n——请停止无谓的胡言乱语，阿鹤先生。"
-    extend "\n——Because she's cute!\n——Please cease this pointless babbling, Mr. Kaku."
+    # extend "\n{r}——因为可爱！{/r}\n——请停止无谓的胡言乱语，阿鹤先生。"
+    extend "\n{r}——Because she's cute!{/r}\n——Please cease this pointless babbling, Mr. Kaku."
 
 # game/scripts/route1.rpy:861
 translate english route1_start_7cf0e601:
@@ -4416,10 +4416,10 @@ translate english route1_start_807447fe:
     extend "\n——...Let us continue..."
 
 # game/scripts/route1.rpy:866
-translate english route1_start_30a787f6:
+translate english route1_start_fcde3159:
 
-    # extend "\n——她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！\n——阿鹤先生精神分裂分析报告呢？需要重新评估么..."
-    extend "\n——She wanted the whole PL District gone. You people don't even know that much? Sloppy intelligence work. Hilarious!\n——Where is Mr. Kaku's schizophrenia analysis report? Does it need re-evaluation..."
+    # extend "\n{r}——她想要让逝乐园整个消失啊，你们居然连这种事情都不清楚？情报工作做得不够到位啊，滑稽哦！{/r}\n——阿鹤先生精神分裂分析报告呢？需要重新评估么..."
+    extend "\n{r}——She wanted the whole PL District gone. You people don't even know that much? Sloppy intelligence work. Hilarious!{/r}\n——Where is Mr. Kaku's schizophrenia analysis report? Does it need re-evaluation..."
 
 # game/scripts/route1.rpy:870
 translate english route1_start_bba988f4:
@@ -4434,10 +4434,10 @@ translate english route1_start_5eefcdc3:
     extend "\n——No idea. She just told me to do it.\n——Mr. Kaku...no false information detected...? Very well, let us continue..."
 
 # game/scripts/route1.rpy:880
-translate english route1_start_1c335bd6:
+translate english route1_start_ed12d17c:
 
-    # extend "\n——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！\n——..."
-    extend "\n——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！\n——..."
+    # extend "\n{r}——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！{/r}\n——..."
+    extend "\n{r}——那可是为逝乐园带来毁灭与重生的女神啊！你们这些卑微的肉体凡胎又有什么资格去了解她的行动纲领？！{/r}\n——..."
 
 # game/scripts/route1.rpy:881
 translate english route1_start_382aae55:
@@ -4458,10 +4458,10 @@ translate english route1_start_501c0778:
     extend "\n——Go ask her yourselves."
 
 # game/scripts/route1.rpy:890
-translate english route1_start_032db412:
+translate english route1_start_4227774b:
 
-    # extend "\n——是米特拉布。\n——请详细交代该组织的动机。"
-    extend "\n——It was Mitrab.\n——Please give a detailed account of the organization's motive."
+    # extend "\n{r}——是米特拉布。{/r}\n——请详细交代该组织的动机。"
+    extend "\n{r}——It was Mitrab.{/r}\n——Please give a detailed account of the organization's motive."
 
 # game/scripts/route1.rpy:896
 translate english route1_start_e8e1b2c3:
@@ -4482,10 +4482,10 @@ translate english route1_start_94df26db:
     extend "\n——Sister Mi likes watching biologics get drunk. She finds it sexy.\n——Drunkenness is indeed among the latest performance optimizations of our biologic products. We are delighted this optimization has found favor with users. We will call on her in due course to convey our gratitude."
 
 # game/scripts/route1.rpy:906
-translate english route1_start_44cfc4bb:
+translate english route1_start_02906290:
 
-    # extend "\n——她是来调查你们的，准备好人财两空吧，资本主义的走狗们。\n——请提供浅显事实之外的信息。"
-    extend "\n——She's investigating you. Get ready to lose everything, you capitalist running dogs.\n——Please provide information beyond the obvious facts."
+    # extend "\n{r}——她是来调查你们的，准备好人财两空吧，资本主义的走狗们。{/r}\n——请提供浅显事实之外的信息。"
+    extend "\n{r}——She's investigating you. Get ready to lose everything, you capitalist running dogs.{/r}\n——Please provide information beyond the obvious facts."
 
 # game/scripts/route1.rpy:907
 translate english route1_start_e16b6d8c:
@@ -4500,28 +4500,28 @@ translate english route1_start_7b852e01:
     extend "\n——No matter. Let us continue."
 
 # game/scripts/route1.rpy:912
-translate english route1_start_135ed784:
+translate english route1_start_793ea9a2:
 
-    # extend "\n——死人...是死人...\n——阿鹤先生，请不要顾左右而言他。"
-    extend "\n——The dead...it was the dead...\n——Mr. Kaku, please do not deflect."
+    # extend "\n{r}——死人...是死人...{/r}\n——阿鹤先生，请不要顾左右而言他。"
+    extend "\n{r}——The dead...it was the dead...{/r}\n——Mr. Kaku, please do not deflect."
 
 # game/scripts/route1.rpy:918
-translate english route1_start_40f41099:
+translate english route1_start_7fafa3b8:
 
-    # extend "\n——他们已经到门口了...还不去迎接么？\n——阿鹤先生，我们没有时间听您的胡言乱语，如果您已经打定主意——"
-    extend "\n——They're already at the door...aren't you going to greet them?\n——Mr. Kaku, we have no time for your ravings. If you have made up your mind——"
+    # extend "\n{r}——他们已经到门口了...还不去迎接么？{/r}\n——阿鹤先生，我们没有时间听您的胡言乱语，如果您已经打定主意——"
+    extend "\n{r}——They're already at the door...aren't you going to greet them?{/r}\n——Mr. Kaku, we have no time for your ravings. If you have made up your mind——"
 
 # game/scripts/route1.rpy:926
-translate english route1_start_d3b30116:
+translate english route1_start_2bf5e238:
 
-    # extend "\n——你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么...\n——这与我们讨论的话题无关，阿鹤先生，请注意——"
-    extend "\n——Did you know...with a delicate enough touch, even the ossicles can be fractured...want to know how...\n——That is irrelevant to our discussion, Mr. Kaku. Please mind——"
+    # extend "\n{r}——你知道么...只要手法足够细致，听小骨也是可以骨折的...想知道怎么做么...{/r}\n——这与我们讨论的话题无关，阿鹤先生，请注意——"
+    extend "\n{r}——Did you know...with a delicate enough touch, even the ossicles can be fractured...want to know how...{/r}\n——That is irrelevant to our discussion, Mr. Kaku. Please mind——"
 
 # game/scripts/route1.rpy:934
-translate english route1_start_b053f639:
+translate english route1_start_184002dd:
 
-    # extend "\n——血...是血...等你们也能看到那景象...一切就太迟了...太迟了...\n——无妨，那就让我们继续吧。"
-    extend "\n——Blood...it's blood...by the time you see it too...it'll be too late...far too late...\n——No matter. Then let us continue."
+    # extend "\n{r}——血...是血...等你们也能看到那景象...一切就太迟了...太迟了...{/r}\n——无妨，那就让我们继续吧。"
+    extend "\n{r}——Blood...it's blood...by the time you see it too...it'll be too late...far too late...{/r}\n——No matter. Then let us continue."
 
 # game/scripts/route1.rpy:935
 translate english route1_start_6170e745:
@@ -4536,10 +4536,10 @@ translate english route1_start_a5823c22:
     extend "\n——…"
 
 # game/scripts/route1.rpy:942
-translate english route1_start_56f31999:
+translate english route1_start_7ff63a13:
 
-    # extend "\n——随便吧。\n——感谢您的配合。"
-    extend "\n——Whatever.\n——Thank you for your cooperation."
+    # extend "\n{r}——随便吧。{/r}\n——感谢您的配合。"
+    extend "\n{r}——Whatever.{/r}\n——Thank you for your cooperation."
 
 # game/scripts/route1.rpy:943
 translate english route1_start_5e85cae6:
@@ -4554,10 +4554,10 @@ translate english route1_start_7ffa7977:
     extend "\n——Please await the results of deliberation."
 
 # game/scripts/route1.rpy:948
-translate english route1_start_701640d2:
+translate english route1_start_b5250ec8:
 
-    # extend "\n——有。\n——阿鹤先生，请注意您此刻没有反对的权利。"
-    extend "\n——I do.\n——Mr. Kaku, please be advised that you do not, at present, have the right to object."
+    # extend "\n{r}——有。{/r}\n——阿鹤先生，请注意您此刻没有反对的权利。"
+    extend "\n{r}——I do.{/r}\n——Mr. Kaku, please be advised that you do not, at present, have the right to object."
 
 # game/scripts/route1.rpy:949
 translate english route1_start_5e85cae6_1:
@@ -4575,7 +4575,7 @@ translate english route1_start_53cb37fa:
 translate english route1_start_63159621:
 
     # extend "\n——都已经做过一遍了，看来你们还挺闲得慌？\n——为了确保您的无害化，我们将对您进行核磁共振检查，在那之前请确保您体内没有任何金属制品。"
-    extend "\n——You've already done it once. That bored, are you?\n——To ensure your neutralization, you will undergo an MRI examination. Before then, please ensure there are no metal objects inside your body."
+    extend "\n{r}——You've already done it once. That bored, are you?{/r}\n——To ensure your neutralization, you will undergo an MRI examination. Before then, please ensure there are no metal objects inside your body."
 
 # game/scripts/route1.rpy:955
 translate english route1_start_7900dcfb:
@@ -4590,10 +4590,10 @@ translate english route1_start_cd7e6e4b:
     extend "\n——Your MRI examination will begin in thirty minutes."
 
 # game/scripts/route1.rpy:960
-translate english route1_start_9ce5e036:
+translate english route1_start_10bbb7db:
 
-    # extend "\n——顺便杀了我如何？\n——这恐怕暂时是不可能的，阿鹤先生。"
-    extend "\n——While you're at it, why not kill me?\n——I'm afraid that is not possible at this time, Mr. Kaku."
+    # extend "\n{r}——顺便杀了我如何？{/r}\n——这恐怕暂时是不可能的，阿鹤先生。"
+    extend "\n{r}——While you're at it, why not kill me?{/r}\n——I'm afraid that is not possible at this time, Mr. Kaku."
 
 # game/scripts/route1.rpy:964
 translate english route1_start_795f4fbd:

@@ -789,19 +789,32 @@ transform whip_pan(duration=0.5, direction=1.0, *, new_widget=None, old_widget=N
 ## 永远在插值 = 每帧都触发重绘，u_time 的翻涌才动得起来（文件头注意事项 3 ——
 ## 自定义 uniform 不动就没有重绘，翻涌会冻住）。
 ##
-## 挂载：独立图层 "chaos"（master 之上、transient/screens 之下）。为什么不用 camera：
-##   * scene 只清 master 层 —— 这段戏里有跑动 sequence 和多次转场，滤镜必须全程扛住；
-##   * master 的 camera 列表已留给 screen_ripple / 【镜头】缓移，再挤会互相覆盖；
+## 挂载：master 层，压在立绘之下（2026-09-01 从独立 "chaos" 图层搬下来的）。
+## 作者要求雾不能遮住人物 —— 而图层是严格分层的：只要雾在 master 之上，就必然
+## 连立绘一起盖。背景和立绘又都在 master 上，所以雾只能进 master、排在立绘前面。
+##   * 排序：靠 `show chaos_vignette behind ws, yl`（同 zorder 内插到立绘之前）。
+##     立绘换表情是 re-show 同一个 tag，索引不变，所以这个次序一次定终身；
+##     scene 之后新 show 的立绘会追加到顶端，同样在雾之上。
+##   * scene 会清空 master 的所有内容，雾也在内 —— 由 config.scene_callbacks 里的
+##     _chaos_rescene 自动补回（见下），转换器和剧本都不用管。
+##   * 代价：master 上的 camera 会连雾一起变换。本段窗口内只有 route1.rpy:1360 那个
+##     已经走完的静态 zoom 1.06（1806 行复位），雾被等比放大 6%、中心左移约 3%——
+##     湍流本身的形变远大于此，肉眼无差。★若以后在这段里加【镜头】缓移，雾会跟着
+##     一起移★，那时要么把镜头挪出窗口，要么接受。
 ##   * 对话框在 screens 层，永远压在雾上面，文字不受影响。
 ## 纯 procedural：不采样底下的画面（Solid 黑底只是 mesh 的载体），输出预乘 alpha
-## 直接叠在场景合成结果上。存档/读档：层内容随场景表保存；ATL 进度不存 ——
-## 读档后从头再侵蚀一遍（75 秒），这段戏里可接受，不为它引入持久时钟。
+## 直接叠在场景合成结果上。
+##
+## 时钟：强度和翻涌都不再吃 ATL 的 st，改由 chaos_t0（墙钟）驱动 —— 因为 scene 之后
+## 的补发会重建 displayable、st 归零，吃 st 的话每次转场雾都缩回画外重来一遍
+## （这一段有 5 次 scene，斜坡总长 80 秒，等于整条渐进作废）。
 init python:
+    ## 老存档里可能还有内容挂在这个图层上，留着别删 —— 现在不往上面 show 任何东西。
     renpy.add_layer("chaos", above="master")
 
     renpy.register_shader("game.chaos_vignette",
         variables="""
-            uniform float u_time;
+            uniform float u_ctime;
             uniform float u_chaos;
         """,
         fragment_functions="""
@@ -829,28 +842,46 @@ init python:
         fragment_300="""
             vec2 p = (v_tex_coord - vec2(0.5)) * vec2(1.7778, 1.0);
             float r = length(p);
-            float t = u_time * 0.30;
-            // 两层反向漂移的 fbm：低频定黑雾轮廓的翻涌，高频加小尺度的碎触手。
-            float n1 = cvg_fbm(p * 2.4 + vec2(t * 0.9, -t * 0.7));
-            float n2 = cvg_fbm(p * 5.6 + vec2(-t * 0.5, t * 1.1) + 31.4);
-            float wob = (n1 - 0.5) * (0.30 + 0.34 * u_chaos) + (n2 - 0.5) * 0.14;
+            ## u_ctime 而不是内置 u_time：内置的是 displayable 的 st，scene 之后
+            ## 补发会归零、翻涌图案跳变；u_ctime 走墙钟，补发前后完全连续。
+            float t = u_ctime * 0.55;
+            // 域扭曲（domain warp）：先算一个涡流场，再用它揉皱采样坐标 ——
+            // 黑与红不再各占一环，而是被搅成互相咬合的大理石乱流。
+            vec2 w = vec2(cvg_fbm(p * 3.1 + vec2(t * 1.3, -t)),
+                          cvg_fbm(p * 3.1 - vec2(t, t * 0.8) + 47.0));
+            vec2 q = p + (w - 0.5) * 0.55;
+            // 三层反向漂移的 fbm：轮廓翻涌 + 碎触手 + 高频渣滓。
+            float n1 = cvg_fbm(q * 2.6 + vec2(t * 0.9, -t * 0.7));
+            float n2 = cvg_fbm(q * 6.4 + vec2(-t * 0.5, t * 1.4) + 31.4);
+            float n3 = cvg_fbm(p * 11.0 + vec2(t * 2.2, t * 1.7) + 8.8);
+            float wob = (n1 - 0.5) * (0.36 + 0.42 * u_chaos)
+                      + (n2 - 0.5) * 0.20 + (n3 - 0.5) * 0.08;
             float rr = r + wob;
             // 侵蚀前沿的半径：u_chaos=0 时在画面外（1.05 > 屏角 1.02），滤镜不可见；
-            // 加深过程就是这个半径向中心收缩（0.38 = 满强度时中心留一小片清明）。
-            float inner = mix(1.05, 0.38, u_chaos);
-            // 雾体：窄过渡带（0.38）——边界读作一堵翻涌的"雾墙"，而不是慢慢变糊。
-            float g = smoothstep(inner, inner + 0.38, rr);
-            // 前沿那一圈淤血红：两个 smoothstep 相减出一条随雾界扭动的环带。
-            float front = clamp(smoothstep(inner - 0.08, inner + 0.10, rr)
-                              - smoothstep(inner + 0.10, inner + 0.34, rr), 0.0, 1.0);
-            // 雾体颜色：贴着前沿是淤血红，往外迅速沉到纯黑。
-            vec3 col = mix(vec3(0.30, 0.02, 0.045), vec3(0.0),
-                           smoothstep(inner + 0.05, inner + 0.50, rr));
-            col += vec3(0.20, 0.012, 0.02) * front * (0.4 + 0.6 * n2);
-            // 不透明度：雾体外缘接近全黑（亮背景也压得住）；前沿环有自己的实度，
-            // 否则在亮背景上血红会被冲成粉色。
-            float a = g * mix(0.70, 1.0, u_chaos);
-            a = max(a, front * 0.85 * u_chaos);
+            // 加深过程就是这个半径向中心收缩（0.34 = 满强度时中心留一小片清明）。
+            float inner = mix(1.05, 0.34, u_chaos);
+            float g = smoothstep(inner, inner + 0.30, rr);
+            // 血脉：域扭曲 fbm 的高值脊线 —— 淤血红的脉络贯穿整个黑雾深处，
+            // 随涡流不断重新排布（不是贴着前沿的一条环带）。
+            float veins = smoothstep(0.52, 0.78,
+                                     cvg_fbm(q * 4.8 - vec2(t * 1.6, t * 1.2) + 77.7));
+            // 越往深处脉络略沉（角落仍以黑为主，但始终有红在里面蠕动）。
+            veins *= 1.0 - 0.4 * smoothstep(inner + 0.35, inner + 0.95, rr);
+            // 抽搐频闪：按环带量化的时域噪声 —— 整片乱流一格一格地痉挛。
+            float flick = 0.72 + 0.28 * cvg_noise(vec2(t * 6.0, floor(rr * 6.0)));
+            // 前沿撕裂带：被 n2 打碎，不再是干净的圆环。
+            float front = clamp(smoothstep(inner - 0.10, inner + 0.10, rr)
+                              - smoothstep(inner + 0.08, inner + 0.30, rr), 0.0, 1.0)
+                        * (0.3 + 0.7 * n2);
+            // 颜色 = 黑底 + 血红大理石纹 + 前沿撕裂，整体随频闪痉挛。
+            vec3 red = vec3(0.34, 0.015, 0.042);
+            vec3 col = red * veins * (0.5 + 0.5 * n1);
+            col += vec3(0.22, 0.012, 0.02) * front;
+            col *= (0.55 + 0.45 * flick);
+            // 不透明度：雾体外缘接近全黑（亮背景也压得住）；前沿有自己的实度，
+            // 否则在亮背景上血红会被冲成粉色。透明度也跟着频闪轻微搏动。
+            float a = g * mix(0.72, 1.0, u_chaos) * (0.90 + 0.10 * flick);
+            a = max(a, front * 0.9 * u_chaos);
             a = min(a, 0.985);
             gl_FragColor = vec4(col * a, a);
         """
@@ -866,19 +897,117 @@ define CHAOS_ATTACK_SECONDS = 20.0 ## 起手时长。整段加深绑的是墙钟
 define CHAOS_ATTACK_LEVEL = 0.60   ## 起手到达的强度（边缘明显被黑红侵入的程度；
                                    ## 白色沙漠背景会吃掉半透明雾，低于 0.6 存在感不足）
 define CHAOS_RAMP_SECONDS = 60.0   ## 起手之后慢慢爬到满强度的时长
-define CHAOS_PULSE_LOW = 0.87      ## 到顶后呼吸的下限（同时是重绘的驱动，别设成 1.0）
+define CHAOS_PULSE_LOW = 0.87      ## 到顶后呼吸的下限
 define CHAOS_PULSE_SECONDS = 3.2   ## 呼吸半周期（缓慢的濒死喘息感）
+
+## 起雾时刻（绝对墙钟）；None = 没有雾。用 store 变量而不是 ATL 的 st ——
+## scene 之后 _chaos_rescene 会把雾重新 show 一遍，st 归零而这个不归零，
+## 于是强度和翻涌都接着走，玩家看不出中间被补发过。
+default chaos_t0 = None
+
+init python:
+    ## 直接借 Ren'Py 自己的 warper，保证曲线与原来的 easein / ease 逐帧一致。
+    _CHAOS_EASEIN = renpy.atl.warpers["easein"]
+    _CHAOS_EASE = renpy.atl.warpers["ease"]
+
+    def chaos_start():
+        """【场景滤镜：黑红混沌】—— 打时钟。转换器发在 show 那一行前面。"""
+        store.chaos_t0 = renpy.display.core.get_time()
+
+    def chaos_level(t):
+        """起雾 t 秒后的 u_chaos。与原 ATL 同形：easein 20s 到 0.60，
+        ease 60s 到 1.0，之后在 1.0↔0.87 之间以 3.2s 半周期呼吸。"""
+        if t <= 0.0:
+            return 0.0
+        if t < CHAOS_ATTACK_SECONDS:
+            return CHAOS_ATTACK_LEVEL * _CHAOS_EASEIN(t / CHAOS_ATTACK_SECONDS)
+        t -= CHAOS_ATTACK_SECONDS
+        if t < CHAOS_RAMP_SECONDS:
+            return (CHAOS_ATTACK_LEVEL
+                    + (1.0 - CHAOS_ATTACK_LEVEL) * _CHAOS_EASE(t / CHAOS_RAMP_SECONDS))
+        t = (t - CHAOS_RAMP_SECONDS) % (2.0 * CHAOS_PULSE_SECONDS)
+        if t < CHAOS_PULSE_SECONDS:
+            return 1.0 + (CHAOS_PULSE_LOW - 1.0) * _CHAOS_EASE(t / CHAOS_PULSE_SECONDS)
+        return (CHAOS_PULSE_LOW + (1.0 - CHAOS_PULSE_LOW)
+                * _CHAOS_EASE((t - CHAOS_PULSE_SECONDS) / CHAOS_PULSE_SECONDS))
+
+    def _chaos_tick(trans, st, at):
+        """每帧把强度和翻涌时钟喂给 shader。`return 0` 同时是重绘驱动
+        （文件头注意事项 3：自定义 uniform 不动就没有重绘，翻涌会冻住）——
+        和 _ripple_tick / _hover_lens_tick 同一个路子。
+        预测阶段也会被调，所以只读 store 不写。"""
+        t0 = getattr(store, "chaos_t0", None)
+        dt = 0.0 if t0 is None else (renpy.display.core.get_time() - t0)
+        trans.u_chaos = chaos_level(dt)
+        trans.u_ctime = dt
+        return 0
+
+    ## 转场之后的补发不走 config.scene_callbacks —— 那个回调在 renpy.scene()
+    ## 内部触发，此时新背景还没 show 上来，雾会落到背景「底下」（实测 master 次序
+    ## 变成 ['chaos_vignette', 'bg_desert_moonless', 'yl', 'ws']，雾完全看不见）。
+    ## 而且雾一旦已在层里，再 show 同一个 tag 只是原地替换、不会因为 behind 移位，
+    ## 补救不回来。改由转换器在每条 scene 之后补一行 show（见 convert_script.py
+    ## _insert_chaos_rescene）。
 
 transform chaos_vignette_fx:
     mesh True
     shader "game.chaos_vignette"
-    u_chaos 0.0
-    easein CHAOS_ATTACK_SECONDS u_chaos CHAOS_ATTACK_LEVEL
-    ease CHAOS_RAMP_SECONDS u_chaos 1.0
-    block:
-        ease CHAOS_PULSE_SECONDS u_chaos CHAOS_PULSE_LOW
-        ease CHAOS_PULSE_SECONDS u_chaos 1.0
-        repeat
+    u_chaos 0.0            ## 只是首帧默认值，随后每帧被 _chaos_tick 覆写
+    u_ctime 0.0
+    function _chaos_tick
 
 image chaos_vignette = At(Solid("#000"), chaos_vignette_fx)
 
+
+################################################################################
+## 立绘信号故障（sprite_glitch）：横向条带撕裂 + RGB 通道错位 + 行丢失。
+## 面部 glitch 的出现/复原动效、尤里娅的异常消失与异变演出共用这一个 shader，
+## 用法全部是"挂在 image ATL / at transform 上、由 ATL ease 驱动 uniform"：
+##   u_sg_amp      撕裂强度 0..1。出现 = 1→0（扭曲着成形，落定成静帧）；
+##                 消失/异变 = 0→1（越撕越碎）。
+##   u_sg_top/bot  作用带（纹理 Y 比例，带缘 smoothstep 羽化）。面部动效只罩
+##                 头部（王霜/尤里娅的脸都在立绘顶部 ~20%），全身演出取 0..1。
+##   u_sg_dropout  行丢失阈值 0..1：随机顺序整行消失，1 = 全部丢完。行序随机
+##                 但不随时间跳（丢掉的行保持丢失）—— 消失读作"信号被逐行掐断"
+##                 而不是闪烁。面部动效恒 0。
+## 重绘驱动：这些 uniform 全程在 ATL ease 里，动画期间每帧重绘、u_time 自动
+## 推进；ease 结束后画面静止，不再耗重绘（面部动效落定后 shader 等效直通）。
+## fragment_300 / 复用 tex0、v_tex_coord、u_lod_bias 的理由同 water_ripple。
+init python:
+    renpy.register_shader("game.sprite_glitch",
+        variables="""
+            uniform float u_time;
+            uniform float u_sg_amp;
+            uniform float u_sg_top;
+            uniform float u_sg_bot;
+            uniform float u_sg_dropout;
+        """,
+        fragment_300="""
+            vec2 uv = v_tex_coord.xy;
+            // 作用带（带缘羽化），带外像素完全不动
+            float band = smoothstep(u_sg_top - 0.05, u_sg_top, uv.y)
+                       * (1.0 - smoothstep(u_sg_bot, u_sg_bot + 0.05, uv.y));
+            float amp = u_sg_amp * band;
+
+            // 条带撕裂：行量化 + 每行伪随机横移，随时间跳变（撕裂在重排自己）
+            float row = floor(uv.y * 90.0);
+            float tick = floor(u_time * 18.0);
+            float n1 = fract(sin(row * 127.1 + tick * 311.7) * 43758.5453);
+            // 三成"重灾行"位移翻倍 —— 全等幅像百叶窗，不像坏掉（同离线生成器）
+            float heavy = 1.0 + step(0.7, fract(n1 * 7.13)) * 1.2;
+            vec2 suv = vec2(uv.x + (n1 - 0.5) * 0.11 * amp * heavy, uv.y);
+
+            // RGB 错位：R/B 左右分家，轮廓外侧留红青边
+            float ca = 0.014 * amp;
+            vec4 cr = texture2D(tex0, vec2(suv.x + ca, suv.y), u_lod_bias);
+            vec4 cg = texture2D(tex0, suv, u_lod_bias);
+            vec4 cb = texture2D(tex0, vec2(suv.x - ca, suv.y), u_lod_bias);
+            vec4 col = vec4(cr.r, cg.g, cb.b, max(cg.a, max(cr.a, cb.a)));
+
+            // 行丢失：行序伪随机但与时间无关 —— 丢掉的行保持丢失
+            float n2 = fract(sin(row * 269.5 + 7.7) * 12043.77);
+            col *= step(u_sg_dropout * band, n2);
+
+            gl_FragColor = col;
+        """
+    )

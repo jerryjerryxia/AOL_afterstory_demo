@@ -125,6 +125,14 @@ init python:
     def _op_lock_allow_dismiss():
         if renpy.config.skipping:
             return True          # 保留 ctrl 快进（与旧 op_lock 行为一致）
+        ## 问询段：打字没打完，点击一律无效——不快进、也不推进。
+        ## 分两半实现，缺一半都不成立：
+        ##   1) 角色的 slow_abortable=False（screens.rpy ClickPauseCharacter.__call__）
+        ##      让 Text.event 不再把点击吃掉去补完文字；
+        ##   2) 这里返回 False，让漏下来的那次点击在 SayBehavior 里被丢弃。
+        ## 只做 1) 会更糟：点击不再补完文字，而是直接推进到下一句。
+        if store.interro_pace and _lr_still_typing():
+            return False
         return _oplock_time.time() >= store._op_lock_deadline
 
     config.say_allow_dismiss = _op_lock_allow_dismiss
@@ -268,6 +276,19 @@ default music_resume_pos = 0.0
 ## 「不分句」开关：转换器在 Extended 大文本框「不分句」块前后置 True/False，
 ## 期间 add_click_pauses 直接放行——该块每行整句一次点击展示，不在句中插 {w}。
 default no_click_split = False
+
+## 「聊天框排版」开关：转换器在【左右分开对齐】块前后置 True/False。期间大文本框
+## 的换行宽度收成半幅（screens.rpy LR_HALF），左行贴左缘、右行贴右缘，各自在中线
+## 前换行——像聊天记录，但不画框也不画线。
+## ★用 store 开关而不是换一个 Character/screen★：翻译 ID = md5(Say.get_code())，
+## 里面含角色名，换角色会把整块台词的英文翻译全部孤儿化（见 renpy/translation/
+## __init__.py create_translate）。`$ 赋值`是 python 语句，不进翻译，零成本。
+default lr_chat_mode = False
+
+## 「问询段节奏」开关：转换器只在含选项的【左右分开对齐】块（＝粉红屏问询段）
+## 前后置 True/False。期间文字速度写死 INTERRO_CPS（不跟玩家的速度设置），
+## 且打字未完成时点击一律无效（不快进、也不推进），打完才能点下一句。
+default interro_pace = False
 
 ################################################################################
 ## 存档加载后恢复音乐

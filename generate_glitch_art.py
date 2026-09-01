@@ -21,7 +21,7 @@ import argparse
 import os
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 
 def _load_premultiplied(path):
@@ -224,20 +224,66 @@ def _bilinear(img, my, mx):
     return top * (1 - fy) + bot * fy
 
 
-def face_horror(path, seed, strength):
-    """原图 + 只在脸部椭圆内的毁容效果。身体一个像素都不动。"""
+def _contour_mask(face, fa, fh, fw):
+    """追踪面庞轮廓的掩膜（--face-contour）：框内肤色检测 → 闭运算把眼/嘴等
+    非肤色五官并进脸内 → 高斯羽化。椭圆掩膜在瓜子脸+乱发的立绘上会盖出一块
+    明显的"椭圆图章"（尤里娅），轮廓掩膜只毁脸皮所在的形状，压着脸的发丝
+    保持干净。阈值按"皮肤是画面里唯一偏暖的浅色"取，需要比自动检测宽松
+    （极浅肤色 r-b 只有 0.01~0.06）。"""
+    safe = np.maximum(fa, 1e-6)[..., None]
+    sc = face / safe
+    r, g, b = sc[..., 0], sc[..., 1], sc[..., 2]
+    skin = (fa > 0.5) & (r - b > 0.012) & (r - g > 0.004) & (r > 0.55)
+    m = Image.fromarray((skin * 255).astype(np.uint8), 'L')
+    # 1/12 缩略图上做闭运算（Max 后 Min）：眼睛/嘴是脸内几十像素的"洞"，
+    # 缩略图上 4 像素半径的膨胀就能糊拢，再腐蚀回轮廓；顺带抹掉孤立噪点。
+    sw, sh = max(2, fw // 12), max(2, fh // 12)
+    small = m.resize((sw, sh), Image.BILINEAR)
+    small = small.filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.MinFilter(9))
+    small = small.filter(ImageFilter.GaussianBlur(2))
+    mask = np.asarray(small.resize((fw, fh), Image.BILINEAR), np.float32) / 255.0
+    # 收紧半透明边缘：0.35 以下当背景，0.75 以上算全脸，中间线性羽化。
+    mask = np.clip((mask - 0.35) / 0.40, 0.0, 1.0)
+    # 宽松椭圆先验压框角：肤色阈值放得很宽（不然极浅肤色捕不全），暖白的
+    # 衣料/发丝在框角会被零星误捕、闭运算再连成条。椭圆取得比脸大一圈
+    # （1.0~1.25 才开始衰减），脸心不受影响，只掐掉角落的误检。
+    yy, xx = np.mgrid[0:fh, 0:fw].astype(np.float32)
+    ny = (yy - fh / 2) / (fh / 2)
+    nx = (xx - fw / 2) / (fw / 2)
+    d = np.sqrt(nx * nx + ny * ny)
+    return mask * np.clip((1.25 - d) / 0.25, 0.0, 1.0)
+
+
+def face_horror(path, seed, strength, tint=(0.72, 0.68, 0.80), box=None,
+                contour=False):
+    """原图 + 只在脸部掩膜内的毁容效果。身体一个像素都不动。
+    tint：decay 步骤的尸色（对亮度的 RGB 乘数）。默认灰紫（王霜）；
+    尤里娅用血红（--tint 0.65,0.12,0.10）——同一条毁容管线，只换色调。
+    box：手动面部框 (x0, y0, x1, y1)，图像宽高的比例值。自动检测认肤色暖调，
+    在极浅肤色/带暖色描边饰物的立绘上会跑偏（尤里娅），这时用 --face-box
+    手动指定；None = 自动检测（王霜）。
+    contour：True = 掩膜追踪面庞轮廓（_contour_mask，尤里娅）；
+    False = 框内切椭圆羽化（王霜沿用）。"""
     rng = np.random.default_rng(seed)
     rgb, a = _load_premultiplied(path)
-    x0, y0, x1, y1 = detect_face_box(path)
+    if box is not None:
+        h, w = a.shape
+        x0, y0, x1, y1 = (int(box[0] * w), int(box[1] * h),
+                          int(box[2] * w), int(box[3] * h))
+    else:
+        x0, y0, x1, y1 = detect_face_box(path)
     fh, fw = y1 - y0, x1 - x0
     face = rgb[y0:y1, x0:x1].copy()
     fa = a[y0:y1, x0:x1].copy()
 
     yy, xx = np.mgrid[0:fh, 0:fw].astype(np.float32)
-    ny = (yy - fh / 2) / (fh / 2)
-    nx = (xx - fw / 2) / (fw / 2)
-    d = np.sqrt(nx * nx + ny * ny)
-    mask = np.clip((1.05 - d) / 0.30, 0.0, 1.0)     # 椭圆内 1，边缘羽化到 0
+    if contour:
+        mask = _contour_mask(face, fa, fh, fw)
+    else:
+        ny = (yy - fh / 2) / (fh / 2)
+        nx = (xx - fw / 2) / (fw / 2)
+        d = np.sqrt(nx * nx + ny * ny)
+        mask = np.clip((1.05 - d) / 0.30, 0.0, 1.0)  # 椭圆内 1，边缘羽化到 0
 
     # melt：位移场热熔。向下偏置 —— 器官会坠，信号不会。
     sc = max(6, fh // 6)
@@ -274,7 +320,7 @@ def face_horror(path, seed, strength):
     dark = 1.0 - (0.40 * mottle + 0.30 * eyeband) * mask * strength
     face *= np.clip(dark, 0.15, 1.0)[..., None]
     lum = (face[..., 0] * 0.30 + face[..., 1] * 0.59 + face[..., 2] * 0.11)
-    corpse = np.stack([lum * 0.72, lum * 0.68, lum * 0.80], axis=-1)
+    corpse = np.stack([lum * tint[0], lum * tint[1], lum * tint[2]], axis=-1)
     t = (0.55 * mask * strength)[..., None]
     face = face * (1 - t) + corpse * t
 
@@ -323,7 +369,19 @@ def main():
     ap.add_argument("--face", action="store_true",
                     help="面部恐怖模式：只毁脸不碰身体（输出命名仍是 _glitch<seed>，"
                          "直接覆盖旧的整身 glitch 帧）")
+    ap.add_argument("--tint", default="0.72,0.68,0.80",
+                    help="--face 的尸色（亮度 RGB 乘数）。默认灰紫（王霜）；"
+                         "血红（尤里娅）用 0.65,0.12,0.10")
+    ap.add_argument("--face-box", default=None,
+                    help="--face 的手动面部框 x0,y0,x1,y1（图像宽高比例值）。"
+                         "自动检测在浅肤色立绘上跑偏时用（尤里娅）")
+    ap.add_argument("--face-contour", action="store_true",
+                    help="--face 的掩膜追踪面庞轮廓（肤色检测+闭运算），"
+                         "而不是框内切椭圆（尤里娅用；王霜沿用椭圆）")
     args = ap.parse_args()
+    tint = tuple(float(v) for v in args.tint.split(","))
+    face_box = (tuple(float(v) for v in args.face_box.split(","))
+                if args.face_box else None)
 
     base = os.path.splitext(os.path.basename(args.input))[0]
     suffix = "glitchsoft" if args.patches else "glitch"
@@ -331,7 +389,9 @@ def main():
     for i in range(args.variants):
         seed = args.seed + i
         if args.face:
-            rgb, a = face_horror(args.input, seed=seed, strength=args.strength)
+            rgb, a = face_horror(args.input, seed=seed, strength=args.strength,
+                                 tint=tint, box=face_box,
+                                 contour=args.face_contour)
         else:
             rgb, a = glitch(args.input, seed=seed, strength=args.strength)
         if args.patches:

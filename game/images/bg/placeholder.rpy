@@ -25,26 +25,51 @@ image bg_night = Solid("#1a1a2a", xsize=1920, ysize=1080)
 image bg_summergaze = Transform("images/bg/summergaze.png", xysize=(1920, 1080), fit="cover")
 image bg_sungaze = Transform("images/bg/sungaze.png", xysize=(1920, 1080), fit="cover")
 image bg_desert = Transform("images/bg/desert.png", xysize=(1920, 1080), fit="cover")
+## 无月版：第二段跑动 sequence 前的转场（【转场：银白色沙漠，无月】）。
+image bg_desert_moonless = Transform("images/bg/desert_moonless.png", xysize=(1920, 1080), fit="cover")
 
-## 跑动 sequence（尸首追逐段，剧本标记【进入一个向前跑动的sequence…】/
-## 【重新开始跑动sequence】）：单背景奔跑错觉 = desert_run 光流 shader
-## （shaders.rpy）+ 奔跑节奏的颠簸/摇摆 ATL。两档递进：run 起跑、run2 更快更狂
-## （配心跳渐强）。幅度从上一档的目标值 ease 入场——与甜品店波纹链同一套
-## "入场继承 + 场内渐变"原则。zoom 放大 + 居中：给颠簸/摇摆留边，不露黑边。
+## 跑动 sequence（尸首追逐段，剧本标记【跑动sequence开始…】）。
+## 奔跑错觉三件套：
+##   1. 递进景深轮播（美术方案）：从无月沙漠原图（4305x2430）的三个不同景深
+##      位置截 16:9 帧，硬切轮播 —— 每一切都像冲进新的一片沙地，地形不断
+##      "扑面而来"。截无月图：月亮是固定地标，会在帧间跳位穿帮。
+##      截取框（原图像素 x, y, w, h；按美术标注的 1→2→3 顺序）在下面三条
+##      bg_desert_run_f* 里，改框只改 crop 即可。
+##   2. desert_run 光流 shader（shaders.rpy）：向前涌动感。
+##   3. 奔跑节奏的颠簸/摇摆 ATL（向前+颤抖）。
+## 两档递进：run 起跑、run2 更快更狂（配心跳渐强）——run2 轮播/颠簸都更快，
+## 光流幅度从上一档的目标值 ease 入场（"入场继承 + 场内渐变"原则）。
+## zoom 放大 + 居中：给颠簸/摇摆留边，不露黑边。
 ## 颠簸 repeat 循环顺带充当 shader 的每帧重绘驱动（u_time 才会推进）。
+image bg_desert_run_f1 = Transform("images/bg/desert_moonless.png", crop=(1683, 955, 2622, 1475), xysize=(1920, 1080))
+image bg_desert_run_f2 = Transform("images/bg/desert_moonless.png", crop=(0, 730, 2488, 1400), xysize=(1920, 1080))
+image bg_desert_run_f3 = Transform("images/bg/desert_moonless.png", crop=(1653, 275, 2643, 1487), xysize=(1920, 1080))
 image bg_desert_run:
-    Transform("images/bg/desert.png", xysize=(1920, 1080), fit="cover")
+    "bg_desert_run_f1"
+    ## mesh True：源图 4305 宽超 GPU 4096 纹理上限会被切块，截取框又横跨切缝
+    ## —— 不压平的话 shader 在两块纹理上各算各的 uv，缝两侧光流错位。
+    mesh True
     shader "game.desert_run"
     u_run_vp (0.5, 0.42)    # 消失点（屏幕比例，略高于中心 = 地平线）
     u_run_ground 1.4        # 地面光流加成
     u_run_speed 0.55        # 循环速率
-    u_run_amp 0.0           # 入场 = 静止（从 bg_desert 交叉溶解过来）
+    u_run_amp 0.0           # 入场 = 静止（从静止沙漠甩头/溶解过来）
     zoom 1.07
     xalign 0.5
     yalign 0.5
     subpixel True
     parallel:
         ease 2.0 u_run_amp 0.12   # 起跑：光流两秒内涌到位
+    parallel:
+        # 递进景深轮播：硬切，每帧 0.8s（约两个跨步周期）。
+        block:
+            "bg_desert_run_f1"
+            pause 0.8
+            "bg_desert_run_f2"
+            pause 0.8
+            "bg_desert_run_f3"
+            pause 0.8
+            repeat
     parallel:
         block:
             easeout 0.17 yoffset -13
@@ -56,7 +81,8 @@ image bg_desert_run:
             ease 0.61 xoffset 8
             repeat
 image bg_desert_run2:
-    Transform("images/bg/desert.png", xysize=(1920, 1080), fit="cover")
+    "bg_desert_run_f1"
+    mesh True   # 理由见 bg_desert_run
     shader "game.desert_run"
     u_run_vp (0.5, 0.42)
     u_run_ground 1.4
@@ -69,6 +95,16 @@ image bg_desert_run2:
     parallel:
         ease 1.5 u_run_amp 0.2    # 冲向更狂的档位
     parallel:
+        # 轮播更急促（0.55s/帧）——狂奔档。
+        block:
+            "bg_desert_run_f1"
+            pause 0.55
+            "bg_desert_run_f2"
+            pause 0.55
+            "bg_desert_run_f3"
+            pause 0.55
+            repeat
+    parallel:
         block:
             easeout 0.14 yoffset -16
             easein 0.12 yoffset 6
@@ -77,6 +113,66 @@ image bg_desert_run2:
         block:
             ease 0.5 xoffset -10
             ease 0.5 xoffset 10
+            repeat
+
+## 一头扎进沙地（【一头扎进沙地sequence，并在完成前锁定点击】）：第一人称，
+## 按真实运动拆成两段 —— 人不可能直线把脸怼进地里，是**先跪倒、再前扑**：
+##   跪倒（0.7s，ease 软塌）：视线高度下降 —— 视窗沿画面下滑（yanchor
+##   0.5→0.65）+ 中等放大（1.0→1.55，地面凑近），随后膝盖着地一记顿挫
+##   （yoffset 快速下沉回弹）；
+##   前扑（0.45s，easeout 慢起加速）：上身前倾、头朝下栽 —— 视线加速扫向
+##   脚下沙地（yanchor→0.88）+ 猛放大（→4.2），旋转到底即扎入；
+##   末段 0.3s 乘性压黑（沙子灌满视野），接剧本紧随的 【转场：图片黑屏】。
+## 全程轻微横抖（失衡感）。锚点轨迹经过校验：任一时刻视窗都不越出图像
+## 下缘（不露黑边）。总时长 1.35s —— 转换器的 hard_pause（SAND_DIVE_SECONDS）
+## 必须与此一致，改一处要改另一处。
+## 首帧与静止沙漠 bg 完全一致（同源图同 cover），scene ... with None 无缝切入；
+## 有月/无月各一版，转换器按当前沙漠形态（_DESERT_RETURN）选。
+image bg_sand_dive:
+    Transform("images/bg/desert.png", xysize=(1920, 1080), fit="cover")
+    subpixel True
+    matrixcolor TintMatrix("#ffffff")
+    xanchor 0.5
+    xpos 960
+    yanchor 0.5
+    ypos 540
+    zoom 1.0
+    parallel:
+        ease 0.7 zoom 1.55 yanchor 0.65
+        easein 0.08 yoffset 16
+        easeout 0.10 yoffset 0
+        pause 0.02
+        easeout 0.45 zoom 4.2 yanchor 0.88
+    parallel:
+        pause 1.05
+        linear 0.3 matrixcolor TintMatrix("#000000")
+    parallel:
+        block:
+            linear 0.05 xoffset -5
+            linear 0.05 xoffset 5
+            repeat
+image bg_sand_dive_moonless:
+    Transform("images/bg/desert_moonless.png", xysize=(1920, 1080), fit="cover")
+    subpixel True
+    matrixcolor TintMatrix("#ffffff")
+    xanchor 0.5
+    xpos 960
+    yanchor 0.5
+    ypos 540
+    zoom 1.0
+    parallel:
+        ease 0.7 zoom 1.55 yanchor 0.65
+        easein 0.08 yoffset 16
+        easeout 0.10 yoffset 0
+        pause 0.02
+        easeout 0.45 zoom 4.2 yanchor 0.88
+    parallel:
+        pause 1.05
+        linear 0.3 matrixcolor TintMatrix("#000000")
+    parallel:
+        block:
+            linear 0.05 xoffset -5
+            linear 0.05 xoffset 5
             repeat
 
 ## 无色透明多面体：WebM (VP9) 循环视频，共享 channel polyhedron_video。

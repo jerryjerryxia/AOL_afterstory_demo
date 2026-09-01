@@ -125,6 +125,9 @@ SCENE_BG_MAP = {
     '夏日对视': 'bg_summergaze',
     '张目对日pt1': 'bg_sungaze',
     '银白色沙漠': 'bg_desert',
+    # 无月版：第二段跑动 sequence 前月亮消失（跑动帧截自无月图 ——
+    # 固定的月亮会在轮播帧之间跳位，见 placeholder.rpy 跑动帧注释）。
+    '银白色沙漠，无月': 'bg_desert_moonless',
     # 无色透明多面体：循环视频。剧本里所有引用此名的场景都用同一个 channel，
     # 主菜单和序章首场景共享帧位置。
     '无色透明多面体': 'bg_polyhedron_video',
@@ -200,6 +203,9 @@ NO_TRANSITION_SCENES = set()
 # Note: 甜品店对视1 is NOT in here — that's the *entry* into the sequence,
 # so it should use the standard fade-through-black from whatever preceded it.
 CROSS_DISSOLVE_SCENES = {
+    # 银白色沙漠 → 无月：同一片沙漠、月亮凭空消失的恐怖拍 —— 就地溶解，
+    # 黑场会把"消失"这个动作本身吃掉。
+    '银白色沙漠，无月',
     '甜品店对视2',
     # 瘾：幻视段内的揭示卡，溶解保持迷幻的连续感（黑场会打断药劲）。
     '瘾',
@@ -451,9 +457,12 @@ SPRITE_GLITCH_SUFFIX = '上蒙了glitch'
 # 立绘摆位：场景名 -> transform 名（定义在生成的 sprites.rpy 里）。
 # 默认半身近景（第一人称对视感，参考 DDLC 的莫妮卡）——全身远景试过，
 # 人物太小没有压迫感。某场景要不同摆位，在这里加映射即可。
-# 沙漠桥段与虚空对视：缩到与店员立绘一致的大小（ws_mid 中景）。
-SPRITE_SCENE_AT = {'银白色沙漠': 'ws_mid', '虚空对视': 'ws_mid',
-                   '银白色沙漠跑动': 'ws_mid'}
+# 虚空对视：缩到与店员立绘一致的大小（ws_mid 中景，居中）。
+# 沙漠桥段：ws_desert —— 同尺寸但站画面偏右（= 走路进场的落点 WS_WALK_END_X），
+# 跑动 sequence 结束后重新登场时不会瞬移回正中，也给左侧的尤里娅/尸首留位。
+SPRITE_SCENE_AT = {'银白色沙漠': 'ws_desert', '虚空对视': 'ws_mid',
+                   '银白色沙漠跑动': 'ws_desert',
+                   '银白色沙漠，无月': 'ws_desert'}
 SPRITE_DEFAULT_AT = 'ws_close'
 
 # 摆位参数（写进生成的 sprites.rpy；改这里 + 重跑转换器即可调）。原图 2299x3824。
@@ -492,9 +501,31 @@ WS_MID_YPOS = 120
 WS_WALK_INLINE_MARK = '从左到右缓缓走入'
 WS_WALK_SECONDS = 10.0   # 全程时长
 WS_WALK_START_X = -0.3   # 起点 xpos（屏幕比例；-0.3 = 整个立绘在左缘外）
-WS_WALK_END_X = 0.7      # 终点站定位置（偏右——她走在前头）
+WS_WALK_END_X = 0.76     # 终点站定位置（偏右——与左侧尤里娅拉开间距）
+
+# 沙漠段王霜的 zoom：独立于甜品店店员的 WS_CLERK_ZOOM —— 与尤里娅同台时
+# 双方都缩小一点、给构图留空间（作者要求）。ws_mid（虚空对视）不受影响。
+WS_DESERT_ZOOM = 0.38
 WS_WALK_STEP = 0.6       # 每步周期（秒），起伏一次 = 迈一步
 WS_WALK_BOB = 12         # 起伏幅度（px）
+
+# 行内标记【从当前位置(缓缓)走到屏幕中心[，立绘略微放大]】（骨头搜寻段）：
+# 从走路落点（WS_WALK_END_X）走到屏幕中心，步频比走入略快，边走边微放大
+# （走近镜头的感觉）。随后的【立绘回归原来大小】把 zoom 缓回常规值，
+# 人留在中心 —— 两个标记都在走路窗口语义内（后续 show 继续省略 at 列表）。
+WS_CWALK_MARK_RE = re.compile(r'^从当前位置(?:缓缓)?走到屏幕中心(?:[，,]\s*立绘略微放大)?$')
+WS_CWALK_SECONDS = 2.0   # 0.2 屏宽走 2 秒 —— 比走入（0.1 屏宽/秒）略快
+WS_CWALK_END_X = 0.5     # 终点：屏幕中心
+WS_CWALK_ZOOM = 0.50     # 放大幅度（常规 WS_CLERK_ZOOM = 0.42，接近半身近景）
+WS_CWALK_STEP = 0.55     # 步频也略快
+WS_RESIZE_BACK_SECONDS = 0.5   # 【立绘回归原来大小】的缓回时长
+WS_RESIZE_BACK_MARK = '立绘回归原来大小'
+
+# 【尤里娅登场】时王霜从屏幕中心平滑滑回右侧（走路落点）让位 —— 只移动
+# 不缩放（她从走入起就是 WS_DESERT_ZOOM 的小规格，作者定稿）。无步态起伏：
+# 这是"画面重新构图"，不是走路。
+WS_SLIDE_SECONDS = 0.8
+
 
 # 走路窗口状态：标记登记 pending → 下一条立绘 show 挂 ws_desert_walk 并转
 # active → 同场景内后续姿势/表情 show 一律不带 at 列表（带了会把走路
@@ -502,8 +533,25 @@ WS_WALK_BOB = 12         # 起伏幅度（px）
 _SPRITE_WALK_PENDING = False
 _SPRITE_WALK_ACTIVE = False
 
+# glitch 物化入场窗口：【王霜和尸首登场】给王霜挂了 ws_desert_glitchin 后置位；
+# 紧随的同一交互内她台词标记的 show 省略 at 列表（不打断物化动画），消费即清。
+_SPRITE_GLITCHIN_PENDING = False
+
+# 走到屏幕中心（WS_CWALK_MARK_RE）：行内标记先于同行姿势标记置 pending
+# （同 WS_WALK_INLINE_MARK），本行立绘 show 挂 ws_desert_center_walk。
+_SPRITE_CWALK_PENDING = False
+
 # 跑动 sequence 计数：第 1 次 开始 用 bg_desert_run，之后用更狂的 run2。
 _RUN_SEQ_COUNT = [0]
+
+# 【跑动sequence结束】溶解回的静止沙漠：默认有月版；剧本走过
+# 【转场：银白色沙漠，无月】之后换成无月版（月亮不能自己长回来）。
+_DESERT_RETURN = ['银白色沙漠', 'bg_desert']
+
+# 【一头扎进沙地sequence，并在完成前锁定点击】：第一人称跪倒→前扑扎进
+# 脚下沙地（bg_sand_dive[/_moonless]，两段镜头运动见 placeholder.rpy 注释）。
+# 时长必须与那边的 ATL 总长一致；锁定点击 = hard_pause 到扎入完成。
+SAND_DIVE_SECONDS = 1.35
 
 # 【转头】（第一视角猛回头就跑）：登记 pending，由紧随其后的跑动 sequence 起手
 # 消费 —— 那次 scene 切换改用 whip_pan 甩头转场（shaders.rpy）而非溶解。
@@ -522,21 +570,121 @@ SPRITE_HOP_UP = 0.14     # 上升时长（秒）
 SPRITE_HOP_DOWN = 0.12   # 落回时长（秒）
 
 
+################################################################################
+## 尤里娅（+ 尸首形态）。素材在 game/images/sprites/尤里娅/ 下平铺，单姿势
+## （一般态）多表情。文件名不强求规范 —— 美术交付里 尤利娅/尤里娅、全/半角
+## 括号、带不带闭括号混用，扫描时全部归一化，别再要求美术重命名。
+## 剧本标记：尤里娅【一般态<表情>】（无顿号，与王霜的【姿势，表情】语法不同）。
+## 表情带 glitch 后缀（面部glitch / 坏笑glitch）→ 毛刺素材（红笔涂脸差分）。
+## 【尤里娅异变】/【…尸首登场】 → 尸首形态（尤利娅尸首.png，横构图缝合怪）。
+################################################################################
+
+# 素材文件名里的表情 -> Ren'Py 属性名（'尸首' 特判为 corpse 形态）。
+# 毛刺（美术手绘的红笔涂脸差分）注册为独立表情 scribble 备用 —— glitch 态
+# 现在与王霜同一条管线：generate_glitch_art.py --face 生成的三帧静态毁容
+# （尤里娅用血红尸色 --tint 0.65,0.12,0.10），ATL choice 随机抽帧。
+YL_EXPR_FILE_ATTRS = {
+    '默认': 'default', '坏笑': 'smirk', '毛刺': 'scribble',
+    '邪恶笑1': 'evil1', '邪恶笑2': 'evil2',
+}
+# 剧本标记里的表情 -> 同一套属性名（剧本写 邪恶表情N，素材叫 邪恶笑N）。
+# 以 glitch 结尾的表情走 glitch 帧：坏笑glitch → 坏笑底 + glitch；
+# 面部glitch（不指明底表情）→ 默认底 + glitch。
+YL_EXPR_SCRIPT_ATTRS = {
+    '默认': 'default', '坏笑': 'smirk',
+    '邪恶表情1': 'evil1', '邪恶笑1': 'evil1',
+    '邪恶表情2': 'evil2', '邪恶笑2': 'evil2',
+    '面部': 'default',   # 「面部glitch」去掉 glitch 后缀剩下的底表情
+}
+
+# 尤里娅摆位（银白色沙漠段，与右侧 0.7 的王霜同台）：站画面左侧偏中，
+# 大小与 ws_desert 的王霜视觉上等高。
+# ★素材尺寸★：交付原图 3500x4500 / 尸首 4200x2880 超过 GPU 4096 纹理上限，
+# 会被切块渲染 —— 逐块独立的 uv 让 sprite_glitch 的作用带错位（裙摆上凭空
+# 撕出一条），甜品店源图当年同一个坑。已统一缩到 4096 内（长边 4050），
+# 原图备份在 art_source_fullres/；美术重新交付超限素材时要先跑同样的缩放。
+YL_MID_XPOS = 0.26
+YL_MID_YPOS = 110
+YL_MID_ZOOM = 0.37
+
+# 面部 glitch 的出现/复原动效（王霜、尤里娅共用 game.sprite_glitch shader）：
+# 新面（毁容帧或干净帧）不是硬蒙上去，而是带着强撕裂入场、easeout 落定 ——
+# "脸被扭曲成那样 / 又复原回来"。作用带只罩立绘顶部的头部区域。
+FACE_WARP_SECONDS = 0.5
+WS_FACE_BAND = (0.0, 0.20)    # 王霜脸部（纹理 Y 比例；原图 2299x3824 顶部）
+YL_FACE_BAND = (0.05, 0.22)   # 尤里娅脸部（原图 3500x4500）
+
+# 【尤里娅消失】：异常消失 —— 全身撕裂渐强 + 随机行序逐行掐断（不是 fade）。
+YL_VANISH_SECONDS = 0.45
+
+# glitch 物化入场（消失的镜像：撕裂/行丢失从满值收敛到 0，人是被"信号
+# 重新拼出来"的）。用在所有非自然的重新登场上：跑动 sequence 结束后的
+# 【王霜和尸首登场】、尤里娅消失后的重现。
+GLITCHIN_SECONDS = 0.5
+
+# 【尤里娅异变】三段式（作者要求比纯 glitch 更有冲击力；glitch 保留为组件）：
+#   第一拍（YL_MUTATE_SECONDS，hard_pause 锁住）：人形高频痉挛 + 身体异常
+#   纵向拉伸抽动 + 撕裂渐强 + 血色（YL_MUTATE_RED）从内漫延淹没全身；
+#   切换瞬间：满屏红闪（mutation_flash，峰值 YL_FLASH_ALPHA、YL_FLASH_FADE 褪尽）；
+#   第二拍：尸首从 YL_CORPSE_LUNGE 倍焦距外扑到眼前（YL_LUNGE_SECONDS 内
+#   zoom 冲到位）+ 撕裂收敛落定（YL_CORPSE_IN_SECONDS）+ fx_shock 震屏。
+YL_MUTATE_SECONDS = 0.7
+YL_MUTATE_RED = '#b32020'
+YL_FLASH_COLOR = '#c81616'
+YL_FLASH_ALPHA = 0.85
+YL_FLASH_FADE = 0.35
+YL_CORPSE_LUNGE = 0.55     # 起始 zoom = 终值的多少倍（越小扑得越猛）
+YL_LUNGE_SECONDS = 0.22
+YL_CORPSE_IN_SECONDS = 0.4
+# 扑近以头部为锚点缩放（脸原地朝你放大）：头在尸首图内的比例位置 + 图的
+# 像素尺寸（缩放后的素材，见上方 4096 上限注释），生成器据此换算锚点坐标，
+# 保证扑完的落位与 yl_corpse_pos 完全一致。
+YL_CORPSE_HEAD = (0.68, 0.32)
+YL_CORPSE_IMG = (4050, 2777)
+
+# 尸首形态摆位：不整图塞屏 —— 她"就在眼前"，头部要和王霜立绘的头差不多大
+# （作者要求）。原图（4050x2777）里头在 (0.68w, 0.32h) 附近、骨爪向四周伸展：
+# 放大后把头摆在画面中偏左，左侧骨头出画可接受，右侧骨爪扫向王霜那边。
+YL_CORPSE_XPOS = 0.15
+YL_CORPSE_YPOS = -330
+YL_CORPSE_ZOOM = 0.70   # 随 WS_DESERT_ZOOM 缩小同步（保持头与王霜的头等大）
+
+# 角色子目录（sprites/ 下每个角色一个文件夹；美术按角色交付）。
+WS_SPRITE_DIR = '王霜'
+YL_SPRITE_DIR = '尤里娅'
+
+
 def _build_sprite_index():
-    """扫描 game/images/sprites/ 建立立绘索引。
-    返回 (base, glitch, soft)：
-      base   = {(姿势key, 表情): 'images/sprites/...png'}
+    """扫描 game/images/sprites/<角色>/ 建立立绘索引（按角色分文件夹）。
+
+    王霜（王霜/ 递归，含 glitch/、glitch_soft/ 子目录；虚化王霜/ 等
+    认不出姿势关键词的素材自动跳过）：
+      base   = {(姿势key, 表情): 'images/sprites/王霜/...png'}
       glitch = {(姿势key, 表情): [帧路径, ...]}（按 seed 排序，全身 glitch）
       soft   = 同 glitch，但为 _glitchsoft 帧（局部小范围 glitch，店员用，
                generate_glitch_art.py --patches 生成）
     文件名约定：<姿势>(<表情>.png（全/半角括号、带不带闭括号都认），
     glitch 帧为 <原名>_glitch<seed>.png，软帧为 <原名>_glitchsoft<seed>.png。
     ★_glitchsoft 必须先于 _glitch 判断——后者的正则要求 glitch 后直接跟数字，
-    软帧不满足，会掉进 base 索引变成一个不存在的"表情"。"""
+    软帧不满足，会掉进 base 索引变成一个不存在的"表情"。
+
+    尤里娅（尤里娅/ 递归，glitch 帧在 glitch/ 子目录）：文件名
+    <角色名>(<表情>.png（角色名 尤利娅/尤里娅 都认），'<角色名>尸首.png'
+    特判为尸首形态，glitch 帧 <原名>_glitch<seed>.png（与王霜同管线）：
+      yl        = {表情attr: 'images/sprites/尤里娅/...png'}
+      yl_glitch = {表情attr: [帧路径, ...]}（按 seed 排序）
+      yl_corpse = 尸首形态路径 或 None
+    """
     base, glitch, soft = {}, {}, {}
+    yl, yl_corpse = {}, None
     game_dir = os.path.join(BASE_DIR, 'game')
     root = os.path.join(game_dir, 'images', 'sprites')
-    for dirpath, dirnames, filenames in os.walk(root):
+
+    def rel_of(dirpath, fn):
+        return os.path.relpath(os.path.join(dirpath, fn), game_dir).replace(os.sep, '/')
+
+    ws_root = os.path.join(root, WS_SPRITE_DIR)
+    for dirpath, dirnames, filenames in os.walk(ws_root):
         for fn in filenames:
             if not fn.lower().endswith('.png'):
                 continue
@@ -555,19 +703,47 @@ def _build_sprite_index():
             pose = next((k for k in SPRITE_POSE_ATTRS if k in pose_part), None)
             if pose is None:
                 continue
-            rel = os.path.relpath(os.path.join(dirpath, fn), game_dir)
-            rel = rel.replace(os.sep, '/')
             if sink is base:
-                base[(pose, expr)] = rel
+                base[(pose, expr)] = rel_of(dirpath, fn)
             else:
-                sink.setdefault((pose, expr), []).append(rel)
+                sink.setdefault((pose, expr), []).append(rel_of(dirpath, fn))
     for idx in (glitch, soft):
         for frames in idx.values():
             frames.sort()
-    return base, glitch, soft
+
+    yl_glitch = {}
+    yl_root = os.path.join(root, YL_SPRITE_DIR)
+    if os.path.isdir(yl_root):
+        for dirpath, dirnames, filenames in os.walk(yl_root):
+            for fn in sorted(filenames):
+                if not fn.lower().endswith('.png'):
+                    continue
+                stem = fn[:-4]
+                gm = re.match(r'^(.*)_glitch(\d+)$', stem)
+                if gm:
+                    stem = gm.group(1)
+                norm = stem.replace('（', '(').rstrip('）)')
+                norm = re.sub(r'^(尤利娅|尤里娅)', '', norm)
+                if norm == '尸首':
+                    yl_corpse = rel_of(dirpath, fn)
+                    continue
+                expr = norm.lstrip('(')
+                attr = YL_EXPR_FILE_ATTRS.get(expr)
+                if attr is None:
+                    print(f"WARNING: 尤里娅素材 {fn} 的表情 '{expr}' 不在 "
+                          f"YL_EXPR_FILE_ATTRS，未注册")
+                    continue
+                if gm:
+                    yl_glitch.setdefault(attr, []).append(rel_of(dirpath, fn))
+                else:
+                    yl[attr] = rel_of(dirpath, fn)
+        for frames in yl_glitch.values():
+            frames.sort()
+    return base, glitch, soft, yl, yl_glitch, yl_corpse
 
 
-SPRITE_INDEX, SPRITE_GLITCH_INDEX, SPRITE_GLITCHSOFT_INDEX = _build_sprite_index()
+(SPRITE_INDEX, SPRITE_GLITCH_INDEX, SPRITE_GLITCHSOFT_INDEX,
+ YL_INDEX, YL_GLITCH_INDEX, YL_CORPSE_PATH) = _build_sprite_index()
 
 # 已经告警过的缺素材组合，避免同一条 WARNING 刷屏。
 _SPRITE_WARNED = set()
@@ -647,17 +823,31 @@ def emit_sprite_change(marker, indent):
             print(f"WARNING: 立绘缺 glitch 帧：{pose}·{use_expr}"
                   f"（用 generate_glitch_art.py 生成到 sprites/glitch/）—— 先用无 glitch 版")
         is_glitch = False
-    if is_glitch:
-        img += "_glitch"   # glitch 并进表情属性名，避免 show 属性残留粘连
     at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
     global _LAST_SPRITE, _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE
+    global _SPRITE_GLITCHIN_PENDING, _SPRITE_CWALK_PENDING
+    prev_glitch = bool(_LAST_SPRITE and _LAST_SPRITE[2])
     _LAST_SPRITE = (pose, use_expr, is_glitch)
+    if is_glitch:
+        img += "_glitch"   # glitch 并进表情属性名，避免 show 属性残留粘连
+    elif prev_glitch:
+        img += "_unglitch"   # 上一帧是 glitch：干净脸带扭曲复原动效入场
     # 走路窗口：首条立绘挂走路 transform；之后不带 at，沿用走路的位置/动画。
     if _SPRITE_WALK_PENDING:
         _SPRITE_WALK_PENDING = False
         _SPRITE_WALK_ACTIVE = True
         at_clause = ' at ws_desert_walk'
+    elif _SPRITE_CWALK_PENDING:
+        # 走到屏幕中心：挂中心走 transform；窗口保持 —— 之后的 show 继续
+        # 省略 at，人留在中心（回 ws_desert 会瞬移回 0.7）。
+        _SPRITE_CWALK_PENDING = False
+        _SPRITE_WALK_ACTIVE = True
+        at_clause = ' at ws_desert_center_walk'
     elif _SPRITE_WALK_ACTIVE:
+        at_clause = ''
+    elif _SPRITE_GLITCHIN_PENDING:
+        # glitch 物化入场窗口：本条 show 与登场同一交互，省略 at 别打断动画。
+        _SPRITE_GLITCHIN_PENDING = False
         at_clause = ''
     else:
         at_clause = f' at {at}'
@@ -699,6 +889,34 @@ def emit_clerk_hop(clerk, indent):
     return f'{indent}show {resolved[0]} as {cfg["tag"]} at {cfg["at"]}_hop'
 
 
+def emit_sprite_resize_back(indent):
+    """【立绘回归原来大小】：re-show 当前立绘，挂 ws_desert_center —— zoom 从
+    继承的放大值（中心走的 WS_CWALK_ZOOM）缓回常规值，人留在屏幕中心。
+    走路窗口保持 active（后续 show 继续省略 at）。无立绘在场返回 None。"""
+    if _LAST_SPRITE is None:
+        print("WARNING: 【立绘回归原来大小】处没有立绘在场 —— 仅注释")
+        return None
+    pose, expr, is_glitch = _LAST_SPRITE
+    img = f"ws {SPRITE_POSE_ATTRS[pose]} {SPRITE_EXPR_ATTRS[expr]}"
+    if is_glitch:
+        img += "_glitch"
+    return f'{indent}show {img} at ws_desert_center'
+
+
+def emit_sprite_slide_right(indent):
+    """【尤里娅登场】：王霜从当前位置（屏幕中心）平滑滑回右侧
+    （ws_desert_slide_right，xpos 从尾部对齐继承的当前值 ease 到走路落点；
+    zoom 只是兜底归位到 WS_DESERT_ZOOM —— 正常流程里她此刻已经是这个值，
+    不产生缩放动作）。走路窗口保持 active。无立绘在场返回 None。"""
+    if _LAST_SPRITE is None:
+        return None
+    pose, expr, is_glitch = _LAST_SPRITE
+    img = f"ws {SPRITE_POSE_ATTRS[pose]} {SPRITE_EXPR_ATTRS[expr]}"
+    if is_glitch:
+        img += "_glitch"
+    return f'{indent}show {img} at ws_desert_slide_right'
+
+
 def emit_sprite_unglitch(indent):
     """【glitch消失】：当前立绘若是 glitch 版，就地切回同姿势同表情的干净版。
     不能等下一条立绘标记 —— 中间可能隔着几句别人的台词，剧本要 glitch 即刻停。
@@ -708,12 +926,115 @@ def emit_sprite_unglitch(indent):
         return None
     pose, expr, _ = _LAST_SPRITE
     _LAST_SPRITE = (pose, expr, False)
-    img = f"ws {SPRITE_POSE_ATTRS[pose]} {SPRITE_EXPR_ATTRS[expr]}"
+    # _unglitch 版：干净脸带扭曲复原动效入场（不是硬蒙回去）。
+    img = f"ws {SPRITE_POSE_ATTRS[pose]} {SPRITE_EXPR_ATTRS[expr]}_unglitch"
     at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
     # 走路窗口内不带 at 列表（同 emit_sprite_change：别把走路 transform 冲掉）。
     at_clause = '' if _SPRITE_WALK_ACTIVE else f' at {at}'
     return (f'{indent}show {img}{at_clause}\n'
             f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+
+
+# 尤里娅在场状态：'yl'（人形）/'corpse'（尸首形态）在场与否，'glitch' =
+# 当前显示的是 glitch 版（下一个干净 show 要走 _unglitch 复原动效），
+# 'vanished' = 【尤里娅消失】过、tag 还挂着 yl_vanish 的终态。
+# 转场（scene）时由 _emit_scene 一起清掉。同一个 image tag（yl）——
+# 人形与尸首互相替换，show 即换、无需 hide。
+# ★vanished 后再上台必须先 hide yl★：Ren'Py 替换 at 列表时从尾部对齐继承
+# transform 状态，yl_vanish 的终态（撕裂/行丢失全满）会被不带这些属性的
+# yl_mid 原样继承 —— 人 show 上去了但每一行都还处于"丢失"，完全不可见
+#（实测踩过）。hide 把 tag 状态整个清掉，下一个 show 从零开始。
+_YL_STATE = {'yl': False, 'corpse': False, 'glitch': False, 'vanished': False}
+
+
+def emit_youliya_show(marker, indent):
+    """尤里娅【一般态<表情>[glitch]】 → show 语句；认不出返回 None（退化为注释）。
+    与王霜不同：她的标记无顿号，姿势（一般态）与表情直接拼在一起。
+    glitch 后缀与王霜同款：切到预生成的血红面部毁容帧（ATL choice 三选一，
+    见 YL_GLITCH_INDEX / generate_glitch_art.py --face --tint）。"""
+    m = re.match(r'^一般态(.+)$', marker)
+    if m is None:
+        return None
+    expr = m.group(1).strip()
+    is_glitch = expr.endswith('glitch')
+    if is_glitch:
+        expr = expr[:-len('glitch')] or '默认'
+    attr = YL_EXPR_SCRIPT_ATTRS.get(expr)
+    if attr is None:
+        key = ('yl_expr', expr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 尤里娅表情 '{expr}' 不在 YL_EXPR_SCRIPT_ATTRS —— 退化为注释")
+        return None
+    if attr not in YL_INDEX:
+        if 'default' not in YL_INDEX:
+            key = ('yl_none',)
+            if key not in _SPRITE_WARNED:
+                _SPRITE_WARNED.add(key)
+                print("WARNING: 尤里娅没有任何立绘素材 —— 退化为注释")
+            return None
+        key = ('yl_missing', attr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 尤里娅缺素材：{expr} —— 回退到默认")
+        attr = 'default'
+    if is_glitch and attr not in YL_GLITCH_INDEX:
+        key = ('yl_glitch', attr)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print(f"WARNING: 尤里娅缺 glitch 帧：{expr}（generate_glitch_art.py "
+                  f"--face --tint 0.65,0.12,0.10 --face-box … 生成到 尤里娅/glitch/）"
+                  f"—— 先用无 glitch 版")
+        is_glitch = False
+    if is_glitch:
+        attr += '_glitch'   # 同王霜：glitch 并进表情属性名，避免属性残留粘连
+    elif _YL_STATE['glitch']:
+        attr += '_unglitch'   # 上一帧是 glitch：干净脸带扭曲复原动效入场
+    _YL_STATE['yl'], _YL_STATE['corpse'] = True, False
+    _YL_STATE['glitch'] = is_glitch
+    # 消失后的重新上台：先 hide 清掉 yl_vanish 的终态（见 _YL_STATE 注释），
+    # 再走 glitch 物化入场（消失的镜像）——非自然移动统一用 glitch 登/退场。
+    # behind ws：图层上尤里娅（含尸首形态）在王霜身后（作者定稿）——
+    # 构图靠拉开间距（YL_MID_XPOS vs WS_WALK_END_X）+ 双方缩小留出空间。
+    if _YL_STATE['vanished']:
+        _YL_STATE['vanished'] = False
+        return (f'{indent}## 尤里娅立绘：{marker}（消失后重现：glitch 物化）\n'
+                f'{indent}hide yl\n'
+                f'{indent}show yl normal {attr} at yl_mid_glitchin behind ws')
+    return (f'{indent}## 尤里娅立绘：{marker}\n'
+            f'{indent}show yl normal {attr} at yl_mid behind ws\n'
+            f'{indent}$ renpy.transition({EXPR_TRANSITION}, layer="master")')
+
+
+def emit_youliya_hide(indent):
+    """【尤里娅消失】：异常消失 —— 换挂 yl_vanish（全身撕裂渐强 + 随机行序
+    逐行掐断，见 sprites.rpy），不是 fade out。非阻塞、不发 hide：行丢完即
+    不可见，下次 show / scene 自然接管（同店员退场）。未在场时返回 None。"""
+    if not (_YL_STATE['yl'] or _YL_STATE['corpse']):
+        return None
+    _YL_STATE['yl'] = _YL_STATE['corpse'] = False
+    _YL_STATE['glitch'] = False
+    _YL_STATE['vanished'] = True
+    return f'{indent}show yl at yl_vanish'
+
+
+def emit_corpse_show(indent, at='yl_corpse_pos'):
+    """尸首形态上台（【…尸首登场】）。同 tag show —— 人形在场时直接被替换。
+    at：摆位/入场 transform（异变揭示传 yl_corpse_in —— 撕裂砸入落定）。
+    素材缺失返回 None。"""
+    if YL_CORPSE_PATH is None:
+        key = ('yl_corpse',)
+        if key not in _SPRITE_WARNED:
+            _SPRITE_WARNED.add(key)
+            print("WARNING: 缺尤里娅尸首素材（尤利娅尸首.png）—— 尸首登场仅注释")
+        return None
+    _YL_STATE['yl'], _YL_STATE['corpse'] = False, True
+    _YL_STATE['glitch'] = False
+    pre = f'{indent}hide yl\n' if _YL_STATE['vanished'] else ''
+    _YL_STATE['vanished'] = False
+    # behind ws：图层上尤里娅（含尸首形态）在王霜身后（作者定稿，理由见
+    # emit_youliya_show）。
+    return f'{pre}{indent}show yl corpse at {at} behind ws'
 
 
 ################################################################################
@@ -883,8 +1204,9 @@ def generate_sprites_rpy():
     这样 glitch 动画帧不用逐帧包 Transform。"""
     out = [
         '## AUTO-GENERATED by convert_script.py — 不要手改，重跑转换器会覆盖。',
-        '## 王霜立绘：素材在本目录下按 <姿势>(<表情>.png 命名，扫描自动注册。',
-        '## 摆位参数改 convert_script.py 里的 WS_* 常量。',
+        '## 立绘素材按角色分文件夹：王霜/（按 <姿势>(<表情>.png 命名，递归扫描）、',
+        '## 尤里娅/（平铺，<角色名>(<表情>.png；尤利娅尸首.png = 尸首形态）。',
+        '## 摆位参数改 convert_script.py 里的 WS_* / YL_* 常量。',
         '',
     ]
     for (pose, expr), rel in sorted(SPRITE_INDEX.items()):
@@ -893,6 +1215,18 @@ def generate_sprites_rpy():
             print(f"WARNING: 素材 {rel} 的表情 '{expr}' 不在 SPRITE_EXPR_ATTRS，未注册")
             continue
         out.append(f'image ws {SPRITE_POSE_ATTRS[pose]} {expr_attr} = "{rel}"')
+    # 面部 glitch 出现/复原的扭曲动效（见 FACE_WARP_SECONDS 注释）：
+    # _glitch / _unglitch 图都以强撕裂入场、easeout 落定成静帧。
+    def face_warp_atl(band):
+        top, bot = band
+        return [
+            '    shader "game.sprite_glitch"',
+            f'    u_sg_top {top}',
+            f'    u_sg_bot {bot}',
+            '    u_sg_dropout 0.0',
+            '    u_sg_amp 1.0',
+            f'    easeout {FACE_WARP_SECONDS} u_sg_amp 0.0',
+        ]
     for (pose, expr), frames in sorted(SPRITE_GLITCH_INDEX.items()):
         expr_attr = SPRITE_EXPR_ATTRS.get(expr)
         if expr_attr is None:
@@ -902,6 +1236,17 @@ def generate_sprites_rpy():
         for rel in frames:
             out.append('    choice:')
             out.append(f'        "{rel}"')
+        out += face_warp_atl(WS_FACE_BAND)
+    # _unglitch：干净版 + 同款扭曲入场 —— glitch 消失时脸"复原回来"。
+    # 全部 base 组合都生成（零素材成本），glitch 后的任何干净 show 都能用。
+    for (pose, expr), rel in sorted(SPRITE_INDEX.items()):
+        expr_attr = SPRITE_EXPR_ATTRS.get(expr)
+        if expr_attr is None:
+            continue
+        out.append('')
+        out.append(f'image ws {SPRITE_POSE_ATTRS[pose]} {expr_attr}_unglitch:')
+        out.append(f'    "{rel}"')
+        out += face_warp_atl(WS_FACE_BAND)
     # 软 glitch（店员用）：干净立绘挂着，每隔 2~3 秒随机闪两下故障帧。
     # 闪帧优先用 _glitchsoft 局部帧（只有几个小范围出故障，--patches 生成）；
     # 没有软帧的组合回退全身 glitch 帧并告警。持续循环的 _glitch 是
@@ -934,6 +1279,30 @@ def generate_sprites_rpy():
         out.append(f'        "{f2}"')
         out.append(f'        {WS_CLERK_GLITCH_FLASH}')
         out.append('        repeat')
+    # 尤里娅（tag=yl）：单姿势（normal=一般态）多表情 + 尸首形态（corpse）。
+    # 同一个 tag —— 人形与尸首 show 即互换，无需 hide（属性互斥，Ren'Py 自动
+    # 丢弃拼不出 image 的旧属性）。
+    if YL_INDEX or YL_CORPSE_PATH:
+        out.append('')
+        out.append('## 尤里娅（银白色沙漠段）。')
+        for attr, rel in sorted(YL_INDEX.items()):
+            out.append(f'image yl normal {attr} = "{rel}"')
+        if YL_CORPSE_PATH:
+            out.append(f'image yl corpse = "{YL_CORPSE_PATH}"')
+        # glitch：与王霜同款 —— 静帧三选一，每次 show 重新抽（血红面部毁容），
+        # 入场带扭曲落定；_unglitch 为复原动效。
+        for attr, frames in sorted(YL_GLITCH_INDEX.items()):
+            out.append('')
+            out.append(f'image yl normal {attr}_glitch:')
+            for rel in frames:
+                out.append('    choice:')
+                out.append(f'        "{rel}"')
+            out += face_warp_atl(YL_FACE_BAND)
+        for attr, rel in sorted(YL_INDEX.items()):
+            out.append('')
+            out.append(f'image yl normal {attr}_unglitch:')
+            out.append(f'    "{rel}"')
+            out += face_warp_atl(YL_FACE_BAND)
     # 小跳（【小跳】标记）的起落 ATL；每个摆位都配一个内联了自己静态摆位的
     # _hop 版完整 transform —— at 列表必须始终单元素（zoom 平方坑，见
     # SPRITE_HOP_PX 上方注释）。subpixel 同走路：位移小，不开会整像素跳格。
@@ -965,11 +1334,214 @@ def generate_sprites_rpy():
         '## 半身近景 + 小跳（【小跳】）。',
         'transform ws_close_hop:'] + close_static + hop_atl + [
         '',
-        '## 中景（沙漠桥段/虚空对视）：大小与店员立绘一致。',
+        '## 中景（虚空对视）：大小与店员立绘一致，居中。',
         'transform ws_mid:'] + mid_static + [
         '',
         '## 中景 + 小跳（【小跳】）。',
         'transform ws_mid_hop:'] + mid_static + hop_atl + [
+        '',
+    ]
+    # 沙漠摆位：中景尺寸但站画面偏右 —— 与走路进场的落点重合，跑动 sequence
+    # 后重新登场不瞬移；左侧留给尤里娅/尸首。
+    desert_static = [
+        '    xanchor 0.5',
+        f'    xpos {WS_WALK_END_X}',
+        '    yanchor 0.0',
+        f'    ypos {WS_MID_YPOS}',
+        f'    zoom {WS_DESERT_ZOOM}',
+        # 显式归零 glitch uniform：玩家快速点击时本 transform 可能替换掉
+        # 播到一半的 _glitchin，尾部对齐继承会把中途撕裂值冻住 —— 归零兜底。
+        '    u_sg_amp 0.0',
+        '    u_sg_dropout 0.0',
+    ]
+    # glitch 物化入场（消失的镜像）：撕裂/行丢失从满值收敛到 0 —— 首帧
+    # 不可见，随后被"信号重新拼出来"。挂在各静态摆位上生成 _glitchin 版。
+    # mesh 的理由同 sg_full。
+    def glitchin_atl():
+        return [
+            '    mesh True',
+            '    shader "game.sprite_glitch"',
+            '    u_sg_top 0.0',
+            '    u_sg_bot 1.0',
+            '    u_sg_amp 1.0',
+            '    u_sg_dropout 1.0',
+            '    parallel:',
+            f'        easeout {GLITCHIN_SECONDS} u_sg_amp 0.0',
+            '    parallel:',
+            f'        easeout {round(GLITCHIN_SECONDS * 0.8, 3)} u_sg_dropout 0.0',
+        ]
+    out += [
+        '## 沙漠中景（银白色沙漠段）：偏右站位 = 走路进场落点。',
+        'transform ws_desert:'] + desert_static + [
+        '',
+        '## 沙漠中景 + 小跳（【小跳】）。',
+        'transform ws_desert_hop:'] + desert_static + hop_atl + [
+        '',
+        '## 沙漠中景 + glitch 物化入场（跑动 sequence 结束后的非自然重新登场）。',
+        '## ★紧随其后的同一交互内立绘 show 会省略 at 列表★（同走路窗口的处理），',
+        '## 否则替换回 ws_desert 时按尾部对齐继承中途值、动画冻在半路。',
+        'transform ws_desert_glitchin:'] + desert_static + glitchin_atl() + [
+        '',
+        '## 【从当前位置(缓缓)走到屏幕中心，立绘略微放大】：从走路落点走到屏幕',
+        '## 中心，步频比走入略快，边走边微放大（走近镜头）。窗口语义同走路 ——',
+        '## 后续 show 省略 at，人留在中心。',
+        'transform ws_desert_center_walk:',
+        '    subpixel True',
+        '    xanchor 0.5',
+        f'    xpos {WS_WALK_END_X}',
+        '    yanchor 0.0',
+        f'    ypos {WS_MID_YPOS}',
+        f'    zoom {WS_DESERT_ZOOM}',
+        '    u_sg_amp 0.0',
+        '    u_sg_dropout 0.0',
+        '    parallel:',
+        f'        linear {WS_CWALK_SECONDS} xpos {WS_CWALK_END_X}',
+        '    parallel:',
+        f'        ease {WS_CWALK_SECONDS} zoom {WS_CWALK_ZOOM}',
+        '    parallel:',
+        '        block:',
+        f'            easeout {WS_CWALK_STEP / 2} yoffset -{WS_WALK_BOB}',
+        f'            easein {WS_CWALK_STEP / 2} yoffset 0',
+        f'            repeat {max(1, round(WS_CWALK_SECONDS / WS_CWALK_STEP))}',
+        '',
+        '## 【立绘回归原来大小】：zoom 从继承的放大值缓回常规。★只用于紧接',
+        '## 中心走之后的 re-show★ —— zoom 初值靠尾部对齐继承，冷启动会从 1.0',
+        '## 缩下来。yoffset 归零兜底（快速点击时可能继承到迈步中途的起伏值）。',
+        'transform ws_desert_center:',
+        '    xanchor 0.5',
+        f'    xpos {WS_CWALK_END_X}',
+        '    yanchor 0.0',
+        f'    ypos {WS_MID_YPOS}',
+        '    yoffset 0',
+        '    u_sg_amp 0.0',
+        '    u_sg_dropout 0.0',
+        f'    ease {WS_RESIZE_BACK_SECONDS} zoom {WS_DESERT_ZOOM}',
+        '',
+        '## 【尤里娅登场】：王霜平滑滑回右侧让位。xpos 从尾部对齐继承的当前值',
+        '## ease 过去；zoom 只是兜底归位（正常流程她已是 WS_DESERT_ZOOM，无缩放',
+        '## 动作）。无步态起伏 —— 是"画面重新构图"不是走路。',
+        '## ★同 ws_desert_center：只用于窗口内 re-show，冷启动无意义★。',
+        'transform ws_desert_slide_right:',
+        '    xanchor 0.5',
+        '    yanchor 0.0',
+        f'    ypos {WS_MID_YPOS}',
+        '    yoffset 0',
+        '    u_sg_amp 0.0',
+        '    u_sg_dropout 0.0',
+        '    parallel:',
+        f'        ease {WS_SLIDE_SECONDS} xpos {WS_WALK_END_X}',
+        '    parallel:',
+        f'        ease {WS_SLIDE_SECONDS} zoom {WS_DESERT_ZOOM}',
+        '',
+    ]
+    yl_static = [
+        '    xanchor 0.5',
+        f'    xpos {YL_MID_XPOS}',
+        '    yanchor 0.0',
+        f'    ypos {YL_MID_YPOS}',
+        f'    zoom {YL_MID_ZOOM}',
+        '    u_sg_amp 0.0',      # 归零兜底，理由同 desert_static
+        '    u_sg_dropout 0.0',
+    ]
+    corpse_static = [
+        '    xanchor 0.5',
+        f'    xpos {YL_CORPSE_XPOS}',
+        '    yanchor 0.0',
+        f'    ypos {YL_CORPSE_YPOS}',
+        f'    zoom {YL_CORPSE_ZOOM}',
+    ]
+    # 全身信号故障的 uniform 初始化（作用带 0..1 = 整个立绘）。
+    # ★mesh True 必须有★：先把子级压平成一张纹理再跑 shader —— 否则
+    # (a) shader 会下渗到叶子纹理，和 _glitch 图自带的同名 shader 合并、
+    #     uniform 互吞（全身撕裂完全不生效）；
+    # (b) 作用带按整个立绘算，而不是按切块纹理各算各的。
+    sg_full = [
+        '    mesh True',
+        '    shader "game.sprite_glitch"',
+        '    u_sg_top 0.0',
+        '    u_sg_bot 1.0',
+        '    u_sg_dropout 0.0',
+        '    u_sg_amp 0.0',
+    ]
+    out += [
+        '## 尤里娅：左侧偏中，与右侧的王霜（ws_desert）同台等高。',
+        'transform yl_mid:'] + yl_static + [
+        '',
+        '## 尤里娅 glitch 物化入场（消失后的重现 —— 消失的镜像）。',
+        'transform yl_mid_glitchin:'] + yl_static + glitchin_atl() + [
+        '',
+        '## 【尤里娅消失】：异常消失 —— 全身撕裂渐强 + 随机行序逐行掐断',
+        '## （信号被掐，不是 fade out）。非阻塞；行全部丢完即不可见，不发',
+        '## hide —— 下次 show / scene 自然接管（同店员退场的处理）。',
+        'transform yl_vanish:'] + yl_static + sg_full + [
+        '    parallel:',
+        f'        easein {YL_VANISH_SECONDS} u_sg_amp 1.0',
+        '    parallel:',
+        f'        pause {round(YL_VANISH_SECONDS * 0.25, 3)}',
+        f'        easein {round(YL_VANISH_SECONDS * 0.75, 3)} u_sg_dropout 1.0',
+        '',
+        '## 【尤里娅异变】第一拍：人形高频痉挛 + 身体异常纵向拉伸抽动 +',
+        '## 撕裂渐强 + 血色从内漫延淹没全身 —— 转换器配 hard_pause 锁住整拍，',
+        '## 红闪（mutation_flash）后第二拍尸首（yl_corpse_in）扑入。',
+        'transform yl_mutate:'] + yl_static + sg_full + [
+        '    subpixel True',
+        '    matrixcolor TintMatrix("#ffffff")',
+        '    parallel:',
+        f'        easein {YL_MUTATE_SECONDS} u_sg_amp 1.0',
+        '    parallel:',
+        '        # 血色漫延：结构相同的 TintMatrix 之间逐参数插值',
+        f'        ease {YL_MUTATE_SECONDS} matrixcolor TintMatrix("{YL_MUTATE_RED}")',
+        '    parallel:',
+        '        # 高频痉挛',
+        '        block:',
+        '            linear 0.04 xoffset -12',
+        '            linear 0.04 xoffset 12',
+        '            repeat',
+        '    parallel:',
+        '        # 身体异常拉伸抽动（血肉在错误地重组）',
+        '        block:',
+        '            easeout 0.16 yzoom 1.07',
+        '            easein 0.12 yzoom 0.96',
+        '            repeat',
+        '    parallel:',
+        f'        pause {round(YL_MUTATE_SECONDS * 0.6, 3)}',
+        f'        easein {round(YL_MUTATE_SECONDS * 0.4, 3)} u_sg_dropout 0.6',
+        '',
+        '## 尸首形态（横构图缝合怪）：头与王霜立绘的头等大，左侧骨头出画。',
+        'transform yl_corpse_pos:'] + corpse_static + [
+        '',
+        '## 尸首 glitch 物化入场（跑动 sequence 结束后的重新登场）。',
+        'transform yl_corpse_glitchin:'] + corpse_static + glitchin_atl() + [
+        '',
+        '## 异变第二拍：尸首从深处扑到眼前 —— 以头部为锚点、zoom 从 LUNGE 倍',
+        '## 猛冲到位（脸原地朝你放大）+ 撕裂收敛落定（配红闪余韵和 fx_shock）。',
+        '## 锚点坐标由 YL_CORPSE_HEAD/IMG 换算，落位与 yl_corpse_pos 完全一致。',
+        'transform yl_corpse_in:',
+        '    # 从 yl_mutate 尾部对齐继承来的痉挛/拉伸/血色中间值全部显式复位',
+        '    xoffset 0',
+        '    yzoom 1.0',
+        '    matrixcolor TintMatrix("#ffffff")',
+        f'    xanchor {YL_CORPSE_HEAD[0]}',
+        f'    yanchor {YL_CORPSE_HEAD[1]}',
+        f'    xpos {round(YL_CORPSE_XPOS * 1920 + (YL_CORPSE_HEAD[0] - 0.5) * YL_CORPSE_IMG[0] * YL_CORPSE_ZOOM)}',
+        f'    ypos {round(YL_CORPSE_YPOS + YL_CORPSE_HEAD[1] * YL_CORPSE_IMG[1] * YL_CORPSE_ZOOM)}',
+        '    mesh True   # 同 sg_full：隔离图内同名 shader + 作用带按整图算',
+        '    shader "game.sprite_glitch"',
+        '    u_sg_top 0.0',
+        '    u_sg_bot 1.0',
+        '    u_sg_dropout 0.0',
+        '    u_sg_amp 1.0',
+        f'    zoom {round(YL_CORPSE_ZOOM * YL_CORPSE_LUNGE, 4)}',
+        '    parallel:',
+        f'        easeout {YL_LUNGE_SECONDS} zoom {YL_CORPSE_ZOOM}',
+        '    parallel:',
+        f'        easeout {YL_CORPSE_IN_SECONDS} u_sg_amp 0.0',
+        '',
+        '## 异变切换瞬间的满屏红闪：show 即峰值、随后褪尽。scene 时被清掉。',
+        'image mutation_flash:',
+        f'    Solid("{YL_FLASH_COLOR}", xysize=(1920, 1080))',
+        f'    alpha {YL_FLASH_ALPHA}',
+        f'    linear {YL_FLASH_FADE} alpha 0.0',
         '',
     ]
     # 走路步数取整到完整周期：x 到位后最后一步在原地落定，像自然收步。
@@ -985,7 +1557,7 @@ def generate_sprites_rpy():
         f'    xpos {WS_WALK_START_X}',
         '    yanchor 0.0',
         f'    ypos {WS_MID_YPOS}',
-        f'    zoom {WS_CLERK_ZOOM}',
+        f'    zoom {WS_DESERT_ZOOM}',
         '    parallel:',
         f'        linear {WS_WALK_SECONDS} xpos {WS_WALK_END_X}',
         '    parallel:',
@@ -1132,7 +1704,8 @@ def normalize_dots_line(text):
 # 术语结尾，链接就套在哪个术语上。加新注释 = 把术语加进这个列表。
 # 找不到术语时的兜底：标记紧跟在破折号/省略号后（如 "柔软而光滑的——【注释：
 # 想都别想】"）就把那串标点作为链接锚点；再不行取末尾的连续文字并告警。
-ANNOTATION_TERMS = ['逝乐园', '冒充者综合征', '脑血屏障', '脑前叶白质切除术', '杰罗瓦', '被试']
+ANNOTATION_TERMS = ['逝乐园', '冒充者综合征', '脑血屏障', '脑前叶白质切除术', '杰罗瓦',
+                    '被试', '曝光效应']
 
 _ANNOT_RE = re.compile(r'【注释：\s*(.*?)\s*】')
 
@@ -1534,9 +2107,15 @@ def _emit_scene(out, indent, scene_name, bg_image, transition, in_say=False):
     只覆盖"纯换背景"的情况：镜头设/复位、overlay 立绘、店员退场等复杂分支
     照走原 `with` 路径（它们各自的时序依赖阻塞式过渡）。"""
     global _CURRENT_EXPR_SCENE, _LAST_SPRITE, _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE
+    global _SPRITE_GLITCHIN_PENDING, _SPRITE_CWALK_PENDING
     _LAST_SPRITE = None   # scene 语句会清掉所有 show，立绘追踪一起清
     _SPRITE_WALK_PENDING = False   # 走路窗口随立绘一起被 scene 清掉
     _SPRITE_WALK_ACTIVE = False
+    _SPRITE_GLITCHIN_PENDING = False
+    _SPRITE_CWALK_PENDING = False
+    # 尤里娅/尸首同样被 scene 清掉
+    _YL_STATE['yl'] = _YL_STATE['corpse'] = _YL_STATE['glitch'] = False
+    _YL_STATE['vanished'] = False
     # 有店员在场：先发垂直平移退场动画，pause 等动画走完再转场
     # （剧本：「店员和店员2退场，退场的形式是垂直平移出屏幕」）。
     clerk_exits = [e for e in (emit_clerk_exit(c, indent) for c in sorted(_CLERK_STATE))
@@ -1944,15 +2523,16 @@ def _collect_cond_prefixes(seq, acc):
                 _collect_cond_prefixes(body, acc)
 
 
-def emit_extended_choice_block(collected, output, indent, large=False, centered=False):
+def emit_extended_choice_block(collected, output, indent, large=False, centered=False,
+                               lr=False):
     """含选项的 Extended 块总入口：组树 → 递归生成。"""
     seq = _build_choice_tree(collected)
     _COND_SEEN_PREFIXES.clear()
     _collect_cond_prefixes(seq, _COND_SEEN_PREFIXES)
-    _emit_choice_seq(seq, output, indent, large, centered, started=False)
+    _emit_choice_seq(seq, output, indent, large, centered, started=False, lr=lr)
 
 
-def _emit_choice_seq(seq, output, indent, large, centered, started):
+def _emit_choice_seq(seq, output, indent, large, centered, started, lr=False):
     """按序生成：普通条目交给 emit_extended_segments（带续接状态），
     菜单递归生成。返回结束时的续接状态。"""
     run = []
@@ -1965,7 +2545,7 @@ def _emit_choice_seq(seq, output, indent, large, centered, started):
             if not started:
                 print("WARNING: Extended 块内的菜单前没有任何正文，"
                       "菜单标题的 extend 将无 say 可接")
-            started = _emit_block_menu(item[1], output, indent, large, centered)
+            started = _emit_block_menu(item[1], output, indent, large, centered, lr=lr)
         else:
             run.append(item)
     if run:
@@ -1974,7 +2554,7 @@ def _emit_choice_seq(seq, output, indent, large, centered, started):
     return started
 
 
-def _emit_block_menu(options, output, indent, large, centered):
+def _emit_block_menu(options, output, indent, large, centered, lr=False):
     """生成一个（可嵌套的）菜单。带循环选项时把 menu 包进局部 label，
     循环分支末尾 jump 回来重新弹出。返回 True（菜单不清框，续接状态保持）。"""
     _EXT_MENU_COUNTER[0] += 1
@@ -2043,13 +2623,18 @@ def _emit_block_menu(options, output, indent, large, centered):
         # 回显玩家的选择（——选项文本）。与分支第一条正文并进同一条 extend
         # （中间字面 \n 换行），一次点击同时看到回显和响应，不多耗一次点击。
         # 第一条不是纯正文时（如直接嵌套菜单）回显才单独成句。
+        # 「左右分开对齐」块内：回显的是玩家（阿鹤）说的话 —— 与【右】行同侧。
+        # 剧本不在选项行上写【右】（会让选项菜单本身显得莫名其妙），所以对齐由
+        # 这里按块的 lr 标记统一补，包成 {r}…{/r}（见 _lr_transform / screens.rpy）。
         echo = '——' + opt['text']
+        if lr:
+            echo = '{r}' + echo + '{/r}'
         body = list(body)
         if body and body[0][0] is None:
             body[0] = (None, echo + chr(92) + 'n' + body[0][1])
         else:
             output.append(f'{inner}extend {format_dialogue(chr(92) + "n" + echo)}')
-        _emit_choice_seq(body, output, inner, large, centered, started=True)
+        _emit_choice_seq(body, output, inner, large, centered, started=True, lr=lr)
         if opt['loop']:
             output.append(f'{inner}## 重新展示本次选择')
             output.append(f'{inner}jump _extmenu_{n}')
@@ -2058,6 +2643,11 @@ def _emit_block_menu(options, output, indent, large, centered):
 
 def convert_content_line(line, indent="    ", use_large_textbox=False):
     """Convert a single content line to Ren'Py format"""
+    # 立绘/场景状态机的 global 统一在函数头声明一次 —— 分散在各分支里声明的话，
+    # 靠前分支的赋值会让靠后分支的 global 语句直接 SyntaxError。
+    global _CURRENT_EXPR_SCENE, _LAST_SPRITE
+    global _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE
+    global _SPRITE_GLITCHIN_PENDING, _SPRITE_CWALK_PENDING
     line = line.strip()
 
     if not line:
@@ -2207,7 +2797,6 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
     walk_match = re.match(
         rf'^【(?:王霜走路进场|{WS_WALK_INLINE_MARK})(?:[，,](.+))?】$', line)
     if walk_match:
-        global _SPRITE_WALK_PENDING
         _SPRITE_WALK_PENDING = True
         rest = walk_match.group(1)
         if rest:
@@ -2216,6 +2805,16 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
                 return f'{indent}## 王霜走路进场\n{code}'
             # 姿势解析不出素材：退化成"下一条立绘生效"（pending 已置位）
         return f'{indent}## 王霜走路进场（下一条立绘生效）'
+
+    # 【从当前位置(缓缓)走到屏幕中心…】/【立绘回归原来大小】独立成行的写法
+    # （行内挂在台词标记上的写法见 char_action_match 的标记循环）。
+    inner = line.strip('【】')
+    if WS_CWALK_MARK_RE.match(inner):
+        _SPRITE_CWALK_PENDING = True
+        return f'{indent}## {inner}（下一条立绘生效）'
+    if inner == WS_RESIZE_BACK_MARK:
+        code = emit_sprite_resize_back(indent)
+        return f'{indent}## {inner}' + ('\n' + code if code else '')
 
     # 跑动 sequence（尸首追逐段）：【跑动sequence开始[，并锁操作N秒]】起跑 /
     # 【跑动sequence结束】收——溶解回静止沙漠。单背景奔跑错觉（bg_desert_run/
@@ -2229,8 +2828,13 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         _HEAD_TURN['count'] += 1
         return f'{indent}## 转头（跑动起手换用 whip_pan 甩头转场）'
 
-    run_start = re.match(r'^【跑动sequence开始(?:[，,]\s*并?锁操作([\d.]+)秒)?】$', line)
+    # 【转头，跑动sequence开始…】：合并写法 —— 转头登记 + 起跑一行完成。
+    run_start = re.match(
+        r'^【(转头[，,]\s*)?跑动sequence开始(?:[，,]\s*并?锁操作([\d.]+)秒)?】$', line)
     if run_start:
+        if run_start.group(1):
+            _HEAD_TURN['pending'] = True
+            _HEAD_TURN['count'] += 1
         _RUN_SEQ_COUNT[0] += 1
         bg = 'bg_desert_run' if _RUN_SEQ_COUNT[0] == 1 else 'bg_desert_run2'
         run_lines = [f'{indent}## {line.strip("【】")}']
@@ -2245,13 +2849,122 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         else:
             transition = 'scene_dissolve'
         _emit_scene(run_lines, indent, '银白色沙漠跑动', bg, transition)
-        if run_start.group(1):
-            run_lines.append(f'{indent}$ hard_pause({run_start.group(1)})')
+        if run_start.group(2):
+            run_lines.append(f'{indent}$ hard_pause({run_start.group(2)})')
         return '\n'.join(run_lines)
+    # 【一头扎进沙地sequence[，并在完成前锁定点击]】：第一人称俯冲扎进沙地。
+    # 首帧与当前静止沙漠完全一致（同源图），with None 无缝切入即刻加速；
+    # scene 顺带清掉王霜/尸首立绘（低头的瞬间他们离开视野）。俯冲全程锁点击，
+    # 末段画面压黑，正好接剧本紧随的 【转场：图片黑屏】。
+    dive_match = re.match(r'^【一头扎进沙地sequence(?:[，,]\s*并?在完成前锁定点击)?】$', line)
+    if dive_match:
+        dive_bg = ('bg_sand_dive_moonless' if _DESERT_RETURN[1] == 'bg_desert_moonless'
+                   else 'bg_sand_dive')
+        dive_lines = [f'{indent}## {line.strip("【】")}']
+        _emit_scene(dive_lines, indent, '一头扎进沙地', dive_bg, 'None')
+        dive_lines.append(f'{indent}$ hard_pause({SAND_DIVE_SECONDS})')
+        return '\n'.join(dive_lines)
+
     if line == '【跑动sequence结束】':
+        # 溶解回静止沙漠 —— 回到最近一次转场的那个沙漠（有月/无月，见
+        # _DESERT_RETURN：【转场：银白色沙漠，无月】后月亮不能自己长回来）。
+        # 剧本把【王霜和尸首登场】写在本标记**之前**（跑动被两人的物化登场
+        # 打断）：scene 会把刚 show 的立绘清掉 —— 此时不走 _emit_scene，
+        # 手工发 scene + 同帧重发立绘 + with，两人随溶解全程留在画面上。
         run_lines = [f'{indent}## 跑动sequence结束']
-        _emit_scene(run_lines, indent, '银白色沙漠', 'bg_desert', 'scene_dissolve')
+        keep_ws = _LAST_SPRITE
+        keep_corpse = _YL_STATE['corpse']
+        if keep_ws or keep_corpse:
+            run_lines.append(f'{indent}scene {_DESERT_RETURN[1]}')
+            if keep_ws:
+                pose, expr, _g = keep_ws
+                run_lines.append(f'{indent}show ws {SPRITE_POSE_ATTRS[pose]} '
+                                 f'{SPRITE_EXPR_ATTRS[expr]} at ws_desert')
+            if keep_corpse:
+                run_lines.append(f'{indent}show yl corpse at yl_corpse_pos behind ws')
+            run_lines.append(f'{indent}with scene_dissolve')
+            # 手工 scene 的状态收尾（对应 _emit_scene 里的重置，但保留立绘追踪）
+            _CURRENT_EXPR_SCENE = _DESERT_RETURN[0]
+            _SPRITE_WALK_PENDING = _SPRITE_WALK_ACTIVE = False
+            _SPRITE_GLITCHIN_PENDING = False
+            _LAST_SPRITE = keep_ws
+            _YL_STATE['yl'], _YL_STATE['glitch'] = False, False
+            _YL_STATE['corpse'], _YL_STATE['vanished'] = keep_corpse, False
+        else:
+            _emit_scene(run_lines, indent, _DESERT_RETURN[0], _DESERT_RETURN[1],
+                        'scene_dissolve')
         return '\n'.join(run_lines)
+
+    # 【尤里娅登场】：她本人的 show 在下一条她的台词标记上；王霜从屏幕中心
+    # 平滑滑回右侧让位（只移动不缩放 —— 小规格从走入就生效）。
+    if line == '【尤里娅登场】':
+        code = emit_sprite_slide_right(indent)
+        if not code:
+            return f'{indent}## 尤里娅登场'
+        # 让位动作走完，尤里娅才上台。她的 show 挂在下一条她的台词标记上，
+        # 而 slide 是异步 ATL —— 不在这里挡一拍的话两件事同帧发生：王霜还在滑，
+        # 人已经溶进来了。挡的时长就是 slide 本身的时长。
+        # hard_pause：这一拍是「画面重新构图」，被点过去就等于没让位。
+        return (f'{indent}## 尤里娅登场（王霜滑回右侧让位，滑完她才上台）\n'
+                f'{code}\n'
+                f'{indent}$ hard_pause({WS_SLIDE_SECONDS})')
+
+    # 【尤里娅消失】：master 层溶解隐去（后面隔着旁白才会再出现）。
+    if line == '【尤里娅消失】':
+        code = emit_youliya_hide(indent)
+        return f'{indent}## 尤里娅消失' + ('\n' + code if code else '')
+
+    # 【尤里娅异变】两拍演出（第二拍 = 紧随的【…尸首登场】，同一交互内，
+    # 中间只隔 jump scare 音效标记）：
+    #   第一拍：人形全身痉挛 + 撕裂渐强 + 开始碎行（yl_mutate），hard_pause
+    #   锁住整拍不给点过 —— 恐怖在"她正在变成那个东西"的过程里；
+    #   第二拍：尸首带强撕裂砸进画面落定（yl_corpse_in + fx_shock）。
+    if line == '【尤里娅异变】':
+        if _YL_STATE['yl']:
+            return (f'{indent}## 尤里娅异变（第一拍：痉挛+拉伸+血色漫延；'
+                    f'红闪后第二拍扑入）\n'
+                    f'{indent}show yl at yl_mutate\n'
+                    f'{indent}$ hard_pause({YL_MUTATE_SECONDS})\n'
+                    f'{indent}show mutation_flash zorder 200')
+        return f'{indent}## 尤里娅异变'
+
+    # 【…尸首登场】：尸首形态 show。两种写法：
+    #   【浑身伤痕累累…的尸首登场】（异变第二拍：撕裂砸入 + fx_shock）
+    #   【王霜和尸首登场】（跑动 sequence 结束后重逢 —— 王霜也一并回台，
+    #   平静版摆位，不做砸入）
+    if line.endswith('尸首登场】') and line.startswith('【'):
+        head = f'{indent}## {line.strip("【】")}'
+        is_reunion = '王霜和' in line
+        corpse = emit_corpse_show(
+            indent, at='yl_corpse_glitchin' if is_reunion else 'yl_corpse_in')
+        if corpse is None:
+            return head
+        # 重逢时王霜的 show 排在尸首前面 —— 后 show 的在上层，尸首压住王霜
+        # （图层要求见 emit_corpse_show）。
+        out = [head]
+        if not is_reunion:
+            out.append(corpse)
+        if is_reunion:
+            # 王霜回台：跑动的 scene 清掉了她，两人都是非自然移动回来的 ——
+            # 与尸首一起走 glitch 物化入场（撕裂/行丢失收敛，消失的镜像）。
+            # ★登记 glitchin 窗口★：紧随的同一交互内还有她台词标记的 show，
+            # 那个 show 必须省略 at 列表，否则把播到一半的 _glitchin 换成
+            # 静态摆位、按尾部对齐继承中途值冻住（同走路窗口的处理）。
+            pose, expr, _g = _LAST_SPRITE or ('背手', '默认', False)
+            _LAST_SPRITE = (pose, expr, False)
+            at = SPRITE_SCENE_AT.get(_CURRENT_EXPR_SCENE, SPRITE_DEFAULT_AT)
+            out.append(f'{indent}show ws {SPRITE_POSE_ATTRS[pose]} '
+                       f'{SPRITE_EXPR_ATTRS[expr]} at {at}_glitchin')
+            _SPRITE_GLITCHIN_PENDING = True
+            out.append(corpse)
+            if _CURRENT_EXPR_SCENE == '银白色沙漠跑动':
+                # 跑动被登场打断（剧本把登场写在【跑动sequence结束】之前）：
+                # 物化在奔跑画面上锁点击播完 —— 两人凭空拼出挡在路中央，
+                # 随后的 结束 标记才把世界溶解回静止（立绘同帧重发不消失）。
+                out.append(f'{indent}$ hard_pause({GLITCHIN_SECONDS})')
+        else:
+            out.append(f'{indent}with fx_shock')
+        return '\n'.join(out)
 
     # Pause markers 【停顿：N】/【等待N秒】 -> `pause N` (N is seconds, float ok)
     # Use sparingly — for breathing room before a scene's first line, etc.
@@ -2260,8 +2973,8 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         return f'{indent}pause {pause_match}'
 
     # 场景滤镜 【场景滤镜：黑红混沌，逐渐加深】/【停止场景滤镜：…】。
-    # 滤镜住在独立的 "chaos" 图层上（scene 只清 master，中途的转场/跑动 sequence
-    # 冲不掉它），"逐渐加深"由 chaos_vignette_fx 的 ATL 自己完成 —— show 的那一刻
+    # 滤镜住在 master 层、排在立绘之前（behind ws, yl）—— 盖背景不盖人。
+    # "逐渐加深"由 chaos_t0 这个墙钟驱动（不是 ATL 的 st）—— 起雾的那一刻
     # 强度为 0，所以起点不需要转场。停止标记按剧本约定写在转场之前 —— 雾先在
     # 当前画面上用 1.5 秒 dissolve 退散，然后画面才切走（"滤镜先停，再转场"）。
     # 实现见 shaders.rpy「黑红混沌 vignette」一节。未知滤镜名退化为注释并告警。
@@ -2272,11 +2985,18 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
             print(f"WARNING: 未实现的场景滤镜 '{filter_name}' —— 仅注释")
             return f'{indent}## {line.strip("【】")}'
         if stopping:
+            # ★不要在 hide 那一拍清 chaos_t0★：清了 u_chaos 立刻归 0、雾缩到
+            # 画面外，1.5s 的 dissolve 就变成在溶解一片空气。with 是一次完整
+            # 交互，溶完之后再清。
             return (f'{indent}## 停止场景滤镜：{filter_name}\n'
-                    f'{indent}hide chaos_vignette onlayer chaos\n'
-                    f'{indent}with Dissolve(1.5)')
+                    f'{indent}hide chaos_vignette\n'
+                    f'{indent}with Dissolve(1.5)\n'
+                    f'{indent}$ chaos_t0 = None')
+        # 雾进 master 且排在立绘之前（behind），这样它盖背景但不盖人。
+        # scene 之后的补发由 shaders.rpy 的 _chaos_rescene 自动完成，这里不用管。
         return (f'{indent}## 场景滤镜：{filter_name}\n'
-                f'{indent}show chaos_vignette onlayer chaos')
+                f'{indent}$ chaos_start()\n'
+                f'{indent}show chaos_vignette behind ws, yl')
 
     # (Removed 【文本框淡入】 marker — `window show TRANSITION` does not affect
     # custom say screens, which is what this project uses. Fade-in is now
@@ -2304,6 +3024,16 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         # dedicated art fall back to a plain black background.
         output_lines = [f'{indent}## 转场：{scene_name}']
         bg_image = SCENE_BG_MAP.get(scene_name, 'black')
+        # 跑动 sequence 的回落点跟着最近的沙漠转场走（有月/无月）。
+        if scene_name in ('银白色沙漠', '银白色沙漠，无月'):
+            _DESERT_RETURN[0], _DESERT_RETURN[1] = scene_name, bg_image
+            if _CURRENT_EXPR_SCENE == '银白色沙漠跑动':
+                # 跑动进行中的沙漠转场（剧本把【转场：…无月】写在起跑之后）：
+                # 是"这片沙漠已无月"的声明，不是真的切画面 —— 真切会把跑动
+                # sequence 打断成静止图。只更新回落点，【跑动sequence结束】
+                # 溶解回来时月亮已经不在了。
+                return (f'{indent}## 转场：{scene_name}'
+                        f'（跑动中声明 —— 跑动结束时回落到此，不切画面）')
         global _PROLOGUE_FIRST_TRANSITION_PENDING
         if _PROLOGUE_FIRST_TRANSITION_PENDING:
             # Entering the game from the main menu: the water drop's ripple
@@ -2420,6 +3150,7 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         dialogue = char_action_match.group(3).strip()
         char_var = char_var_map[char_name]
         is_clerk = '店员' in char_name
+        is_yl = char_name == '尤里娅'
         pre = []   # 表情切换 / 注释，放在台词前
         markers = re.findall(r'【(.+?)】', char_action_match.group(2))
         # 行内走路标记：走路窗口的别名。★必须先于同行姿势标记置 pending★——
@@ -2427,9 +3158,19 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
         # 摆位站定。（global 声明在上方 walk_match 分支，同函数共享。）
         if WS_WALK_INLINE_MARK in markers and not is_clerk:
             _SPRITE_WALK_PENDING = True
+        # 走到屏幕中心：同走路标记，先于同行姿势标记置 pending。
+        if not is_clerk and any(WS_CWALK_MARK_RE.match(m) for m in markers):
+            _SPRITE_CWALK_PENDING = True
         for m in markers:
             if m == WS_WALK_INLINE_MARK:
                 pre.append(f'{indent}## {m}（走路进场，挂在本行立绘 show 上）')
+                continue
+            if WS_CWALK_MARK_RE.match(m):
+                pre.append(f'{indent}## {m}（挂在本行立绘 show 上）')
+                continue
+            if m == WS_RESIZE_BACK_MARK:
+                code = emit_sprite_resize_back(indent)
+                pre.append(f'{indent}## {m}' + ('\n' + code if code else ''))
                 continue
             if m == '小字':
                 # 把 【小字】 放回台词开头，交给 apply_small_text 缩小到行尾。
@@ -2440,6 +3181,11 @@ def convert_content_line(line, indent="    ", use_large_textbox=False):
                 code = (emit_clerk_hop(_clerk_id(char_name), indent) if is_clerk
                         else emit_sprite_hop(indent))
                 pre.append(f'{indent}## 小跳' + ('\n' + code if code else ''))
+                continue
+            if is_yl:
+                # 尤里娅台词的标记：她自己的立绘系统（tag=yl，独立于王霜）。
+                code = emit_youliya_show(m, indent)
+                pre.append(code if code else f'{indent}## {m}')
                 continue
             if is_clerk:
                 # 店员台词的标记：立绘归店员系统（as tag 独立于主立绘）。
@@ -2682,7 +3428,7 @@ def collect_accumulating_block(lines, start_i, end_line, marker_end, use_large=F
     # 块内含选项行时走嵌套菜单路径（正文跨菜单续在同一个框里）。
     if any(k == '__choice__' for k, _ in collected):
         emit_extended_choice_block(collected, output, indent,
-                                   large=use_large, centered=centered)
+                                   large=use_large, centered=centered, lr=lr)
     else:
         stray = [it for it in collected if it[0] == '__converge__']
         if stray:
@@ -2918,6 +3664,42 @@ def _collect_jail_sections(lines, start_i, end_line):
     return cond, sections, i
 
 
+def _insert_chaos_rescene(text):
+    """雾在 master 层上，scene 会把它一起清掉 —— 在窗口内每条 scene 之后补发一次。
+
+    为什么是后处理而不是改 _emit_scene：scene 行有六七个发出点（就地转场、长黑场、
+    overlay 场景、镜头 fade split、普通转场…），逐个改容易漏；而"窗口内所有 scene"
+    这个条件在最终文本上一眼可判 —— 起点 `$ chaos_start()`，终点 `$ chaos_t0 = None`。
+
+    `scene X with Y` 会被拆成 `scene X` / `show chaos_vignette` / `with Y`：
+    补发必须在过渡之前，否则甩头转场演完了雾才"啪"地冒出来。
+    """
+    out = []
+    active = False
+    for line in text.split(chr(10)):
+        stripped = line.strip()
+        if stripped.startswith('$ chaos_start()'):
+            active = True
+            out.append(line)
+            continue
+        if stripped.startswith('$ chaos_t0 = None'):
+            active = False
+            out.append(line)
+            continue
+        if active and stripped.startswith('scene '):
+            indent = line[:len(line) - len(line.lstrip())]
+            body = stripped[len('scene '):]
+            # 拆出 ` with <transition>` 尾巴（雾要参与这次过渡）
+            head, sep, tail = body.partition(' with ')
+            out.append(indent + 'scene ' + head)
+            out.append(indent + 'show chaos_vignette')
+            if sep:
+                out.append(indent + 'with ' + tail)
+            continue
+        out.append(line)
+    return chr(10).join(out)
+
+
 def convert_route(lines, start_line, end_line, label_name, route_num):
     """Convert a route section with proper branching"""
     output = []
@@ -2994,9 +3776,22 @@ def convert_route(lines, start_line, end_line, label_name, route_num):
                           + ("（不分句）" if no_split else "")
                           + ("（左右分开对齐）" if lr else ""))
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True, lr=lr)
+            # 【左右分开对齐】块 = 聊天框排版（lr_chat_mode）；其中含选项的那一块
+            # （＝粉红屏问询段）另外写死文字速度并锁点击（interro_pace）。
+            # 都走 store 开关，不换角色也不换 screen —— 翻译 ID 是 md5(Say.get_code())、
+            # 里面含角色名，换角色会把整块台词的英文翻译孤儿化。$ 赋值不进翻译。
+            interro = lr and any('menu:' in seg for seg in accumulated)
             if no_split:
                 output.append("    $ no_click_split = True")
+            if lr:
+                output.append("    $ lr_chat_mode = True")
+            if interro:
+                output.append("    $ interro_pace = True")
             output.extend(accumulated)
+            if interro:
+                output.append("    $ interro_pace = False")
+            if lr:
+                output.append("    $ lr_chat_mode = False")
             if no_split:
                 output.append("    $ no_click_split = False")
             output.append("    ## Extended大文本框结束")
@@ -3256,15 +4051,21 @@ def convert_prologue(lines, start_line, end_line):
     # main-menu→prologue boundary (where the bg is already the same video).
     global _PROLOGUE_FIRST_TRANSITION_PENDING, _CURRENT_EXPR_SCENE
     global _CAMERA_PAN_PENDING, _CAMERA_PAN_ACTIVE
-    global _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE
+    global _SPRITE_WALK_PENDING, _SPRITE_WALK_ACTIVE, _SPRITE_GLITCHIN_PENDING
+    global _SPRITE_CWALK_PENDING
     _PROLOGUE_FIRST_TRANSITION_PENDING = True
     _CURRENT_EXPR_SCENE = None
     _CAMERA_PAN_PENDING = None
     _CAMERA_PAN_ACTIVE = False
     _SPRITE_WALK_PENDING = False
     _SPRITE_WALK_ACTIVE = False
+    _SPRITE_GLITCHIN_PENDING = False
+    _SPRITE_CWALK_PENDING = False
     _CLERK_STATE.clear()
     _RUN_SEQ_COUNT[0] = 0
+    _DESERT_RETURN[0], _DESERT_RETURN[1] = '银白色沙漠', 'bg_desert'
+    _YL_STATE['yl'] = _YL_STATE['corpse'] = _YL_STATE['glitch'] = False
+    _YL_STATE['vanished'] = False
 
     output = []
     output.append("## prologue.rpy")
@@ -3341,9 +4142,22 @@ def convert_prologue(lines, start_line, end_line):
                           + ("（不分句）" if no_split else "")
                           + ("（左右分开对齐）" if lr else ""))
             accumulated, i = collect_accumulating_block(lines, i, end_line, 'Extended大文本框结束', use_large=True, lr=lr)
+            # 【左右分开对齐】块 = 聊天框排版（lr_chat_mode）；其中含选项的那一块
+            # （＝粉红屏问询段）另外写死文字速度并锁点击（interro_pace）。
+            # 都走 store 开关，不换角色也不换 screen —— 翻译 ID 是 md5(Say.get_code())、
+            # 里面含角色名，换角色会把整块台词的英文翻译孤儿化。$ 赋值不进翻译。
+            interro = lr and any('menu:' in seg for seg in accumulated)
             if no_split:
                 output.append("    $ no_click_split = True")
+            if lr:
+                output.append("    $ lr_chat_mode = True")
+            if interro:
+                output.append("    $ interro_pace = True")
             output.extend(accumulated)
+            if interro:
+                output.append("    $ interro_pace = False")
+            if lr:
+                output.append("    $ lr_chat_mode = False")
             if no_split:
                 output.append("    $ no_click_split = False")
             output.append("    ## Extended大文本框结束")
@@ -3524,13 +4338,15 @@ def main():
     _GLOSSARY.clear()   # 注释词典（转换过程中收集，最后写 glossary.rpy）
 
     # Prologue
-    prologue = insert_sfx_waits(convert_prologue(lines, 0, prologue_end))
+    prologue = _insert_chaos_rescene(
+        insert_sfx_waits(convert_prologue(lines, 0, prologue_end)))
     with open(os.path.join(BASE_DIR, 'game', 'scripts', 'prologue.rpy'), 'w', encoding='utf-8') as f:
         f.write(prologue)
     print("Prologue converted!")
 
     # Route 1 (runs to end of file - no end marker in demo)
-    route1 = insert_sfx_waits(convert_route(lines, route1_start, len(lines), "route1_start", 1))
+    route1 = _insert_chaos_rescene(insert_sfx_waits(
+        convert_route(lines, route1_start, len(lines), "route1_start", 1)))
     # Demo-only: replace the route's trailing `return` with utter_restart().
     # Why: the demo is the only repo where the player returns from a finished
     # route back to the same polyhedron main menu. That round-trip puts the

@@ -306,10 +306,10 @@ translate english route1_prologue_375ea891:
     extend '\n{r}——Well, you see, I\'m aware that I did something "outrageous".{/r}'
 
 # game/scripts/prologue.rpy:71
-translate english route1_prologue_2cc2a05b:
+translate english route1_prologue_ebccea70:
 
-    # extend "\n——哦？歉意，你能感受到那种东西？"
-    extend "\n——Oh, so you are saying you can feel guilt? That's a thing for you now?"
+    # large_narrator "——哦？歉意，你能感受到那种东西？"
+    large_narrator "——Oh, so you are saying you can feel guilt? That's a thing for you now?"
 
 # game/scripts/prologue.rpy:74
 translate english route1_prologue_9fc185c7:
