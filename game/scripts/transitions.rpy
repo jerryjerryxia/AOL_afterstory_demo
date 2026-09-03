@@ -25,6 +25,11 @@ define cam_fade_in = Fade(0.0, 0.0, 0.5)
 ## 时间慢慢流过去那样彼此过渡，而不是每次都"切走又切回来"。
 define scene_dissolve = Dissolve(0.8)
 
+## 冲击拍专用的极短溶解（地下7/8/9 —— 眼珠一颗颗爆裂，见 convert_script.py 的
+## SCENE_TRANSITIONS）。0.12s 观感上就是硬切，留这一点点是为了不在两张图的
+## 亮度差上跳出一格生硬的闪。
+define scene_dissolve_fast = Dissolve(0.12)
+
 ## 涟漪转场 —— 主菜单"开始游戏"进序章专用（配合 script.rpy 的 label start）。
 ## 从画面中心向外交叉溶解：中心先换成序章，边缘最后换，方向和涟漪扩散一致。
 ## 控制图 ripple_wipe.png 由 generate_ripple_assets.py 生成。ImageDissolve 是

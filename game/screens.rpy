@@ -416,10 +416,12 @@ init python:
     ## 角色的 do_extend()，且拼接源是 store._last_say_what —— 在这里做行数预算：
     ## 已堆内容 + 新块 预计超过 LARGE_BOX_MAX_LINES 视觉行时，清空累积，本次
     ## extend 就"新开一箱"只显示新块。
-    ## ★只在粉红屏问询段生效★（门控 = bg_pink_video 在场）：无限堆行只有嵌套
+    ## ★只在粉屏问询段生效★（门控 = bg_pink_video 在场）：无限堆行只有嵌套
     ## 循环选项才会发生；其他段落的长块是剧本静态写死的，行数作者自己负责，
-    ## 封顶反而会在长段中途悄悄清箱。粉红屏整段（问询+监禁循环，到切黑屏为止）
-    ## 都在门内，其余一切文本框/段落不受影响。
+    ## 封顶反而会在长段中途悄悄清箱。问询段与监禁循环（唯二会堆行的地方）
+    ## 全在 bg_pink_video 这块屏幕上，其余一切文本框/段落不受影响。
+    ## 门在【转场：粉屏变化全过程】那里关上（换成了 bg_pink_shift_video）——
+    ## 那之后到黑屏为止的块都是静态的，最长的一块 9 视觉行，够不着这个上限。
     LARGE_BOX_MAX_LINES = 10       # 箱内可用高 640px ÷ 行高约 56px ≈ 11，留 1 行余量
     LARGE_BOX_CHARS_PER_LINE = 38  # 可用宽 1360px ÷ 汉字约 36px，保守取整；半角按半字计
 
@@ -1926,12 +1928,19 @@ screen preferences():
                     style "pref_group"
                     vbox:
                         label _("文字速度")
-                    ## 文字速度滑块上限砍半：默认 range=200cps，从中点往上（~100cps+）
-                    ## 肉眼已分不出快慢、纯属浪费行程。改成 range=100，最慢端（最小值）
-                    ## 不变，最大值取原来的一半，整条滑块的有效分辨率翻倍。
+                        ## 文字速度滑块上限二次砍半：200 → 100 → 50 cps。上半段肉眼
+                        ## 分不出快慢、纯属浪费行程；最慢端（最小值）不变，只砍最大值，
+                        ## 整条滑块的有效分辨率再翻一倍。（与 200→100 那次同一个动作。）
+                        ## ★range 只是刻度，不是速度★：真正决定打字速度的是 persistent
+                        ## 里的 _preferences.text_cps，Text 每次排版现读（SDK text.py:743）。
+                        ## 所以改 range 不会动任何人已经调好的设置，也不会改 options.rpy
+                        ## 里的出厂默认 30 —— 那是另一件事，要改得单独说。
+                        ## 档位偏移：max_is_zero 让「滑块位置 = cps - 1」，最右端 = cps 0
+                        ## = 瞬显（SDK 00barvalues.rpy:198-231）；瞬显那一端与 range 无关，
+                        ## 砍半后照样够得着。
                         ## 注：逐句点击 {w} 是按 dtt 拆出的独立交互、逐段等点击，瞬显也照常
                         ## 生效（见 ClickPauseCharacter），所以这里**不需要**限制最高速度。
-                        bar value Preference("text speed", range=100)
+                        bar value Preference("text speed", range=50)
 
                         label _("自动前进时间")
                         bar value Preference("auto-forward time")

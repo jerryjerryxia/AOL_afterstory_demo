@@ -105,8 +105,10 @@ SFX_CUES = {
     # 玻璃破碎：剧本开头写了带文件名的 【玻璃破碎音效：glass-smash-normalized】，
     # 后面两处只写 【玻璃破碎音效】——同一记声音，裸 cue 也解析到同一素材。
     '玻璃破碎': {'file': 'glass-smash-normalized'},
-    # 连续破裂（眼珠一颗颗炸开）：暂不接。bone_break 是骨裂声，未必是这里要的东西，
-    # 等素材定下来再加一条。当前 cue 退化成纯注释（无声）。
+    # 破裂（眼珠一颗颗炸开，剧本里三处 【破裂音效】）：暂不接 —— game/audio/sfx/ 下
+    # 没有对得上的素材（bone_break 是骨裂、glass_smash 是玻璃，都不是眼球爆开的
+    # 湿声）。素材到位后在这里加一条 '破裂': {'file': '...'} 即可，剧本不用动。
+    # 当前 cue 退化成纯注释（无声）。
 
     # glitch（★临时★）：素材是 23.3 秒连续的削顶噪声墙，不是一记 stinger，
     # 整段播下去会盖住后面二十几句旁白。改由运行时函数从中随机挑一段 0.55 秒的
@@ -134,10 +136,16 @@ SCENE_BG_MAP = {
     # 白屏 / 黑屏：循环视频背景（bg/white_screen.webm、black_screen.webm）。
     '白屏': 'bg_white_video',
     '黑屏': 'bg_black_video',
-    # 粉红屏：临时版 —— 白屏视频蒙滤镜（见 placeholder.rpy 的 bg_pink_video）。
-    # 专门素材做好后把 placeholder.rpy 那条换掉即可，这里不用动。
-    # （灰屏不在这里 —— 它不换背景，是粉红屏就地褪过去的，见 IN_PLACE_SCENES。）
-    '粉红屏': 'bg_pink_video',
+    # 深空段的四块屏幕，都是 webm（素材见 placeholder.rpy 的注释，那里写了
+    # 六条视频首尾同色、连成一条链，所以链上换场是硬切）。
+    #   粉屏           —— 从屏幕中心 1/4 起，3 分钟长满整屏，循环
+    #   粉屏变化全过程 —— 播一次（雾散成水母触须），播完自动接"粉屏变化循环"
+    #   渐变灰屏过程   —— 播一次（粉褪成灰），播完自动接"灰屏循环过程"
+    # "播一次再循环另一条"由 Movie 的 play_callback 做（videos.rpy 的
+    # intro_then_loop），剧本里写成【转场：X。播放一次之后开始播放Y】。
+    '粉屏': 'bg_pink_video',
+    '粉屏变化全过程': 'bg_pink_shift_video',
+    '渐变灰屏过程': 'bg_grey_video',
     '红屏': 'bg_red_video',
     # 「黑屏，但是里面盖着王霜微笑的幽灵」：幽灵叠层的素材还没有，先按普通视频黑屏走。
     # 不让它掉进默认的纯黑 Solid —— 前后左右全是视频黑屏，一格死黑插在中间会跳。
@@ -163,25 +171,36 @@ SCENE_BG_MAP = {
     '甜品店对视6.51': 'bg_dessertgaze6_51',
     '甜品店对视7': 'bg_dessertgaze7',
     '甜品店对视8': 'bg_dessertgaze8',
-    # 地下 1-8：沙漠地下（头埋进沙里）恐怖段的场景渐进，见 placeholder.rpy。
+    # 地下 0-13：沙漠地下（头埋进沙里）恐怖段的场景渐进，见 placeholder.rpy。
+    # 6 被 6_1..6_4 取代（单颗眼珠特写的四拍），剧本不再引用 '地下6'。
+    '地下0': 'bg_underground0',
     '地下1': 'bg_underground1',
     '地下2': 'bg_underground2',
     '地下3': 'bg_underground3',
     '地下4': 'bg_underground4',
     '地下5': 'bg_underground5',
-    '地下6': 'bg_underground6',
+    '地下6_1': 'bg_underground6_1',
+    '地下6_2': 'bg_underground6_2',
+    '地下6_3': 'bg_underground6_3',
+    '地下6_4': 'bg_underground6_4',
     '地下7': 'bg_underground7',
     '地下8': 'bg_underground8',
+    '地下9': 'bg_underground9',
+    '地下10': 'bg_underground10',
+    '地下11': 'bg_underground11',
+    '地下12': 'bg_underground12',
+    '地下13': 'bg_underground13',
 }
 
 # 就地转场：不换背景，只在当前画面上启动一段效果。场景名 -> 要发的那一行。
 # 剧本里的 【转场：X】 在这里表示"变化开始"，不是"立刻变完" —— 发出去的是一个
 # 非阻塞的扳机，玩家照常点字推进，画面在背后自己走完。
 #
-# 灰屏：粉红屏用 10 秒缓慢褪成灰（ATL 在 placeholder.rpy 的 bg_pink_video 上，
-# 时长/曲线都在那里调）。之所以不是 scene 换图，理由写在那条 image 上面。
+#
+# 当前是空的：唯一的用户"灰屏"已经改成真视频（【转场：渐变灰屏过程】，一条
+# 从粉褪到灰的素材），不再需要在粉红屏上就地褪色。机制留着 —— 下一个"画面自己
+# 在背后慢慢变、玩家照常点字"的需求还会用到。
 IN_PLACE_SCENES = {
-    '灰屏': '$ pink_to_grey_started = True',
 }
 
 # 转场完成后停住等玩家点击的场景：画面单独作为一拍展示（藏起文本框），
@@ -193,7 +212,14 @@ SCENE_CLICK_HOLD = {'瘾'}
 # bg carries into the prologue's first scene), so a black-fade would break
 # the continuity. These scenes emit `scene X with None` instead of
 # `scene X with scene_soft`.
-NO_TRANSITION_SCENES = set()
+#
+# 粉屏链的两处换场：三条视频首尾同色，硬切在画面上完全看不出接缝。
+# 这里必须硬切而不是溶解 —— 溶解会把两片**随机**噪点场混在一起，噪点互相
+# 抵消，中途看得见一下"颗粒变淡"。详见 placeholder.rpy 那一段。
+NO_TRANSITION_SCENES = {
+    '粉屏变化全过程',
+    '渐变灰屏过程',
+}
 
 # Scenes that should cross-dissolve into view rather than fade through black.
 # Use for visual evolution within the same location/moment — e.g., the dessert
@@ -216,16 +242,29 @@ CROSS_DISSOLVE_SCENES = {
     '甜品店对视6.51',
     '甜品店对视7',
     '甜品店对视8',
-    # 地下 2-8：同一视野的递进拍（沙砾→多面体→眼珠→爆裂），黑场会打断
-    # "越看越清楚"的连续感。地下1 不在这里 —— 它是从图片黑屏睁眼的入场，
-    # 走默认黑场淡入。
+    # 地下 1-13：同一视野的递进拍（沙砾→多面体→眼珠→爆裂→血雾），黑场会打断
+    # "越看越清楚"的连续感。地下0 不在这里 —— 它是从图片黑屏睁眼的入场，
+    # 走默认黑场淡入。地下7/8/9（眼珠一颗颗爆裂）也不在这里，它们要更快的
+    # 溶解，见 SCENE_TRANSITIONS。
+    '地下1',
     '地下2',
     '地下3',
     '地下4',
     '地下5',
-    '地下6',
-    '地下7',
-    '地下8',
+    '地下6_1',
+    '地下6_2',
+    '地下6_3',
+    '地下6_4',
+    '地下10',
+    '地下11',
+    # 12↔13 来回切三轮 = 血红雾的搏动，溶解才有"呼吸"，硬切就成了闪烁。
+    '地下12',
+    '地下13',
+    # 红屏：从地下13 的血红雾涌上来的同一片红，黑场会把这份连续感切断。
+    '红屏',
+    # 粉屏：从黑屏进来，画面中心浮出一小块粉雾再慢慢长大 —— 溶解让它"浮现"，
+    # 黑场淡入会让那一小块"啪"地出现。
+    '粉屏',
 }
 
 # Tracks whether the prologue's first 【转场：...】 still needs its own special
@@ -280,6 +319,12 @@ TEXT_WALL_SECONDS = 10.8
 
 # 指定场景转场的特殊过渡（覆盖默认 scene_soft）。场景名 -> transitions.rpy 里的过渡名。
 SCENE_TRANSITIONS = {
+    # 眼珠一颗颗爆裂（剧本：【破裂音效】→【转场：地下N】→【等待1秒】x3）。
+    # 爆裂是一记冲击，0.8 秒的 scene_dissolve 会把"炸开"糊成"渐变"；0.12 秒
+    # 几乎就是硬切，但仍避开了两张图亮度差造成的生硬跳帧。
+    '地下7': 'scene_dissolve_fast',
+    '地下8': 'scene_dissolve_fast',
+    '地下9': 'scene_dissolve_fast',
 }
 
 # 长黑场过渡 + 禁止点击快进。用黑色叠层 ATL 动画 + hard pause 实现：屏幕缓缓黑

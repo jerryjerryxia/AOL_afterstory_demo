@@ -267,18 +267,36 @@ image bg_addiction:
     ease 1.5 u_ripple_strength 0.25  # 瘾的小顶点
     function _ripple_tick
 
-## 地下 1-8：沙漠地下（头埋进沙里）恐怖段的场景渐进（【转场：地下N】）。
-## 1 初见沙砾 → 2-4 逐步细看（沙砾=多面体=眼珠）→ 5-6 眼珠注意到你 →
-## 7 目光刺穿 → 8 眼珠爆裂。1 从图片黑屏黑场淡入，2-8 交叉溶解（同一视野的
-## 递进拍，与甜品店 1-8 同一处理，见 convert_script.py CROSS_DISSOLVE_SCENES）。
+## 地下 0-13：沙漠地下（头埋进沙里）恐怖段的场景渐进（【转场：地下N】）。
+##   0        一片空白的银白沙砾（睁眼第一拍）
+##   1-3      沙砾里浮出一颗、两颗、三颗黑色多面体
+##   4-5      推到近景：多面体里是眼珠，5 长出血丝
+##   6_1-6_4  切到单颗眼珠特写，四拍里裂纹一点点爬开、旁边又冒出眼睛
+##   7-9      眼珠一颗颗爆裂：血污三级递进（配【破裂音效】+【等待1秒】）
+##   10-11    画面被血污吞掉，从白底转成黑底再转成红
+##   12/13    整屏血红雾，两张交替 = 缓慢的搏动（剧本里 12↔13 来回切三轮）
+## 转场：0 从图片黑屏黑场淡入；1-6_4 与 10-13 交叉溶解（同一视野的递进拍，
+## 与甜品店 1-8 同一处理）；7-9 用 scene_dissolve_fast（0.12s，几乎是硬切）——
+## 爆裂是一记冲击，0.8 秒的溶解会把"炸开"糊成"渐变"。
+## 见 convert_script.py 的 CROSS_DISSOLVE_SCENES / SCENE_TRANSITIONS。
+## （旧的 underground6.png 已被 6_1-6_4 取代，剧本不再引用，image 也不再定义。）
+image bg_underground0 = Transform("images/bg/underground0.png", xysize=(1920, 1080), fit="cover")
 image bg_underground1 = Transform("images/bg/underground1.png", xysize=(1920, 1080), fit="cover")
 image bg_underground2 = Transform("images/bg/underground2.png", xysize=(1920, 1080), fit="cover")
 image bg_underground3 = Transform("images/bg/underground3.png", xysize=(1920, 1080), fit="cover")
 image bg_underground4 = Transform("images/bg/underground4.png", xysize=(1920, 1080), fit="cover")
 image bg_underground5 = Transform("images/bg/underground5.png", xysize=(1920, 1080), fit="cover")
-image bg_underground6 = Transform("images/bg/underground6.png", xysize=(1920, 1080), fit="cover")
+image bg_underground6_1 = Transform("images/bg/underground6_1.png", xysize=(1920, 1080), fit="cover")
+image bg_underground6_2 = Transform("images/bg/underground6_2.png", xysize=(1920, 1080), fit="cover")
+image bg_underground6_3 = Transform("images/bg/underground6_3.png", xysize=(1920, 1080), fit="cover")
+image bg_underground6_4 = Transform("images/bg/underground6_4.png", xysize=(1920, 1080), fit="cover")
 image bg_underground7 = Transform("images/bg/underground7.png", xysize=(1920, 1080), fit="cover")
 image bg_underground8 = Transform("images/bg/underground8.png", xysize=(1920, 1080), fit="cover")
+image bg_underground9 = Transform("images/bg/underground9.png", xysize=(1920, 1080), fit="cover")
+image bg_underground10 = Transform("images/bg/underground10.png", xysize=(1920, 1080), fit="cover")
+image bg_underground11 = Transform("images/bg/underground11.png", xysize=(1920, 1080), fit="cover")
+image bg_underground12 = Transform("images/bg/underground12.png", xysize=(1920, 1080), fit="cover")
+image bg_underground13 = Transform("images/bg/underground13.png", xysize=(1920, 1080), fit="cover")
 
 ## 旧实验：甜品店 + 水面波纹 shader。当前没有场景引用，留作以后复用。
 ## shader 注册和 _ripple_tick callback 见 game/scripts/shaders.rpy。
@@ -308,83 +326,90 @@ image bg_black_video = Movie(play="images/bg/black_screen.webm", size=(1920, 108
 ## 这样静帧和视频之间切换看不出画质差别。
 image bg_black_still = Transform("images/bg/black_screen_still.png", xysize=(1920, 1080), fit="cover")
 
-## 粉红屏 / 灰屏（★临时版★ —— 正式素材做好后替换掉这两条 image，
-## convert_script.py 的 SCENE_BG_MAP 不用动）。
+## 粉屏 / 粉屏变化 / 灰屏 / 红屏：深空段的四块屏幕，全部是 webm 视频。
+## master 是美术交付的中文命名 .mov（bg/_video_masters/），convert_videos.py 按
+## NAME_MAP 转出 ASCII 名的 webm 并单独抬高 CRF（素材是整屏噪点场，见那里的注释）。
 ##
-## 粉红屏：没有专门素材，先拿白屏视频蒙一层粉色滤镜。
-## TintMatrix 是逐通道相乘：白色底(1,1,1) 乘出来正好是染色本身，而白屏视频里
-## 那些细微的明暗起伏会按比例保留下来 —— 所以出来的是"会呼吸的粉雾"，
-## 不是一块死的纯色。start_image/image 的 white 也一并被染，冷启动不会闪白。
+## ★六条素材是一条连续的链★：后一条的首帧 == 前一条的末帧 ——
+##   pink_screen(#f58ba2 恒定) → pink_shift_full(#f58ba2 → #f48398)
+##   → pink_shift_loop(#f48398 恒定) → grey_fade_full(#f48999 → #3f3439)
+##   → grey_screen_loop(#3f3439 恒定)
+## 所以链上的两处换场一律硬切（转换器发 with None，见 NO_TRANSITION_SCENES）。
+## 不用溶解的理由不是"看不出区别"，而是溶解会伤画面：两片**随机**噪点场混合
+## 时噪点互相抵消，中途会有一下肉眼可见的"颗粒变淡"。
 ##
-## ↓ 调色就改这一个值。偏冷/偏紫往 #f0a0d0，偏肉粉往 #ffb0a8。
-define PINK_SCREEN_TINT = "#ffa3c4"
+## channel：Movie(play=...) 走 config.auto_movie_channel 自动分配的 _movie_N，
+## 每条视频各占一条，互不打架（多面体那条例外，它要跨 scene 共享帧位置，
+## 所以显式指定了 polyhedron_video）。
+##
+## start_image / image：视频首帧解码前顶上的纯色。取的是**该条视频首帧**的平均色
+## （不是它最终的颜色）—— 冷启动或 ctrl 快进时看到的就是同一个色，接得上；
+## 换成棋盘格占位纹理或者白色都会闪。image=（视频完全播不了时的兜底）则取该段
+## 落**最终**的颜色，那才是这一段该有的样子。
+image pink_still       = Solid("#f58ba2", xsize=1920, ysize=1080)
+image pink_shift_still = Solid("#f48398", xsize=1920, ysize=1080)
+image grey_still       = Solid("#3f3439", xsize=1920, ysize=1080)
+image red_still        = Solid("#a30a37", xsize=1920, ysize=1080)
 
-## 灰屏（★临时版★）：同一招，但多乘一个 SaturationMatrix(0.0)。
-## 多这一步是照着正文来的 ——「任何色彩倾泻其中，都只能归零的灰」：白屏视频里
-## 那些残影本身带着暖/冷色偏，只染灰的话它们会透出淡淡的颜色，正好和这句话打架。
-## 先去饱和再染灰 = 色彩真的归零，只剩明暗起伏在动。（顺序同 Ren'Py 自带的
-## SepiaMatrix：TintMatrix(...) * SaturationMatrix(0.0)。）
-##
-## ↓ 调明暗就改这一个值。更亮往 #b2b2b2，更压抑往 #6e6e6e。
-define GREY_SCREEN_TINT = "#9a9a9a"
-
-## 两块屏幕的颜色矩阵写成同一个结构：TintMatrix(...) * SaturationMatrix(...)。
-## 粉红那层的 SaturationMatrix(1.0) 是恒等矩阵、对画面没有任何影响，存在的唯一
-## 理由是"结构相同"——Ren'Py 只在前后两个 matrixcolor 同类型、同乘法顺序时才
-## 逐参数插值；结构不同就直接在第一帧跳到终点（官方文档 Structural Similarity）。
-## 下面 bg_pink_video 的 10 秒褪色全靠这一点。
-define PINK_SCREEN_MATRIX = TintMatrix(PINK_SCREEN_TINT) * SaturationMatrix(1.0)
-define GREY_SCREEN_MATRIX = TintMatrix(GREY_SCREEN_TINT) * SaturationMatrix(0.0)
-
-## 粉红屏 → 灰屏：不是换背景，是同一块屏幕自己慢慢褪色。
-## 剧本里 【转场：灰屏】 那一行只表示"褪色开始"（转换器在那里发
-## `$ pink_to_grey_started = True`，见 convert_script.py 的 IN_PLACE_SCENES），
-## 之后 PINK_TO_GREY_SECONDS 秒里玩家照常点字推进，画面在背后自己走完。
-##
-## 为什么不用 `scene bg_grey_video with Dissolve(10)`：转场是阻塞的，玩家
-## 点第一下就会把它一次性拍到终点，而且这十秒里没法推文字。
-## 为什么不换成另一个 image：换 image = 换一个 Movie 实例 = 白屏视频从头重放，
-## 褪色刚起步就"啪"地跳一下残影，正好毁掉要的那份丝滑。
-## 所以只留粉红屏这一个 displayable，让它挂着 ATL 等信号：
-##   _pink_to_grey_gate 每帧问一次标志位 —— 没起跑就原地待命（返回 0 = 下一帧
-##   再问），起跑了返回 None 放行进 ease 褪色。（同 screens.rpy 的
-##   _wait_for_main_menu_exit：ATL 轮询状态变量是这个项目里通用的"等信号"写法。）
-## warper 用 ease 而不是 linear：起步和收尾都软，玩家察觉不到"开始变了"这一帧。
-##
-## 存档/读档：ATL 状态不进存档。褪色途中存档、读回来时画面回到粉红、标志位仍是
-## True，于是重跑一遍完整褪色 —— 比读出来卡在半路或直接是灰更好看，不值得为它
-## 记时间戳。
-define PINK_TO_GREY_SECONDS = 10.0
-default pink_to_grey_started = False
-
-init python:
-    def _pink_to_grey_gate(trans, st, at):
-        return None if pink_to_grey_started else 0
+## 粉屏：先占屏幕中心约 1/4 面积（zoom 0.5 = 960x540），5 分钟里长满整屏，
+## 之后停住（剧本：【转场：粉屏。这里先占据屏幕中心1/4左右的空间，然后在5分钟里
+## 逐渐变大，直到填满整个屏幕】）。底下垫一层黑：没长满时露出来的是黑，
+## 不是上一场景的残影。
+## 5 分钟的余量：问询段（route1.rpy 从 scene bg_pink_video 到 scene
+## bg_pink_shift_video）有 219 句 say/extend + 17 个 menu，再加 screens.rpy
+## add_click_pauses 的逐句拆分，点满 300 秒平均只要 1.27 秒/次点击 —— 正常阅读
+## 远不止这个数，玩家走到下一条视频时画面早已铺满。★这是有代价的余量★：
+## 那一刀是 with None 硬切（三条视频首尾同色，见上），万一有人 ctrl 快进冲到那里，
+## 会看见一块没长满的粉矩形"啪"地跳成整屏粉。要更保险就把 300 调小。
+## 存档/读档：ATL 状态不进存档，读回来会从 zoom 0.5 重跑一遍。与其为它记时间戳，
+## 不如让它重长一次（同 pink_to_grey 时代的取舍）。
+define PINK_GROW_SECONDS = 300.0
 
 image bg_pink_video:
-    Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
-          start_image="white", image="white")
-    matrixcolor PINK_SCREEN_MATRIX
-    function _pink_to_grey_gate
-    ease PINK_TO_GREY_SECONDS matrixcolor GREY_SCREEN_MATRIX
+    contains:
+        "black"
+    contains:
+        Movie(play="images/bg/pink_screen.webm", size=(1920, 1080),
+              start_image="pink_still", image="pink_still")
+        ## ★subpixel True 是防抖的全部，别删★
+        ## 这一层由父 MultiBox 用 Displayable.place 摆位，place 默认走 Render.blit，
+        ## 而 blit 把坐标 int() 截断（displayable.py:536 → render.pyx: xo = int(xo)）。
+        ## 层宽 w = 1920*zoom 是浮点、位置 x = 960 - w/2 也是浮点，于是：
+        ##   左/上边沿：随 int(x) 一格一格正常外扩；
+        ##   右/下边沿：= int(x) + w —— 每当 int(x) 掉一格，它跟着**倒退 1px**。
+        ## 实测（game 内 render 树探针，20Hz 采样整段生长）：
+        ##   subpixel 关 —— 右边沿 960 次前进 + 480 次倒退，下边沿 540 + 270，
+        ##                  92.5% 的帧矩形根本不在正中；
+        ##   subpixel 开 —— 480/270 次，倒退 0 次，0% 违反居中。
+        ## 三分之一的边沿运动是反向的，这就是玩家看到的"卡顿"。而且视频纹理没有
+        ## mipmap（config.mipmap_movies=False），缩小时 1px 的偏移跳变会让整屏噪点
+        ## 场一起重新采样 —— 所以一个 1px 的几何瑕疵看起来是整块画面在抖。
+        subpixel True
+        align (0.5, 0.5)
+        zoom 0.5
+        linear PINK_GROW_SECONDS zoom 1.0
 
-## 纯灰屏：现在没有场景用它（灰屏是由粉红屏褪过去的，见上）。留着当"直接就是灰"
-## 的备用入口，也让褪色的终点长什么样有一处可直接看的定义。
-image bg_grey_video = Transform(
-    Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
-          start_image="white", image="white"),
-    matrixcolor=GREY_SCREEN_MATRIX)
+## 「播完一次再循环另一条」（剧本：【转场：粉屏变化全过程。播放一次之后开始播放
+## 粉屏变化循环】/【转场：渐变灰屏过程。播放一次之后开始播放灰屏循环过程】）：
+## 全过程那条播一次，播完无缝接上循环那条，无限循环。
+## 实现见 game/scripts/videos.rpy 的 intro_then_loop —— play(loop=False) 之后
+## queue(loop=True)，交接点由音频队列在 intro 真正播完的那一帧决定，不靠硬编码时长
+## （硬编码时长的话，素材一改秒数就得跟着改，还会在快进/掉帧时错位）。
+image bg_pink_shift_video = Movie(
+    play="images/bg/pink_shift_full.webm",
+    play_callback=intro_then_loop("images/bg/pink_shift_full.webm",
+                                  "images/bg/pink_shift_loop.webm"),
+    size=(1920, 1080), start_image="pink_still", image="pink_shift_still")
 
-## 红屏（★临时版★）：同粉红屏的做法。取暗红而不是警报红，两个理由 ——
-## 正文写的是"血液暗红"；而且这一段要挂着放二十几句旁白，一整屏高饱和亮红
-## 顶着看眼睛受不了。
-##
-## ↓ 调色就改这一个值。要更刺目往 #ff3b30，要更偏橙往 #e0483a。
-define RED_SCREEN_TINT = "#a81f1f"
-image bg_red_video = Transform(
-    Movie(play="images/bg/white_screen.webm", size=(1920, 1080),
-          start_image="white", image="white"),
-    matrixcolor=TintMatrix(RED_SCREEN_TINT))
+image bg_grey_video = Movie(
+    play="images/bg/grey_fade_full.webm",
+    play_callback=intro_then_loop("images/bg/grey_fade_full.webm",
+                                  "images/bg/grey_screen_loop.webm"),
+    size=(1920, 1080), start_image="pink_shift_still", image="grey_still")
+
+## 红屏：单条循环（沙漠地下段末尾，从地下13 的血红雾交叉溶解进来）。
+image bg_red_video = Movie(play="images/bg/red_screen.webm", size=(1920, 1080),
+                           start_image="red_still", image="red_still")
 
 ################################################################################
 ## 表情差分（全图 / 透明叠层）。转换器在 王霜【表情】 处切换：

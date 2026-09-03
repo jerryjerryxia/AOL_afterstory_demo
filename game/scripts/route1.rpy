@@ -708,8 +708,8 @@ label route1_start:
     $ play_sfx("audio/sfx/bubbles/Bubbles_10.wav")
     ## 音效完成后再执行转场
     $ wait_sfx()
-    ## 转场：粉红屏
-    scene bg_pink_video with scene_soft
+    ## 转场：粉屏
+    scene bg_pink_video with scene_dissolve
     $ stash_music_pos()
     $ current_music_scene = None
     stop music fadeout 3.0
@@ -786,6 +786,7 @@ label route1_start:
                 $ _intro_fade_pending = True
                 extend "\n{r}——有{/r}\n——请详细交代该经历的过程。"
                 extend "\n——请注意，您没有权利保持沉默。"
+                extend "\n{r}——...{/r}"
                 window hide Dissolve(.25)
                 menu:
                     "王霜把三根冰锥子打进我的眼窝之后，又让我对她做同样的事。透过骨头你就知道了...是软软的，摸起来像嫩豆腐。" (interro=("m2A", "i")):
@@ -896,6 +897,7 @@ label route1_start:
             $ _intro_fade_pending = True
             extend "\n{r}——当然是自愿的{/r}\n——请详细交代您的动机。"
             extend "\n——请注意，您没有权利保持沉默。"
+            extend "\n{r}——...{/r}"
             window hide Dissolve(.25)
             menu:
                 "她属于我，就这么简单。这是众所周知的事情。" (interro=("m7A", "u")):
@@ -1011,6 +1013,7 @@ label route1_start:
             $ _intro_fade_pending = True
             extend "\n{r}——我是受人指使的{/r}\n——请交代该个人或组织的身份。"
             extend "\n——请注意，您没有权利保持沉默。"
+            extend "\n{r}——...{/r}"
             window hide Dissolve(.25)
             menu:
                 "尤里娅啊...那个，我们早就计划好了..." (interro=("m12A", "u")):
@@ -1257,6 +1260,8 @@ label route1_start:
     ahe "阿...霜..."
     ahe "我..."
     ahe "…"
+    ## 转场：粉屏变化全过程
+    scene bg_pink_shift_video with None
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "不经意间，横膈膜停止了张弛。当缺氧的眩晕擒住你的意识时，一切已经晚了。"
     extend "\n你感到浑身发胀。"
@@ -1288,8 +1293,8 @@ label route1_start:
     extend "\n因为要保持呼吸道畅通。"
     extend "\n请保持呼吸。"
     ## Extended大文本框结束
-    ## 转场：灰屏
-    $ pink_to_grey_started = True
+    ## 转场：渐变灰屏过程
+    scene bg_grey_video with None
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你想起她那窗明几净的办公室，但却无法回忆起分毫色彩。"
     extend "\n因为她是治愈的灰，包容的灰。"
@@ -1322,17 +1327,7 @@ label route1_start:
     extend "\n于是你义无反顾地照做。"
     extend "\n即使灰幕吞噬了整个视野也不停歇。"
     ## Extended大文本框结束
-    ## 电视机关机音效
-    $ play_sfx("audio/sfx/tv_off/dragon-studio-tv-shutdown-386167.mp3")
-    ## 电视机关机转场（CRT 断电，与关机音效同帧触发）
-    show layer master at crt_shutdown
-    $ hard_pause(0.8)
-    scene black with None
-    show layer master
-    ## 转场：黑屏
-    scene bg_black_video with scene_soft
     ## Extended大文本框开始 - accumulating large textbox
-    $ wait_sfx()
     large_narrator "…"
     extend "\n……"
     extend "\n………"
@@ -1927,27 +1922,32 @@ label route1_start:
     ## 心跳音效恢复
     $ play_ambient("audio/sfx/heart_beat/heartbeat_60.wav", channel="ambient_pulse", fadein=1.5, level=0.6)
     large_narrator "沙地冰凉而干燥，在这个无声的世界里，你艰难地呼吸。"
-    extend "\n随着恐惧略微消散，你察觉到这地下似乎不像想象中那样黑暗，便试探性地睁开双眼，但立刻后悔了，因为你见到了比地面上那无头尸首更加令人绝望的恐怖——"
+    extend "\n随着恐惧略微消散，你察觉到这地下似乎不像想象中那样黑暗，便试探性地睁开双眼。"
+    extend "\n但你立刻后悔了，因为你见到了比地面上那人形噩梦更加令人绝望的景象——"
     ## Extended大文本框结束
-    ## 转场：地下1
-    scene bg_underground1 with scene_soft
+    ## 转场：地下0
+    scene bg_underground0 with scene_soft
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "银白色的沙漠之下只有银白色的沙砾。"
+    extend "\n满眼都是沙砾。但只消稍稍细看，你眼前那一颗颗的银白颗粒，分明就不是沙砾。"
+    ## 心跳音效渐强
+    $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
+    ## 转场：地下1
+    scene bg_underground1
+    $ renpy.transition(scene_dissolve, layer="master")
+    extend "\n无论怎么看，每颗“沙砾”都是一颗无色透明多面体。"
     ## 转场：地下2
     scene bg_underground2
     $ renpy.transition(scene_dissolve, layer="master")
-    extend "\n满眼都是沙砾。但只消稍稍细看，那一颗颗的，分明就不是沙砾。"
-    ## 心跳音效渐强
-    $ play_ambient("audio/sfx/heart_beat/heartbeat_104.wav", channel="ambient_pulse", fadein=0.6, level=1.0)
+    extend "\n而每颗多面体里，都包裹着一颗布满血丝的眼珠。"
     ## 转场：地下3
     scene bg_underground3
     $ renpy.transition(scene_dissolve, layer="master")
-    extend "\n每颗“沙砾”都是一颗无色透明多面体。"
+    extend "\n每一颗眼珠都目不斜视地盯着同一个方向，仿佛在寻找些永远找不到的东西。"
+    extend "\n然而，随着那些眼珠在你视野里逐渐清晰，它们似乎也开始注意到你的存在。"
     ## 转场：地下4
     scene bg_underground4
     $ renpy.transition(scene_dissolve, layer="master")
-    extend "\n而每颗多面体里，都有一颗泛着血丝的眼珠。"
-    extend "\n随着那些眼珠在你视野里逐渐清晰，它们似乎也注意到了你的存在。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你想要尖叫，喉咙却发不出一点声音。"
@@ -1955,48 +1955,93 @@ label route1_start:
     ## 转场：地下5
     scene bg_underground5
     $ renpy.transition(scene_dissolve, layer="master")
-    $ op_lock_start(3)
-    extend "{w=3}{nw}"
-    ## 转场：地下6
-    scene bg_underground6
-    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n在某个宿命般的时刻，所有眼珠将它们空洞的视线齐刷刷地指向你。"
+    ## 转场：地下6_1
+    scene bg_underground6_1
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n无数锥子般的目光将你刺得千疮百孔。"
+    ## 转场：地下6_2
+    scene bg_underground6_2
+    $ renpy.transition(scene_dissolve, layer="master")
+    $ op_lock_start(1)
+    extend "{w=1}{nw}"
+    ## 转场：地下6_3
+    scene bg_underground6_3
+    $ renpy.transition(scene_dissolve, layer="master")
+    $ op_lock_start(1)
+    extend "{w=1}{nw}"
+    ## 转场：地下6_4
+    scene bg_underground6_4
+    $ renpy.transition(scene_dissolve, layer="master")
     ## Extended大文本框结束
-    ## 转场：地下7
-    scene bg_underground7 with scene_dissolve
     ## 场景音乐参考：N2-14 - 从上次音乐停的位置继续播放，不要重头开始
     $ set_scene_music("route1_horror3")
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "你绝望地想要把头抽出来，但原本稀松的沙地此刻如钢钳一般将你的头死死扼住，任凭双手在沙地上狂乱地挥舞抓挠，也无法动摇分毫 。"
-    extend "\n你只能眼睁睁看着那些布满血丝的眼珠朝你的脸逐渐聚拢，随后——"
+    extend "\n你只能眼睁睁看着那些布满血丝的眼珠朝你的脸庞逐渐聚拢，随后——"
     ## Extended大文本框结束
-    ## 连续破裂音效
     ## Extended大文本框开始 - accumulating large textbox
-    ## 转场：地下8
-    scene bg_underground8 with scene_dissolve
     large_narrator "它们一颗颗地在你眼前爆裂开来，里面迸发出浑浊的玻璃体与血液的混合物，飞溅到你脸上，温热而粘稠。"
+    ## 破裂音效
+    ## 转场：地下7
+    scene bg_underground7
+    $ renpy.transition(scene_dissolve_fast, layer="master")
+    $ op_lock_start(1)
+    extend "{w=1}{nw}"
+    ## 破裂音效
+    ## 转场：地下8
+    scene bg_underground8
+    $ renpy.transition(scene_dissolve_fast, layer="master")
+    $ op_lock_start(1)
+    extend "{w=1}{nw}"
+    ## 破裂音效
+    ## 转场：地下9
+    scene bg_underground9
+    $ renpy.transition(scene_dissolve_fast, layer="master")
     extend "\n所剩无几的空气中弥漫着你闻所未闻的诡异气味。那是尸体的味道，但其来源并非布满你颜面的异色粘液。"
+    ## 转场：地下10
+    scene bg_underground10
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n几团大块的血污顺着你的脸颊缓缓滑下，留下一道道蜗牛足迹般亮晶晶的轨迹。"
     ## Extended大文本框结束
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "尸体的味道越发浓烈。"
     extend "\n嘴唇也沾上了血污，怎奈双手与头颅天各一方，你无法想象如何在不扩大事态的前提下将嘴唇清理干净，只能强行忍受温热湿软的污物在唇上缓缓滑落的触感。"
+    ## 转场：地下11
+    scene bg_underground11
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n你极力缩紧喉头，拼尽全力不哇地一声吐出来，但那念头很快就被另一种思绪所覆盖了。"
     ## Extended大文本框结束
     ## 居中大字文本框开始 - centered large font textbox
     centered_large_narrator "你想——"
     ## 居中大字文本框结束
+    ## 转场：地下12
+    scene bg_underground12 with scene_dissolve
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "尸体气味的浓度达到了顶峰。"
+    ## 转场：地下13
+    scene bg_underground13
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n你十分清楚那气味的来源，只是仍在试图移开目光，就像你一直以来所做的那样。"
+    ## 转场：地下12
+    scene bg_underground12
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n但一直逃避的人终究会无路可逃。"
+    ## 转场：地下13
+    scene bg_underground13
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n当人制造了过多的尸体，那他自己迟早也会步入其造物的行列。"
+    ## 转场：地下12
+    scene bg_underground12
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n一阵遥远而熟悉的冲动自心底涌上来。"
+    ## 转场：地下13
+    scene bg_underground13
+    $ renpy.transition(scene_dissolve, layer="master")
     extend "\n你想死。"
     ## Extended大文本框结束
     ## 转场：红屏
-    scene bg_red_video with scene_soft
+    scene bg_red_video with scene_dissolve
     ## Extended大文本框开始 - accumulating large textbox
     large_narrator "手心传来温热而粘稠的触感，你自然知道那是什么，于是开始用力甩手。"
     extend "\n但无论你怎么使劲，那事物仍旧纹丝不动地包裹着你整个手掌。"

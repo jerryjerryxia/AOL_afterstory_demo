@@ -35,6 +35,32 @@ AUDIO_BITRATE = "96k"
 
 SOURCE_EXTS = {".mp4", ".mov", ".avi", ".mkv", ".m4v", ".prores"}
 
+# 母带按美术的中文命名交付；游戏里的资源名保持 ASCII —— Ren'Py 的 image 定义、
+# loader 索引、以及以后打包的路径都少一类编码坑。这张表管"母带名 -> (输出名, CRF)"，
+# 美术照旧丢中文文件进来，不用改命名习惯。表里没有的按原文件名 + 默认 CRF 输出。
+#
+# 粉/灰/红屏这六条为什么单独抬 CRF：素材是整屏逐帧变化的**噪点场**（见母带任一帧），
+# 熵极高，CRF 23 编出来比 h264 母带还大（7.5 秒 14 MB）。而噪点又是最能藏编码
+# 瑕疵的内容——CRF 36 与 23 在 100% 裁切下肉眼无差，体积只有 45%。
+NAME_MAP = {
+    "粉屏":           ("pink_screen",     36),   # 2.2s 循环：粉红屏本体
+    "粉屏变化全过程":  ("pink_shift_full", 36),   # 6.6s 一次性：粉屏开始变化
+    "粉屏变化循环":    ("pink_shift_loop", 36),   # 3.2s 循环：变化后的常态
+    "渐变灰屏过程":    ("grey_fade_full",  36),   # 7.5s 一次性：粉 -> 灰
+    "灰屏循环过程":    ("grey_screen_loop", 36),  # 3.7s 循环：灰屏常态
+    "红屏":           ("red_screen",      36),   # 6.0s 循环：红屏本体
+}
+
+
+def output_name(src):
+    entry = NAME_MAP.get(src.stem)
+    return (entry[0] if entry else src.stem) + ".webm"
+
+
+def crf_for(src):
+    entry = NAME_MAP.get(src.stem)
+    return entry[1] if entry and entry[1] is not None else CRF
+
 
 def get_ffmpeg():
     try:
@@ -46,12 +72,14 @@ def get_ffmpeg():
 
 def has_audio_stream(ffmpeg, src):
     """Cheap probe — ffmpeg writes stream info to stderr."""
-    r = subprocess.run([ffmpeg, "-i", str(src)], capture_output=True, text=True)
-    return "Audio:" in r.stderr
+    r = subprocess.run([ffmpeg, "-i", str(src)], capture_output=True, text=True,
+                       encoding="utf-8", errors="replace")
+    return "Audio:" in (r.stderr or "")
 
 
 def transcode(ffmpeg, src, dst, target_fps=None):
-    print(f"  encoding -> {dst.name}" + (f"  (interpolated to {target_fps} fps)" if target_fps else ""))
+    crf = crf_for(src)
+    print(f"  encoding -> {dst.name}  (crf {crf})" + (f"  (interpolated to {target_fps} fps)" if target_fps else ""))
     # Scale: fit within 1920x1080, preserve aspect, never upscale.
     # Trailing scale ensures even dimensions (VP9 requirement).
     vf_parts = [
@@ -69,7 +97,7 @@ def transcode(ffmpeg, src, dst, target_fps=None):
     cmd = [
         ffmpeg, "-y", "-i", str(src),
         "-vf", ",".join(vf_parts),
-        "-c:v", "libvpx-vp9", "-crf", str(CRF), "-b:v", "0",
+        "-c:v", "libvpx-vp9", "-crf", str(crf), "-b:v", "0",
         "-row-mt", "1", "-threads", "8",
     ]
     if has_audio_stream(ffmpeg, src):
@@ -79,10 +107,11 @@ def transcode(ffmpeg, src, dst, target_fps=None):
         cmd += ["-an"]
     cmd += [str(dst)]
 
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    r = subprocess.run(cmd, capture_output=True, text=True,
+                       encoding="utf-8", errors="replace")
     if r.returncode != 0:
         print(f"  FAILED (ffmpeg exit {r.returncode}):")
-        print(r.stderr[-800:])
+        print((r.stderr or "")[-800:])
         return False
 
     size_in = src.stat().st_size / 1024 / 1024
@@ -141,7 +170,7 @@ def main():
 
     processed = skipped = failed = 0
     for src in sources:
-        dst = OUTPUT_DIR / (src.stem + ".webm")
+        dst = OUTPUT_DIR / output_name(src)
         print(f"[{src.name}]")
         if not args.force and dst.exists() and dst.stat().st_mtime >= src.stat().st_mtime:
             print(f"  up-to-date, skipping ({dst.name})  [use --force to re-encode]")

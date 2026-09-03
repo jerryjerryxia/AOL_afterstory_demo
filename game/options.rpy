@@ -105,7 +105,7 @@ init python:
     ## 之前没有这两条，55 MB 的 bgm/masters WAV + 34 MB 的 _video_masters MP4 每次
     ## 都跟着发行版一起走了 —— 玩家下载了 89 MB 永远不会被读取的文件。
     build.classify('game/audio/**/masters/**', None)    # 音频母带（bgm/ 与 sfx/ 下）
-    build.classify('game/images/bg/_video_masters/**', None)  # 视频母带 MP4
+    build.classify('game/images/bg/_video_masters/**', None)  # 视频母带（mp4/mov，含中文命名）
 
     build.classify('**~', None)
     build.classify('**.bak', None)
